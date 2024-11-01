@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 import { Heart, MapPin, Trees, Ruler, Mountain, Sun } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Specificity {
   icon: React.ElementType;
@@ -21,6 +22,7 @@ interface Specificity {
 }
 
 interface LandPropertyCardProps {
+  id: number;
   images?: string[];
   price?: string;
   address?: string;
@@ -31,11 +33,14 @@ interface LandPropertyCardProps {
 }
 
 export default function LandPropertyCard({
+  id,
   images = [
-    "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500&h=300&fit=crop", 
+    "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1628624747186-a941c476b7ef?w=500&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?w=500&h=300&fit=crop",
   ],
-  price = "0 €",
-  address = "Route des Champs, 12345 Ville, Madagascar",
+  price = "150 000 €",
+  address = "Route des Champs, 12345 Ville, France",
   propertyType = "Terrain",
   specificities = [
     { icon: Ruler, label: "Superficie", value: "5000 m²" },
@@ -50,7 +55,7 @@ export default function LandPropertyCard({
   const [isHovered, setIsHovered] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [api, setApi] = useState<CarouselApi>();
-  const carouselRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     setIsLocalFavorite(isFavorite);
@@ -66,13 +71,43 @@ export default function LandPropertyCard({
     });
   }, [api]);
 
+  const handleCardClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation(); // Stoppe la propagation de l'événement
+
+      // Vérifie si la cible du clic n'est pas un bouton
+      if (!(e.target as HTMLElement).closest("button")) {
+        router.push(`/property/${id}`);
+      }
+    },
+    [id, router]
+  );
+
+  const handlePrevious = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation(); // Stoppe la propagation de l'événement
+      api?.scrollPrev();
+    },
+    [api]
+  );
+
+
+  const handleNext = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      api?.scrollNext();
+    },
+    [api]
+  );
+
   return (
     <Card
-      className="max-w-sm mx-auto overflow-hidden cursor-pointer"
+      className="w-[300px] mx-auto overflow-hidden cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={handleCardClick}
     >
-      <div className="relative" ref={carouselRef}>
+      <div className="relative">
         <Carousel className="w-full" setApi={setApi}>
           <CarouselContent>
             {images.map((image, index) => (
@@ -80,15 +115,21 @@ export default function LandPropertyCard({
                 <img
                   src={image}
                   alt={`Terrain ${index + 1}`}
-                  className="w-full h-48 object-cover"
+                  className="w-full h-44 object-cover"
                 />
               </CarouselItem>
             ))}
           </CarouselContent>
           {isHovered && (
             <>
-              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/50 hover:bg-white/75 transition-colors rounded-full p-1" />
-              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/50 hover:bg-white/75 transition-colors rounded-full p-1" />
+              <CarouselPrevious
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/50 hover:bg-white/75 transition-colors rounded-full p-1"
+                onClick={handlePrevious}
+              />
+              <CarouselNext
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/50 hover:bg-white/75 transition-colors rounded-full p-1"
+                onClick={handleNext}
+              />
             </>
           )}
         </Carousel>
@@ -134,8 +175,8 @@ export default function LandPropertyCard({
         </div>
       </div>
       <CardContent className="p-4">
-        <h3 className="text-2xl font-bold text-primary mb-2">{price}</h3>
-        <p className="text-muted-foreground flex items-center mb-4 text-sm">
+        <h3 className="text-xl font-bold text-primary mb-2">{price}</h3>
+        <p className="text-muted-foreground flex items-center mb-3 text-sm">
           <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
           <span className="truncate">{address}</span>
         </p>
