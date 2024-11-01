@@ -1,18 +1,18 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Heart,
-  MapPin,
-  Trees,
-  Ruler,
-  Mountain,
-  Sun,
-  Droplet,
-  Wifi,
-  Car,
-} from "lucide-react";
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi,
+} from "@/components/ui/carousel";
+import { Heart, MapPin, Trees, Ruler, Mountain, Sun } from "lucide-react";
 
 interface Specificity {
   icon: React.ElementType;
@@ -21,7 +21,7 @@ interface Specificity {
 }
 
 interface LandPropertyCardProps {
-  imageUrl?: string;
+  images?: string[];
   price?: string;
   address?: string;
   propertyType?: string;
@@ -31,34 +31,67 @@ interface LandPropertyCardProps {
 }
 
 export default function LandPropertyCard({
-  imageUrl = "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500&h=300&fit=crop",
-  price = "150 000 €",
-  address = "Route des Champs, 12345 Ville, France",
+  images = [
+    "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500&h=300&fit=crop", 
+  ],
+  price = "0 €",
+  address = "Route des Champs, 12345 Ville, Madagascar",
   propertyType = "Terrain",
   specificities = [
     { icon: Ruler, label: "Superficie", value: "5000 m²" },
     { icon: Trees, label: "Zonage", value: "Résidentiel" },
     { icon: Mountain, label: "Terrain", value: "Plat" },
     { icon: Sun, label: "Exposition", value: "Sud" },
-    { icon: Sun, label: "Exposition", value: "Sud" },
   ],
   isFavorite = false,
   onFavoriteChange,
 }: LandPropertyCardProps) {
   const [isLocalFavorite, setIsLocalFavorite] = useState(isFavorite);
+  const [isHovered, setIsHovered] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [api, setApi] = useState<CarouselApi>();
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsLocalFavorite(isFavorite);
   }, [isFavorite]);
 
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    api.on("select", () => {
+      setCurrentSlide(api.selectedScrollSnap());
+    });
+  }, [api]);
+
   return (
-    <Card className="max-w-sm mx-auto overflow-hidden">
-      <div className="relative">
-        <img
-          src={imageUrl}
-          alt="Terrain"
-          className="w-full h-48 object-cover"
-        />
+    <Card
+      className="max-w-sm mx-auto overflow-hidden cursor-pointer"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="relative" ref={carouselRef}>
+        <Carousel className="w-full" setApi={setApi}>
+          <CarouselContent>
+            {images.map((image, index) => (
+              <CarouselItem key={index}>
+                <img
+                  src={image}
+                  alt={`Terrain ${index + 1}`}
+                  className="w-full h-48 object-cover"
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          {isHovered && (
+            <>
+              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/50 hover:bg-white/75 transition-colors rounded-full p-1" />
+              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/50 hover:bg-white/75 transition-colors rounded-full p-1" />
+            </>
+          )}
+        </Carousel>
         <Badge className="absolute top-2 left-2 bg-primary text-primary-foreground">
           {propertyType}
         </Badge>
@@ -71,7 +104,8 @@ export default function LandPropertyCard({
           aria-label={
             isLocalFavorite ? "Retirer des favoris" : "Ajouter aux favoris"
           }
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             const newState = !isLocalFavorite;
             setIsLocalFavorite(newState);
             onFavoriteChange?.(newState);
@@ -83,6 +117,21 @@ export default function LandPropertyCard({
             }`}
           />
         </Button>
+        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
+          {images.map((_, index) => (
+            <button
+              key={index}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                index === currentSlide ? "bg-white" : "bg-white/50"
+              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                api?.scrollTo(index);
+              }}
+              aria-label={`Go to image ${index + 1}`}
+            />
+          ))}
+        </div>
       </div>
       <CardContent className="p-4">
         <h3 className="text-2xl font-bold text-primary mb-2">{price}</h3>
@@ -102,9 +151,6 @@ export default function LandPropertyCard({
           })}
         </div>
       </CardContent>
-      <CardFooter className="p-4 bg-secondary">
-        <Button className="w-full">Voir les détails</Button>
-      </CardFooter>
     </Card>
   );
 }

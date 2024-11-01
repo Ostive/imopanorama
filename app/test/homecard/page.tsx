@@ -15,8 +15,12 @@ export default function PropertyPage() {
 
   const landProperties = Array.from({ length: 100 }, (_, index) => ({
     id: index,
-    imageUrl:
-      "https://images.ctfassets.net/skkgb8fetgpj/26f0kFTj6XTDMK8x6hwb2M/cca6c1a0aee94bcbf4afeae04e5d489d/pexels-a__kos-szabo__-440731.jpg?q=75&r=8",
+    image: [
+      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1628624747186-a941c476b7ef?w=500&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?w=500&h=300&fit=crop",
+    ],
     price: "180 000 €",
     address: "Chemin des Vignes, 34567 Campagne, France",
     propertyType: "Terrain agricole",
@@ -33,7 +37,7 @@ export default function PropertyPage() {
       {landProperties.map((property, index) => (
         <LandPropertyCard
           key={property.id}
-          imageUrl={property.imageUrl}
+          images={property.image}
           price={property.price}
           address={property.address}
           propertyType={property.propertyType}
