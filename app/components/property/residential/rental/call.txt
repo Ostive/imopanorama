@@ -1,0 +1,64 @@
+import React from 'react'
+import ResidentialRentalPropertyCard from './residential-rental-property-card'
+import { Home, Ruler, BedDouble, Bath } from 'lucide-react'
+
+export default function RentalListingsPage() {
+  const rentalProperties = [
+    {
+      id: "1",
+      images: [
+        "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=300&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1554995207-c18c203602cb?w=300&h=300&fit=crop",
+      ],
+      price: "1 200 €",
+      priceUnit: "month" as const,
+      address: "123 Rue de la Paix, 75000 Paris, France",
+      propertyType: "Appartement",
+      specificities: [
+        { icon: Home, label: "Type", value: "T3" },
+        { icon: Ruler, label: "Surface", value: "75 m²" },
+        { icon: BedDouble, label: "Chambres", value: "2" },
+        { icon: Bath, label: "Salles de bain", value: "1" },
+      ],
+      rating: 4.5,
+    },
+    {
+      id: "2",
+      images: [
+        "https://images.unsplash.com/photo-1513584684374-8bab748fbf90?w=300&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?w=300&h=300&fit=crop",
+      ],
+      price: "150 €",
+      priceUnit: "night" as const,
+      address: "456 Avenue des Champs-Élysées, 75008 Paris, France",
+      propertyType: "Maison d'hôte",
+      specificities: [
+        { icon: Home, label: "Type", value: "Studio" },
+        { icon: Ruler, label: "Surface", value: "30 m²" },
+        { icon: BedDouble, label: "Chambres", value: "1" },
+        { icon: Bath, label: "Salles de bain", value: "1" },
+      ],
+      rating: 4.8,
+    },
+  ]
+
+  const handleFavoriteChange = (id: string, newState: boolean) => {
+    console.log(`Property ${id} favorite state changed to ${newState}`)
+    // Here you would typically update your state or make an API call
+  }
+
+  return (
+    <div className="container mx-auto py-8">
+      <h1 className="text-3xl font-bold mb-6">Locations disponibles</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {rentalProperties.map((property) => (
+          <ResidentialRentalPropertyCard
+            key={property.id}
+            {...property}
+            onFavoriteChange={(newState) => handleFavoriteChange(property.id, newState)}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}

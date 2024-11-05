@@ -12,45 +12,42 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
-import { Heart, MapPin, Trees, Ruler, Mountain, Sun } from "lucide-react";
+import { Heart, MapPin, Home, Bed, Bath, Ruler, Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-interface Specificity {
-  icon: React.ElementType;
-  label: string;
-  value: string;
-}
-
-interface LandPropertyCardProps {
-  id: number;
+interface ResidentialPropertyCardProps {
+  id: string;
   images?: string[];
   price?: string;
   address?: string;
   propertyType?: string;
-  specificities: Specificity[];
+  bedrooms?: number;
+  bathrooms?: number;
+  area?: string;
+  yearBuilt?: number;
   isFavorite?: boolean;
   onFavoriteChange?: (newState: boolean) => void;
 }
 
-export default function LandPropertyCard({
+export default function ResidentialPropertyCard({
   id,
   images = [
-    "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500&h=300&fit=crop",
-    "https://images.unsplash.com/photo-1628624747186-a941c476b7ef?w=500&h=300&fit=crop",
-    "https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?w=500&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=500&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=500&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=500&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=500&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=500&h=300&fit=crop",
   ],
-  price = "150 000 €",
-  address = "Route des Champs, 12345 Ville, France",
-  propertyType = "Terrain",
-  specificities = [
-    { icon: Ruler, label: "Superficie", value: "5000 m²" },
-    { icon: Trees, label: "Zonage", value: "Résidentiel" },
-    { icon: Mountain, label: "Terrain", value: "Plat" },
-    { icon: Sun, label: "Exposition", value: "Sud" },
-  ],
+  price = "350 000 €",
+  address = "123 Rue de la Maison, 75001 Paris, France",
+  propertyType = "Maison",
+  bedrooms = 3,
+  bathrooms = 2,
+  area = "150 m²",
+  yearBuilt = 2010,
   isFavorite = false,
   onFavoriteChange,
-}: LandPropertyCardProps) {
+}: ResidentialPropertyCardProps) {
   const [isLocalFavorite, setIsLocalFavorite] = useState(isFavorite);
   const [isHovered, setIsHovered] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -73,9 +70,6 @@ export default function LandPropertyCard({
 
   const handleCardClick = useCallback(
     (e: React.MouseEvent) => {
-      e.stopPropagation(); // Stoppe la propagation de l'événement
-
-      // Vérifie si la cible du clic n'est pas un bouton
       if (!(e.target as HTMLElement).closest("button")) {
         router.push(`/property/${id}`);
       }
@@ -85,12 +79,11 @@ export default function LandPropertyCard({
 
   const handlePrevious = useCallback(
     (e: React.MouseEvent) => {
-      e.stopPropagation(); // Stoppe la propagation de l'événement
+      e.stopPropagation();
       api?.scrollPrev();
     },
     [api]
   );
-
 
   const handleNext = useCallback(
     (e: React.MouseEvent) => {
@@ -99,6 +92,38 @@ export default function LandPropertyCard({
     },
     [api]
   );
+
+  const renderPaginationDots = () => {
+    const totalDots = 5;
+    const totalImages = images.length;
+
+    let startDot = Math.max(
+      0,
+      Math.min(currentSlide - 2, totalImages - totalDots)
+    );
+    let endDot = Math.min(startDot + totalDots, totalImages);
+
+    if (endDot - startDot < totalDots) {
+      startDot = Math.max(0, endDot - totalDots);
+    }
+
+    return Array.from(
+      { length: endDot - startDot },
+      (_, i) => i + startDot
+    ).map((index) => (
+      <button
+        key={index}
+        className={`w-2 h-2 rounded-full transition-colors ${
+          index === currentSlide ? "bg-white" : "bg-white/50"
+        }`}
+        onClick={(e) => {
+          e.stopPropagation();
+          api?.scrollTo(index);
+        }}
+        aria-label={`Go to image ${index + 1}`}
+      />
+    ));
+  };
 
   return (
     <Card
@@ -114,7 +139,7 @@ export default function LandPropertyCard({
               <CarouselItem key={index}>
                 <img
                   src={image}
-                  alt={`Terrain ${index + 1}`}
+                  alt={`Property ${index + 1}`}
                   className="w-full h-44 object-cover"
                 />
               </CarouselItem>
@@ -159,19 +184,7 @@ export default function LandPropertyCard({
           />
         </Button>
         <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
-          {images.map((_, index) => (
-            <button
-              key={index}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                index === currentSlide ? "bg-white" : "bg-white/50"
-              }`}
-              onClick={(e) => {
-                e.stopPropagation();
-                api?.scrollTo(index);
-              }}
-              aria-label={`Go to image ${index + 1}`}
-            />
-          ))}
+          {renderPaginationDots()}
         </div>
       </div>
       <CardContent className="p-4">
@@ -180,20 +193,27 @@ export default function LandPropertyCard({
           <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
           <span className="truncate">{address}</span>
         </p>
-        <div className="grid grid-cols-2 gap-y-2 text-sm text-muted-foreground">
-          {specificities.map((spec, index) => {
-            const IconComponent = spec.icon;
-            return (
-              <span key={index} className="flex items-center font-medium">
-                <IconComponent className="h-4 w-4 mr-1 text-primary" />
-                <span className="text-primary">{spec.value}</span>
-              </span>
-            );
-          })}
+        <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+          <span className="flex items-center">
+            <Bed className="h-4 w-4 mr-1 text-primary" />
+            <span>{bedrooms} chambres</span>
+          </span>
+          <span className="flex items-center">
+            <Bath className="h-4 w-4 mr-1 text-primary" />
+            <span>{bathrooms} salles de bain</span>
+          </span>
+          <span className="flex items-center">
+            <Ruler className="h-4 w-4 mr-1 text-primary" />
+            <span>{area}</span>
+          </span>
+          <span className="flex items-center">
+            <Calendar className="h-4 w-4 mr-1 text-primary" />
+            <span>Construit en {yearBuilt}</span>
+          </span>
         </div>
       </CardContent>
     </Card>
   );
 }
 
-export { LandPropertyCard };
+export { ResidentialPropertyCard };

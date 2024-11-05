@@ -1,0 +1,21 @@
+import LandPropertyCard from './land-property-card'
+
+export default function PropertyListingPage() {
+  return (
+    <div>
+      <h1>Featured Properties</h1>
+      <LandPropertyCard 
+        id="123"
+        price="200 000 €"
+        address="123 Main St, City, Country"
+        propertyType="Residential"
+        specificities={[
+          { icon: Ruler, label: "Area", value: "6000 m²" },
+          { icon: Trees, label: "Zoning", value: "Residential" },
+          { icon: Mountain, label: "Terrain", value: "Hilly" },
+          { icon: Sun, label: "Exposure", value: "South-West" },
+        ]}
+      />
+    </div>
+  )
+}

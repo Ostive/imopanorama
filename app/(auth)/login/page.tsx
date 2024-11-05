@@ -4,17 +4,11 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Home } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const GoogleLogo = () => (
   <svg
@@ -77,7 +71,7 @@ export default function Component() {
       if (result?.error) {
         setError(result.error);
       } else {
-        router.push("/dashboard"); // Redirect to dashboard on successful login
+        router.push("/dashboard");
       }
     } catch (error) {
       setError("An unexpected error occurred");
@@ -95,122 +89,126 @@ export default function Component() {
   };
 
   return (
-    <div className="flex flex-col justify-center md:flex-row h-screen bg-gray-50">
-      {/* Section de la carte de connexion */}
-      <div className="flex justify-center items-center w-full md:w-1/2">
-        <Card className="w-[350px] grid">
-          <CardHeader>
-            <CardTitle>Login</CardTitle>
-            <CardDescription>
-              Choose your preferred login method
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <form onSubmit={handleEmailLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+    // bg-gradient-to-br from-blue-100 to-green-100
+    <div className="flex flex-col md:flex-row h-screen  ">
+      <div className="flex justify-center items-center w-full md:w-1/2  p-4 sm:p-8">
+        <div className="w-full max-w-sm space-y-6">
+          <div className="flex justify-center pt-10">
+            <Image
+              src="/logos/imo-transparent.png"
+              alt="Logo"
+              width={150}
+              height={150}
+              className="rounded-full"
+            />
+          </div>
+          <div className="space-y-2 text-center">
+            <h1 className="text-3xl font-bold text-sky-700">Imopanorama</h1>
+            <p className="text-sm text-gray-600">Your Real Estate Partner</p>
+          </div>
+          <form onSubmit={handleEmailLogin} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={togglePasswordVisibility}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </Button>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={togglePasswordVisibility}
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-                <div className="text-right">
-                  <Link
-                    href="/forgot-password"
-                    className="text-sm text-blue-500 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
-              </div>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Logging in..." : "Login with Email"}
-              </Button>
-              <div className="text-center mt-2">
-                <span className="text-sm text-muted-foreground">
-                  Don't have an account?{" "}
-                </span>
+              <div className="text-right">
                 <Link
-                  href="/signup"
+                  href="/forgot-password"
                   className="text-sm text-blue-500 hover:underline"
                 >
-                  Sign up
+                  Forgot your password?
                 </Link>
               </div>
-            </form>
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                  Or continue with
-                </span>
-              </div>
             </div>
-            <div className="flex flex-col space-y-2">
-              <Button
-                onClick={() => handleSocialLogin("facebook")}
-                disabled={loading}
-                className="w-full flex items-center justify-center space-x-2"
-                variant="outline"
-              >
-                <FacebookLogo />
-                <span>Login with Facebook</span>
-              </Button>
-              <Button
-                onClick={() => handleSocialLogin("google")}
-                disabled={loading}
-                className="w-full flex items-center justify-center space-x-2"
-                variant="outline"
-              >
-                <GoogleLogo />
-                <span>Login with Google</span>
-              </Button>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Logging in..." : "Login with Email"}
+            </Button>
+          </form>
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
             </div>
-            {error && <p className="text-red-500 text-sm">{error}</p>}
-          </CardContent>
-        </Card>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue with
+              </span>
+            </div>
+          </div>
+          <div className="flex flex-col space-y-2">
+            <Button
+              onClick={() => handleSocialLogin("facebook")}
+              disabled={loading}
+              className="w-full flex items-center justify-center space-x-2"
+              variant="outline"
+            >
+              <FacebookLogo />
+              <span>Login with Facebook</span>
+            </Button>
+            <Button
+              onClick={() => handleSocialLogin("google")}
+              disabled={loading}
+              className="w-full flex items-center justify-center space-x-2"
+              variant="outline"
+            >
+              <GoogleLogo />
+              <span>Login with Google</span>
+            </Button>
+          </div>
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+          <div className="text-center">
+            <span className="text-sm text-muted-foreground">
+              Don't have an account?{" "}
+            </span>
+            <Link
+              href="/signup"
+              className="text-sm text-blue-500 hover:underline"
+            >
+              Sign up
+            </Link>
+          </div>
+        </div>
       </div>
-
-      {/* Section de l'image */}
       <div className="hidden md:block w-1/2">
-        <img
-          src="http://127.0.0.1:7860/file=C:/Users/Ostiv/Documents/IA/Data/Packages/stable-diffusion-webui-forge/outputs/txt2img-images/2024-10-31/00002-3985046592.png"
-          alt="Image Description"
-          className="w-full h-full object-cover"
-        />
+        <div className="relative w-full h-full">
+          <Image
+            src="/images/login-image.png"
+            alt="Login Image"
+            className="object-cover"
+            layout="fill"
+          />
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,21 @@
+// export default function AdminLayout({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <>
+//       {children}
+//     </>
+//   );
+// }
+
+
+// app/admin/layout.tsx
+
 "use client";
 
+import * as React from "react";
 import {
   SidebarProvider,
   Sidebar,
@@ -22,7 +38,13 @@ import {
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
 
-export default function RealEstateAdminPage() {
+
+
+type AdminLayoutProps = {
+  children: React.ReactNode;
+};
+
+export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <SidebarProvider>
       <Sidebar collapsible="icon">
@@ -42,7 +64,7 @@ export default function RealEstateAdminPage() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbLink href="#">Dashboard</BreadcrumbLink>
+                  <BreadcrumbLink href="/admin/dashboard">navMain</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
@@ -53,7 +75,7 @@ export default function RealEstateAdminPage() {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          {/* Main content goes here */}
+          {children}
         </div>
       </SidebarInset>
     </SidebarProvider>
