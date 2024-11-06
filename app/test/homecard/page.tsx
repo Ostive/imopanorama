@@ -23,11 +23,12 @@ export default function PropertyPage() {
     id: index,
     image: [
       "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=300&h=300&fit=crop",
-      "https://images.unsplash.com/photo-1554995207-c18c203602cb?w=300&h=300&fit=crop",
-      "https://images.unsplash.com/photo-1513584684374-8bab748fbf90?w=300&h=300&fit=crop",
-      "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?w=300&h=300&fit=crop",
-      "https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=300&h=300&fit=crop",
-      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=300&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1554995207-c18c203602cb?w=300&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1513584684374-8bab748fbf90?w=300&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?w=300&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=300&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=300&h=300&fit=crop",
+      
     ],
     price: "180 000 €",
     address: "Toulouse, France",
@@ -41,7 +42,7 @@ export default function PropertyPage() {
   }));
 
   return (
-    <div className="grid gap-4 p-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-5">
+    <div className="grid gap-6 p-4 grid-cols-1 min-[540px]:grid-cols-2  min-[800px]:grid-cols-3 lg:grid-cols-3  min-[1440px]:grid-cols-4 min-[1680px]:grid-cols-5 min-[1980px]:grid-cols-5 ">
       {landProperties.map((property, index) => (
         <LandPropertyCardV2
           id={property.id}
