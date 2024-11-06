@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Home } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+
+import { auth } from "@/lib/auth";
+
+
 
 const GoogleLogo = () => (
   <svg

@@ -26,15 +26,15 @@ async function main() {
 
   // Créer 100 utilisateurs
   for (let i = 0; i < 100; i++) {
-    const role = i < 10 ? adminRole : customerRole; // Attribuer les 10 premiers comme admin et les autres comme customer
-
+    const role = i < 10 ? adminRole : customerRole; // First 10 are admin, the rest are customers
+    const first_name = faker.person.firstName()
+    const last_name = faker.person.lastName()
     await prisma.user.create({
       data: {
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
+        name:  first_name +" "+ last_name,
         email: faker.internet.email(),
         emailVerified: faker.date.past(),
-        password: await bcrypt.hash("password", 10) ,
+        password: await bcrypt.hash("password", 10),
         phoneNumber: faker.phone.number(),
         profilePhoto: faker.image.avatar(),
         roleId: role.id,
