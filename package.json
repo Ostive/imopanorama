@@ -14,6 +14,7 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.2",
     "@faker-js/faker": "^9.1.0",
+    "@hookform/resolvers": "^3.9.1",
     "@ngneat/falso": "^7.2.0",
     "@prisma/client": "^5.22.0",
     "@radix-ui/react-avatar": "^1.1.1",
@@ -33,14 +34,16 @@
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.3.1",
     "lucide-react": "^0.453.0",
-    "next": "^15.0.2",
+    "next": "^15.0.3",
     "next-auth": "^5.0.0-beta.25",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.2",
     "recharts": "^2.13.3",
     "tailwind-merge": "^2.5.4",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20.17.4",

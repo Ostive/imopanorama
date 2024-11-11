@@ -6,38 +6,13 @@ const prisma = new PrismaClient();
 
 async function main() {
 
-  // Créer les rôles
-  const adminRole = await prisma.role.upsert({
-    where: { name: "admin" },
-    update: {},
-    create: {
-      name: "admin",
-    },
-  });
-
-  const customerRole = await prisma.role.upsert({
-    where: { name: "customer" },
-    update: {},
-    create: {
-      name: "customer",
-    },
-  });
-  
-
-  // Créer 100 utilisateurs
-  for (let i = 0; i < 100; i++) {
-    const role = i < 10 ? adminRole : customerRole; // First 10 are admin, the rest are customers
-    const first_name = faker.person.firstName()
-    const last_name = faker.person.lastName()
+  // Créer des utilisateurs
+  for (let i = 0; i < 10; i++) {
     await prisma.user.create({
       data: {
-        name:  first_name +" "+ last_name,
+        name: faker.name.fullName(),
         email: faker.internet.email(),
-        emailVerified: faker.date.past(),
-        password: await bcrypt.hash("password", 10),
-        phoneNumber: faker.phone.number(),
-        profilePhoto: faker.image.avatar(),
-        roleId: role.id,
+        password: await bcrypt.hash(faker.internet.password(), 10),
       },
     });
   }

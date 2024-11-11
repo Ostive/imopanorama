@@ -10,7 +10,8 @@ import { Eye, EyeOff, Home } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
-import { auth } from "@/lib/auth";
+
+import { signIn } from "./auth-action";
 
 
 
@@ -85,7 +86,7 @@ export default function Component() {
   };
 
   const handleSocialLogin = (provider: string) => {
-    signIn(provider, { callbackUrl: "/dashboard" });
+    signIn(provider, { redirectTo: "/admin/dashboard" })}
   };
 
   const togglePasswordVisibility = () => {
