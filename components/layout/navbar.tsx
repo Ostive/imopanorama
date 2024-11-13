@@ -3,215 +3,196 @@
 import * as React from "react";
 import Link from "next/link";
 import {
-  Home,
   Building,
-  DollarSign,
-  Hammer,
-  Settings,
   User,
+  Heart,
   Menu,
   X,
   ChevronDown,
+  MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 
 const services = [
   {
     name: "Rent",
-    icon: <Home className="w-4 h-4 mr-2" />,
     items: ["Available Properties", "Rental Guide", "Advice"],
   },
   {
     name: "Buy",
-    icon: <Building className="w-4 h-4 mr-2" />,
     items: ["Property Types", "Estimates", "Financing Assistance"],
   },
   {
     name: "Sell",
-    icon: <DollarSign className="w-4 h-4 mr-2" />,
     items: ["Property Valuation", "Selling Tips", "Partners"],
   },
   {
     name: "Build",
-    icon: <Hammer className="w-4 h-4 mr-2" />,
     items: ["Construction Projects", "Partner Architects", "Financing"],
   },
   {
     name: "Manage",
-    icon: <Settings className="w-4 h-4 mr-2" />,
     items: ["Property Management", "Maintenance Services", "Owner Advice"],
   },
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [activeDropdown, setActiveDropdown] = React.useState<string | null>(
-    null
+  const [openDropdowns, setOpenDropdowns] = React.useState<Set<string>>(
+    new Set()
   );
-  const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
   const handleDropdownToggle = (serviceName: string) => {
-    setActiveDropdown((prev) => (prev === serviceName ? null : serviceName));
-  };
-
-  const handleDropdownEnter = (serviceName: string) => {
-    if (closeTimeoutRef.current) {
-      clearTimeout(closeTimeoutRef.current);
-    }
-    setActiveDropdown(serviceName);
-  };
-
-  const handleDropdownLeave = () => {
-    closeTimeoutRef.current = setTimeout(() => {
-      setActiveDropdown(null);
-    }, 200); // 300ms delay before closing
+    setOpenDropdowns((prevOpenDropdowns) => {
+      const newOpenDropdowns = new Set(prevOpenDropdowns);
+      if (newOpenDropdowns.has(serviceName)) {
+        newOpenDropdowns.delete(serviceName);
+      } else {
+        newOpenDropdowns.add(serviceName);
+      }
+      return newOpenDropdowns;
+    });
   };
 
   return (
     <nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <Link href="/" className="flex-shrink-0 flex items-center">
-              <Building className="h-8 w-8 text-primary" />
-              <span className="ml-2 text-xl font-bold text-gray-800">
-                RealtyPro
-              </span>
-            </Link>
-          </div>
-          <div className="hidden md:flex md:items-center md:space-x-4">
-            {services.map((service) => (
-              <div
-                key={service.name}
-                className="relative group"
-                onMouseEnter={() => handleDropdownEnter(service.name)}
-                onMouseLeave={handleDropdownLeave}
-              >
-                <button
-                  onClick={() => handleDropdownToggle(service.name)}
-                  className="text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium flex items-center"
-                >
-                  {service.icon}
-                  {service.name}
-                  <ChevronDown
-                    className={cn(
-                      "ml-1 h-4 w-4 transition-transform duration-200",
-                      activeDropdown === service.name ? "rotate-180" : ""
-                    )}
-                  />
-                </button>
-                <div
-                  className={cn(
-                    "absolute left-0 mt-2 w-56 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 transition-all duration-200 ease-in-out opacity-0 translate-y-1",
-                    activeDropdown === service.name
-                      ? "opacity-100 translate-y-0"
-                      : "pointer-events-none"
-                  )}
-                >
-                  <div className="relative">
-                    <div className="absolute -top-2 left-4 w-4 h-4 bg-white transform rotate-45 border-t border-l border-black border-opacity-5"></div>
-                    <div className="relative bg-white rounded-lg z-10">
-                      <div className="py-2 px-4 text-sm font-semibold border-b border-gray-100">
-                        {service.name}
-                      </div>
-                      <div
-                        className="py-1"
-                        role="menu"
-                        aria-orientation="vertical"
-                        aria-labelledby="options-menu"
-                      >
-                        {service.items.map((item) => (
-                          <Link
-                            key={item}
-                            href="#"
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors duration-150"
-                            role="menuitem"
-                          >
-                            {item}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="hidden md:flex md:items-center md:space-x-4">
-            {isLoggedIn ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="relative w-8 h-8 rounded-full"
-                  >
-                    <User className="w-5 h-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuItem>
-                    <Link href="/profile" className="w-full">
-                      Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Link href="/favorites" className="w-full">
-                      Favorites
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Link href="/messages" className="w-full">
-                      Messages
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <button
-                      onClick={() => setIsLoggedIn(false)}
-                      className="w-full text-left"
-                    >
-                      Logout
-                    </button>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <>
-                <Button variant="ghost" onClick={() => setIsLoggedIn(true)}>
-                  Login
-                </Button>
-                <Button variant="ghost">Sign Up</Button>
-              </>
-            )}
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-              Post a Listing
-            </Button>
-          </div>
-          <div className="flex items-center md:hidden">
+      {/* Top Bar - Hidden on mobile */}
+      <div className="bg-gray-100 py-1 hidden lg:block">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-end items-center space-x-4">
             <Button
               variant="ghost"
-              size="icon"
-              className="text-gray-500 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
-              onClick={toggleMenu}
-              aria-expanded={isOpen}
-              aria-label="Main menu"
+              size="sm"
+              className="flex items-center text-xs"
             >
-              <span className="sr-only">Open main menu</span>
-              {isOpen ? (
-                <X className="block h-6 w-6" aria-hidden="true" />
-              ) : (
-                <Menu className="block h-6 w-6" aria-hidden="true" />
-              )}
+              <MapPin className="w-3 h-3 mr-1" />
+              <span>Our Agency</span>
             </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center text-xs"
+            >
+              <Heart className="w-3 h-3 mr-1" />
+              <span>My Favorites</span>
+            </Button>
+            <Button variant="ghost" size="sm" className="text-xs">
+              Login
+            </Button>
+            <Button variant="ghost" size="sm" className="text-xs">
+              Sign Up
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Navbar */}
+      <div className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex items-center">
+              <Link href="/" className="flex-shrink-0 flex items-center">
+                <Building className="h-8 w-8 text-primary" />
+                <span className="ml-2 text-xl font-bold text-gray-800">
+                  RealtyPro
+                </span>
+              </Link>
+            </div>
+            <div className="hidden lg:flex lg:items-center lg:space-x-4">
+              <NavigationMenu>
+                <NavigationMenuList>
+                  {services.map((service) => (
+                    <NavigationMenuItem key={service.name}>
+                      <NavigationMenuTrigger>
+                        {service.name}
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                          <li className="row-span-3">
+                            <NavigationMenuLink asChild>
+                              <a
+                                className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                                href="/"
+                              >
+                                <div className="mb-2 mt-4 text-lg font-medium">
+                                  {service.name}
+                                </div>
+                                <p className="text-sm leading-tight text-muted-foreground">
+                                  Explore our {service.name.toLowerCase()}{" "}
+                                  options and services.
+                                </p>
+                              </a>
+                            </NavigationMenuLink>
+                          </li>
+                          {service.items.map((item) => (
+                            <ListItem key={item} title={item} href="/">
+                              {item} related services and information.
+                            </ListItem>
+                          ))}
+                        </ul>
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                  ))}
+                </NavigationMenuList>
+              </NavigationMenu>
+            </div>
+            <div className="hidden lg:flex lg:items-center">
+              <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+                Post a Listing
+              </Button>
+            </div>
+            <div className="flex items-center space-x-2 lg:hidden">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-gray-500 hover:text-gray-600"
+              >
+                <MapPin className="h-5 w-5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-gray-500 hover:text-gray-600"
+              >
+                <Heart className="h-5 w-5" />
+              </Button>
+              <Link href="/login">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-gray-500 hover:text-gray-600"
+                >
+                  <User className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-gray-500 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+                onClick={toggleMenu}
+                aria-expanded={isOpen}
+                aria-label="Main menu"
+              >
+                <span className="sr-only">Open main menu</span>
+                {isOpen ? (
+                  <X className="block h-6 w-6" aria-hidden="true" />
+                ) : (
+                  <Menu className="block h-6 w-6" aria-hidden="true" />
+                )}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -219,7 +200,7 @@ export default function Navbar() {
       {/* Mobile menu */}
       <div
         className={cn(
-          "md:hidden transition-all duration-300 ease-in-out overflow-hidden",
+          "lg:hidden transition-all duration-300 ease-in-out overflow-hidden",
           isOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
         )}
       >
@@ -231,14 +212,11 @@ export default function Navbar() {
                 className="w-full text-left text-gray-600 hover:text-primary hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium"
               >
                 <div className="flex items-center justify-between">
-                  <span className="flex items-center">
-                    {service.icon}
-                    {service.name}
-                  </span>
+                  <span>{service.name}</span>
                   <ChevronDown
                     className={cn(
                       "ml-1 h-4 w-4 transition-transform duration-200",
-                      activeDropdown === service.name ? "rotate-180" : ""
+                      openDropdowns.has(service.name) ? "rotate-180" : ""
                     )}
                   />
                 </div>
@@ -246,7 +224,7 @@ export default function Navbar() {
               <div
                 className={cn(
                   "transition-all duration-300 ease-in-out overflow-hidden",
-                  activeDropdown === service.name
+                  openDropdowns.has(service.name)
                     ? "max-h-96 opacity-100"
                     : "max-h-0 opacity-0"
                 )}
@@ -254,7 +232,7 @@ export default function Navbar() {
                 {service.items.map((item) => (
                   <Link
                     key={item}
-                    href="#"
+                    href="/"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary transition-colors duration-150"
                   >
                     {item}
@@ -263,49 +241,32 @@ export default function Navbar() {
               </div>
             </div>
           ))}
-          {isLoggedIn ? (
-            <>
-              <Link
-                href="/profile"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
-              >
-                Profile
-              </Link>
-              <Link
-                href="/favorites"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
-              >
-                Favorites
-              </Link>
-              <Link
-                href="/messages"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
-              >
-                Messages
-              </Link>
-              <button
-                onClick={() => setIsLoggedIn(false)}
-                className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={() => setIsLoggedIn(true)}
-                className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
-              >
-                Login
-              </button>
-              <Link
-                href="/signup"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
-              >
-                Sign Up
-              </Link>
-            </>
-          )}
+          <Link
+            href="/our-agency"
+            className="flex items-center text-gray-600 hover:text-primary hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium"
+          >
+            <MapPin className="w-5 h-5 mr-2" />
+            Our Agency
+          </Link>
+          <Link
+            href="/favorites"
+            className="flex items-center text-gray-600 hover:text-primary hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium"
+          >
+            <Heart className="w-5 h-5 mr-2" />
+            My Favorites
+          </Link>
+          <Link
+            href="/login"
+            className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
+          >
+            Login
+          </Link>
+          <Link
+            href="/signup"
+            className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
+          >
+            Sign Up
+          </Link>
           <div className="mt-4 px-3">
             <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
               Post a Listing
@@ -316,5 +277,31 @@ export default function Navbar() {
     </nav>
   );
 }
+
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  );
+});
+ListItem.displayName = "ListItem";
 
 export { Navbar };

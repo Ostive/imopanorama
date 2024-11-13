@@ -21,16 +21,26 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
+  CardFooter,
 } from "@/components/ui/card";
 
 import { Loader2 } from "lucide-react";
 
 import { login } from "./login.action";
 import { FormError } from "./login-form-error";
+import { Social } from "./Social";
+import { useSearchParams } from "next/navigation";
 
 type LoginFormValues = z.infer<typeof LoginSchema>;
 
 export default function LoginForm() {
+
+
+  const searchParams = useSearchParams();
+  const urlError = searchParams.get("error") === "OAuthAccountNotLinked"
+  ? "Email already in use with different provider!"
+  :"";
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | undefined>("");
 
@@ -47,7 +57,7 @@ export default function LoginForm() {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
     login(data).then((data) => {
-      setError(data.error);
+      setError(data?.error);
     });
 
     setIsLoading(false);
@@ -55,7 +65,7 @@ export default function LoginForm() {
   }
 
   return (
-    <Card className="w-[350px]">
+    <Card className="w-[400px] border-0 shadow-none">
       <CardHeader>
         <CardTitle>Login</CardTitle>
         <CardDescription>
@@ -103,7 +113,7 @@ export default function LoginForm() {
             />
 
             {/* Display error message */}
-            <FormError message={error} />
+            <FormError message={error || urlError} />
             {/* {error && <p className="text-red-500 text-sm">{error}</p>} */}
 
             <Button type="submit" className="w-full" disabled={isLoading}>
@@ -118,6 +128,10 @@ export default function LoginForm() {
           </form>
         </Form>
       </CardContent>
+
+      <CardFooter>
+        <Social />
+      </CardFooter>
     </Card>
   );
 }

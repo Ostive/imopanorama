@@ -11,7 +11,8 @@ import Link from "next/link";
 import Image from "next/image";
 
 
-import { signIn } from "./auth-action";
+import { signIn, auth,signOut  } from "@/lib/auth";
+
 
 
 
@@ -86,7 +87,7 @@ export default function Component() {
   };
 
   const handleSocialLogin = (provider: string) => {
-    signIn(provider, { redirectTo: "/admin/dashboard" })}
+    signIn(provider, { redirectTo: "/admin/dashboard" });
   };
 
   const togglePasswordVisibility = () => {

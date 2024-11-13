@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import  {Poppins} from "next/font/google";
+
 import "./globals.css";
 
 import { Navbar } from "@/components/layout/navbar";
+
+const inter = Poppins({ weight: "400", subsets: ["latin"] });
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -24,7 +28,8 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={inter.className}
       >
         {/* <Navbar /> */}
         {children}

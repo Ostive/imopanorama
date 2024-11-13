@@ -47,3 +47,11 @@ model Account {
 
   @@id([provider, providerAccountId])
 }
+
+model VerificationToken {
+  id String
+  email String
+  token      String
+  expires    DateTime
+  @@id([email, token])
+}

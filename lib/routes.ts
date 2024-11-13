@@ -10,6 +10,7 @@ export const privateRoutes = [
 export const authRoutes = [
     "/sign-in",
     "/sign-up",
+    "/error",
 ];
 
 export const apiAuthPrefix = "/api/auth";
