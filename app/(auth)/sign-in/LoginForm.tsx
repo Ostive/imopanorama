@@ -30,6 +30,8 @@ import { login } from "./login.action";
 import { FormError } from "./login-form-error";
 import { Social } from "./Social";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 
 type LoginFormValues = z.infer<typeof LoginSchema>;
 
@@ -65,13 +67,22 @@ export default function LoginForm() {
   }
 
   return (
-    <Card className="w-[400px] border-0 shadow-none">
+    <Card className="w-[400px] border-0 shadow-none pb-20">
       <CardHeader>
-        <CardTitle>Login</CardTitle>
-        <CardDescription>
-          Enter your credentials to access your account.
+        <CardTitle className="flex justify-center ">
+          <Image
+            src="/logos/imo-transparent.png"
+            alt="Logo"
+            width={120}
+            height={120}
+            className="rounded-full"
+          />
+        </CardTitle>
+        <CardDescription className="space-y-2 text-center">
+          <p className="text-sm text-gray-600">Your Real Estate Partner</p>
         </CardDescription>
       </CardHeader>
+
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -127,10 +138,43 @@ export default function LoginForm() {
             </Button>
           </form>
         </Form>
+        
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              Or continue with
+            </span>
+          </div>
+        </div>
       </CardContent>
 
       <CardFooter>
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              Or continue with
+            </span>
+          </div>
+        </div>
         <Social />
+
+        <div className="text-center">
+          <span className="text-sm text-muted-foreground">
+            Don't have an account?{" "}
+          </span>
+          <Link
+            href="/sign-up"
+            className="text-sm text-blue-500 hover:underline"
+          >
+            Sign up
+          </Link>
+        </div>
       </CardFooter>
     </Card>
   );
