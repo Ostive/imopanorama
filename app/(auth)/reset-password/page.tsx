@@ -1,8 +1,7 @@
-import {ResetForm} from './ResetForm';
+import { ResetPasswordForm } from "./ResetPasswordForm";
 
-export const Resetpage = () => {
+const ResetPassword = () => {
+  return <ResetPasswordForm />;
+};
 
-    return (
-        <ResetForm />
-    )
-}
+export default ResetPassword;
