@@ -52,7 +52,7 @@ model Account {
 }
 
 model Property {
-  id          Int     @id @default(autoincrement())
+  id          String  @id @default(cuid())
   title       String
   type        String
   location    String
@@ -73,43 +73,43 @@ model Property {
 }
 
 model ParkingProperty {
-  id           Int      @id @default(autoincrement())
+  id           String   @id @default(cuid())
   property     Property @relation(fields: [propertyId], references: [id])
   parking_type String
   size         Float
-  propertyId   Int      @unique
+  propertyId   String   @unique
 }
 
 model BoatProperty {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(cuid())
   property   Property @relation(fields: [propertyId], references: [id])
   length     Float
   boat_type  String
-  propertyId Int      @unique
+  propertyId String   @unique
 }
 
 model LandProperty {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(cuid())
   property   Property @relation(fields: [propertyId], references: [id])
   land_area  Float
-  propertyId Int      @unique
+  propertyId String   @unique
 }
 
 model ResidentialProperty {
-  id           Int      @id @default(autoincrement())
+  id           String   @id @default(cuid())
   property     Property @relation(fields: [propertyId], references: [id])
   bedrooms     Int
   bathrooms    Int
   living_space Float
   built_year   Int
   floors       Int
-  propertyId   Int      @unique
+  propertyId   String   @unique
 }
 
 model CommercialProperty {
-  id               Int      @id @default(autoincrement())
+  id               String   @id @default(cuid())
   property         Property @relation(fields: [propertyId], references: [id])
   rooms            Int
   commercial_space Float
-  propertyId       Int      @unique
+  propertyId       String   @unique
 }
