@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { Bed, Bath, Maximize, Car, SquareIcon as SquareFoot } from 'lucide-react'
 
-// Définir un type pour le type de la propriété
 type PropertyType = 'residential' | 'commercial' | 'parking' | 'land' | 'boat' | 'other';
 
 interface ProprietesProps {
@@ -16,13 +15,13 @@ interface ProprietesProps {
   images: { type: string; data: number[] }[];
   description: string;
   prix: number;
-  type: string; // Ajouter le type de la propriété
+  type: string;
   residential?: {
-    bedrooms: number;      // Nombre de chambres
-    bathrooms: number;     // Nombre de salles de bain
-    living_space: number;  // Surface habitable en m²
-    built_year: number;    // Année de construction
-    floors: number;        // Nombre d'étages
+    bedrooms: number;
+    bathrooms: number;
+    living_space: number;
+    built_year: number;
+    floors: number;
   };
   commercial?: {
     rooms: number;
@@ -36,8 +35,8 @@ interface ProprietesProps {
     surface: number;
   };
   boat?: {
-    length: number;      // Longueur du bateau
-    boat_type: string;   // Type de bateau
+    length: number;
+    boat_type: string;
   };
 }
 
@@ -47,20 +46,18 @@ export default function Proprietes({
   images,
   description,
   prix,
-  type, // Ajouter le type ici
+  type,
   residential,
   commercial,
   parking,
   land,
-  boat,  // Ajout de la propriété boat
+  boat,
 }: ProprietesProps) {
-  //console.log(residential);
 
   const [base64Images, setBase64Images] = useState<string[]>([]);
+  const [activeImageIndex, setActiveImageIndex] = useState(0); // Index de l'image active
 
   useEffect(() => {
-    // Vérifier si `images` est défini et est un tableau
-    //console.log(images[0]);
     if (images && Array.isArray(images)) {
       const convertedImages = images.map((image) => {
         const byteArray = new Uint8Array(image.data);
@@ -71,39 +68,52 @@ export default function Proprietes({
       setBase64Images(convertedImages);
     }
   }, [images]);
-  
 
-  
+  const totalImages = base64Images.length; // Total d'images disponibles
+
+  const handleNext = () => {
+    setActiveImageIndex((prevIndex) => (prevIndex + 1) % totalImages); // Boucle vers la première image
+  };
+
+  const handlePrevious = () => {
+    setActiveImageIndex((prevIndex) => (prevIndex - 1 + totalImages) % totalImages); // Boucle vers la dernière image
+  };
+
   return (
     <Card className="w-full max-w-md mx-auto overflow-hidden">
       <Carousel>
         <CarouselContent>
-        {base64Images.map((src, index) => (
+          {base64Images.map((src, index) => (
             <CarouselItem key={index}>
-            {src ? (
-              <img
-                src={src}
-                alt={`${titre} - Image ${index + 1}`}
-                className="w-full h-48 object-cover"
-              />
-            ) : (
-              <p>Image non disponible</p>
-            )}
-          </CarouselItem>
+              {src ? (
+                <div className="relative">
+                  <img
+                    src={src}
+                    alt={`${titre} - Image ${index + 1}`}
+                    className="w-full h-48 object-cover"
+                  />
+                  {/* Affichage du compteur d'images */}
+                  <div className="absolute bottom-2 left-2 text-white bg-black bg-opacity-50 px-1 py-0.5 rounded text-xs">
+                    <span>{index + 1} sur {totalImages}</span>
+                  </div>
+                </div>
+              ) : (
+                <p>Image non disponible</p>
+              )}
+            </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
+        <CarouselPrevious onClick={handlePrevious} />
+        <CarouselNext onClick={handleNext} />
       </Carousel>
       <CardHeader>
         <div className="flex justify-between items-start">
           <CardTitle className="text-2xl font-bold">{titre}</CardTitle>
           <p className="text-muted-foreground">{adresse}</p>
-          {/* Afficher le type de propriété */}
           <p className="text-muted-foreground text-sm">{type}</p>
         </div>
         <Badge variant="secondary" className="text-lg font-semibold">
-            ${prix.toLocaleString()}
+          ${prix.toLocaleString()}
         </Badge>
       </CardHeader>
       <CardContent>
@@ -140,20 +150,16 @@ export default function Proprietes({
             </>
           )}
           {parking && (
-            <>
-              <div className="flex items-center">
-                <Car className="h-5 w-5 mr-2 text-primary" />
-                <span>{parking.parking_type}, {parking.size} m²</span>
-              </div>
-            </>
+            <div className="flex items-center">
+              <Car className="h-5 w-5 mr-2 text-primary" />
+              <span>{parking.parking_type}, {parking.size} m²</span>
+            </div>
           )}
           {land && (
-            <>
-              <div className="flex items-center">
-                <SquareFoot className="h-5 w-5 mr-2 text-primary" />
-                <span>{land.surface} m² de terrain</span>
-              </div>
-            </>
+            <div className="flex items-center">
+              <SquareFoot className="h-5 w-5 mr-2 text-primary" />
+              <span>{land.surface} m² de terrain</span>
+            </div>
           )}
           {boat && (
             <>
@@ -173,5 +179,5 @@ export default function Proprietes({
         </p>
       </CardContent>
     </Card>
-  );
+  )
 }
