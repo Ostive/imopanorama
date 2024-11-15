@@ -37,13 +37,13 @@ export default function Header() {
       <Link href="/">
         <div className="flex items-center">
           <Image
-            src="/placeholder.svg"
+            src="/images/immopanoramanobg.png"
             alt="Logo"
-            width={40}
-            height={40}
+            width={100}
+            height={100}
             className="mr-2"
           />
-          <span className="text-xl font-bold">VotreLogo</span>
+          <span className="text-xl font-bold">IMMOPANORAMA</span>
         </div>
       </Link>
 
