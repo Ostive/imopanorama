@@ -53,7 +53,7 @@ export default function Header() {
           Déconnexion
         </Button>
       ) : (
-        <Link href="/auth">
+        <Link href="/sign-in">
           <Button variant="outline">Connexion</Button>
         </Link>
       )}
