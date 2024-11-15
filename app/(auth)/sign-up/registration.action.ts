@@ -8,6 +8,8 @@ import { RegistrationSchema } from "./registration.schema";
 import { getUserByEmail } from "@/data/user";
 import { generateVerificationToken } from "@/data/token";
 
+import { sendVerificationEmail } from "@/lib/mail";
+
 export const registration = async (
   values: z.infer<typeof RegistrationSchema>
 ) => {
@@ -37,9 +39,7 @@ export const registration = async (
 
 // send verification email
 const verificationToken = await generateVerificationToken(email);
-
-
-//   return { success: "Email sent!" };
+await sendVerificationEmail(verificationToken.email, verificationToken.token);
 
 return { success: "Confirmation email sent!" };
 };
