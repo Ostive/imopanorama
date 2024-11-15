@@ -4,6 +4,8 @@
 import { prisma } from "@/lib/prisma";
 import { getUserByEmail } from "@/data/user";
 import { getVerificationTokenByToken } from "@/data/verification-token";
+import { signIn } from "@/lib/auth";
+import { AuthError } from "next-auth";
 
 export async function verifyEmailWithToken(token: string) {
   if (!token) return { error: "Token is missing" };

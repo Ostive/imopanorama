@@ -11,6 +11,8 @@ import { generateVerificationToken } from "@/data/token";
 import { getUserByEmail } from "@/data/user";
 import { sendVerificationEmail } from "@/lib/mail";
 
+
+
 export const login = async (values: z.infer<typeof LoginSchema>) => {
   const validatedFields = LoginSchema.safeParse(values);
 
@@ -56,6 +58,6 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
           return { error:"Something went wrong!" };
       }
     }
-    throw error;
+    return error;
   }
 };

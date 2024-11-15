@@ -2,18 +2,18 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, CheckCircle, XCircle } from "lucide-react";
-import Link from "next/link";
 import { verifyEmailWithToken } from "./verify-email.action";
+import { Loader2, CheckCircle, XCircle } from "lucide-react";
+import { DEFAULT_LOGIN_REDIRECT } from "@/lib/routes";
+
+import { Card, CardContent } from "@/components/ui/card";
+import Link from "next/link";
 
 type Status = "loading" | "success" | "error";
 
 export default function VerifyEmailForm() {
   const [status, setStatus] = useState<Status>("loading");
   const [message, setMessage] = useState<string>("");
-
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token");
@@ -27,12 +27,15 @@ export default function VerifyEmailForm() {
     }
 
     try {
-      console.log("Client token:", token);
-      const result = await verifyEmailWithToken(token); // Direct call to server action
-
+      const result = await verifyEmailWithToken(token);
       if (result.success) {
         setStatus("success");
         setMessage(result.success);
+
+        // Rediriger vers le tableau de bord après une courte pause
+        setTimeout(() => {
+          router.push(DEFAULT_LOGIN_REDIRECT);
+        }, 2000);
       } else {
         setStatus("error");
         setMessage(result.error || "An error occurred during verification.");
@@ -43,15 +46,11 @@ export default function VerifyEmailForm() {
         err instanceof Error ? err.message : "An unknown error occurred"
       );
     }
-  }, [token]);
+  }, [token, router]);
 
   useEffect(() => {
     onSubmit();
   }, [onSubmit]);
-
-  const handleContinue = () => {
-    router.push("/home");
-  };
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -72,9 +71,6 @@ export default function VerifyEmailForm() {
               <CheckCircle className="h-12 w-12 text-green-500" />
               <h2 className="text-2xl font-semibold">Email Verified!</h2>
               <p className="text-muted-foreground">{message}</p>
-              <Button onClick={handleContinue} className="w-full">
-                Continue to Dashboard
-              </Button>
             </>
           )}
 
@@ -88,16 +84,6 @@ export default function VerifyEmailForm() {
               </Link>
             </>
           )}
-
-          <div className="text-sm text-muted-foreground">
-            Need help?{" "}
-            <Link
-              href="/contact-support"
-              className="text-primary hover:underline"
-            >
-              Contact Support
-            </Link>
-          </div>
         </CardContent>
       </Card>
     </div>

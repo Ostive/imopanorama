@@ -47,6 +47,8 @@ export default function RegistrationForm() {
   });
 
   async function onSubmit(data: RegistrationFormValues) {
+    setError("");
+    setSucess("");
     setIsLoading(true);
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
