@@ -184,7 +184,16 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
             <div className="space-y-4">
               <div className="w-[300px]">
                 <Label htmlFor="parking-size" className="sr-only">Taille du parking</Label>
-                <div className="flex items-center gap-2">
+                <Select name="parkingType" onValueChange={(value) => handleSelectChange('parkingType', value)}>
+                  <SelectTrigger id="parkingType">
+                    <SelectValue placeholder="Sélectionner un type de parking" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="indoor">Intérieur</SelectItem>
+                    <SelectItem value="outdoor">Extérieur</SelectItem>
+                  </SelectContent>
+                </Select>
+                <div className="flex items-center gap-2 space-y-2">
                   <div className="relative flex-1">
                     <Input
                       id="minParkingSize"
