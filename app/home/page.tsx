@@ -48,6 +48,11 @@ export default function Page() {
           landareaMatch = property.LandProperty.land_area >= filters.minLandArea && property.LandProperty.land_area <= filters.maxLandArea;
         } 
       }
+
+      let parkingSizeMatch = true;
+      if (property.ParkingProperty?.size && filters.minParkingSize && filters.maxParkingSize) {
+        parkingSizeMatch = property.ParkingProperty.size >= filters.minParkingSize && property.ParkingProperty.size <= filters.maxParkingSize;
+      } 
       
       // Filtrage par localisation
       const locationMatch = filters.location ? property.location.toLowerCase().includes(filters.location.toLowerCase()) : true;
@@ -62,7 +67,7 @@ export default function Page() {
       }
   
       // Retourner les propriétés qui correspondent à tous les critères
-      return priceMatch && locationMatch && nameMatch && typeMatch && landareaMatch;
+      return priceMatch && locationMatch && nameMatch && typeMatch && landareaMatch && parkingSizeMatch;
     });
   
     setFilteredProperties(filtered); // Mettre à jour les propriétés filtrées

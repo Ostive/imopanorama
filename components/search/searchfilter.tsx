@@ -16,7 +16,8 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
     minPrice: 0,
     maxPrice: 1000000,
     parkingType: '',
-    parkingSize: 0,
+    minParkingSize: 0,
+    maxParkingSize: 10000,
     boatLength: 0,
     boatType: '',
     minLandArea: 0,
@@ -38,7 +39,8 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
       minPrice: 0,
       maxPrice: 1000000,
       parkingType: '',
-      parkingSize: 0,
+      minParkingSize: 0,
+      maxParkingSize: 10000,
       boatLength: 0,
       boatType: '',
       minLandArea: 0,
@@ -180,29 +182,47 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
 
           {filters.type === 'parking' && (
             <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="parkingType">Type de parking</Label>
-                <Select name="parkingType" onValueChange={(value) => handleSelectChange('parkingType', value)}>
-                  <SelectTrigger id="parkingType">
-                    <SelectValue placeholder="Sélectionner un type de parking" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="indoor">Intérieur</SelectItem>
-                    <SelectItem value="outdoor">Extérieur</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="parkingSize">Taille du parking (m²)</Label>
-                <Slider
-                  id="parkingSize"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={[filters.parkingSize]}
-                  onValueChange={(value) => handleSliderChange('parkingSize', value)}
-                />
-                <div className="text-right text-sm text-muted-foreground">{filters.parkingSize} m²</div>
+              <div className="w-[300px]">
+                <Label htmlFor="parking-size" className="sr-only">Taille du parking</Label>
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                    <Input
+                      id="minParkingSize"
+                      name="minParkingSize"
+                      type="number"
+                      placeholder="Taille Min (m²)"
+                      value={filters.minParkingSize}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value, 10) || 0;
+                        const newFilters = { ...filters, minParkingSize: value };
+                        setFilters(newFilters);
+                        onSearch(newFilters);  // Appliquer immédiatement les filtres
+                      }}
+                      min={0}
+                      className="pr-6"
+                    />
+                    <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground">m²</span>
+                  </div>
+                  <span>-</span>
+                  <div className="relative flex-1">
+                    <Input
+                      id="maxParkingSize"
+                      name="maxParkingSize"
+                      type="number"
+                      placeholder="Taille Max (m²)"
+                      value={filters.maxParkingSize}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value, 10) || 0;
+                        const newFilters = { ...filters, maxParkingSize: value };
+                        setFilters(newFilters);
+                        onSearch(newFilters);  // Appliquer immédiatement les filtres
+                      }}
+                      min={filters.minParkingSize || 0} // Le min est la taille min définie
+                      className="pr-6"
+                    />
+                    <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground">m²</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
