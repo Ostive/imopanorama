@@ -96,7 +96,7 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
           <Label htmlFor="type" className="sr-only">Type de propriété</Label>
           <Select
             name="type"
-            value={filters.type} // Ajouter value ici
+            value={filters.type}
             onValueChange={(value) => handleSelectChange('type', value)}
           >
             <SelectTrigger id="type">
@@ -122,29 +122,48 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
             onChange={handleInputChange}
           />
         </div>
-        <div className="w-[200px]">
-          <Label htmlFor="price" className="sr-only">Prix</Label>
-          <Select
-            name="price"
-            value={`${filters.minPrice}-${filters.maxPrice}`} // Contrôler la valeur
-            onValueChange={(value) => {
-              const [min, max] = value.split('-').map(Number)
-              const newFilters = { ...filters, minPrice: min, maxPrice: max }
-              setFilters(newFilters)
-              onSearch(newFilters)
-            }}
-          >
-            <SelectTrigger id="price">
-              <SelectValue placeholder="Tous Prix" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="0-100000">0€ - 100,000€</SelectItem>
-              <SelectItem value="100000-250000">100,000€ - 250,000€</SelectItem>
-              <SelectItem value="250000-500000">250,000€ - 500,000€</SelectItem>
-              <SelectItem value="500000-1000000">500,000€ - 1,000,000€</SelectItem>
-              <SelectItem value="1000000-999999999">1,000,000€+</SelectItem>
-            </SelectContent>
-          </Select>
+        {/* Prix avec deux inputs */}
+        <div className="w-[300px]">
+          <Label htmlFor="price-range" className="sr-only">Prix</Label>
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Input
+                id="minPrice"
+                name="minPrice"
+                type="number"
+                placeholder="Prix Min"
+                value={filters.minPrice}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value, 10) || 0
+                  const newFilters = { ...filters, minPrice: value }
+                  setFilters(newFilters)
+                  onSearch(newFilters)
+                }}
+                min={0}
+                className="pr-6"
+              />
+              <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground">€</span>
+            </div>
+            <span>-</span>
+            <div className="relative flex-1">
+              <Input
+                id="maxPrice"
+                name="maxPrice"
+                type="number"
+                placeholder="Prix Max"
+                value={filters.maxPrice}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value, 10) || 0
+                  const newFilters = { ...filters, maxPrice: value }
+                  setFilters(newFilters)
+                  onSearch(newFilters)
+                }}
+                min={filters.minPrice}
+                className="pr-6"
+              />
+              <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground">€</span>
+            </div>
+          </div>
         </div>
         <Button type="button" variant="outline" onClick={resetFilters}>Réinitialiser les filtres</Button>
         <Button type="submit">Rechercher</Button>
