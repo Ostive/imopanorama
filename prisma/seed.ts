@@ -28,8 +28,7 @@ async function main() {
   // Créez des utilisateurs avec les rôles assignés directement
   const user1 = await prisma.user.create({
     data: {
-      first_name: 'John',
-      last_name: 'Doe',
+      name: 'John',
       email: 'john@example.com',
       password: await argon2.hash('password123'),
       phone_number: '123456789',
@@ -38,8 +37,7 @@ async function main() {
 
   const user2 = await prisma.user.create({
     data: {
-      first_name: 'Jane',
-      last_name: 'Smith',
+      name: 'Jane',
       email: 'jane@example.com',
       password: await argon2.hash('password123'),
       phone_number: '987654321',
