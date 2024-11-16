@@ -31,7 +31,7 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
   const resetFilters = () => {
     setFilters({
       search: '',
-      type: '',
+      type: 'all',
       location: '',
       minPrice: 0,
       maxPrice: 1000000,
@@ -49,22 +49,29 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
       commercialSpace: 0,
     })
     setShowAdvancedFilters(false)
+    onSearch(filters)
   }
 
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setFilters(prev => ({ ...prev, [name]: value }))
-  }, [])
+    const newFilters = { ...filters, [name]: value }
+    setFilters(newFilters)
+    onSearch(newFilters)  // Appliquer les filtres immédiatement
+  }, [filters, onSearch])
 
   const handleSelectChange = useCallback((name: string, value: string) => {
-    setFilters(prev => ({ ...prev, [name]: value }))
-  }, [])
+    const newFilters = { ...filters, [name]: value }
+    setFilters(newFilters)
+    onSearch(newFilters)  // Appliquer les filtres immédiatement
+  }, [filters, onSearch])
 
   const handleSliderChange = useCallback((name: string, value: number[]) => {
-    setFilters(prev => ({ ...prev, [name]: value[0] }))
-  }, [])
+    const newFilters = { ...filters, [name]: value[0] }
+    setFilters(newFilters)
+    onSearch(newFilters)  // Appliquer les filtres immédiatement
+  }, [filters, onSearch])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -87,7 +94,11 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
         </div>
         <div className="w-[150px]">
           <Label htmlFor="type" className="sr-only">Type de propriété</Label>
-          <Select name="type" onValueChange={(value) => handleSelectChange('type', value)}>
+          <Select
+            name="type"
+            value={filters.type} // Ajouter value ici
+            onValueChange={(value) => handleSelectChange('type', value)}
+          >
             <SelectTrigger id="type">
               <SelectValue placeholder="Tous Type" />
             </SelectTrigger>
@@ -113,15 +124,20 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
         </div>
         <div className="w-[200px]">
           <Label htmlFor="price" className="sr-only">Prix</Label>
-          <Select name="price" onValueChange={(value) => {
-            const [min, max] = value.split('-').map(Number)
-            setFilters(prev => ({ ...prev, minPrice: min, maxPrice: max }))
-          }}>
+          <Select
+            name="price"
+            value={`${filters.minPrice}-${filters.maxPrice}`} // Contrôler la valeur
+            onValueChange={(value) => {
+              const [min, max] = value.split('-').map(Number)
+              const newFilters = { ...filters, minPrice: min, maxPrice: max }
+              setFilters(newFilters)
+              onSearch(newFilters)
+            }}
+          >
             <SelectTrigger id="price">
               <SelectValue placeholder="Tous Prix" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tous Prix</SelectItem>
               <SelectItem value="0-100000">0€ - 100,000€</SelectItem>
               <SelectItem value="100000-250000">100,000€ - 250,000€</SelectItem>
               <SelectItem value="250000-500000">250,000€ - 500,000€</SelectItem>
