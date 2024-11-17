@@ -1,35 +1,34 @@
-/*
-<<<<<<< HEAD
-import { auth } from "@/lib/auth";
-import { signOut } from "@/lib/auth";
-import Link from "next/link";
-import { Button } from "@/components/ui/button"; // Assurez-vous que le chemin est correct pour votre projet
+// import { auth } from "@/lib/auth";
+// import { signOut } from "@/lib/auth";
+// import Link from "next/link";
+// import { Button } from "@/components/ui/button"; // Assurez-vous que le chemin est correct pour votre projet
 
-export default async function Page() {
-  const session = await auth();
+// export default async function Page() {
+//   const session = await auth();
 
-  return (
-    <div className="flex justify-center items-center h-screen">
-      {session ? (
-        <div>
-          {JSON.stringify(session)}
-          <h1>Welcome, {session.user?.name ?? "User"}</h1>
-          <p>Your email is {session.user?.email ?? "unknown"}</p>
-          <form
-            action={async () => {
-              "use server";
-              await signOut();
-            }}
-          >
-            <Button type="submit">Logout</Button>
-          </form>
-        </div>
-      ) : (
-        <div>
-          <p>You are not logged in.</p>
-          <p>Do you want to sign in?</p>
-          <Link href="/sign-in">Sign In</Link>
-======= */
+//   return (
+//     <div className="flex justify-center items-center h-screen">
+//       {session ? (
+//         <div>
+//           {JSON.stringify(session)}
+//           <h1>Welcome, {session.user?.name ?? "User"}</h1>
+//           <p>Your email is {session.user?.email ?? "unknown"}</p>
+//           <form
+//             action={async () => {
+//               "use server";
+//               await signOut();
+//             }}
+//           >
+//             <Button type="submit">Logout</Button>
+//           </form>
+//         </div>
+//       ) : (
+//         <div>
+//           <p>You are not logged in.</p>
+//           <p>Do you want to sign in?</p>
+//           <Link href="/sign-in">Sign In</Link>
+
+
 'use client'  // Directive pour indiquer que ce fichier est un composant client
 
 import { useEffect, useState } from "react";
@@ -72,6 +71,19 @@ export default function Page() {
       if (filters.minPrice && filters.maxPrice) {
         priceMatch = property.price >= filters.minPrice && property.price <= filters.maxPrice;
       }
+
+      let landareaMatch = true;
+      //console.log(property.LandProperty);
+      if (property.LandProperty?.land_area) { // Vérifie si land_area existe
+        if (filters.minLandArea && filters.maxLandArea) {
+          landareaMatch = property.LandProperty.land_area >= filters.minLandArea && property.LandProperty.land_area <= filters.maxLandArea;
+        } 
+      }
+
+      let parkingSizeMatch = true;
+      if (property.ParkingProperty?.size && filters.minParkingSize && filters.maxParkingSize) {
+        parkingSizeMatch = property.ParkingProperty.size >= filters.minParkingSize && property.ParkingProperty.size <= filters.maxParkingSize;
+      } 
       
       // Filtrage par localisation
       const locationMatch = filters.location ? property.location.toLowerCase().includes(filters.location.toLowerCase()) : true;
@@ -86,7 +98,7 @@ export default function Page() {
       }
   
       // Retourner les propriétés qui correspondent à tous les critères
-      return priceMatch && locationMatch && nameMatch && typeMatch;
+      return priceMatch && locationMatch && nameMatch && typeMatch && landareaMatch && parkingSizeMatch;
     });
   
     setFilteredProperties(filtered); // Mettre à jour les propriétés filtrées

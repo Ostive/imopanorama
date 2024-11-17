@@ -1,3 +1,12 @@
+'use client'
+
+import { useState, useCallback } from 'react'
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Slider } from "@/components/ui/slider"
+
 export default function PropertySearch({ onSearch }: { onSearch: (filters: any) => void }) {
   
   const [filters, setFilters] = useState({
