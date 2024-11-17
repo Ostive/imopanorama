@@ -1,27 +1,62 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `name` on the `User` table. All the data in the column will be lost.
-
-*/
 -- CreateEnum
-CREATE TYPE "PropertyType" AS ENUM ('RESIDENTIAL', 'COMMERCIAL', 'LAND', 'BOAT', 'PARKING');
+CREATE TYPE "UserRole" AS ENUM ('CUSTOMER', 'ADMIN');
 
--- AlterTable
-ALTER TABLE "User" DROP COLUMN "name",
-ADD COLUMN     "first_name" TEXT,
-ADD COLUMN     "last_name" TEXT,
-ADD COLUMN     "phone_number" TEXT;
+-- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "first_name" TEXT,
+    "last_name" TEXT,
+    "name" TEXT,
+    "email" TEXT NOT NULL,
+    "emailVerified" TIMESTAMP(3),
+    "image" BYTEA,
+    "password" TEXT,
+    "phone_number" TEXT,
+    "role" "UserRole" NOT NULL DEFAULT 'CUSTOMER',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Account" (
+    "userId" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "provider" TEXT NOT NULL,
+    "providerAccountId" TEXT NOT NULL,
+    "refresh_token" TEXT,
+    "access_token" TEXT,
+    "expires_at" INTEGER,
+    "token_type" TEXT,
+    "scope" TEXT,
+    "id_token" TEXT,
+    "session_state" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Account_pkey" PRIMARY KEY ("provider","providerAccountId")
+);
+
+-- CreateTable
+CREATE TABLE "VerificationToken" (
+    "id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "token" TEXT NOT NULL,
+    "expires" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "VerificationToken_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Property" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "type" "PropertyType" NOT NULL,
+    "type" TEXT NOT NULL,
     "location" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
     "description" TEXT,
-    "images" TEXT[],
+    "images" BYTEA[],
     "userId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -31,55 +66,64 @@ CREATE TABLE "Property" (
 
 -- CreateTable
 CREATE TABLE "ParkingProperty" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "parking_type" TEXT NOT NULL,
     "size" DOUBLE PRECISION NOT NULL,
-    "propertyId" INTEGER NOT NULL,
+    "propertyId" TEXT NOT NULL,
 
     CONSTRAINT "ParkingProperty_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "BoatProperty" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "length" DOUBLE PRECISION NOT NULL,
     "boat_type" TEXT NOT NULL,
-    "propertyId" INTEGER NOT NULL,
+    "propertyId" TEXT NOT NULL,
 
     CONSTRAINT "BoatProperty_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "LandProperty" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "land_area" DOUBLE PRECISION NOT NULL,
-    "propertyId" INTEGER NOT NULL,
+    "propertyId" TEXT NOT NULL,
 
     CONSTRAINT "LandProperty_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "ResidentialProperty" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "bedrooms" INTEGER NOT NULL,
     "bathrooms" INTEGER NOT NULL,
     "living_space" DOUBLE PRECISION NOT NULL,
     "built_year" INTEGER NOT NULL,
     "floors" INTEGER NOT NULL,
-    "propertyId" INTEGER NOT NULL,
+    "propertyId" TEXT NOT NULL,
 
     CONSTRAINT "ResidentialProperty_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "CommercialProperty" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "rooms" INTEGER NOT NULL,
     "commercial_space" DOUBLE PRECISION NOT NULL,
-    "propertyId" INTEGER NOT NULL,
+    "propertyId" TEXT NOT NULL,
 
     CONSTRAINT "CommercialProperty_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "VerificationToken_email_token_key" ON "VerificationToken"("email", "token");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ParkingProperty_propertyId_key" ON "ParkingProperty"("propertyId");
@@ -95,6 +139,9 @@ CREATE UNIQUE INDEX "ResidentialProperty_propertyId_key" ON "ResidentialProperty
 
 -- CreateIndex
 CREATE UNIQUE INDEX "CommercialProperty_propertyId_key" ON "CommercialProperty"("propertyId");
+
+-- AddForeignKey
+ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Property" ADD CONSTRAINT "Property_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;

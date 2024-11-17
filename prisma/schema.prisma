@@ -15,7 +15,9 @@ enum UserRole {
 
 model User {
   id            String    @id @default(cuid())
-  name    String?
+  first_name    String?
+  last_name     String?
+  name          String?
   email         String    @unique
   emailVerified DateTime?
   image         Bytes?
@@ -113,6 +115,7 @@ model ResidentialProperty {
   floors       Int
   propertyId   String   @unique
 }
+
 
 model CommercialProperty {
   id               String   @id @default(cuid())

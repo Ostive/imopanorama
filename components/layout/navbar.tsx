@@ -88,10 +88,10 @@ export default function Navbar() {
               <Heart className="w-3 h-3 mr-1" />
               <span>My Favorites</span>
             </Button>
-            <Button variant="ghost" size="sm" className="text-xs">
+            <Button variant="ghost" size="sm" className="text-xs rounded-full">
               Login
             </Button>
-            <Button variant="ghost" size="sm" className="text-xs">
+            <Button variant="ghost" size="sm" className="text-xs rounded-full">
               Sign Up
             </Button>
           </div>
@@ -255,18 +255,20 @@ export default function Navbar() {
             <Heart className="w-5 h-5 mr-2" />
             My Favorites
           </Link>
-          <Link
-            href="/login"
-            className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
-          >
-            Login
-          </Link>
-          <Link
-            href="/signup"
-            className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50"
-          >
-            Sign Up
-          </Link>
+          <div className="flex justify-between px-3 py-2">
+            <Link
+              href="/login"
+              className="flex-1 mr-2 text-center py-2 rounded-md text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Login
+            </Link>
+            <Link
+              href="/signup"
+              className="flex-1 ml-2 text-center py-2 rounded-md text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Sign Up
+            </Link>
+          </div>
           <div className="mt-4 px-3">
             <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
               Post a Listing

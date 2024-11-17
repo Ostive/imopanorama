@@ -14,22 +14,23 @@ const prisma = new PrismaClient();
 
 async function main() {
 
-  // Suppression des tables dépendantes d'abord
-  await prisma.residentialProperty.deleteMany();
-  await prisma.commercialProperty.deleteMany();
-  await prisma.landProperty.deleteMany();
-  await prisma.boatProperty.deleteMany();
-  await prisma.parkingProperty.deleteMany();
+  // // Suppression des tables dépendantes d'abord
+  // await prisma.residentialProperty.deleteMany();
+  // await prisma.commercialProperty.deleteMany();
+  // await prisma.landProperty.deleteMany();
+  // await prisma.boatProperty.deleteMany();
+  // await prisma.parkingProperty.deleteMany();
 
-  // Suppression des tables de base
-  await prisma.property.deleteMany();
-  await prisma.user.deleteMany();
+  // // Suppression des tables de base
+  // await prisma.property.deleteMany();
+  // await prisma.user.deleteMany();
 
   // Créez des utilisateurs avec les rôles assignés directement
   const user1 = await prisma.user.create({
     data: {
       first_name: 'John',
       last_name: 'Doe',
+      name: 'John Doe',
       email: 'john@example.com',
       password: await argon2.hash('password123'),
       phone_number: '123456789',
@@ -38,12 +39,12 @@ async function main() {
 
   const user2 = await prisma.user.create({
     data: {
-      first_name: 'Jane',
-      last_name: 'Smith',
-      email: 'jane@example.com',
-      password: await argon2.hash('password123'),
-      phone_number: '987654321',
-
+      first_name: "Jane",
+      last_name: "Smith",
+      name: "John Doe",
+      email: "jane@example.com",
+      password: await argon2.hash("password123"),
+      phone_number: "987654321",
     },
   });
 
