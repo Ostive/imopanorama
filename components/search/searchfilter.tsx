@@ -1,13 +1,5 @@
-'use client'
-
-import { useState, useCallback } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
-
 export default function PropertySearch({ onSearch }: { onSearch: (filters: any) => void }) {
+  
   const [filters, setFilters] = useState({
     search: '',
     type: '',
@@ -15,10 +7,12 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
     minPrice: 0,
     maxPrice: 1000000,
     parkingType: '',
-    parkingSize: 0,
+    minParkingSize: 0,
+    maxParkingSize: 10000,
     boatLength: 0,
     boatType: '',
-    landArea: 0,
+    minLandArea: 0,
+    maxLandArea: 10000,
     bedrooms: 0,
     bathrooms: 0,
     livingSpace: 0,
@@ -26,20 +20,22 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
     floors: 0,
     commercialRooms: 0,
     commercialSpace: 0,
-  })
+  });
 
   const resetFilters = () => {
     setFilters({
       search: '',
-      type: '',
+      type: 'all',
       location: '',
       minPrice: 0,
       maxPrice: 1000000,
       parkingType: '',
-      parkingSize: 0,
+      minParkingSize: 0,
+      maxParkingSize: 10000,
       boatLength: 0,
       boatType: '',
-      landArea: 0,
+      minLandArea: 0,
+      maxLandArea: 10000,
       bedrooms: 0,
       bathrooms: 0,
       livingSpace: 0,
@@ -47,28 +43,35 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
       floors: 0,
       commercialRooms: 0,
       commercialSpace: 0,
-    })
-    setShowAdvancedFilters(false)
-  }
+    });
+    setShowAdvancedFilters(false);
+    onSearch(filters);
+  };
+  
 
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setFilters(prev => ({ ...prev, [name]: value }))
-  }, [])
+    const newFilters = { ...filters, [name]: value }
+    setFilters(newFilters)
+    onSearch(newFilters)  // Appliquer les filtres immédiatement
+  }, [filters, onSearch])
 
   const handleSelectChange = useCallback((name: string, value: string) => {
-    setFilters(prev => ({ ...prev, [name]: value }))
-  }, [])
+    const newFilters = { ...filters, [name]: value }
+    setFilters(newFilters)
+    onSearch(newFilters)  // Appliquer les filtres immédiatement
+  }, [filters, onSearch])
 
   const handleSliderChange = useCallback((name: string, value: number[]) => {
-    setFilters(prev => ({ ...prev, [name]: value[0] }))
-  }, [])
+    const newFilters = { ...filters, [name]: value[0] }
+    setFilters(newFilters)
+    onSearch(newFilters)  // Appliquer les filtres immédiatement
+  }, [filters, onSearch])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Search filters:', filters)
     onSearch(filters)  // Pass the filters to the parent component or API
   }
 
@@ -87,7 +90,11 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
         </div>
         <div className="w-[150px]">
           <Label htmlFor="type" className="sr-only">Type de propriété</Label>
-          <Select name="type" onValueChange={(value) => handleSelectChange('type', value)}>
+          <Select
+            name="type"
+            value={filters.type}
+            onValueChange={(value) => handleSelectChange('type', value)}
+          >
             <SelectTrigger id="type">
               <SelectValue placeholder="Tous Type" />
             </SelectTrigger>
@@ -111,24 +118,48 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
             onChange={handleInputChange}
           />
         </div>
-        <div className="w-[200px]">
-          <Label htmlFor="price" className="sr-only">Prix</Label>
-          <Select name="price" onValueChange={(value) => {
-            const [min, max] = value.split('-').map(Number)
-            setFilters(prev => ({ ...prev, minPrice: min, maxPrice: max }))
-          }}>
-            <SelectTrigger id="price">
-              <SelectValue placeholder="Tous Prix" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tous Prix</SelectItem>
-              <SelectItem value="0-100000">0€ - 100,000€</SelectItem>
-              <SelectItem value="100000-250000">100,000€ - 250,000€</SelectItem>
-              <SelectItem value="250000-500000">250,000€ - 500,000€</SelectItem>
-              <SelectItem value="500000-1000000">500,000€ - 1,000,000€</SelectItem>
-              <SelectItem value="1000000-999999999">1,000,000€+</SelectItem>
-            </SelectContent>
-          </Select>
+        {/* Prix avec deux inputs */}
+        <div className="w-[300px]">
+          <Label htmlFor="price-range" className="sr-only">Prix</Label>
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Input
+                id="minPrice"
+                name="minPrice"
+                type="number"
+                placeholder="Prix Min"
+                value={filters.minPrice}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value, 10) || 0
+                  const newFilters = { ...filters, minPrice: value }
+                  setFilters(newFilters)
+                  onSearch(newFilters)
+                }}
+                min={0}
+                className="pr-6"
+              />
+              <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground">€</span>
+            </div>
+            <span>-</span>
+            <div className="relative flex-1">
+              <Input
+                id="maxPrice"
+                name="maxPrice"
+                type="number"
+                placeholder="Prix Max"
+                value={filters.maxPrice}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value, 10) || 0
+                  const newFilters = { ...filters, maxPrice: value }
+                  setFilters(newFilters)
+                  onSearch(newFilters)
+                }}
+                min={filters.minPrice}
+                className="pr-6"
+              />
+              <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground">€</span>
+            </div>
+          </div>
         </div>
         <Button type="button" variant="outline" onClick={resetFilters}>Réinitialiser les filtres</Button>
         <Button type="submit">Rechercher</Button>
@@ -139,10 +170,11 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
 
       {showAdvancedFilters && (
         <div className="space-y-4">
+
           {filters.type === 'parking' && (
             <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="parkingType">Type de parking</Label>
+              <div className="w-[300px]">
+                <Label htmlFor="parking-size" className="sr-only">Taille du parking</Label>
                 <Select name="parkingType" onValueChange={(value) => handleSelectChange('parkingType', value)}>
                   <SelectTrigger id="parkingType">
                     <SelectValue placeholder="Sélectionner un type de parking" />
@@ -152,18 +184,45 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
                     <SelectItem value="outdoor">Extérieur</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="parkingSize">Taille du parking (m²)</Label>
-                <Slider
-                  id="parkingSize"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={[filters.parkingSize]}
-                  onValueChange={(value) => handleSliderChange('parkingSize', value)}
-                />
-                <div className="text-right text-sm text-muted-foreground">{filters.parkingSize} m²</div>
+                <div className="flex items-center gap-2 space-y-2">
+                  <div className="relative flex-1">
+                    <Input
+                      id="minParkingSize"
+                      name="minParkingSize"
+                      type="number"
+                      placeholder="Taille Min (m²)"
+                      value={filters.minParkingSize}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value, 10) || 0;
+                        const newFilters = { ...filters, minParkingSize: value };
+                        setFilters(newFilters);
+                        onSearch(newFilters);  // Appliquer immédiatement les filtres
+                      }}
+                      min={0}
+                      className="pr-6"
+                    />
+                    <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground">m²</span>
+                  </div>
+                  <span>-</span>
+                  <div className="relative flex-1">
+                    <Input
+                      id="maxParkingSize"
+                      name="maxParkingSize"
+                      type="number"
+                      placeholder="Taille Max (m²)"
+                      value={filters.maxParkingSize}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value, 10) || 0;
+                        const newFilters = { ...filters, maxParkingSize: value };
+                        setFilters(newFilters);
+                        onSearch(newFilters);  // Appliquer immédiatement les filtres
+                      }}
+                      min={filters.minParkingSize || 0} // Le min est la taille min définie
+                      className="pr-6"
+                    />
+                    <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground">m²</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -200,19 +259,47 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
           {filters.type === 'land' && (
             <div className="space-y-2">
               <Label htmlFor="landArea">Surface du terrain (m²)</Label>
-              <Slider
-                id="landArea"
-                min={0}
-                max={10000}
-                step={50}
-                value={[filters.landArea]}
-                onValueChange={(value) => handleSliderChange('landArea', value)}
-              />
-              <div className="text-right text-sm text-muted-foreground">{filters.landArea} m²</div>
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1">
+                <Input
+                  id="minLandArea"
+                  name="minLandArea"
+                  type="number"
+                  placeholder="Surface Min"
+                  value={filters.minLandArea || ''} // Affiche une chaîne vide si non défini
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value, 10) || 0; // Définit à 0 si la valeur est invalide
+                    const newFilters = { ...filters, minLandArea: value };
+                    setFilters(newFilters);
+                    onSearch(newFilters);
+                  }}
+                  min={0}
+                />
+                  <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground">m²</span>
+                </div>
+                <span>-</span>
+                <div className="relative flex-1">
+                <Input
+                  id="maxLandArea"
+                  name="maxLandArea"
+                  type="number"
+                  placeholder="Surface Max"
+                  value={filters.maxLandArea || ''} // Affiche une chaîne vide si non défini
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value, 10) || 0;
+                    const newFilters = { ...filters, maxLandArea: value };
+                    setFilters(newFilters);
+                    onSearch(newFilters);
+                  }}
+                  min={filters.minLandArea}
+                />
+                  <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground">m²</span>
+                </div>
+              </div>
             </div>
           )}
 
-{filters.type === 'residential' && (
+          {filters.type === 'residential' && (
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">

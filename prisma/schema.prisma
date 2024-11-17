@@ -15,12 +15,15 @@ enum UserRole {
 
 model User {
   id            String    @id @default(cuid())
+<<<<<<< HEAD
   first_name    String?
   last_name     String?
+=======
+>>>>>>> b09f35aa7915b71d0fc43dafe111d5a949b4247a
   name          String?
   email         String    @unique
   emailVerified DateTime?
-  image         Bytes?
+  image         String?
   password      String?
   phone_number  String?
   role          UserRole  @default(CUSTOMER)

@@ -32,7 +32,7 @@ interface ProprietesProps {
     size: number;
   };
   land?: {
-    surface: number;
+    land_area: number;
   };
   boat?: {
     length: number;
@@ -158,7 +158,7 @@ export default function Proprietes({
           {land && (
             <div className="flex items-center">
               <SquareFoot className="h-5 w-5 mr-2 text-primary" />
-              <span>{land.surface} m² de terrain</span>
+              <span>{land.land_area} m² de terrain</span>
             </div>
           )}
           {boat && (
