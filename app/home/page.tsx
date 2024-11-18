@@ -37,7 +37,8 @@ export default function Page() {
     const filtered = properties.filter((property) => {
       // Filtrage par prix
       let priceMatch = true;
-      if (filters.minPrice && filters.maxPrice) {
+      if (filters.minPrice || filters.maxPrice) {
+        console.log(filters.maxPrice);
         priceMatch = property.price >= filters.minPrice && property.price <= filters.maxPrice;
       }
 
