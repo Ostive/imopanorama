@@ -33,8 +33,8 @@
 
 import { useEffect, useState } from "react";
 import Proprietes from '@/components/property/properties';
-import PropertySearch from "@/components/search/SearchFilter";
 import Header from "@/components/headers/header1";
+import PropertySearch from "@/components/search/SearchFilter";
 
 export default function Page() {
   const [properties, setProperties] = useState<any[]>([]); // Déclare un état pour les propriétés
