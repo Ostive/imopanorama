@@ -33,7 +33,7 @@
 
 import { useEffect, useState } from "react";
 import Proprietes from '@/components/property/properties';
-import PropertySearch from "@/components/search/searchfilter";
+import PropertySearch from "@/components/search/SearchFilter";
 import Header from "@/components/headers/header1";
 
 export default function Page() {
@@ -69,21 +69,56 @@ export default function Page() {
       // Filtrage par prix
       let priceMatch = true;
       if (filters.minPrice || filters.maxPrice) {
-        console.log(filters.maxPrice);
+        //console.log(filters.maxPrice);
         priceMatch = property.price >= filters.minPrice && property.price <= filters.maxPrice;
       }
 
+      // Filtrage par Résidentielle
+      let bedroomsMatch = true;
+      if (property.ResidentialProperty?.bedrooms && filters.bedrooms){
+        bedroomsMatch = property.ResidentialProperty.bedrooms == filters.bedrooms;
+      }
+
+      // Filtrage par Résidentielle
+      let bathroomsMatch = true;
+      if (property.ResidentialProperty?.bathrooms && filters.bathrooms){
+        bathroomsMatch = property.ResidentialProperty?.bathrooms == filters.bathrooms;
+      }
+
+      // Filtrage par Surface Habitable
+      let livingSpaceMatch = true;
+      if (property.ResidentialProperty?.living_space && filters.livingSpace){
+        livingSpaceMatch = filters.livingSpace[0] <= property.ResidentialProperty.living_space && property.ResidentialProperty.living_space <= filters.livingSpace[1];
+      }
+
+      // Filtrage par Etage
+      let stageMatch = true;
+      if (property.ResidentialProperty?.floors && filters.floors){
+        stageMatch = filters.floors == property.ResidentialProperty.floors;
+      }
+
+      // Filtrage par taille de terrain
       let landareaMatch = true;
-      //console.log(property.LandProperty);
       if (property.LandProperty?.land_area) { // Vérifie si land_area existe
-        if (filters.minLandArea && filters.maxLandArea) {
+        if (filters.minLandArea || filters.maxLandArea) {
           landareaMatch = property.LandProperty.land_area >= filters.minLandArea && property.LandProperty.land_area <= filters.maxLandArea;
         } 
       }
 
+      // Filtrage par taille du bateau
+      let boatLengthMatch = true;
+      if (property.BoatProperty?.length) {
+        if (filters.boatMinLength || filters.boatMaxLength) {
+          boatLengthMatch = property.BoatProperty.length >= filters.boatMinLength && property.BoatProperty.length <= filters.boatMaxLength;
+        } 
+      } 
+
+      // Filtrage par taille du parking
       let parkingSizeMatch = true;
-      if (property.ParkingProperty?.size && filters.minParkingSize && filters.maxParkingSize) {
-        parkingSizeMatch = property.ParkingProperty.size >= filters.minParkingSize && property.ParkingProperty.size <= filters.maxParkingSize;
+      if (property.ParkingProperty?.size) {
+        if (filters.minParkingSize || filters.maxParkingSize) {
+          parkingSizeMatch = property.ParkingProperty.size >= filters.minParkingSize && property.ParkingProperty.size <= filters.maxParkingSize;
+        } 
       } 
       
       // Filtrage par localisation
@@ -99,7 +134,7 @@ export default function Page() {
       }
   
       // Retourner les propriétés qui correspondent à tous les critères
-      return priceMatch && locationMatch && nameMatch && typeMatch && landareaMatch && parkingSizeMatch;
+      return priceMatch && locationMatch && nameMatch && typeMatch && landareaMatch && parkingSizeMatch && boatLengthMatch && bedroomsMatch && bathroomsMatch && livingSpaceMatch && stageMatch;
     });
   
     setFilteredProperties(filtered); // Mettre à jour les propriétés filtrées
