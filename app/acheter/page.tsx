@@ -34,7 +34,7 @@
 import { useEffect, useState } from "react";
 import Proprietes from '@/components/property/properties';
 import Header from "@/components/headers/header1";
-import PropertySearch from "@/components/search/SearchFilter";
+import PropertySearch from "@/components/search/filtres/PopertySearch";
 
 export default function Page() {
   const [properties, setProperties] = useState<any[]>([]); // Déclare un état pour les propriétés
@@ -119,6 +119,22 @@ export default function Page() {
         if (filters.minParkingSize || filters.maxParkingSize) {
           parkingSizeMatch = property.ParkingProperty.size >= filters.minParkingSize && property.ParkingProperty.size <= filters.maxParkingSize;
         } 
+      }
+
+      // Filtrage par taille du commercial
+      let commercialSpaceMatch = true;
+      if (property.CommercialProperty?.commercial_space) {
+        if (filters.commercialSpace) {
+          commercialSpaceMatch = property.CommercialProperty.commercial_space >= filters.commercialSpace[0] && property.CommercialProperty.commercial_space <= filters.commercialSpace[1];
+        } 
+      } 
+
+      // Filtrage par piece du commercial
+      let commercialPieceMatch = true;
+      if (property.CommercialProperty?.rooms) {
+        if (filters.commercialRooms) {
+          commercialPieceMatch = property.CommercialProperty.rooms == filters.commercialRooms;
+        } 
       } 
       
       // Filtrage par localisation
@@ -134,7 +150,7 @@ export default function Page() {
       }
   
       // Retourner les propriétés qui correspondent à tous les critères
-      return priceMatch && locationMatch && nameMatch && typeMatch && landareaMatch && parkingSizeMatch && boatLengthMatch && bedroomsMatch && bathroomsMatch && livingSpaceMatch && stageMatch;
+      return commercialPieceMatch && commercialSpaceMatch && priceMatch && locationMatch && nameMatch && typeMatch && landareaMatch && parkingSizeMatch && boatLengthMatch && bedroomsMatch && bathroomsMatch && livingSpaceMatch && stageMatch;
     });
   
     setFilteredProperties(filtered); // Mettre à jour les propriétés filtrées
