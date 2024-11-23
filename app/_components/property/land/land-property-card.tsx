@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/carousel";
 import { Heart, MapPin, Trees, Ruler, Mountain, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface Specificity {
   icon: React.ElementType;
@@ -32,7 +33,7 @@ interface LandPropertyCardProps {
   onFavoriteChange?: (newState: boolean) => void;
 }
 
-export default function LandPropertyCard({
+export function LandPropertyCard({
   id,
   images = [
     "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500&h=300&fit=crop",
@@ -108,7 +109,7 @@ export default function LandPropertyCard({
       0,
       Math.min(currentSlide - 2, totalImages - totalDots)
     );
-    let endDot = Math.min(startDot + totalDots, totalImages);
+    const endDot = Math.min(startDot + totalDots, totalImages);
 
     if (endDot - startDot < totalDots) {
       startDot = Math.max(0, endDot - totalDots);
@@ -144,9 +145,11 @@ export default function LandPropertyCard({
           <CarouselContent>
             {images.map((image, index) => (
               <CarouselItem key={index}>
-                <img
+                <Image
                   src={image}
                   alt={`Terrain ${index + 1}`}
+                  width={500}
+                  height={300}
                   className="w-full h-44 object-cover"
                 />
               </CarouselItem>
@@ -216,4 +219,3 @@ export default function LandPropertyCard({
   );
 }
 
-export { LandPropertyCard };

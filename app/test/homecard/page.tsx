@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Ruler, Trees, Mountain, Sun, Droplet, Wifi, Waves } from "lucide-react";
-import LandPropertyCard from "@/app/components/property/land/land-property-card";
-import LandPropertyCardV2 from "@/app/components/property/land/land-property-cardV2";
+// import LandPropertyCard from "@/app/_components/property/land/land-property-card";
+import {LandPropertyCard} from "@/app/_components/property/land/land-property-card";
 export default function PropertyPage() {
   const [favorites, setFavorites] = useState(Array(100).fill(false));
 
@@ -44,7 +44,7 @@ export default function PropertyPage() {
   return (
     <div className="grid gap-6 p-4 grid-cols-1 min-[540px]:grid-cols-2  min-[800px]:grid-cols-3 lg:grid-cols-3  min-[1440px]:grid-cols-4 min-[1680px]:grid-cols-5 min-[1980px]:grid-cols-5 ">
       {landProperties.map((property, index) => (
-        <LandPropertyCardV2
+        <LandPropertyCard
           id={property.id}
           key={property.id}
           images={property.image}

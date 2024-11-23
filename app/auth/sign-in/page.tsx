@@ -1,11 +1,11 @@
 "use client";
 
-import { RegistrationForm } from "@/app/(auth)/sign-up/RegistrationForm";
+import { LoginForm } from "@/app/auth/sign-in/LoginForm";
 
 export default function SignIn() {
   return (
     <div className="flex justify-center items-center h-screen">
-      <RegistrationForm />
+      <LoginForm />
     </div>
   );
 }

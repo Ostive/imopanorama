@@ -1,0 +1,390 @@
+//npx prisma migrate dev --name update_schema
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  phone_number  String?
+  role          UserRole  @default(CUSTOMER)
+  accounts      Account[]
+
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  properties            Property[]       @relation("UserProperties") // Relation vers les propriétés créées par l'utilisateur
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model VerificationToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+model Property {
+  id                    String          @id @default(cuid())
+  title                 String           // Titre de la propriété
+  type                  PropertyType     // Type de propriété (e.g., Parking, Maison, etc.)
+  location              String           // Emplacement de la propriété
+  price                 Float            // Prix de la propriété
+  description           String?          // Description détaillée de la propriété
+
+  user                  User             @relation("UserProperties", fields: [userId], references: [id]) // Relation vers l'utilisateur
+  userId                String           // ID de l'utilisateur associé
+
+  status                PropertyStatus    // Statut actuel de la propriété
+  verificationRequired   Boolean?         // Indique si une vérification est requise par une agence
+  ownershipType         OwnershipType     // Type de propriété: Agence ou Particulier
+  createdAt             DateTime         @default(now()) // Date de création de l'entrée
+  updatedAt             DateTime         @updatedAt // Date de dernière mise à jour
+
+  // Propriétés spécifiques
+  ParkingProperty       ParkingProperty?  // Détails spécifiques au parking
+  BoatProperty          BoatProperty?     // Détails spécifiques aux bateaux
+  LandProperty          LandProperty?     // Détails spécifiques aux terrains
+  ResidentialProperty   ResidentialProperty? // Détails spécifiques aux maisons
+  CommercialProperty    CommercialProperty? // Détails spécifiques aux biens commerciaux
+
+  // Media references
+  photos                Photo[]          // Photos associées à la propriété
+  videos                Video[]          // Vidéos associées à la propriété
+}
+
+// Enums
+enum PropertyType {
+  PARKING
+  BOAT
+  LAND
+  RESIDENTIAL
+  COMMERCIAL
+}
+
+enum PropertyStatus {
+  AVAILABLE       // Disponible à la vente
+  UNDER_CONTRACT   // Sous contrat
+  SOLD            // Vendu
+  PENDING         // En attente
+  NOT_AVAILABLE    // Non disponible
+}
+
+enum OwnershipType {
+  AGENCY         // Propriété gérée par une agence immobilière
+  PRIVATE        // Propriété appartenant à un particulier
+}
+
+// Model for Photos
+model Photo {
+  id                    String    @id @default(cuid())
+  url                   String    // URL de la photo
+  altText               String?   // Texte alternatif pour SEO
+  description           String?   // Description de la photo (optionnel)
+  tags                  String?   // Mots-clés associés pour SEO
+  property              Property  @relation(fields: [propertyId], references: [id])
+  propertyId            String    // ID de la propriété à laquelle cette photo est associée
+  createdAt             DateTime  @default(now()) // Date d'upload de la photo
+}
+
+// Model for Videos
+model Video {
+  id                    String    @id @default(cuid())
+  url                   String    // URL de la vidéo
+  description           String?   // Description de la vidéo (optionnel)
+  property              Property  @relation(fields: [propertyId], references: [id])
+  propertyId            String    // ID de la propriété à laquelle cette vidéo est associée
+  createdAt             DateTime  @default(now()) // Date d'upload de la vidéo
+}
+
+// Modèle pour les propriétés de parking
+model ParkingProperty {
+  id                    String   @id @default(cuid())
+  property              Property @relation(fields: [propertyId], references: [id])
+  parkingType           ParkingType // type de stationnement
+  size                  Float    // Taille de la propriété
+  numberOfPlaces        Int      // Nombre de places de stationnement
+  dimensions            String?  // Dimensions (e.g., "2m x 5m")
+  boxPresent            Boolean? // Indique si un box est présent
+  electrification       String?  // Type d'électrification (e.g., "Prise électrique")
+  security              String?  // Mesures de sécurité (e.g., "Surveillance vidéo")
+  proximity             String?  // Proximité de la propriété
+  access                String?  // Types d'accès (e.g., "Badge électronique")
+  condition             Condition? // État de la propriété
+  monthlyCharges        Float?   // Charges mensuelles (e.g., "20 €/mois")
+  usageAuthorization    String?  // Autorisation d'utilisation (e.g., "Véhicule personnel")
+  assignment            String?  // Affectation de l'espace de stationnement (e.g., "Privatif")
+  availabilityDate      String?  // Date de disponibilité (e.g., "Immédiate")
+  lighting              Boolean? // Indique si la propriété est éclairée
+  ventilation           Boolean? // Indique si la ventilation est présente
+  chargingStationDist   String?  // Proximité d'une borne de recharge
+  propertyId            String   @unique
+
+  // Additional fields for ParkingProperty
+  isHandicapAccessible  Boolean?   // Accessibilité pour les personnes handicapées
+}
+
+// Enum pour le type de stationnement
+enum ParkingType {
+  OUTDOOR    // Stationnement extérieur
+  INDOOR     // Stationnement intérieur
+  UNDERGROUND // Stationnement souterrain
+}
+
+// Enum pour l'état de la propriété
+enum Condition {
+  NEW          // État: Neuf
+  GOOD         // État: Bon état
+  TO_RENOVATE  // État: À rénover
+}
+
+// Modèle pour les propriétés de bateau
+model BoatProperty {
+  id                    String   @id @default(cuid())
+  property              Property @relation(fields: [propertyId], references: [id])
+  length                Float    // Longueur du bateau
+  boatType              BoatType // Type de bateau
+  numberOfCabins       Int      // Nombre de cabines
+  capacity              Int      // Capacité d'accueil (passagers)
+  engineType            EngineType? // Type de moteur (e.g., "Diesel")
+  equipment             String?  // Équipements inclus (e.g., "GPS, Sonar")
+  yearOfConstruction    Int?     // Année de construction
+  dockingLocation       String?  // Lieu d'amarrage
+  licenseRequired       Boolean? // Indique si un permis est requis
+  propertyId            String   @unique
+
+  // Additional fields for BoatProperty
+  hullMaterial          String?   // Matériaux de la coque (e.g., "Fibre de verre")
+  fuelType              FuelType? // Type de carburant
+}
+
+// Enum pour le type de bateau
+enum BoatType {
+  SAILBOAT   // Voilier
+  YACHT      // Yacht
+  CATAMARAN  // Catamaran
+}
+
+// Enum pour le type de moteur
+enum EngineType {
+  DIESEL
+  ELECTRIC
+  SOLAR
+}
+
+// Enum pour le type de carburant
+enum FuelType {
+  GASOLINE
+  DIESEL
+  ELECTRIC
+}
+
+// Modèle pour les propriétés de terrain
+model LandProperty {
+  id                    String   @id @default(cuid())
+  property              Property @relation(fields: [propertyId], references: [id])
+  landArea              Float    // Superficie du terrain
+  zoning                ZoningType // Zonage (e.g., "Résidentiel")
+  topography            Topography? // Topographie (e.g., "Plat")
+  exposure              ExposureType? // Exposition (e.g., "Sud")
+  accessibility         AccessibilityType? // Accessibilité (e.g., "Route pavée")
+  waterPresence         WaterPresence? // Présence d'eau
+  internetConnectivity   InternetType? // Connectivité internet
+  amenitiesProximity    String?  // Proximité des commodités (e.g., "Écoles, Commerces")
+  vegetation            VegetationType? // Végétation sur le terrain
+  soilType              SoilType? // Type de sol
+  fencing               Boolean? // Indique si une clôture est présente
+  buildingPermitStatus  BuildingPermitStatus? // État du permis de construire
+  propertyId            String   @unique
+
+  // Added status for land properties
+  status                PropertyStatus // Statut actuel de la propriété
+  verificationRequired   Boolean?       // Indique si une vérification est requise par une agence
+  ownershipType         OwnershipType   // Type de propriété: Agence ou Particulier
+  
+  // Additional fields for LandProperty
+  developmentPotential   Boolean?        // Potentiel de développement
+}
+
+// Enum pour le zonage
+enum ZoningType {
+  RESIDENTIAL // Résidentiel
+  COMMERCIAL  // Commercial
+  AGRICULTURAL // Agricole
+  MIXED       // Mixte
+}
+
+// Enum pour la topographie
+enum Topography {
+  FLAT       // Plat
+  HILLY      // Vallonné
+  SLOPED     // En pente
+}
+
+// Enum pour l'exposition
+enum ExposureType {
+  NORTH      // Exposition Nord
+  SOUTH      // Exposition Sud
+  EAST       // Exposition Est
+  WEST       // Exposition Ouest
+}
+
+// Enum pour l'accessibilité
+enum AccessibilityType {
+  PAVED_ROAD  // Route pavée
+  DIRT_PATH    // Chemin de terre
+}
+
+// Enum pour la présence d'eau
+enum WaterPresence {
+  NATURAL_SOURCE       // Source naturelle
+  RIVER                // Rivière
+  CITY_WATER_AVAILABLE // Eau de ville disponible
+  NONE                 // Aucun
+}
+
+// Enum pour la connectivité internet
+enum InternetType {
+  FIBER   // Fibre optique
+  FOUR_G  // 4G
+  NONE    // Aucune connectivité
+}
+
+// Enum pour la végétation
+enum VegetationType {
+  FRUIT_TREES // Arbres fruitiers
+  FOREST      // Forêt
+  CLEARED_AREA // Zone déboisée
+}
+
+// Enum pour le type de sol
+enum SoilType {
+  CLAY       // Argileux
+  SANDY      // Sableux
+  ROCKY      // Rochers
+}
+
+// Enum pour l'état du permis de construire
+enum BuildingPermitStatus {
+  GRANTED      // Permis accordé
+  PENDING      // Permis en attente
+  NOT_APPLICABLE // Non applicable
+}
+
+// Modèle pour les propriétés résidentielles
+model ResidentialProperty {
+  id                    String   @id @default(cuid())
+  property              Property @relation(fields: [propertyId], references: [id])
+  bedrooms              Int      // Nombre de chambres
+  bathrooms             Int      // Nombre de salles de bain
+  livingSpace           Float    // Surface habitable
+  builtYear             Int?     // Année de construction
+  floors                Int?     // Nombre d'étages
+  heatingType           HeatingType? // Type de chauffage
+  insulationType        InsulationType? // Type d'isolation
+  roofType              RoofType? // Type de toiture
+  equippedKitchen       Boolean? // Indique si la cuisine est équipée
+  garage                Boolean? // Indique si un garage est présent
+  garden                String?  // Informations sur le jardin (e.g., "Surface 50 m²")
+  pool                  PoolType? // Type de piscine
+  condition             Condition? // État de la propriété
+  internetConnectivity   InternetType? // Connectivité internet
+  securityAlarm         Boolean? // Indique si des alarmes de sécurité sont présentes
+  propertyId            String   @unique
+
+  // Additional fields for ResidentialProperty
+  hoaFees                Float?  // Frais de l'association des propriétaires
+}
+
+// Enum pour le type de chauffage
+enum HeatingType {
+  CENTRAL   // Central
+  ELECTRIC  // Électrique
+  WOOD      // Bois
+}
+
+// Enum pour le type d'isolation
+enum InsulationType {
+  DOUBLE_GLAZING  // Double vitrage
+  TRIPLE_GLAZING  // Triple vitrage
+  NONE            // Aucune isolation
+}
+
+// Enum pour le type de toiture
+enum RoofType {
+  TILES    // Tuiles
+  METAL    // Zinc
+  SLATE    // Ardoise
+}
+
+// Enum pour le type de piscine
+enum PoolType {
+  INDOOR     // Piscine intérieure
+  OUTDOOR    // Piscine extérieure
+  NONE       // Aucune piscine
+}
+
+// Modèle pour les propriétés commerciales
+model CommercialProperty {
+  id                    String   @id @default(cuid())
+  property              Property @relation(fields: [propertyId], references: [id])
+  totalArea             Float    // Surface totale
+  numberOfWorkspaces    Int      // Nombre d'espaces de travail
+  logisticAccess        LogisticAccessType? // Type d'accès logistique
+  activityType          ActivityType? // Type d'activité commerciale
+  includedEquipment     String?  // Équipements inclus
+  transportProximity    String?  // Proximité des transports
+  propertyId            String   @unique
+
+  // Additional fields for CommercialProperty
+  zoningCompliance      Boolean? // Indique si la propriété respecte les normes de zonage
+}
+
+// Enum pour le type d'accès logistique
+enum LogisticAccessType {
+  LOADING_DOCK  // Quai de chargement
+  TRUCK_ACCESS  // Accès camion
+  NONE          // Aucun
+}
+
+// Enum pour le type d'activité commerciale
+enum ActivityType {
+  RESTAURANT   // Restaurant
+  OFFICE       // Bureau
+  STORE        // Magasin
+}

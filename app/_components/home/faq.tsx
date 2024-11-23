@@ -1,7 +1,9 @@
+"use client";
+
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-export default function RealEstateFAQ() {
+export  function Faq() {
   const faqs = [
     {
       question: "What services does your real estate agency offer?",
@@ -56,7 +58,7 @@ export default function RealEstateFAQ() {
   };
 
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-white to-gray-100">
+    <section className="w-full py-12 ">
       <div className="container px-4 md:px-6">
         <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-12">
           Frequently Asked Questions
