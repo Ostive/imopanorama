@@ -25,7 +25,7 @@ interface ProprietesProps {
   };
   commercial?: {
     rooms: number;
-    commercialSpace: number;
+    commercial_space: number;
   };
   parking?: {
     parking_type: string;
@@ -141,7 +141,7 @@ export default function Proprietes({
             <>
               <div className="flex items-center">
                 <SquareFoot className="h-5 w-5 mr-2 text-primary" />
-                <span>{commercial.commercialSpace} m² d'espace commercial</span>
+                <span>{commercial.commercial_space} m² d'espace commercial</span>
               </div>
               <div className="flex items-center">
                 <Bed className="h-5 w-5 mr-2 text-primary" />
