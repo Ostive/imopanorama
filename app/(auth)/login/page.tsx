@@ -85,7 +85,9 @@ export default function Component() {
   };
 
   const handleSocialLogin = (provider: string) => {
-    signIn(provider, { callbackUrl: "/dashboard" });
+    
+    // signIn(provider, { callbackUrl: "/dashboard" });
+    signIn(provider, { redirectTo: "/admin/dashboard" });
   };
 
   const togglePasswordVisibility = () => {
