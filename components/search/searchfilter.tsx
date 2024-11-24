@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
+import * as Sliders from '@radix-ui/react-slider'
 
 export default function PropertySearch({ onSearch }: { onSearch: (filters: any) => void }) {
   
@@ -18,13 +19,14 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
     parkingType: '',
     minParkingSize: 0,
     maxParkingSize: 10000,
-    boatLength: 0,
+    boatMinLength: 0,
+    boatMaxLength: 1000,
     boatType: '',
     minLandArea: 0,
     maxLandArea: 10000,
     bedrooms: 0,
     bathrooms: 0,
-    livingSpace: 0,
+    livingSpace: [0,1000],
     builtYear: 0,
     floors: 0,
     commercialRooms: 0,
@@ -41,13 +43,14 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
       parkingType: '',
       minParkingSize: 0,
       maxParkingSize: 10000,
-      boatLength: 0,
+      boatMinLength: 0,
+      boatMaxLength: 1000,
       boatType: '',
       minLandArea: 0,
       maxLandArea: 10000,
       bedrooms: 0,
       bathrooms: 0,
-      livingSpace: 0,
+      livingSpace: [0,1000],
       builtYear: 0,
       floors: 0,
       commercialRooms: 0,
@@ -82,6 +85,11 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onSearch(filters)  // Pass the filters to the parent component or API
+  }
+
+  const handleLivingChange =  (newRange: number[]) => {
+    setFilters({...filters, livingSpace:newRange})
+    onSearch(filters)
   }
 
   return (
@@ -250,18 +258,45 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="boatLength">Longueur du bateau (m)</Label>
-                <Slider
-                  id="boatLength"
-                  min={0}
-                  max={50}
-                  step={0.5}
-                  value={[filters.boatLength]}
-                  onValueChange={(value) => handleSliderChange('boatLength', value)}
-                />
-                <div className="text-right text-sm text-muted-foreground">{filters.boatLength} m</div>
-              </div>
+              <div className="flex items-center gap-2 space-y-2">
+                  <div className="relative flex-1">
+                    <Input
+                      id="boatMinLength"
+                      name="boatMinLength"
+                      type="number"
+                      placeholder="Taille Min (m)"
+                      value={filters.boatMinLength}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value, 10) || 0;
+                        const newFilters = { ...filters, boatMinLength: value };
+                        setFilters(newFilters);
+                        onSearch(newFilters);  // Appliquer immédiatement les filtres
+                      }}
+                      min={0}
+                      className="pr-6"
+                    />
+                    <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground">m²</span>
+                  </div>
+                  <span>-</span>
+                  <div className="relative flex-1">
+                    <Input
+                      id="boatMaxLength"
+                      name="boatMaxLength"
+                      type="number"
+                      placeholder="Taille Max (m)"
+                      value={filters.boatMaxLength}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value, 10) || 0;
+                        const newFilters = { ...filters, boatMaxLength: value };
+                        setFilters(newFilters);
+                        onSearch(newFilters);  // Appliquer immédiatement les filtres
+                      }}
+                      min={filters.boatMinLength || 0} // Le min est la taille min définie
+                      className="pr-6"
+                    />
+                    <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground">m²</span>
+                  </div>
+                </div>
             </div>
           )}
 
@@ -275,7 +310,7 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
                   name="minLandArea"
                   type="number"
                   placeholder="Surface Min"
-                  value={filters.minLandArea || ''} // Affiche une chaîne vide si non défini
+                  value={filters.minLandArea || 0} // Affiche une chaîne vide si non défini
                   onChange={(e) => {
                     const value = parseInt(e.target.value, 10) || 0; // Définit à 0 si la valeur est invalide
                     const newFilters = { ...filters, minLandArea: value };
@@ -319,7 +354,7 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
                     </SelectTrigger>
                     <SelectContent>
                       {[1, 2, 3, 4, 5].map((num) => (
-                        <SelectItem key={num} value={num.toString()}>{num}+</SelectItem>
+                        <SelectItem key={num} value={num.toString()}>{num}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -332,22 +367,38 @@ export default function PropertySearch({ onSearch }: { onSearch: (filters: any) 
                     </SelectTrigger>
                     <SelectContent>
                       {[1, 2, 3, 4, 5].map((num) => (
-                        <SelectItem key={num} value={num.toString()}>{num}+</SelectItem>
+                        <SelectItem key={num} value={num.toString()}>{num}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="livingSpace">Surface habitable (m²)</Label>
-                  <Slider
-                    id="livingSpace"
+                  <Sliders.Root
+                    className="relative flex items-center select-none touch-none w-full h-5"
+                    value={filters.livingSpace}
+                    onValueChange={handleLivingChange}
                     min={0}
-                    max={500}
+                    max={1000}
                     step={10}
-                    value={[filters.livingSpace]}
-                    onValueChange={(value) => handleSliderChange('livingSpace', value)}
-                  />
-                  <div className="text-right text-sm text-muted-foreground">{filters.livingSpace} m²</div>
+                    aria-label="Range"
+                  >
+                    <Sliders.Track className="bg-slate-200 relative grow rounded-full h-[3px]">
+                      <Sliders.Range className="absolute bg-slate-900 rounded-full h-full" />
+                    </Sliders.Track>
+                    <Sliders.Thumb
+                      className="block w-5 h-5 bg-white border-2 border-slate-900 rounded-full hover:bg-slate-100 focus:outline-none focus:ring focus:ring-slate-400"
+                      aria-label="Min value"
+                    />
+                    <Sliders.Thumb
+                      className="block w-5 h-5 bg-white border-2 border-slate-900 rounded-full hover:bg-slate-100 focus:outline-none focus:ring focus:ring-slate-400"
+                      aria-label="Max value"
+                    />
+                  </Sliders.Root>
+                  <div className="flex justify-between text-sm text-muted-foreground mt-4">
+                    <span>Min: {filters.livingSpace[0]} m²</span>
+                    <span>Max: {filters.livingSpace[1]} m²</span>
+                  </div>
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

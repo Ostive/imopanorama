@@ -63,7 +63,7 @@ const user = {
   avatar: "/placeholder.svg?height=32&width=32",
 };
 
-export default function PublicNavbar() {
+export  function PublicNavbar() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [openDropdowns, setOpenDropdowns] = React.useState<Set<string>>(
     new Set()
@@ -462,4 +462,4 @@ const ListItem = React.forwardRef<
 });
 ListItem.displayName = "ListItem";
 
-export { PublicNavbar };
+
