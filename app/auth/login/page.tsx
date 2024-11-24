@@ -10,9 +10,13 @@ import { Eye, EyeOff, Home } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
+<<<<<<< HEAD
+import { signIn } from "@/lib/auth";
+=======
 
 import { signIn, auth,signOut  } from "@/lib/auth";
 
+>>>>>>> 3446c28164d4dfde3ffa9a54a79847da661e415f
 
 
 
@@ -87,6 +91,11 @@ export default function Component() {
   };
 
   const handleSocialLogin = (provider: string) => {
+<<<<<<< HEAD
+    
+    // signIn(provider, { callbackUrl: "/dashboard" });
+=======
+>>>>>>> 3446c28164d4dfde3ffa9a54a79847da661e415f
     signIn(provider, { redirectTo: "/admin/dashboard" });
   };
 
