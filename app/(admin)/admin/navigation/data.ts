@@ -46,24 +46,24 @@ export const data = {
       url: "#",
       icon: Building,
       items: [
-        { title: "For Sale", url: "/admin/properties/for-sale/admin/properties/for-sale" },
+        { title: "For Sale", url: "/admin/properties/for-sale" },
         { title: "For Rent", url: "/admin/properties/for-rent" },
-        { title: "Manage Listings", url: "#" },
+        { title: "Manage Listings", url: "/admin/properties/for-management" },
       ],
     },
     {
       title: "Appointments",
-      url: "#",
+      url: "/admin/appointments",
       icon: Calendar,
     },
     {
-      title: "Clients",
-      url: "#",
+      title: "Users",
+      url: "/admin/users",
       icon: Users,
     },
     {
       title: "Blog",
-      url: "#",
+      url: "/admin/blog",
       icon: PenTool,
       items: [
         { title: "All Posts", url: "#" },
@@ -73,12 +73,12 @@ export const data = {
     },
     {
       title: "Analytics",
-      url: "#",
+      url: "/admin/analytics",
       icon: BarChart3,
     },
     {
       title: "Settings",
-      url: "#",
+      url: "/admin/settings",
       icon: Settings,
       items: [
         { title: "General", url: "#" },

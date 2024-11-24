@@ -15,7 +15,6 @@
 
 "use client";
 
-import * as React from "react";
 import {
   SidebarProvider,
   Sidebar,
@@ -24,10 +23,10 @@ import {
   SidebarInset,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { SidebarHeader } from "./_navigation/SidebarHeader";
-import { SidebarNav } from "./_navigation/SidebarNav";
-import { SidebarServices } from "./_navigation/SidebarServices";
-import { SidebarFooter } from "./_navigation/SidebarFooter";
+import { SidebarHeader } from "./navigation/SidebarHeader";
+import { SidebarNav } from "./navigation/SidebarNav";
+import { SidebarServices } from "./navigation/SidebarServices";
+import { SidebarFooter } from "./navigation/SidebarFooter";
 import { Separator } from "@/components/ui/separator";
 import {
   Breadcrumb,

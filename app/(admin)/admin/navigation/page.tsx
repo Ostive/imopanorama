@@ -86,54 +86,60 @@ const data = {
   ],
   navMain: [
     {
+      id: "dashboard",
       title: "Dashboard",
       url: "#",
       icon: LayoutDashboard,
-      isActive: true,
     },
     {
+      id: "properties",
       title: "Properties",
       url: "#",
       icon: Building,
       items: [
-        { title: "For Sale", url: "#" },
-        { title: "For Rent", url: "#" },
-        { title: "Manage Listings", url: "#" },
+        { id: "for-sale", title: "For Sale", url: "#" },
+        { id: "for-rent", title: "For Rent", url: "#" },
+        { id: "manage-listings", title: "Manage Listings", url: "#" },
       ],
     },
     {
+      id: "appointments",
       title: "Appointments",
       url: "#",
       icon: Calendar,
     },
     {
+      id: "clients",
       title: "Clients",
       url: "#",
       icon: Users,
     },
     {
+      id: "blog",
       title: "Blog",
       url: "#",
       icon: PenTool,
       items: [
-        { title: "All Posts", url: "#" },
-        { title: "New Post", url: "#" },
-        { title: "Categories", url: "#" },
+        { id: "all-posts", title: "All Posts", url: "#" },
+        { id: "new-post", title: "New Post", url: "#" },
+        { id: "categories", title: "Categories", url: "#" },
       ],
     },
     {
+      id: "analytics",
       title: "Analytics",
       url: "#",
       icon: BarChart3,
     },
     {
+      id: "settings",
       title: "Settings",
       url: "#",
       icon: Settings,
       items: [
-        { title: "General", url: "#" },
-        { title: "Team", url: "#" },
-        { title: "Billing", url: "#" },
+        { id: "general", title: "General", url: "#" },
+        { id: "team", title: "Team", url: "#" },
+        { id: "billing", title: "Billing", url: "#" },
       ],
     },
   ],
@@ -157,11 +163,25 @@ const data = {
 };
 
 export default function RealEstateAdminPage() {
-  const [activeBranch, setActiveBranch] = React.useState(data.branches[0]);
+  const [activeBranch, setActiveBranch] = React.useState(
+    data.branches[0] || { name: "No Branch", logo: Building, type: "Default" }
+  );
+  const [activeMenuItem, setActiveMenuItem] = React.useState("dashboard");
+  const [activeSubMenuItem, setActiveSubMenuItem] = React.useState("");
+
+  const handleMenuItemClick = (itemId: string) => {
+    setActiveMenuItem(itemId);
+    setActiveSubMenuItem("");
+  };
+
+  const handleSubMenuItemClick = (itemId: string, subItemId: string) => {
+    setActiveMenuItem(itemId);
+    setActiveSubMenuItem(subItemId);
+  };
 
   return (
     <SidebarProvider>
-      <Sidebar collapsible="icon">
+      <Sidebar collapsible="icon" className="bg-card">
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
@@ -221,20 +241,28 @@ export default function RealEstateAdminPage() {
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
-        <SidebarContent>
+        <SidebarContent className="text-card-foreground">
           <SidebarGroup>
             <SidebarGroupLabel>Main Menu</SidebarGroupLabel>
             <SidebarMenu>
               {data.navMain.map((item) => (
                 <Collapsible
-                  key={item.title}
+                  key={item.id}
                   asChild
-                  defaultOpen={item.isActive}
+                  defaultOpen={item.id === activeMenuItem}
                   className="group/collapsible"
                 >
                   <SidebarMenuItem>
                     <CollapsibleTrigger asChild>
-                      <SidebarMenuButton tooltip={item.title}>
+                      <SidebarMenuButton
+                        tooltip={item.title}
+                        onClick={() => handleMenuItemClick(item.id)}
+                        className={
+                          activeMenuItem === item.id
+                            ? "bg-primary text-primary-foreground"
+                            : "hover:bg-muted"
+                        }
+                      >
                         {item.icon && <item.icon />}
                         <span>{item.title}</span>
                         {item.items && (
@@ -246,9 +274,21 @@ export default function RealEstateAdminPage() {
                       <CollapsibleContent>
                         <SidebarMenuSub>
                           {item.items.map((subItem) => (
-                            <SidebarMenuSubItem key={subItem.title}>
-                              <SidebarMenuSubButton asChild>
-                                <a href={subItem.url}>
+                            <SidebarMenuSubItem key={subItem.id}>
+                              <SidebarMenuSubButton
+                                asChild
+                                className={
+                                  activeSubMenuItem === subItem.id
+                                    ? "bg-primary text-primary-foreground"
+                                    : "hover:bg-muted"
+                                }
+                              >
+                                <a
+                                  href={subItem.url}
+                                  onClick={() =>
+                                    handleSubMenuItemClick(item.id, subItem.id)
+                                  }
+                                >
                                   <span>{subItem.title}</span>
                                 </a>
                               </SidebarMenuSubButton>
@@ -415,4 +455,5 @@ export default function RealEstateAdminPage() {
     </SidebarProvider>
   );
 }
+
 export { RealEstateAdminPage };
