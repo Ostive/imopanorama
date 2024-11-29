@@ -96,7 +96,7 @@ export  function PublicNavbar() {
   return (
     <nav
       //   className="bg-white shadow-md fixed top-0 left-0 right-0 z-50"
-      className="bg-white shadow-md top-0 left-0 right-0 z-50"
+      className="bg-white shadow-md top-0 left-0 right-0 z-100"
       role="navigation"
       aria-label="Main navigation"
     >

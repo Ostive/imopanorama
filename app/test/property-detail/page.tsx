@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +35,7 @@ export default function PropertyDetailPage() {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [fullScreenImage, setFullScreenImage] = useState<string | null>(null);
 
   const [countryCode, setCountryCode] = useState("fr");
   const countryOptions = [
@@ -55,7 +57,7 @@ export default function PropertyDetailPage() {
     address: "123 Avenue de l'Océan, Biarritz 64200",
     bedrooms: 4,
     bathrooms: 3.5,
-    area: 325, // m²
+    area: 325,
     garage: 2,
     lotSize: "2000 m²",
     description:
@@ -87,36 +89,221 @@ export default function PropertyDetailPage() {
   };
 
   const nextImage = () => {
-    setCurrentImageIndex(
-      (prevIndex) => (prevIndex + 1) % property.images.length
-    );
+    if (property.images && property.images.length > 0) {
+      setCurrentImageIndex(
+        (prevIndex) => (prevIndex + 1) % property.images.length
+      );
+    }
   };
 
   const prevImage = () => {
-    setCurrentImageIndex(
-      (prevIndex) =>
-        (prevIndex - 1 + property.images.length) % property.images.length
+    if (property.images && property.images.length > 0) {
+      setCurrentImageIndex(
+        (prevIndex) =>
+          (prevIndex - 1 + property.images.length) % property.images.length
+      );
+    }
+  };
+
+  if (!property || !property.images || property.images.length === 0) {
+    return <div>No property data available.</div>;
+  }
+
+  const renderPhotoGrid = () => {
+    const imageCount = property.images.length;
+
+    if (imageCount === 1) {
+      return (
+        <motion.div
+          className="relative aspect-[16/9] w-full"
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.2 }}
+          onClick={() => setFullScreenImage(property.images[0])}
+        >
+          <Image
+            src={property.images[0]}
+            alt="Image principale de la propriété"
+            fill
+            className="object-cover rounded-lg shadow-lg cursor-pointer"
+            data-test="main-image"
+          />
+        </motion.div>
+      );
+    }
+
+    if (imageCount === 2) {
+      return (
+        <div className="grid grid-cols-2 gap-4 h-[400px]">
+          {property.images.map((image, index) => (
+            <motion.div
+              key={index}
+              className="relative"
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setFullScreenImage(image)}
+            >
+              <Image
+                src={image}
+                alt={`Image de la propriété ${index + 1}`}
+                fill
+                className="object-cover rounded-lg shadow-md cursor-pointer"
+                data-test={`grid-image-${index}`}
+              />
+            </motion.div>
+          ))}
+        </div>
+      );
+    }
+
+    if (imageCount === 3) {
+      return (
+        <div className="grid grid-cols-2 gap-4 h-[500px]">
+          <motion.div
+            className="relative row-span-2"
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setFullScreenImage(property.images[0])}
+          >
+            <Image
+              src={property.images[0]}
+              alt="Image principale de la propriété"
+              fill
+              className="object-cover rounded-lg shadow-lg cursor-pointer"
+              data-test="main-image"
+            />
+          </motion.div>
+          {property.images.slice(1).map((image, index) => (
+            <motion.div
+              key={index}
+              className="relative"
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setFullScreenImage(image)}
+            >
+              <Image
+                src={image}
+                alt={`Image de la propriété ${index + 2}`}
+                fill
+                className="object-cover rounded-lg shadow-md cursor-pointer"
+                data-test={`grid-image-${index}`}
+              />
+            </motion.div>
+          ))}
+        </div>
+      );
+    }
+
+    // For exactly 4 images
+    if (imageCount === 4) {
+      return (
+        <div className="grid grid-cols-2 gap-4 h-[500px]">
+          {property.images.map((image, index) => (
+            <motion.div
+              key={index}
+              className="relative"
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setFullScreenImage(image)}
+            >
+              <Image
+                src={image}
+                alt={`Image de la propriété ${index + 1}`}
+                fill
+                className="object-cover rounded-lg shadow-md cursor-pointer"
+                data-test={`grid-image-${index}`}
+              />
+            </motion.div>
+          ))}
+        </div>
+      );
+    }
+
+    // For 5 or more images
+    return (
+      <div className="grid grid-cols-4 gap-4 h-[500px]">
+        <motion.div
+          className="col-span-2 row-span-2 relative"
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.2 }}
+          onClick={() => setFullScreenImage(property.images[0])}
+        >
+          <Image
+            src={property.images[0]}
+            alt="Image principale de la propriété"
+            fill
+            className="object-cover rounded-lg shadow-lg cursor-pointer"
+            data-test="main-image"
+          />
+        </motion.div>
+        {property.images.slice(1, 5).map((image, index) => (
+          <motion.div
+            key={index}
+            className="relative"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setFullScreenImage(image)}
+          >
+            <Image
+              src={image}
+              alt={`Image de la propriété ${index + 2}`}
+              fill
+              className="object-cover rounded-lg shadow-md cursor-pointer"
+              data-test={`grid-image-${index}`}
+            />
+            {index === 3 && imageCount > 5 && (
+              <Button
+                variant="secondary"
+                className="absolute inset-0 bg-black/50 text-white hover:bg-black/60 transition-colors duration-300"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowAllPhotos(true);
+                }}
+                data-test="view-all-photos"
+              >
+                <Expand className="h-5 w-5 mr-2" />+{imageCount - 5} photos
+              </Button>
+            )}
+          </motion.div>
+        ))}
+      </div>
     );
   };
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
       className="container mx-auto px-4 py-8 max-w-7xl"
       data-test="property-page"
     >
       {/* Photo Gallery Header */}
       <div className="mb-8">
         {isMobile ? (
-          <div
+          <motion.div
             className="relative aspect-[4/3]"
             data-test="mobile-image-slider"
           >
-            <Image
-              src={property.images[currentImageIndex]}
-              alt={`Image de la propriété ${currentImageIndex + 1}`}
-              fill
-              className="object-cover rounded-lg shadow-lg"
-            />
+            <AnimatePresence initial={false}>
+              <motion.div
+                key={currentImageIndex}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="absolute inset-0"
+              >
+                <Image
+                  src={property.images[currentImageIndex]}
+                  alt={`Image de la propriété ${currentImageIndex + 1}`}
+                  fill
+                  className="object-cover rounded-lg shadow-lg"
+                  onClick={() =>
+                    setFullScreenImage(property.images[currentImageIndex])
+                  }
+                />
+              </motion.div>
+            </AnimatePresence>
             <div className="absolute inset-0 flex items-center justify-between p-4">
               <Button
                 variant="ghost"
@@ -138,51 +325,20 @@ export default function PropertyDetailPage() {
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-sm">
               {currentImageIndex + 1} / {property.images.length}
             </div>
-          </div>
+          </motion.div>
         ) : (
-          <div
-            className="grid grid-cols-4 gap-4 h-[600px]"
-            data-test="photo-gallery-grid"
-          >
-            <div className="col-span-2 row-span-2 relative">
-              <Image
-                src={property.images[0]}
-                alt="Image principale de la propriété"
-                fill
-                className="object-cover rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
-                data-test="main-image"
-              />
-            </div>
-            {property.images.slice(1, 5).map((image, index) => (
-              <div key={index} className="relative">
-                <Image
-                  src={image}
-                  alt={`Image de la propriété ${index + 2}`}
-                  fill
-                  className="object-cover rounded-lg shadow-md transition-all duration-300 hover:shadow-lg"
-                  data-test={`grid-image-${index}`}
-                />
-                {index === 3 && (
-                  <Button
-                    variant="secondary"
-                    className="absolute inset-0 bg-black/50 text-white hover:bg-black/60 transition-colors duration-300"
-                    onClick={() => setShowAllPhotos(true)}
-                    data-test="view-all-photos"
-                  >
-                    <Expand className="h-5 w-5 mr-2" />
-                    Voir toutes les photos
-                  </Button>
-                )}
-              </div>
-            ))}
-          </div>
+          renderPhotoGrid()
         )}
       </div>
 
       {/* Property Information */}
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="lg:w-2/3 space-y-6">
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             <h1 className="text-4xl font-bold mb-2" data-test="property-title">
               {property.title}
             </h1>
@@ -192,14 +348,22 @@ export default function PropertyDetailPage() {
             >
               {property.price}
             </p>
-          </div>
+          </motion.div>
 
-          <div className="flex items-center space-x-2 text-gray-600">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="flex items-center space-x-2 text-gray-600"
+          >
             <MapPin className="h-5 w-5" />
             <span data-test="property-address">{property.address}</span>
-          </div>
+          </motion.div>
 
-          <div
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
             className="grid grid-cols-2 md:grid-cols-3 gap-4 py-4 border-y border-gray-200"
             data-test="property-features"
           >
@@ -212,9 +376,13 @@ export default function PropertyDetailPage() {
             <FeatureItem icon={Car} text={`${property.garage} Garage`} />
             <FeatureItem icon={Tree} text={`${property.lotSize} Terrain`} />
             <FeatureItem icon={Home} text="Villa" />
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
             <h2 className="text-2xl font-semibold mb-2">Description</h2>
             <p
               className="text-gray-600 leading-relaxed"
@@ -222,28 +390,40 @@ export default function PropertyDetailPage() {
             >
               {property.description}
             </p>
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
             <h2 className="text-2xl font-semibold mb-2">Caractéristiques</h2>
             <div
               className="flex flex-wrap gap-2"
               data-test="property-amenities"
             >
               {property.features.map((feature, index) => (
-                <Badge
+                <motion.div
                   key={index}
-                  variant="secondary"
-                  className="text-sm py-1 px-3"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
                 >
-                  {feature}
-                </Badge>
+                  <Badge variant="secondary" className="text-sm py-1 px-3">
+                    {feature}
+                  </Badge>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        <div className="lg:w-1/3">
+        <motion.div
+          className="lg:w-1/3"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
           <div className="sticky top-4">
             <form
               className="space-y-4 bg-gray-50 p-6 rounded-lg shadow-md"
@@ -319,11 +499,16 @@ export default function PropertyDetailPage() {
               </Button>
             </form>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Location */}
-      <div className="mt-12">
+      <motion.div
+        className="mt-12"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.6 }}
+      >
         <h2 className="text-2xl font-semibold mb-4">Localisation</h2>
         <div
           className="aspect-video rounded-lg overflow-hidden shadow-lg"
@@ -340,46 +525,97 @@ export default function PropertyDetailPage() {
             title="Carte de localisation de la propriété"
           ></iframe>
         </div>
-      </div>
+      </motion.div>
 
-      {/* All Photos Modal */}
-      {showAllPhotos && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-90 z-50 overflow-y-auto"
-          data-test="all-photos-modal"
-        >
-          <div className="container mx-auto px-4 py-8">
-            <div className="flex justify-between items-center mb-4 sticky top-0 bg-black bg-opacity-75 p-4 rounded-lg">
-              <h2 className="text-2xl font-bold text-white">
-                Toutes les photos
-              </h2>
+      {/* Full Screen Image Modal */}
+      <AnimatePresence>
+        {fullScreenImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 bg-black bg-opacity-90 z-[60] flex items-center justify-center"
+            onClick={() => setFullScreenImage(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              transition={{ duration: 0.3 }}
+              className="relative w-full h-full max-w-7xl max-h-screen p-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Image
+                src={fullScreenImage}
+                alt="Image en plein écran"
+                fill
+                className="object-contain"
+              />
               <Button
                 variant="ghost"
-                onClick={() => setShowAllPhotos(false)}
-                className="text-white hover:text-gray-300 transition-colors duration-300"
-                data-test="close-modal"
+                className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors duration-300"
+                onClick={() => setFullScreenImage(null)}
               >
                 <X className="h-6 w-6" />
                 <span className="sr-only">Fermer</span>
               </Button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* All Photos Modal */}
+      <AnimatePresence>
+        {showAllPhotos && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 bg-black bg-opacity-90 z-50 overflow-y-auto"
+            data-test="all-photos-modal"
+          >
+            <div className="container mx-auto px-4 py-8">
+              <div className="flex justify-between items-center mb-4 sticky top-0 bg-black bg-opacity-75 p-4 rounded-lg">
+                <h2 className="text-2xl font-bold text-white">
+                  Toutes les photos
+                </h2>
+                <Button
+                  variant="ghost"
+                  onClick={() => setShowAllPhotos(false)}
+                  className="text-white hover:text-gray-300 transition-colors duration-300"
+                  data-test="close-modal"
+                >
+                  <X className="h-6 w-6" />
+                  <span className="sr-only">Fermer</span>
+                </Button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {property.images.map((image, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                    className="relative aspect-video"
+                    onClick={() => setFullScreenImage(image)}
+                  >
+                    <Image
+                      src={image}
+                      alt={`Image de la propriété ${index + 1}`}
+                      fill
+                      className="object-cover rounded-lg shadow-md cursor-pointer"
+                      data-test={`modal-image-${index}`}
+                    />
+                  </motion.div>
+                ))}
+              </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {property.images.map((image, index) => (
-                <div key={index} className="relative aspect-video">
-                  <Image
-                    src={image}
-                    alt={`Image de la propriété ${index + 1}`}
-                    fill
-                    className="object-cover rounded-lg shadow-md transition-all duration-300 hover:shadow-lg"
-                    data-test={`modal-image-${index}`}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
@@ -391,9 +627,13 @@ function FeatureItem({
   text: string;
 }) {
   return (
-    <div className="flex flex-col items-center text-center">
+    <motion.div
+      className="flex flex-col items-center text-center"
+      whileHover={{ scale: 1.05 }}
+      transition={{ duration: 0.2 }}
+    >
       <Icon className="h-6 w-6 mb-2 text-primary" />
       <span className="text-sm font-medium">{text}</span>
-    </div>
+    </motion.div>
   );
 }
