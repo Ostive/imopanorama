@@ -1,0 +1,100 @@
+{
+  "uid": "imo-logs-system",
+  "title": "ImoPanorama - Logs & System",
+  "tags": ["imopanorama", "logs", "system"],
+  "timezone": "browser",
+  "refresh": "10s",
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Logs en temps réel - Tous les containers",
+      "type": "logs",
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 0 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [{ "expr": "{job=\"docker\"}", "refId": "A" }],
+      "options": { "showTime": true, "showLabels": true, "showCommonLabels": false, "wrapLogMessage": true, "prettifyLogMessage": false, "enableLogDetails": true, "sortOrder": "Descending", "dedupStrategy": "none" }
+    },
+    {
+      "id": 2,
+      "title": "Logs Next.js (PM2)",
+      "type": "logs",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 12 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [{ "expr": "{job=\"docker\"} |= \"next\" or {job=\"docker\"} |= \"pm2\"", "refId": "A" }],
+      "options": { "showTime": true, "showLabels": true, "wrapLogMessage": true, "enableLogDetails": true, "sortOrder": "Descending" }
+    },
+    {
+      "id": 3,
+      "title": "Erreurs (tous services)",
+      "type": "logs",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 22 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [{ "expr": "{job=\"docker\"} |~ \"(?i)(error|err|exception|fatal|panic|critical)\"", "refId": "A" }],
+      "options": { "showTime": true, "showLabels": true, "wrapLogMessage": true, "enableLogDetails": true, "sortOrder": "Descending" }
+    },
+    {
+      "id": 4,
+      "title": "Volume de logs par container",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 32 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [{ "expr": "sum by (container_name) (count_over_time({job=\"docker\"}[5m]))", "refId": "A", "legendFormat": "{{container_name}}" }],
+      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 20, "stacking": { "mode": "normal" }, "lineWidth": 1 } } }
+    },
+    {
+      "id": 5,
+      "title": "Erreurs par container",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 32 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [{ "expr": "sum by (container_name) (count_over_time({job=\"docker\"} |~ \"(?i)(error|exception|fatal)\"[5m]))", "refId": "A", "legendFormat": "{{container_name}}" }],
+      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 20, "lineWidth": 1 }, "color": { "mode": "palette-classic" } } }
+    },
+    {
+      "id": 6,
+      "title": "Logs Qdrant",
+      "type": "logs",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 40 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [{ "expr": "{container_name=\"imo-qdrant\"}", "refId": "A" }],
+      "options": { "showTime": true, "showLabels": false, "wrapLogMessage": true, "enableLogDetails": true, "sortOrder": "Descending" }
+    },
+    {
+      "id": 7,
+      "title": "Logs Redis",
+      "type": "logs",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 40 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [{ "expr": "{container_name=\"imo-redis\"}", "refId": "A" }],
+      "options": { "showTime": true, "showLabels": false, "wrapLogMessage": true, "enableLogDetails": true, "sortOrder": "Descending" }
+    },
+    {
+      "id": 8,
+      "title": "Inscriptions par jour",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 48 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT DATE(\"createdAt\") AS \"time\", COUNT(*) AS \"Inscriptions\" FROM \"User\" GROUP BY DATE(\"createdAt\") ORDER BY \"time\";", "format": "time_series" }],
+      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 15, "gradientMode": "opacity", "lineWidth": 2 }, "color": { "mode": "fixed", "fixedColor": "purple" } } }
+    },
+    {
+      "id": 9,
+      "title": "Sessions actives",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 48 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT COUNT(*) AS \"Sessions actives\" FROM \"Session\" WHERE \"expiresAt\" > NOW();", "format": "table" }],
+      "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "green" } } }
+    },
+    {
+      "id": 10,
+      "title": "Dernières connexions",
+      "type": "table",
+      "gridPos": { "h": 12, "w": 12, "x": 12, "y": 52 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT u.\"email\" AS \"Email\", u.\"role\" AS \"Rôle\", s.\"ipAddress\" AS \"IP\", s.\"createdAt\" AS \"Connexion\" FROM \"Session\" s JOIN \"User\" u ON s.\"userId\" = u.\"id\" ORDER BY s.\"createdAt\" DESC LIMIT 20;", "format": "table" }]
+    }
+  ],
+  "schemaVersion": 39
+}

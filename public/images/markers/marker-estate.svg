@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48" height="56" viewBox="0 0 48 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Ombre portée -->
+  <ellipse cx="24" cy="54" rx="10" ry="2" fill="rgba(0,0,0,0.2)"/>
+  
+  <!-- Corps principal du marqueur -->
+  <path d="M24 0C10.745 0 0 10.745 0 24C0 30.627 2.596 36.658 6.788 41.092C7.14 41.464 7.505 41.82 7.883 42.161L24 56L40.117 42.161C40.495 41.82 40.86 41.464 41.212 41.092C45.404 36.658 48 30.627 48 24C48 10.745 37.255 0 24 0Z" fill="url(#paint0_linear)"/>
+  
+  <!-- Cercle intérieur -->
+  <circle cx="24" cy="24" r="18" fill="white"/>
+  
+  <!-- Icône immobilière -->
+  <g transform="translate(14, 14)">
+    <!-- Maison -->
+    <path d="M19 9.77L10 2L1 9.77V20H7V14H13V20H19V9.77Z" fill="#0F766E"/>
+    <!-- Toit -->
+    <path d="M10 0L0 9H3V19H7V13H13V19H17V9H20L10 0Z" fill="#0F766E"/>
+    <!-- Fenêtre -->
+    <rect x="8.5" y="9" width="3" height="3" fill="#0F766E"/>
+  </g>
+  
+  <!-- Dégradé pour le corps du marqueur -->
+  <defs>
+    <linearGradient id="paint0_linear" x1="24" y1="0" x2="24" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#14B8A6"/>
+      <stop offset="100%" stop-color="#0F766E"/>
+    </linearGradient>
+  </defs>
+</svg>

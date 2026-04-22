@@ -1,0 +1,72 @@
+import { transporter } from './transporter';
+import { PropertyContactData } from './types';
+
+/**
+ * Envoie un email de confirmation au client après un contact propriété
+ */
+export async function sendPropertyContactConfirmation(data: PropertyContactData) {
+    const mailOptions = {
+        from: '"ImoPanorama" <noreply@demomailtrap.co>',
+        to: data.clientEmail,
+        subject: `Confirmation de votre demande de contact - ${data.propertyTitle}`,
+        html: `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+            .property-info { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #667eea; }
+            .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+            .button { display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>🏡 ImoPanorama</h1>
+              <p>Merci pour votre demande de contact</p>
+            </div>
+            <div class="content">
+              <p>Bonjour <strong>${data.clientName}</strong>,</p>
+
+              <p>Nous avons bien reçu votre demande de contact concernant la propriété suivante :</p>
+
+              <div class="property-info">
+                <h3>${data.propertyTitle}</h3>
+                <p><strong>📍 Localisation :</strong> ${data.propertyLocation}</p>
+                <p><strong>💰 Prix :</strong> ${data.propertyPrice}</p>
+                <p><strong>📝 Votre message :</strong></p>
+                <p style="background: #f3f4f6; padding: 15px; border-radius: 6px; font-style: italic;">${data.message}</p>
+              </div>
+
+              <p>Notre équipe va étudier votre demande et vous contactera dans les plus brefs délais à l'adresse email <strong>${data.clientEmail}</strong> ou au numéro <strong>${data.clientPhone}</strong>.</p>
+
+              <p style="text-align: center;">
+                <a href="${process.env.NEXT_PUBLIC_APP_URL}/proprietes/${data.propertyId}" class="button">Voir la propriété</a>
+              </p>
+
+              <p>À très bientôt,<br><strong>L'équipe ImoPanorama</strong></p>
+            </div>
+            <div class="footer">
+              <p>© ${new Date().getFullYear()} ImoPanorama - Tous droits réservés</p>
+              <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
+    };
+
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('✅ Email de confirmation propriété envoyé:', info.messageId);
+        return { success: true, messageId: info.messageId };
+    } catch (error) {
+        console.error('❌ Erreur envoi email propriété:', error);
+        throw error;
+    }
+}

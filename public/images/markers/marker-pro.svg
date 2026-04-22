@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40" height="48" viewBox="0 0 40 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Ombre portée -->
+  <ellipse cx="20" cy="46" rx="8" ry="2" fill="rgba(0,0,0,0.2)"/>
+  
+  <!-- Corps principal du marqueur -->
+  <path d="M20 0C8.954 0 0 8.954 0 20C0 25.523 2.163 30.548 5.657 34.243C5.95 34.553 6.254 34.85 6.569 35.134L20 48L33.431 35.134C33.746 34.85 34.05 34.553 34.343 34.243C37.837 30.548 40 25.523 40 20C40 8.954 31.046 0 20 0Z" fill="url(#paint0_linear)"/>
+  
+  <!-- Cercle intérieur -->
+  <circle cx="20" cy="20" r="10" fill="white"/>
+  
+  <!-- Icône maison -->
+  <path d="M25 23.5V19.5L20 15.5L15 19.5V23.5H17V21H23V23.5H25Z" fill="#2563EB"/>
+  <path d="M20 13L27 18.5V25H23V20H17V25H13V18.5L20 13Z" fill="#2563EB"/>
+  
+  <!-- Dégradé pour le corps du marqueur -->
+  <defs>
+    <linearGradient id="paint0_linear" x1="20" y1="0" x2="20" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1E40AF"/>
+    </linearGradient>
+  </defs>
+</svg>

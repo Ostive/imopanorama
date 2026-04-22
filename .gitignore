@@ -1,0 +1,39 @@
+node_modules
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.staging
+
+# Next.js build output
+.next/
+out/
+build/
+
+# Prisma generated
+/generated/prisma
+
+# Testing
+coverage/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Assistant and Misc
+.agent/
+.claude/
+.gemini/
+*.tsbuildinfo

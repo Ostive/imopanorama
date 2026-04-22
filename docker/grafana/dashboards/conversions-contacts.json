@@ -1,0 +1,121 @@
+{
+  "uid": "imo-conversions-contacts",
+  "title": "ImoPanorama - Conversions & Contacts",
+  "tags": ["imopanorama", "conversions", "contacts"],
+  "timezone": "browser",
+  "refresh": "5m",
+  "time": { "from": "now-30d", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Demandes propriétés",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT COUNT(*) AS \"Demandes\" FROM \"PropertyContact\" WHERE \"createdAt\" >= NOW() - INTERVAL '30 days';", "format": "table" }],
+      "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "blue" } } }
+    },
+    {
+      "id": 2,
+      "title": "Contacts généraux",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT COUNT(*) AS \"Contacts\" FROM \"Contact\" WHERE \"createdAt\" >= NOW() - INTERVAL '30 days';", "format": "table" }],
+      "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "green" } } }
+    },
+    {
+      "id": 3,
+      "title": "Devis BatiPanorama",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT COUNT(*) AS \"Devis\" FROM \"BatiQuote\" WHERE \"createdAt\" >= NOW() - INTERVAL '30 days';", "format": "table" }],
+      "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "orange" } } }
+    },
+    {
+      "id": 4,
+      "title": "Favoris ajoutés",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT COUNT(*) AS \"Favoris\" FROM \"PropertyFavorite\" WHERE \"createdAt\" >= NOW() - INTERVAL '30 days';", "format": "table" }],
+      "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "red" } } }
+    },
+    {
+      "id": 5,
+      "title": "Non lus (Propriétés)",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT COUNT(*) AS \"Non lus\" FROM \"PropertyContact\" WHERE \"isRead\" = false;", "format": "table" }],
+      "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "yellow" }, "thresholds": { "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 5 }, { "color": "red", "value": 20 }] } } }
+    },
+    {
+      "id": 6,
+      "title": "Non lus (Contacts)",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT COUNT(*) AS \"Non lus\" FROM \"Contact\" WHERE \"isRead\" = false;", "format": "table" }],
+      "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "yellow" }, "thresholds": { "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 5 }, { "color": "red", "value": 20 }] } } }
+    },
+    {
+      "id": 7,
+      "title": "Demandes de contact par jour",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [
+        { "rawSql": "SELECT DATE(\"createdAt\") AS \"time\", COUNT(*) AS \"Propriétés\" FROM \"PropertyContact\" GROUP BY DATE(\"createdAt\") ORDER BY \"time\";", "format": "time_series", "refId": "A" },
+        { "rawSql": "SELECT DATE(\"createdAt\") AS \"time\", COUNT(*) AS \"Contacts\" FROM \"Contact\" GROUP BY DATE(\"createdAt\") ORDER BY \"time\";", "format": "time_series", "refId": "B" },
+        { "rawSql": "SELECT DATE(\"createdAt\") AS \"time\", COUNT(*) AS \"Devis\" FROM \"BatiQuote\" GROUP BY DATE(\"createdAt\") ORDER BY \"time\";", "format": "time_series", "refId": "C" }
+      ],
+      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 10, "lineWidth": 2 } } }
+    },
+    {
+      "id": 8,
+      "title": "Top 10 propriétés contactées",
+      "type": "barchart",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT p.\"title\" AS \"Propriété\", COUNT(pc.*) AS \"Demandes\" FROM \"PropertyContact\" pc JOIN \"Property\" p ON pc.\"propertyId\" = p.\"id\" GROUP BY p.\"title\" ORDER BY \"Demandes\" DESC LIMIT 10;", "format": "table" }],
+      "options": { "orientation": "horizontal" }
+    },
+    {
+      "id": 9,
+      "title": "Événements utilisateurs par jour",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT DATE(\"createdAt\") AS \"time\", COUNT(*) AS \"Événements\" FROM \"Event\" GROUP BY DATE(\"createdAt\") ORDER BY \"time\";", "format": "time_series" }],
+      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 15, "gradientMode": "opacity", "lineWidth": 2 }, "color": { "mode": "fixed", "fixedColor": "purple" } } }
+    },
+    {
+      "id": 10,
+      "title": "Top événements",
+      "type": "barchart",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT \"name\" AS \"Événement\", \"category\" AS \"Catégorie\", COUNT(*) AS \"Nombre\" FROM \"Event\" GROUP BY \"name\", \"category\" ORDER BY \"Nombre\" DESC LIMIT 15;", "format": "table" }],
+      "options": { "orientation": "horizontal" }
+    },
+    {
+      "id": 11,
+      "title": "Dernières demandes de contact",
+      "type": "table",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT pc.\"firstName\" || ' ' || pc.\"lastName\" AS \"Nom\", pc.\"email\" AS \"Email\", p.\"title\" AS \"Propriété\", pc.\"isRead\" AS \"Lu\", pc.\"createdAt\" AS \"Date\" FROM \"PropertyContact\" pc JOIN \"Property\" p ON pc.\"propertyId\" = p.\"id\" ORDER BY pc.\"createdAt\" DESC LIMIT 15;", "format": "table" }]
+    },
+    {
+      "id": 12,
+      "title": "Derniers devis BatiPanorama",
+      "type": "table",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT \"firstName\" || ' ' || \"lastName\" AS \"Nom\", \"email\" AS \"Email\", \"projectType\" AS \"Type\", \"budget\" AS \"Budget\", \"location\" AS \"Lieu\", \"isRead\" AS \"Lu\", \"createdAt\" AS \"Date\" FROM \"BatiQuote\" ORDER BY \"createdAt\" DESC LIMIT 15;", "format": "table" }]
+    }
+  ],
+  "schemaVersion": 39
+}

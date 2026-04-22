@@ -1,0 +1,882 @@
+'use client'
+
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import ProtectedRoute from '@/modules/auth/components/ProtectedRoute'
+import {
+  ArrowLeftIcon,
+  ExclamationTriangleIcon,
+  CheckCircleIcon,
+  PhotoIcon,
+  XMarkIcon,
+  HomeIcon,
+  MapPinIcon,
+  CurrencyEuroIcon,
+  SparklesIcon,
+  BuildingOffice2Icon,
+  PlusIcon,
+} from '@heroicons/react/24/outline'
+import { PROPERTY_TYPE_LABELS, TRANSACTION_TYPE_LABELS } from '@/modules/properties/types'
+import { MultipleImageUploader } from '@/modules/upload/components/MultipleImageUploader'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from '@/components/ui/select'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Separator } from '@/components/ui/separator'
+
+export default function NewPropertyPage() {
+  const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [currentStep, setCurrentStep] = useState(1)
+  const totalSteps = 7
+
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    propertyType: '',
+    transactionType: 'SALE',
+    location: '',
+    city: '',
+    price: '',
+    rentPrice: '',
+    totalSize: '',
+    livingSize: '',
+    landSize: '',
+    bedrooms: '',
+    bathrooms: '',
+    rooms: '',
+    floors: '',
+    floor: '',
+    yearBuilt: '',
+    condition: '',
+    features: [] as string[],
+    amenities: [] as string[],
+    images: [] as string[],
+    status: 'AVAILABLE',
+    isFeatured: false,
+    isPublished: true,
+  })
+
+  const [newFeature, setNewFeature] = useState('')
+  const [newAmenity, setNewAmenity] = useState('')
+
+  // Check if property type is terrain
+  const isTerrain = formData.propertyType.startsWith('TERRAIN_')
+  // Check if property type is residential (has bedrooms/bathrooms)
+  const isResidential = ['VILLA', 'HOUSE', 'TOWNHOUSE', 'COUNTRY_HOUSE', 'APARTMENT', 'STUDIO', 'PENTHOUSE', 'DUPLEX', 'LOFT'].includes(formData.propertyType)
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value, type } = e.target
+
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked
+      setFormData((prev) => ({ ...prev, [name]: checked }))
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }))
+    }
+  }
+
+  const addFeature = () => {
+    if (newFeature.trim()) {
+      setFormData((prev) => ({
+        ...prev,
+        features: [...prev.features, newFeature.trim()],
+      }))
+      setNewFeature('')
+    }
+  }
+
+  const removeFeature = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      features: prev.features.filter((_, i) => i !== index),
+    }))
+  }
+
+  const addAmenity = () => {
+    if (newAmenity.trim()) {
+      setFormData((prev) => ({
+        ...prev,
+        amenities: [...prev.amenities, newAmenity.trim()],
+      }))
+      setNewAmenity('')
+    }
+  }
+
+  const removeAmenity = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      amenities: prev.amenities.filter((_, i) => i !== index),
+    }))
+  }
+
+  const handleImagesChange = (imageUrls: string[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: imageUrls,
+    }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    setIsSubmitting(true)
+
+    try {
+      // Validation
+      if (!formData.title.trim()) throw new Error('Le titre est requis')
+      if (!formData.propertyType) throw new Error('Le type de propriété est requis')
+      if (!formData.location.trim()) throw new Error('La localisation est requise')
+      if (!formData.city.trim()) throw new Error('La ville est requise')
+      if (!formData.price || parseFloat(formData.price) <= 0)
+        throw new Error('Le prix doit être supérieur à 0')
+      if (!formData.totalSize || parseFloat(formData.totalSize) <= 0)
+        throw new Error('La surface totale doit être supérieure à 0')
+
+      // Prepare data
+      const propertyData = {
+        title: formData.title,
+        description: formData.description || undefined,
+        propertyType: formData.propertyType,
+        transactionType: formData.transactionType,
+        location: formData.location,
+        city: formData.city,
+        price: parseFloat(formData.price),
+        rentPrice: formData.rentPrice ? parseFloat(formData.rentPrice) : undefined,
+        totalSize: parseFloat(formData.totalSize),
+        livingSize: formData.livingSize ? parseFloat(formData.livingSize) : undefined,
+        landSize: formData.landSize ? parseFloat(formData.landSize) : undefined,
+        bedrooms: formData.bedrooms ? parseInt(formData.bedrooms) : undefined,
+        bathrooms: formData.bathrooms ? parseInt(formData.bathrooms) : undefined,
+        rooms: formData.rooms ? parseInt(formData.rooms) : undefined,
+        floors: formData.floors ? parseInt(formData.floors) : undefined,
+        floor: formData.floor ? parseInt(formData.floor) : undefined,
+        yearBuilt: formData.yearBuilt ? parseInt(formData.yearBuilt) : undefined,
+        condition: formData.condition || undefined,
+        features: formData.features,
+        amenities: formData.amenities,
+        images: formData.images,
+        status: formData.status,
+        isFeatured: formData.isFeatured,
+        isPublished: formData.isPublished,
+      }
+
+      const response = await fetch('/api/properties', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(propertyData),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Erreur lors de la création')
+      }
+
+      localStorage.setItem(
+        'property_success_message',
+        `La propriété "${formData.title}" a été créée avec succès`
+      )
+      window.location.href = '/admin/proprietes'
+    } catch (err: any) {
+      setError(err.message || 'Une erreur est survenue')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <ProtectedRoute allowedRoles={['admin']}>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8"
+          >
+            <Link
+              href="/admin/proprietes"
+              className="inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 mb-4 transition-colors"
+            >
+              <ArrowLeftIcon className="h-4 w-4 mr-2" />
+              Retour à la liste
+            </Link>
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-gradient-to-br from-primary-500 to-blue-600 rounded-2xl">
+                <BuildingOffice2Icon className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                  Nouvelle Propriété
+                </h1>
+                <p className="text-gray-600 dark:text-gray-400 mt-1">
+                  Créez une nouvelle propriété pour votre catalogue
+                </p>
+                <div className="mt-4">
+                  <Progress value={(currentStep / totalSteps) * 100} className="h-2" />
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    Étape {currentStep} sur {totalSteps}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Error Message */}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4"
+            >
+              <div className="flex items-center">
+                <ExclamationTriangleIcon className="h-5 w-5 text-red-600 dark:text-red-400 mr-3" />
+                <p className="text-red-800 dark:text-red-200">{error}</p>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Basic Information */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
+                      <HomeIcon className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+                    </div>
+                    <div>
+                      <CardTitle>Informations de base</CardTitle>
+                      <CardDescription>Les détails essentiels de votre propriété</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="md:col-span-2 space-y-2">
+                      <Label htmlFor="title">Titre *</Label>
+                      <Input
+                        id="title"
+                        name="title"
+                        value={formData.title}
+                        onChange={handleChange}
+                        required
+                        placeholder="Ex: Villa moderne avec piscine"
+                      />
+                    </div>
+
+                    <div className="md:col-span-2 space-y-2">
+                      <Label htmlFor="description">Description</Label>
+                      <Textarea
+                        id="description"
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
+                        rows={4}
+                        placeholder="Décrivez les caractéristiques principales de la propriété..."
+                      />
+                      <p className="text-xs text-muted-foreground">Minimum 50 caractères recommandés</p>
+                    </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Type de propriété *
+                  </label>
+                  <select
+                    name="propertyType"
+                    value={formData.propertyType}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+                  >
+                    <option value="">Sélectionner...</option>
+                    <optgroup label="Terrains">
+                      <option value="TERRAIN_RESIDENTIAL">Terrain Résidentiel</option>
+                      <option value="TERRAIN_COMMERCIAL">Terrain Commercial</option>
+                      <option value="TERRAIN_AGRICULTURAL">Terrain Agricole</option>
+                      <option value="TERRAIN_INDUSTRIAL">Terrain Industriel</option>
+                    </optgroup>
+                    <optgroup label="Maisons & Villas">
+                      <option value="VILLA">Villa</option>
+                      <option value="HOUSE">Maison</option>
+                      <option value="TOWNHOUSE">Maison de ville</option>
+                      <option value="COUNTRY_HOUSE">Maison de campagne</option>
+                    </optgroup>
+                    <optgroup label="Appartements">
+                      <option value="APARTMENT">Appartement</option>
+                      <option value="STUDIO">Studio</option>
+                      <option value="PENTHOUSE">Penthouse</option>
+                      <option value="DUPLEX">Duplex</option>
+                      <option value="LOFT">Loft</option>
+                    </optgroup>
+                    <optgroup label="Commercial">
+                      <option value="OFFICE">Bureau</option>
+                      <option value="SHOP">Boutique</option>
+                      <option value="WAREHOUSE">Entrepôt</option>
+                      <option value="BUILDING">Immeuble</option>
+                      <option value="HOTEL">Hôtel</option>
+                      <option value="RESTAURANT">Restaurant</option>
+                    </optgroup>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Type de transaction *
+                  </label>
+                  <select
+                    name="transactionType"
+                    value={formData.transactionType}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+                  >
+                    <option value="SALE">Vente</option>
+                    <option value="RENT">Location</option>
+                    <option value="SEASONAL_RENT">Location saisonnière</option>
+                  </select>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Location */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                  <MapPinIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Localisation
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Adresse *
+                  </label>
+                  <input
+                    type="text"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Ville *
+                  </label>
+                  <input
+                    type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+                  />
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Pricing */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
+                  <CurrencyEuroIcon className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Prix</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Prix de vente (€) *
+                  </label>
+                  <input
+                    type="number"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleChange}
+                    required
+                    min="0"
+                    step="0.01"
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Prix de location (€/mois)
+                  </label>
+                  <input
+                    type="number"
+                    name="rentPrice"
+                    value={formData.rentPrice}
+                    onChange={handleChange}
+                    min="0"
+                    step="0.01"
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+                  />
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Dimensions */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700"
+            >
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+                Dimensions
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Surface totale (m²) *
+                  </label>
+                  <input
+                    type="number"
+                    name="totalSize"
+                    value={formData.totalSize}
+                    onChange={handleChange}
+                    required
+                    min="0"
+                    step="0.01"
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Surface habitable (m²)
+                  </label>
+                  <input
+                    type="number"
+                    name="livingSize"
+                    value={formData.livingSize}
+                    onChange={handleChange}
+                    min="0"
+                    step="0.01"
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Surface terrain (m²)
+                  </label>
+                  <input
+                    type="number"
+                    name="landSize"
+                    value={formData.landSize}
+                    onChange={handleChange}
+                    min="0"
+                    step="0.01"
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+                  />
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Property Details */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700"
+            >
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+                Détails de la propriété
+              </h2>
+              {!isResidential && (
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                  Ces champs sont optionnels pour ce type de propriété
+                </p>
+              )}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Chambres
+                  </label>
+                  <input
+                    type="number"
+                    name="bedrooms"
+                    value={formData.bedrooms}
+                    onChange={handleChange}
+                    min="0"
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Salles de bain
+                  </label>
+                  <input
+                    type="number"
+                    name="bathrooms"
+                    value={formData.bathrooms}
+                    onChange={handleChange}
+                    min="0"
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Nombre de pièces
+                  </label>
+                  <input
+                    type="number"
+                    name="rooms"
+                    value={formData.rooms}
+                    onChange={handleChange}
+                    min="0"
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Nombre d'étages
+                  </label>
+                  <input
+                    type="number"
+                    name="floors"
+                    value={formData.floors}
+                    onChange={handleChange}
+                    min="0"
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Étage
+                  </label>
+                  <input
+                    type="number"
+                    name="floor"
+                    value={formData.floor}
+                    onChange={handleChange}
+                    min="0"
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Année de construction
+                  </label>
+                  <input
+                    type="number"
+                    name="yearBuilt"
+                    value={formData.yearBuilt}
+                    onChange={handleChange}
+                    min="1800"
+                    max={new Date().getFullYear()}
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+                  />
+                </div>
+
+                <div className="md:col-span-3">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    État
+                  </label>
+                  <select
+                    name="condition"
+                    value={formData.condition}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+                  >
+                    <option value="">Sélectionner...</option>
+                    <option value="NEW">Neuf</option>
+                    <option value="EXCELLENT">Excellent</option>
+                    <option value="GOOD">Bon</option>
+                    <option value="FAIR">Correct</option>
+                    <option value="POOR">À rénover</option>
+                  </select>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Features */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.55 }}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700"
+            >
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+                Caractéristiques
+              </h2>
+              <div className="space-y-4">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newFeature}
+                    onChange={(e) => setNewFeature(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
+                    placeholder="Ex: Vue panoramique, Jardin paysager..."
+                    className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={addFeature}
+                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                  >
+                    Ajouter
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {formData.features.map((feature, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center gap-2 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-200 rounded-lg"
+                    >
+                      {feature}
+                      <button
+                        type="button"
+                        onClick={() => removeFeature(index)}
+                        className="text-primary-600 hover:text-primary-800"
+                      >
+                        <XMarkIcon className="h-4 w-4" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Amenities */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                  <SparklesIcon className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Commodités
+                </h2>
+              </div>
+              
+              {/* Quick Add Buttons */}
+              <div className="mb-4">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Ajout rapide :</p>
+                <div className="flex flex-wrap gap-2">
+                  {['Piscine', 'Jardin', 'Garage', 'Parking', 'Climatisation', 'Cuisine équipée', 'Terrasse', 'Balcon', 'Ascenseur', 'Sécurité 24/7', 'Portail automatique', 'Système d\'alarme'].map((amenity) => (
+                    <button
+                      key={amenity}
+                      type="button"
+                      onClick={() => {
+                        if (!formData.amenities.includes(amenity)) {
+                          setFormData(prev => ({
+                            ...prev,
+                            amenities: [...prev.amenities, amenity]
+                          }))
+                        }
+                      }}
+                      className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+                    >
+                      <PlusIcon className="h-3 w-3 inline mr-1" />
+                      {amenity}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newAmenity}
+                    onChange={(e) => setNewAmenity(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addAmenity())}
+                    placeholder="Ex: Piscine, Garage, Climatisation..."
+                    className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={addAmenity}
+                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                  >
+                    Ajouter
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {formData.amenities.map((amenity, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded-lg"
+                    >
+                      {amenity}
+                      <button
+                        type="button"
+                        onClick={() => removeAmenity(index)}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        <XMarkIcon className="h-4 w-4" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Images */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 bg-pink-100 dark:bg-pink-900/30 rounded-lg">
+                  <PhotoIcon className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Images
+                </h2>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                💡 Astuce : Utilisez des images de haute qualité (min. 1200x800px) pour un meilleur rendu
+              </p>
+              <MultipleImageUploader
+                onImagesChange={handleImagesChange}
+                initialImages={formData.images}
+                directory="/properties/"
+                maxImages={15}
+              />
+            </motion.div>
+
+            {/* Status & Visibility */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700"
+            >
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+                Statut et visibilité
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Statut
+                  </label>
+                  <select
+                    name="status"
+                    value={formData.status}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all"
+                  >
+                    <option value="AVAILABLE">Disponible</option>
+                    <option value="RESERVED">Réservé</option>
+                    <option value="SOLD">Vendu</option>
+                    <option value="RENTED">Loué</option>
+                    <option value="DRAFT">Brouillon</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name="isFeatured"
+                    checked={formData.isFeatured}
+                    onChange={handleChange}
+                    className="h-4 w-4 text-primary-600 border-gray-300 rounded"
+                  />
+                  <label className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    En vedette
+                  </label>
+                </div>
+
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name="isPublished"
+                    checked={formData.isPublished}
+                    onChange={handleChange}
+                    className="h-4 w-4 text-primary-600 border-gray-300 rounded"
+                  />
+                  <label className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Publié
+                  </label>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Actions */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 }}
+              className="flex gap-4 sticky bottom-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700"
+            >
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="flex-1 px-6 py-4 bg-gradient-to-r from-primary-600 to-blue-600 text-white rounded-xl hover:from-primary-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+              >
+                {isSubmitting ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    Création en cours...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircleIcon className="h-5 w-5" />
+                    Créer la propriété
+                  </>
+                )}
+              </button>
+              <Link
+                href="/admin/proprietes"
+                className="px-6 py-4 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 font-semibold transition-all flex items-center justify-center gap-2"
+              >
+                <XMarkIcon className="h-5 w-5" />
+                Annuler
+              </Link>
+            </motion.div>
+          </form>
+        </div>
+      </div>
+    </ProtectedRoute>
+  )
+}

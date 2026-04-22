@@ -1,0 +1,491 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Modèle User pour l'authentification et les profils (BetterAuth compatible)
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  name          String?
+  image         String?
+  password      String? // Optional for OAuth users
+  firstName     String?
+  lastName      String?
+  phone         String?
+  company       String?
+  role          Role      @default(CLIENT)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime?
+
+  // Relations
+  properties        Property[] // Relation avec les propriétés (propriétaire)
+  contacts          Contact[] // Messages de contact envoyés par l'utilisateur
+  propertyContacts  PropertyContact[] // Messages de contact pour les propriétés
+  propertyFavorites PropertyFavorite[] // Propriétés favorites de l'utilisateur
+  batiQuotes        BatiQuote[] // Demandes de devis BatiPanorama
+  news              News[] // Articles d'actualité créés par l'utilisateur
+  sessions          Session[] // BetterAuth sessions
+  accounts          Account[] // BetterAuth OAuth accounts
+}
+
+// BetterAuth Session model
+model Session {
+  id        String   @id @default(uuid())
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// BetterAuth Account model (for OAuth)
+model Account {
+  id                    String    @id @default(uuid())
+  userId                String
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+}
+
+// BetterAuth Verification model
+model Verification {
+  id         String   @id @default(uuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([identifier, value])
+}
+
+// Rôles utilisateur
+enum Role {
+  CLIENT // Client standard (anciennement USER)
+  AGENT // Agent immobilier
+  ADMIN // Administrateur
+  SUPER_ADMIN // Super administrateur
+}
+
+// ==========================================
+// PROPERTY MODELS - Unified Property System
+// ==========================================
+
+// Modèle Property - Système unifié pour tous types de biens immobiliers
+model Property {
+  id              String          @id @default(uuid())
+  title           String
+  description     String?         @db.Text
+  propertyType    PropertyType // TERRAIN, VILLA, HOUSE, APARTMENT, COMMERCIAL, etc.
+  transactionType TransactionType @default(SALE) // SALE or RENT
+
+  // Location
+  location    String
+  city        String
+  address     String?
+  zipCode     String?
+  coordinates Json? // { lat: number, lng: number }
+
+  // Pricing
+  price      Float
+  pricePerM2 Float?
+  rentPrice  Float? // Prix de location mensuel si applicable
+  currency   String @default("EUR")
+
+  // Size & Dimensions
+  totalSize  Float // Surface totale en m²
+  livingSize Float? // Surface habitable en m² (pour maisons/villas)
+  landSize   Float? // Surface du terrain en m² (si applicable)
+
+  // Property Details (pour maisons/villas/appartements)
+  bedrooms  Int?
+  bathrooms Int?
+  rooms     Int? // Nombre total de pièces
+  floors    Int? // Nombre d'étages
+  floor     Int? // Étage (pour appartements)
+  yearBuilt Int?
+  condition PropertyCondition?
+
+  // Features & Amenities
+  features  String[] // Features générales
+  amenities String[] // Commodités (piscine, garage, jardin, etc.)
+
+  // Media
+  images      String[]
+  coverImage  String?
+  virtualTour String? // URL visite virtuelle 360°
+  videoUrl    String?
+
+  // Status & Visibility
+  status      PropertyStatus @default(AVAILABLE)
+  isFeatured  Boolean        @default(false)
+  isPublished Boolean        @default(true)
+  views       Int            @default(0)
+
+  // References & Metadata
+  reference   String? @unique // Référence unique du bien
+  energyClass String? // Classe énergétique (A, B, C, etc.)
+  emissions   String? // Émissions GES
+  taxFonciere Float? // Taxe foncière annuelle
+  charges     Float? // Charges mensuelles (copropriété)
+
+  // Relations
+  ownerId   String?
+  owner     User?              @relation(fields: [ownerId], references: [id])
+  contacts  PropertyContact[]
+  favorites PropertyFavorite[]
+
+  // Timestamps
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime?
+
+  @@index([propertyType])
+  @@index([city])
+  @@index([status])
+  @@index([transactionType])
+  @@index([price])
+}
+
+// Types de propriété
+enum PropertyType {
+  // Terrains
+  TERRAIN_RESIDENTIAL // Terrain résidentiel
+  TERRAIN_COMMERCIAL // Terrain commercial
+  TERRAIN_AGRICULTURAL // Terrain agricole
+  TERRAIN_INDUSTRIAL // Terrain industriel
+
+  // Maisons & Villas
+  VILLA // Villa
+  HOUSE // Maison
+  TOWNHOUSE // Maison de ville
+  COUNTRY_HOUSE // Maison de campagne
+
+  // Appartements
+  APARTMENT // Appartement
+  STUDIO // Studio
+  PENTHOUSE // Penthouse
+  DUPLEX // Duplex
+  LOFT // Loft
+
+  // Commercial
+  OFFICE // Bureau
+  SHOP // Commerce
+  WAREHOUSE // Entrepôt
+  BUILDING // Immeuble
+  HOTEL // Hôtel
+  RESTAURANT // Restaurant
+}
+
+// Type de transaction
+enum TransactionType {
+  SALE // Vente
+  RENT // Location
+  SEASONAL_RENT // Location saisonnière
+}
+
+// État du bien
+enum PropertyCondition {
+  NEW // Neuf
+  EXCELLENT // Excellent état
+  GOOD // Bon état
+  TO_RENOVATE // À rénover
+  UNDER_CONSTRUCTION // En construction
+}
+
+// Statut du bien
+enum PropertyStatus {
+  AVAILABLE // Disponible
+  RESERVED // Réservé
+  SOLD // Vendu
+  RENTED // Loué
+  DRAFT // Brouillon
+  ARCHIVED // Archivé
+}
+
+// Contact pour les propriétés
+model PropertyContact {
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+  isRead    Boolean  @default(false)
+
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+}
+
+// Favoris pour les propriétés
+model PropertyFavorite {
+  id         String   @id @default(uuid())
+  userId     String
+  propertyId String
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, propertyId])
+}
+
+// Modèle Contact pour les demandes d'information
+model Contact {
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+  isRead    Boolean  @default(false)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+}
+
+// Modèle BatiQuote pour les demandes de devis BatiPanorama
+model BatiQuote {
+  id          String   @id @default(uuid())
+  firstName   String
+  lastName    String
+  email       String
+  phone       String
+  projectType String // Type de projet (maison, villa, commercial, etc.)
+  budget      String // Fourchette de budget
+  location    String // Localisation du projet
+  message     String   @db.Text
+  createdAt   DateTime @default(now())
+  isRead      Boolean  @default(false)
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+}
+
+// Modèle FAQ pour les questions fréquentes
+model Faq {
+  id        String   @id @default(uuid())
+  question  String
+  answer    String   @db.Text
+  category  String   @default("general")
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Modèle News pour les actualités
+model News {
+  id          String       @id @default(uuid())
+  title       String
+  slug        String       @unique
+  content     String       @db.Text
+  excerpt     String?      @db.Text
+  coverImage  String?
+  images      String[]
+  category    NewsCategory @default(GENERAL)
+  tags        String[]
+  isPublished Boolean      @default(false)
+  publishedAt DateTime?
+  authorId    String
+  author      User         @relation(fields: [authorId], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+// Catégories d'actualités
+enum NewsCategory {
+  GENERAL
+  IMMOBILIER
+  CONSTRUCTION
+  EVENEMENT
+  ENTREPRISE
+}
+
+// Modèle Partner pour les logos des partenaires
+model Partner {
+  id          String   @id @default(uuid())
+  name        String
+  logo        String // URL du logo
+  website     String? // Site web du partenaire (optionnel)
+  description String? // Description courte (optionnelle)
+  order       Int      @default(0) // Ordre d'affichage
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Modèle Settings pour les paramètres du site
+model Settings {
+  id        String   @id @default(uuid())
+  key       String   @unique // Clé unique pour identifier le paramètre
+  value     Json // Valeur JSON pour stocker n'importe quelle structure
+  category  String   @default("general") // Catégorie (general, contact, email, seo, etc.)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Modèle BatiProject pour les projets de construction BatiPanorama
+model BatiProject {
+  id          String        @id @default(uuid())
+  title       String
+  description String        @db.Text
+  location    String
+  category    String // Type de projet (Résidentiel, Commercial, etc.)
+  surface     Float? // Surface en m²
+  duration    String? // Durée du projet
+  budget      String? // Budget estimatif
+  images      String[] // URLs des images
+  coverImage  String? // Image de couverture
+  status      ProjectStatus @default(COMPLETED)
+  isPublished Boolean       @default(true)
+  order       Int           @default(0)
+  client      String? // Nom du client
+  year        Int? // Année de réalisation
+  tags        String[]      @default([]) // Tags du projet
+  features    String[]      @default([]) // Caractéristiques du projet
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+// Statuts de projet
+enum ProjectStatus {
+  IN_PROGRESS
+  COMPLETED
+  PLANNED
+}
+
+// Modèle BatiService pour les services de construction
+model BatiService {
+  id          String   @id @default(uuid())
+  title       String
+  description String   @db.Text
+  icon        String // Nom de l'icône ou emoji
+  features    String[] // Liste des caractéristiques
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Modèle BatiProcess pour les étapes du processus de construction
+model BatiProcess {
+  id          String   @id @default(uuid())
+  title       String
+  description String   @db.Text
+  step        Int // Numéro de l'étape
+  icon        String // Nom de l'icône ou emoji
+  duration    String? // Durée estimée de l'étape
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([step])
+}
+
+// Modèle PageView pour tracker les vues de pages
+model PageView {
+  id          String     @id @default(uuid())
+  url         String // URL de la page visitée
+  path        String // Path de la page (sans query params)
+  title       String? // Titre de la page
+  referrer    String? // URL de provenance
+  userId      String? // ID de l'utilisateur si connecté
+  sessionId   String // ID de session unique
+  ipAddress   String? // Adresse IP du visiteur
+  userAgent   String? // User agent du navigateur
+  country     String? // Pays du visiteur
+  city        String? // Ville du visiteur
+  device      DeviceType @default(DESKTOP)
+  browser     String? // Navigateur utilisé
+  os          String? // Système d'exploitation
+  screenWidth Int? // Largeur de l'écran
+  duration    Int? // Durée de la visite en secondes
+  createdAt   DateTime   @default(now())
+
+  @@index([path])
+  @@index([sessionId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// Modèle Event pour tracker les événements personnalisés
+model Event {
+  id        String   @id @default(uuid())
+  name      String // Nom de l'événement (terrain_view, contact_submit, etc.)
+  category  String // Catégorie (engagement, conversion, etc.)
+  label     String? // Label optionnel
+  value     Float? // Valeur numérique optionnelle
+  metadata  Json? // Données additionnelles
+  userId    String? // ID de l'utilisateur si connecté
+  sessionId String // ID de session unique
+  path      String // Page où l'événement s'est produit
+  createdAt DateTime @default(now())
+
+  @@index([name])
+  @@index([category])
+  @@index([sessionId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// Modèle AnalyticsSession pour tracker les sessions utilisateur
+model AnalyticsSession {
+  id             String     @id @default(uuid())
+  sessionId      String     @unique
+  userId         String? // ID de l'utilisateur si connecté
+  ipAddress      String?
+  userAgent      String?
+  country        String?
+  city           String?
+  device         DeviceType @default(DESKTOP)
+  browser        String?
+  os             String?
+  referrer       String? // Source de la visite
+  entryPage      String? // Première page visitée
+  exitPage       String? // Dernière page visitée
+  pageViews      Int        @default(0)
+  duration       Int        @default(0) // Durée en secondes
+  isActive       Boolean    @default(true)
+  startedAt      DateTime   @default(now())
+  lastActivityAt DateTime   @default(now())
+  endedAt        DateTime?
+
+  @@index([sessionId])
+  @@index([userId])
+  @@index([startedAt])
+}
+
+// Types d'appareils
+enum DeviceType {
+  DESKTOP
+  MOBILE
+  TABLET
+}

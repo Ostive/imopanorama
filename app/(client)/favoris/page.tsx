@@ -1,0 +1,336 @@
+'use client'
+
+import { useEffect, useState } from 'react';
+import { useAuth } from '@/features/auth/context/AuthContext';
+import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import PropertyCard from '@/features/properties/components/PropertyCard';
+import { HeartIcon, ExclamationTriangleIcon, ArrowPathIcon, SparklesIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { useFavorites as useFavoritesContext } from '@/features/favorites/context/FavoritesContext';
+import { toast } from 'react-hot-toast';
+import Link from 'next/link';
+
+export default function FavorisPage() {
+  const { isAuthenticated, user, loading: authLoading } = useAuth();
+  const { refreshFavorites, removeFromFavorites } = useFavoritesContext();
+  const [favorites, setFavorites] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  // Fetch favorites
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      if (!isAuthenticated) return;
+
+      setLoading(true);
+      try {
+        const response = await fetch('/api/favorites');
+        if (response.ok) {
+          const data = await response.json();
+          setFavorites(data.favorites || []);
+        }
+      } catch (error) {
+        console.error('Error fetching favorites:', error);
+        toast.error('Erreur lors du chargement des favoris');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFavorites();
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+  }, [isAuthenticated, authLoading, router]);
+
+  // Remove single favorite
+  const removeFavorite = async (propertyId: string) => {
+    try {
+      await removeFromFavorites(propertyId);
+      setFavorites(prev => prev.filter(fav => fav.propertyId !== propertyId));
+      toast.success('Retiré des favoris');
+    } catch (error) {
+      console.error('Error removing favorite:', error);
+      toast.error('Erreur lors de la suppression');
+    }
+  };
+
+  // Clear all favorites
+  const clearFavorites = async () => {
+    try {
+      const response = await fetch('/api/favorites', {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setFavorites([]);
+        await refreshFavorites(); // Update navbar count
+        toast.success('Tous les favoris ont été supprimés');
+      } else {
+        throw new Error('Failed to clear favorites');
+      }
+    } catch (error) {
+      console.error('Error clearing favorites:', error);
+      toast.error('Erreur lors de la suppression');
+    }
+  };
+
+  if (authLoading || loading) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-red-50/20 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header Skeleton */}
+          <div className="mb-12 animate-pulse">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center">
+                <div className="w-16 h-16 bg-gray-200 rounded-2xl mr-4"></div>
+                <div>
+                  <div className="h-8 bg-gray-200 rounded w-48 mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-64"></div>
+                </div>
+              </div>
+              <div className="h-10 bg-gray-200 rounded w-32"></div>
+            </div>
+          </div>
+
+          {/* Terrain Cards Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse">
+                <div className="h-64 bg-gray-200"></div>
+                <div className="p-6 space-y-4">
+                  <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+                  <div className="flex items-center space-x-2">
+                    <div className="h-4 bg-gray-200 rounded w-20"></div>
+                    <div className="h-4 bg-gray-200 rounded w-24"></div>
+                  </div>
+                  <div className="h-4 bg-gray-200 rounded w-full"></div>
+                  <div className="flex items-center justify-between pt-4">
+                    <div className="h-8 bg-gray-200 rounded w-32"></div>
+                    <div className="h-10 bg-gray-200 rounded-full w-10"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null; // Le redirect se fait dans useEffect
+  }
+
+  return (
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-red-50/20 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* En-tête amélioré */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-12"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center">
+              <motion.div
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                className="bg-linear-to-br from-red-500 to-pink-600 rounded-2xl p-4 mr-4 shadow-lg"
+              >
+                <HeartSolidIcon className="h-8 w-8 text-white" />
+              </motion.div>
+              <div>
+                <h1 className="text-4xl font-bold bg-linear-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
+                  Mes Favoris
+                </h1>
+                <p className="text-gray-600 mt-1">
+                  Vos terrains préférés en un seul endroit
+                </p>
+              </div>
+            </div>
+
+            {favorites.length > 0 && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="bg-white rounded-2xl shadow-lg px-6 py-3 border-2 border-red-200"
+              >
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-red-600">{favorites.length}</div>
+                  <div className="text-xs text-gray-600 font-medium">
+                    {favorites.length === 1 ? 'Favori' : 'Favoris'}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Carte d'accueil utilisateur */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-linear-to-r from-red-50 to-pink-50 rounded-3xl shadow-xl p-8 mb-12 border border-red-100"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="bg-white rounded-2xl p-4 mr-6 shadow-md">
+                <HeartSolidIcon className="h-10 w-10 text-red-500" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-1">
+                  Bonjour {user?.firstName} ! 👋
+                </h2>
+                <p className="text-gray-700 text-lg">
+                  {favorites.length === 0
+                    ? "Commencez à ajouter vos propriétés préférées"
+                    : `Vous avez ${favorites.length} propriété${favorites.length !== 1 ? 's' : ''} sauvegardée${favorites.length !== 1 ? 's' : ''}`
+                  }
+                </p>
+              </div>
+            </div>
+
+            {favorites.length > 0 && (
+              <Link
+                href="/proprietes"
+                className="hidden md:flex items-center gap-2 px-6 py-3 bg-white hover:bg-gray-50 rounded-xl transition-colors font-semibold text-gray-700 shadow-md"
+              >
+                <SparklesIcon className="w-5 h-5" />
+                Découvrir plus
+              </Link>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Liste des favoris */}
+        {favorites.length > 0 ? (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="flex justify-between items-center mb-8"
+            >
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Vos Terrains Favoris</h2>
+                <p className="text-gray-600 mt-1">{favorites.length} terrain{favorites.length !== 1 ? 's' : ''} sauvegardé{favorites.length !== 1 ? 's' : ''}</p>
+              </div>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  if (confirm('Êtes-vous sûr de vouloir vider tous vos favoris ?')) {
+                    clearFavorites();
+                  }
+                }}
+                className="flex items-center gap-2 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl transition-colors font-medium border border-red-200"
+                title="Vider tous les favoris"
+              >
+                <TrashIcon className="h-5 w-5" />
+                <span className="hidden sm:inline">Vider tout</span>
+              </motion.button>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {favorites.map((favorite: any, index: number) => (
+                <motion.div
+                  key={favorite.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="relative group"
+                >
+                  <PropertyCard property={favorite.property} variant="featured" />
+                  {/* Bouton pour retirer des favoris */}
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => removeFavorite(favorite.propertyId)}
+                    className="absolute top-4 right-4 bg-white rounded-full p-3 shadow-xl hover:bg-red-50 transition-all border-2 border-red-200 opacity-0 group-hover:opacity-100"
+                    title="Retirer des favoris"
+                  >
+                    <HeartSolidIcon className="h-5 w-5 text-red-500" />
+                  </motion.button>
+                </motion.div>
+              ))}
+            </div>
+          </>
+
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white rounded-3xl shadow-xl p-16 text-center"
+          >
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="mb-8"
+            >
+              <div className="bg-linear-to-br from-red-100 to-pink-100 rounded-full p-8 inline-block mb-6">
+                <HeartIcon className="h-20 w-20 text-red-400" />
+              </div>
+            </motion.div>
+
+            <h3 className="text-3xl font-bold text-gray-900 mb-4">
+              Aucun favori pour le moment
+            </h3>
+            <p className="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
+              Vous n'avez pas encore ajouté de propriétés à vos favoris.
+              Parcourez notre sélection et cliquez sur le cœur pour sauvegarder vos propriétés préférées !
+            </p>
+
+            <Link
+              href="/proprietes"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-linear-to-r from-red-600 to-pink-600 text-white font-semibold rounded-xl hover:shadow-xl hover:scale-105 transition-all duration-300"
+            >
+              <SparklesIcon className="w-6 h-6" />
+              Découvrir nos propriétés
+            </Link>
+
+            <div className="bg-linear-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-6 text-left mt-12 max-w-2xl mx-auto">
+              <div className="flex items-start">
+                <div className="bg-blue-500 rounded-xl p-3 mr-4">
+                  <ExclamationTriangleIcon className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <p className="font-bold text-blue-900 mb-2 text-lg">Comment ajouter des favoris ?</p>
+                  <p className="text-blue-700">
+                    Sur chaque fiche propriété, cliquez sur l'icône <HeartSolidIcon className="inline h-5 w-5 text-red-500" /> pour l'ajouter à vos favoris.
+                    Vous pourrez ensuite les retrouver ici à tout moment.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Actions en bas de page */}
+        {favorites.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="mt-16 flex flex-col sm:flex-row justify-center items-center gap-4"
+          >
+            <Link
+              href="/proprietes"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-white border-2 border-gray-300 shadow-lg text-base font-semibold rounded-xl text-gray-700 hover:bg-gray-50 hover:shadow-xl transition-all"
+            >
+              <SparklesIcon className="h-5 w-5" />
+              Découvrir nos propriétés
+            </Link>
+          </motion.div>
+        )}
+      </div>
+    </div>
+  );
+}

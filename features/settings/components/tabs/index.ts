@@ -1,0 +1,9 @@
+export { GeneralTab } from './GeneralTab';
+export { ContactTab } from './ContactTab';
+export { HomepageTab } from './HomepageTab';
+export { FeaturesTab } from './FeaturesTab';
+export { EmailTab } from './EmailTab';
+export { SeoTab } from './SeoTab';
+export { PricingTab } from './PricingTab';
+export { SecurityTab } from './SecurityTab';
+export { MapTab } from './MapTab';

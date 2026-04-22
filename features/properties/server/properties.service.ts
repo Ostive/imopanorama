@@ -1,0 +1,492 @@
+import { propertyRepository } from '@/infrastructure/database/repositories';
+import { logger } from '@/infrastructure/logger/logger';
+import { PropertyType, TransactionType, PropertyStatus, PropertyCondition, Prisma } from '@prisma/client';
+
+/* ─── Types ────────────────────────────────────────────────── */
+
+interface PropertyListParams {
+  page?: number;
+  limit?: number;
+  sort?: string;
+  view?: 'list' | 'full';
+  filter?: {
+    propertyType?: string;
+    transactionType?: string;
+    city?: string;
+    status?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    minSize?: number;
+    maxSize?: number;
+    minBedrooms?: number;
+    maxBedrooms?: number;
+    minBathrooms?: number;
+    minRooms?: number;
+    minFloor?: number;
+    maxFloor?: number;
+    minYearBuilt?: number;
+    maxYearBuilt?: number;
+    condition?: string;
+    isFeatured?: boolean;
+    amenities?: string[];
+    features?: string[];
+    search?: string;
+  };
+}
+
+interface PropertyListResult {
+  data: unknown[];
+  total: number;
+  page: number;
+  totalPages: number;
+  statusCounts?: Record<string, number>;
+}
+
+interface CreatePropertyData {
+  title: string;
+  description?: string | null;
+  propertyType: PropertyType;
+  transactionType: TransactionType;
+  location: string;
+  city: string;
+  address?: string | null;
+  zipCode?: string | null;
+  coordinates?: Prisma.InputJsonValue;
+  price: number;
+  pricePerM2?: number | null;
+  rentPrice?: number | null;
+  currency?: string;
+  totalSize: number;
+  livingSize?: number | null;
+  landSize?: number | null;
+  bedrooms?: number | null;
+  bathrooms?: number | null;
+  rooms?: number | null;
+  floors?: number | null;
+  floor?: number | null;
+  yearBuilt?: number | null;
+  condition?: PropertyCondition | null;
+  features?: string[];
+  amenities?: string[];
+  images?: string[];
+  coverImage?: string | null;
+  virtualTour?: string | null;
+  videoUrl?: string | null;
+  status?: PropertyStatus;
+  isFeatured?: boolean;
+  isPublished?: boolean;
+  reference?: string | null;
+  energyClass?: string | null;
+  emissions?: string | null;
+  taxFonciere?: number | null;
+  charges?: number | null;
+  ownerId: string;
+}
+
+/* ─── Select fields ────────────────────────────────────────── */
+
+const LIST_SELECT = {
+  id: true,
+  title: true,
+  propertyType: true,
+  transactionType: true,
+  city: true,
+  location: true,
+  price: true,
+  pricePerM2: true,
+  totalSize: true,
+  bedrooms: true,
+  bathrooms: true,
+  coverImage: true,
+  images: true,
+  status: true,
+  isFeatured: true,
+  coordinates: true,
+  createdAt: true,
+  updatedAt: true,
+  views: true,
+  description: true,
+  amenities: true,
+  features: true,
+} as const;
+
+/* ─── Bot detection ────────────────────────────────────────── */
+
+const BOT_PATTERNS = /bot|crawl|spider|slurp|baiduspider|yandex|sogou|duckduckbot|semrush|ahrefs|mj12bot|dotbot|petalbot|bytespider|gptbot|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot|discordbot|preview/i;
+
+/* ─── Service ──────────────────────────────────────────────── */
+
+export const propertiesServerService = {
+  /**
+   * Liste les propriétés avec filtres, tri et pagination
+   */
+  async list(params: PropertyListParams = {}): Promise<PropertyListResult> {
+    const {
+      page = 1,
+      limit = 12,
+      sort: rawSort,
+      view = 'list',
+      filter = {},
+    } = params;
+
+    const skip = (page - 1) * limit;
+    const where: Prisma.PropertyWhereInput = {};
+
+    // Public views: only published, non-draft
+    if (view !== 'full') {
+      where.isPublished = true;
+      where.status = { not: 'DRAFT' };
+    }
+
+    // Filters
+    if (filter.propertyType) {
+      const types = filter.propertyType.split(',') as PropertyType[];
+      where.propertyType = { in: types };
+    }
+    if (filter.transactionType) {
+      const types = filter.transactionType.split(',') as TransactionType[];
+      where.transactionType = types.length === 1 ? types[0] : { in: types };
+    }
+    if (filter.city) {
+      where.city = { contains: filter.city, mode: 'insensitive' };
+    }
+    if (filter.status) {
+      const statuses = filter.status.split(',') as PropertyStatus[];
+      where.status = statuses.length === 1 ? statuses[0] : { in: statuses };
+    }
+    if (filter.minPrice || filter.maxPrice) {
+      where.price = {};
+      if (filter.minPrice) where.price.gte = filter.minPrice;
+      if (filter.maxPrice) where.price.lte = filter.maxPrice;
+    }
+    if (filter.minSize || filter.maxSize) {
+      where.totalSize = {};
+      if (filter.minSize) where.totalSize.gte = filter.minSize;
+      if (filter.maxSize) where.totalSize.lte = filter.maxSize;
+    }
+    if (filter.minBedrooms || filter.maxBedrooms) {
+      where.bedrooms = {};
+      if (filter.minBedrooms) where.bedrooms.gte = filter.minBedrooms;
+      if (filter.maxBedrooms) where.bedrooms.lte = filter.maxBedrooms;
+    }
+    if (filter.minBathrooms) {
+      where.bathrooms = { gte: filter.minBathrooms };
+    }
+    if (filter.minRooms) {
+      where.rooms = { gte: filter.minRooms };
+    }
+    if (filter.minFloor !== undefined || filter.maxFloor !== undefined) {
+      where.floor = {};
+      if (filter.minFloor !== undefined) where.floor.gte = filter.minFloor;
+      if (filter.maxFloor !== undefined) where.floor.lte = filter.maxFloor;
+    }
+    if (filter.minYearBuilt || filter.maxYearBuilt) {
+      where.yearBuilt = {};
+      if (filter.minYearBuilt) where.yearBuilt.gte = filter.minYearBuilt;
+      if (filter.maxYearBuilt) where.yearBuilt.lte = filter.maxYearBuilt;
+    }
+    if (filter.condition) {
+      const conditions = filter.condition.split(',') as PropertyCondition[];
+      where.condition = conditions.length === 1 ? conditions[0] : { in: conditions };
+    }
+    if (filter.isFeatured !== undefined) {
+      where.isFeatured = filter.isFeatured;
+    }
+    if (filter.amenities && filter.amenities.length > 0) {
+      where.amenities = { hasEvery: filter.amenities };
+    }
+    if (filter.features && filter.features.length > 0) {
+      where.features = { hasEvery: filter.features };
+    }
+
+    // Search (Qdrant + fallback)
+    const sort = rawSort || (filter.search ? 'relevance' : 'date_desc');
+    let qdrantIds: string[] | null = null;
+
+    if (filter.search) {
+      try {
+        const { searchProperties } = await import('@/infrastructure/search/qdrant/search');
+        logger.debug('🔍 Attempting Qdrant search for:', filter.search);
+        const qdrantResults = await searchProperties(filter.search, {
+          city: filter.city || undefined,
+          type: filter.propertyType?.split(',')[0] || undefined,
+          minPrice: filter.minPrice,
+          maxPrice: filter.maxPrice,
+          minSize: filter.minSize,
+          maxSize: filter.maxSize,
+        }, { limit: 60 });
+
+        if (qdrantResults.results.length > 0) {
+          qdrantIds = qdrantResults.results.map(r => r.id);
+          logger.debug(`✅ Qdrant found ${qdrantIds.length} matches`);
+        }
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        logger.warn(`⚠️ Qdrant search unavailable, falling back to database (${message})`);
+      }
+
+      if (qdrantIds && qdrantIds.length > 0) {
+        where.id = { in: qdrantIds };
+      } else {
+        where.OR = [
+          { title: { contains: filter.search, mode: 'insensitive' } },
+          { description: { contains: filter.search, mode: 'insensitive' } },
+          { location: { contains: filter.search, mode: 'insensitive' } },
+          { city: { contains: filter.search, mode: 'insensitive' } },
+        ];
+      }
+    }
+
+    // Order
+    let orderBy: Prisma.PropertyOrderByWithRelationInput = { createdAt: 'desc' };
+    switch (sort) {
+      case 'price_asc': orderBy = { price: 'asc' }; break;
+      case 'price_desc': orderBy = { price: 'desc' }; break;
+      case 'size_asc': orderBy = { totalSize: 'asc' }; break;
+      case 'size_desc': orderBy = { totalSize: 'desc' }; break;
+      case 'date_asc': orderBy = { createdAt: 'asc' }; break;
+      case 'title_asc': orderBy = { title: 'asc' }; break;
+      case 'title_desc': orderBy = { title: 'desc' }; break;
+      case 'city_asc': orderBy = { city: 'asc' }; break;
+      case 'city_desc': orderBy = { city: 'desc' }; break;
+      case 'views_desc': orderBy = { views: 'desc' }; break;
+      case 'relevance':
+      case 'date_desc':
+      default: orderBy = { createdAt: 'desc' }; break;
+    }
+
+    const select = view === 'list' ? LIST_SELECT : undefined;
+
+    // Relevance-based sort (Qdrant order)
+    if (sort === 'relevance' && qdrantIds && qdrantIds.length > 0) {
+      const allMatches = await propertyRepository.findMany({ where, select });
+      allMatches.sort((a, b) => qdrantIds!.indexOf(a.id) - qdrantIds!.indexOf(b.id));
+      const total = allMatches.length;
+      return {
+        data: allMatches.slice(skip, skip + limit),
+        total,
+        page,
+        totalPages: Math.ceil(total / limit),
+      };
+    }
+
+    // Standard query + status counts in parallel
+    const [{ data: properties, total }, statusCounts] = await Promise.all([
+      propertyRepository.findManyWithCount({
+        where, orderBy, skip, take: limit, select,
+      }),
+      view === 'full' ? Promise.all([
+        propertyRepository.count({ status: 'AVAILABLE' }),
+        propertyRepository.count({ status: 'RESERVED' }),
+        propertyRepository.count({ status: 'SOLD' }),
+        propertyRepository.count({ status: 'RENTED' }),
+        propertyRepository.count({ status: 'DRAFT' }),
+      ]).then(([available, reserved, sold, rented, draft]) => ({
+        available, reserved, sold, rented, draft,
+      })) : Promise.resolve(undefined),
+    ]);
+
+    return {
+      data: properties,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+      ...(statusCounts && { statusCounts }),
+    };
+  },
+
+  /**
+   * Récupère une propriété par ID avec incrémentation des vues
+   */
+  async getById(id: string, userAgent?: string) {
+    const property = await propertyRepository.findUnique({
+      where: { id },
+      include: {
+        owner: {
+          select: { id: true, name: true, email: true, phone: true },
+        },
+      },
+    });
+
+    if (!property) return null;
+
+    // Incrémenter les vues sauf pour les bots
+    if (userAgent && !BOT_PATTERNS.test(userAgent)) {
+      await propertyRepository.update(id, { views: { increment: 1 } })
+        .catch(err => logger.warn('Failed to increment views:', err));
+    }
+
+    return property;
+  },
+
+  /**
+   * Crée une propriété
+   */
+  async create(data: CreatePropertyData) {
+    return propertyRepository.create({
+      title: data.title,
+      description: data.description,
+      propertyType: data.propertyType,
+      transactionType: data.transactionType,
+      location: data.location,
+      city: data.city,
+      address: data.address,
+      zipCode: data.zipCode,
+      coordinates: data.coordinates,
+      price: data.price,
+      pricePerM2: data.pricePerM2,
+      rentPrice: data.rentPrice,
+      currency: data.currency,
+      totalSize: data.totalSize,
+      livingSize: data.livingSize,
+      landSize: data.landSize,
+      bedrooms: data.bedrooms,
+      bathrooms: data.bathrooms,
+      rooms: data.rooms,
+      floors: data.floors,
+      floor: data.floor,
+      yearBuilt: data.yearBuilt,
+      condition: data.condition,
+      features: data.features,
+      amenities: data.amenities,
+      images: data.images,
+      coverImage: data.coverImage,
+      virtualTour: data.virtualTour,
+      videoUrl: data.videoUrl,
+      status: data.status,
+      isFeatured: data.isFeatured,
+      isPublished: data.isPublished,
+      reference: data.reference,
+      energyClass: data.energyClass,
+      emissions: data.emissions,
+      taxFonciere: data.taxFonciere,
+      charges: data.charges,
+      ownerId: data.ownerId,
+      publishedAt: data.isPublished ? new Date() : null,
+    });
+  },
+
+  /**
+   * Met à jour une propriété
+   */
+  async update(id: string, data: Record<string, unknown>) {
+    const existing = await propertyRepository.findUnique({ where: { id } });
+    if (!existing) return null;
+
+    const updateData: Record<string, unknown> = { ...data };
+
+    // Gérer publishedAt
+    if (data.isPublished === true && !existing.isPublished) {
+      updateData.publishedAt = new Date();
+    } else if (data.isPublished === false && existing.isPublished) {
+      updateData.publishedAt = null;
+    }
+
+    return propertyRepository.update(id, updateData);
+  },
+
+  /**
+   * Récupère des propriétés similaires à celle donnée.
+   *
+   * Critères de similarité (par ordre de priorité) :
+   * 1. Même ville
+   * 2. Même type de bien (ou de la même catégorie : résidentiel, terrain, commercial)
+   * 3. Même type de transaction (vente / location)
+   * 4. Prix dans une fourchette de ±30 %
+   *
+   * Retourne au maximum `limit` résultats, excluant la propriété source.
+   */
+  async getSimilar(id: string, limit = 4) {
+    // 1. Récupérer la propriété de référence
+    const source = await propertyRepository.findUnique({ where: { id } });
+    if (!source) return [];
+
+    const priceMargin = source.price * 0.3;
+    const minPrice = Math.max(0, source.price - priceMargin);
+    const maxPrice = source.price + priceMargin;
+
+    // Déterminer la catégorie du bien pour élargir si nécessaire
+    const categoryTypes = getCategoryTypes(source.propertyType);
+
+    // 2. Requête : même ville + même catégorie + prix similaire
+    const candidates = await propertyRepository.findMany({
+      where: {
+        id: { not: id },
+        isPublished: true,
+        status: { not: 'DRAFT' },
+        OR: [
+          // Priorité haute : même ville + même type + prix similaire
+          {
+            city: source.city,
+            propertyType: source.propertyType,
+            transactionType: source.transactionType,
+            price: { gte: minPrice, lte: maxPrice },
+          },
+          // Priorité moyenne : même ville + même catégorie
+          {
+            city: source.city,
+            propertyType: { in: categoryTypes },
+            transactionType: source.transactionType,
+          },
+          // Priorité basse : même type de bien partout
+          {
+            propertyType: source.propertyType,
+            transactionType: source.transactionType,
+            price: { gte: minPrice, lte: maxPrice },
+          },
+        ],
+      },
+      select: LIST_SELECT,
+      take: limit * 3, // surdimensionner pour scorer ensuite
+      orderBy: { createdAt: 'desc' },
+    });
+
+    // 3. Scorer et trier par pertinence
+    const scored = candidates.map((candidate) => {
+      let score = 0;
+      if (candidate.city === source.city) score += 4;
+      if (candidate.propertyType === source.propertyType) score += 3;
+      if (candidate.transactionType === source.transactionType) score += 2;
+      if (candidate.price >= minPrice && candidate.price <= maxPrice) score += 2;
+      if (candidate.bedrooms && source.bedrooms && candidate.bedrooms === source.bedrooms) score += 1;
+      return { ...candidate, _score: score };
+    });
+
+    scored.sort((a, b) => b._score - a._score);
+
+    // 4. Retourner les meilleurs résultats (sans le score interne)
+    return scored.slice(0, limit).map(({ _score, ...rest }) => rest);
+  },
+
+  /**
+   * Supprime une propriété
+   */
+  async remove(id: string): Promise<boolean> {
+    const exists = await propertyRepository.exists(id);
+    if (!exists) return false;
+    await propertyRepository.delete(id);
+    return true;
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/** Résidentiel types */
+const RESIDENTIAL_TYPES: PropertyType[] = ['VILLA', 'HOUSE', 'TOWNHOUSE', 'COUNTRY_HOUSE', 'APARTMENT', 'STUDIO', 'PENTHOUSE', 'DUPLEX', 'LOFT'];
+/** Terrain types */
+const TERRAIN_TYPES: PropertyType[] = ['TERRAIN_RESIDENTIAL', 'TERRAIN_COMMERCIAL', 'TERRAIN_AGRICULTURAL', 'TERRAIN_INDUSTRIAL'];
+/** Commercial types */
+const COMMERCIAL_TYPES: PropertyType[] = ['OFFICE', 'SHOP', 'WAREHOUSE', 'BUILDING', 'HOTEL', 'RESTAURANT'];
+
+/**
+ * Retourne les types de biens de la même catégorie que le type donné.
+ * Permet d'élargir la recherche de similaires au-delà du type exact.
+ */
+function getCategoryTypes(type: PropertyType): PropertyType[] {
+  if (RESIDENTIAL_TYPES.includes(type)) return RESIDENTIAL_TYPES;
+  if (TERRAIN_TYPES.includes(type)) return TERRAIN_TYPES;
+  if (COMMERCIAL_TYPES.includes(type)) return COMMERCIAL_TYPES;
+  return [type];
+}

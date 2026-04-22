@@ -1,0 +1,506 @@
+'use client';
+
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
+import { ImageGallery } from '@/features/upload/components/ImageGallery';
+import { ImageUploader } from '@/features/upload/components/ImageUploader';
+import { PageLoader } from '@/shared/components/ui/Loader';
+import {
+    FolderIcon,
+    ArrowLeftIcon,
+    PlusIcon,
+    FolderPlusIcon,
+    PhotoIcon,
+    ServerIcon,
+    MagnifyingGlassIcon,
+    ViewColumnsIcon,
+    Squares2X2Icon,
+    TrashIcon,
+    EllipsisHorizontalIcon
+} from '@heroicons/react/24/outline';
+
+interface BunnyCdnFile {
+    Guid: string;
+    StorageZoneName: string;
+    Path: string;
+    ObjectName: string;
+    Length: number;
+    LastChanged: string;
+    IsDirectory: boolean;
+    ServerId: number;
+    UserId: string;
+    DateCreated: string;
+    StorageZoneId: number;
+}
+
+interface MediaLibraryProps {
+    onSelect?: (url: string) => void;
+    selectionMode?: boolean;
+    initialPath?: string;
+    className?: string;
+}
+
+export const MediaLibrary: React.FC<MediaLibraryProps> = ({
+    onSelect,
+    selectionMode = false,
+    initialPath = '/images/',
+    className = ''
+}) => {
+    const [currentPath, setCurrentPath] = useState<string>(initialPath);
+    const [files, setFiles] = useState<BunnyCdnFile[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    const [showUploader, setShowUploader] = useState<boolean>(false);
+    const [newFolderName, setNewFolderName] = useState<string>('');
+    const [showNewFolderInput, setShowNewFolderInput] = useState<boolean>(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+    const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
+    const hiddenFileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleTriggerUpload = () => {
+        if (hiddenFileInputRef.current) {
+            hiddenFileInputRef.current.click();
+        }
+    };
+
+    const handleHiddenFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (files && files.length > 0) {
+            setFileToUpload(files[0]);
+            setShowUploader(true);
+            // Reset input so same file can be selected again if needed
+            e.target.value = '';
+        }
+    };
+
+    // Charger les fichiers du répertoire courant
+    const loadFiles = useCallback(async (path: string = currentPath) => {
+        try {
+            setIsLoading(true);
+            setError(null);
+
+            const response = await fetch(`/api/admin/images?path=${encodeURIComponent(path)}`);
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Erreur serveur');
+            }
+
+            const data = await response.json();
+            setFiles(data.files || []);
+        } catch (err) {
+            console.error('Erreur lors du chargement des fichiers:', err);
+            setError('Impossible de charger les fichiers. Veuillez réessayer.');
+        } finally {
+            setIsLoading(false);
+        }
+    }, [currentPath]);
+
+    // Charger les fichiers au chargement de la page et lorsque le chemin change
+    useEffect(() => {
+        loadFiles();
+    }, [loadFiles]);
+
+    // Naviguer dans un dossier
+    const navigateToFolder = (folder: BunnyCdnFile) => {
+        const newPath = `${currentPath}${folder.ObjectName}/`;
+        setCurrentPath(newPath);
+    };
+
+    // Revenir au dossier parent
+    const navigateToParent = () => {
+        if (currentPath === '/images/') return;
+
+        const pathParts = currentPath.split('/').filter(Boolean);
+        pathParts.pop(); // Supprimer le dernier dossier
+        const newPath = pathParts.length ? `/${pathParts.join('/')}/` : '/images/';
+        setCurrentPath(newPath);
+    };
+
+    // Supprimer un fichier
+    const handleDeleteFile = async (imageUrl: string, index: number) => {
+        if (!confirm("Êtes-vous sûr de vouloir supprimer ce fichier ?")) return;
+
+        try {
+            const response = await fetch(`/api/admin/images?path=${encodeURIComponent(imageUrl)}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Erreur serveur');
+            }
+
+            // Recharger les fichiers après la suppression
+            loadFiles();
+        } catch (err) {
+            console.error('Erreur lors de la suppression du fichier:', err);
+            setError('Impossible de supprimer le fichier. Veuillez réessayer.');
+        }
+    };
+
+    // Créer un nouveau dossier
+    const handleCreateFolder = async () => {
+        if (!newFolderName.trim()) {
+            setError('Le nom du dossier ne peut pas être vide.');
+            return;
+        }
+
+        try {
+            setIsLoading(true);
+            setError(null);
+            const folderPath = `${currentPath}${newFolderName.trim()}`;
+
+            const response = await fetch('/api/admin/images', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'createDirectory',
+                    path: folderPath
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Erreur serveur');
+            }
+
+            setNewFolderName('');
+            setShowNewFolderInput(false);
+            loadFiles();
+        } catch (err) {
+            console.error('Erreur lors de la création du dossier:', err);
+            setError('Impossible de créer le dossier. Veuillez réessayer.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Gérer l'upload d'une nouvelle image
+    const handleImageUploaded = (imageUrl: string) => {
+        // Recharger les fichiers après l'upload
+        loadFiles();
+        setShowUploader(false);
+    };
+
+    // Filtrer les fichiers (dossiers et images) basé sur la recherche
+    const filteredFiles = files.filter(file =>
+        file.ObjectName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const folders = filteredFiles.filter(file => file.IsDirectory);
+
+    const images = filteredFiles
+        .filter(file => !file.IsDirectory)
+        .map(file => {
+            const baseUrl = process.env.NEXT_PUBLIC_BUNNYCDN_PULL_ZONE_URL;
+            if (!baseUrl) {
+                console.warn("NEXT_PUBLIC_BUNNYCDN_PULL_ZONE_URL is not defined");
+                return '';
+            }
+            const path = currentPath.startsWith('/') ? currentPath : `/${currentPath}`;
+            const normalizedPath = path.endsWith('/') ? path : `${path}/`;
+            return `${baseUrl}${normalizedPath}${file.ObjectName}`;
+        })
+        .filter(url => url !== '');
+
+    // Générer le fil d'Ariane
+    const generateBreadcrumb = () => {
+        const pathParts = currentPath.split('/').filter(Boolean);
+
+        return (
+            <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300 mb-4 overflow-x-auto scrollbar-hide">
+                <button
+                    onClick={() => setCurrentPath('/images/')}
+                    className="hover:text-primary-600 dark:hover:text-primary-400 flex items-center transition-colors px-2 py-1 rounded-md hover:bg-gray-100"
+                >
+                    <FolderIcon className="h-4 w-4 mr-1 text-gray-400" />
+                    <span>Racine</span>
+                </button>
+
+                {pathParts.map((part, index) => {
+                    if (part === 'images') return null;
+                    const path = `/${pathParts.slice(0, index + 1).join('/')}/`;
+
+                    return (
+                        <React.Fragment key={path}>
+                            <span className="text-gray-300">/</span>
+                            <button
+                                onClick={() => setCurrentPath(path)}
+                                className={`hover:text-primary-600 transistion-colors px-2 py-1 rounded-md hover:bg-gray-100 ${index === pathParts.length - 1 ? 'font-semibold text-gray-900 bg-gray-50' : ''}`}
+                            >
+                                {part}
+                            </button>
+                        </React.Fragment>
+                    );
+                })}
+            </div>
+        );
+    };
+
+    const totalSize = files.reduce((sum, file) => sum + (file.Length || 0), 0);
+    const formatBytes = (bytes: number) => {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    };
+
+    return (
+        <div className={`flex flex-col h-full ${className}`}>
+            {/* Header / Toolbar */}
+            <div className={`${selectionMode ? 'mb-4' : 'bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6'}`}>
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    {!selectionMode && (
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
+                                <PhotoIcon className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h1 className="text-xl font-bold text-gray-900">Médiathèque</h1>
+                                <p className="text-xs text-gray-500">{files.length} éléments • {formatBytes(totalSize)}</p>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className={`flex items-center gap-3 flex-1 ${selectionMode ? 'w-full' : 'lg:justify-end w-full lg:w-auto'}`}>
+                        {/* Search Bar */}
+                        <div className="relative flex-1">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <MagnifyingGlassIcon className="h-4 w-4 text-gray-400" />
+                            </div>
+                            <input
+                                type="text"
+                                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-shadow shadow-sm"
+                                placeholder="Rechercher un fichier..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                        </div>
+
+                        {/* View Toggle */}
+                        <div className="flex bg-gray-100 rounded-lg p-1 border border-gray-200 h-[38px] items-center shrink-0">
+                            <button
+                                onClick={() => setViewMode('grid')}
+                                className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-500 hover:text-gray-700'}`}
+                            >
+                                <Squares2X2Icon className="h-4 w-4" />
+                            </button>
+                            <button
+                                onClick={() => setViewMode('list')}
+                                className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-500 hover:text-gray-700'}`}
+                            >
+                                <ViewColumnsIcon className="h-4 w-4" />
+                            </button>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex gap-2 shrink-0">
+                            {!selectionMode && (
+                                <Link href="/admin" className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg border border-transparent hover:border-gray-200 transition-colors">
+                                    <ArrowLeftIcon className="h-5 w-5" />
+                                </Link>
+                            )}
+                            <button
+                                onClick={() => setShowNewFolderInput(!showNewFolderInput)}
+                                className="p-2 text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg shadow-sm transition-all"
+                                title="Nouveau dossier"
+                            >
+                                <FolderPlusIcon className="h-5 w-5" />
+                            </button>
+
+                            <input
+                                type="file"
+                                ref={hiddenFileInputRef}
+                                onChange={handleHiddenFileChange}
+                                className="hidden"
+                                accept="image/*"
+                            />
+                            <button
+                                onClick={handleTriggerUpload}
+                                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-700 hover:to-indigo-700 text-white font-medium rounded-lg shadow-md transition-all transform hover:scale-[1.02]"
+                            >
+                                <PlusIcon className="h-5 w-5" />
+                                <span className="hidden sm:inline">{selectionMode ? 'Uploader' : 'Ajouter'}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {error && (
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center"
+                >
+                    <span className="mr-2">⚠️</span> {error}
+                </motion.div>
+            )}
+
+            <AnimatePresence>
+                {showNewFolderInput && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                    >
+                        <div className="flex items-center space-x-2 bg-gray-50 p-4 rounded-xl border border-gray-200 mb-4 shadow-inner">
+                            <FolderIcon className="w-5 h-5 text-gray-400" />
+                            <input
+                                type="text"
+                                value={newFolderName}
+                                onChange={(e) => setNewFolderName(e.target.value)}
+                                placeholder="Nom du nouveau dossier"
+                                className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500"
+                                autoFocus
+                            />
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={handleCreateFolder}
+                                    className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium shadow-sm"
+                                >
+                                    Créer
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setShowNewFolderInput(false);
+                                        setNewFolderName('');
+                                    }}
+                                    className="px-3 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg text-sm font-medium shadow-sm"
+                                >
+                                    Annuler
+                                </button>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+
+                {showUploader && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden mb-6"
+                    >
+                        <div className="bg-white border border-gray-200 p-4 rounded-xl shadow-sm relative">
+                            <button
+                                onClick={() => setShowUploader(false)}
+                                className="absolute top-2 right-2 p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100"
+                            >
+                                <span className="sr-only">Fermer</span>
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                            <div className="mt-2">
+                                <ImageUploader
+                                    onImageUploaded={handleImageUploaded}
+                                    directory={currentPath}
+                                    label="Cliquez ou déposez votre image ici pour l'uploader instantanément"
+                                    initialFile={fileToUpload}
+                                />
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Main Content Area */}
+            <div className={`${selectionMode ? 'bg-gray-50 border border-gray-200 rounded-lg' : 'bg-white rounded-xl shadow-sm border border-gray-200'} flex-1 flex flex-col min-h-0 overflow-hidden`}>
+                {/* Fil d'Ariane Bar */}
+                <div className="px-6 py-3 border-b border-gray-200 flex items-center justify-between bg-white">
+                    {generateBreadcrumb()}
+                    {currentPath !== '/images/' && (
+                        <button
+                            onClick={navigateToParent}
+                            className="text-xs font-medium text-gray-500 hover:text-primary-600 flex items-center bg-white px-2 py-1 rounded border border-gray-200 shadow-sm hover:shadow transition-all"
+                        >
+                            <ArrowLeftIcon className="h-3 w-3 mr-1" />
+                            Retour
+                        </button>
+                    )}
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-6">
+                    {isLoading ? (
+                        <div className="h-full flex flex-col items-center justify-center text-gray-400">
+                            <PageLoader text="Chargement de vos médias..." />
+                        </div>
+                    ) : (
+                        <div className="flex flex-col gap-8 min-h-[300px]">
+                            {/* Empty State */}
+                            {folders.length === 0 && images.length === 0 && (
+                                <div className="flex-1 flex flex-col items-center justify-center text-center opacity-60">
+                                    <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                        <FolderIcon className="w-10 h-10 text-gray-300" />
+                                    </div>
+                                    <h3 className="text-lg font-medium text-gray-900">Ce dossier est vide</h3>
+                                    <p className="text-gray-500 max-w-sm mx-auto mt-2">Commencez par ajouter des images ou créez un sous-dossier pour organiser vos fichiers.</p>
+                                    <button
+                                        onClick={handleTriggerUpload}
+                                        className="mt-6 text-primary-600 hover:text-primary-700 font-medium hover:underline flex items-center gap-2 mx-auto"
+                                    >
+                                        <PlusIcon className="w-5 h-5" />
+                                        <span>Uploader un fichier maintenant</span>
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Dossiers Grid */}
+                            {folders.length > 0 && (
+                                <div>
+                                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center">
+                                        <FolderIcon className="w-4 h-4 mr-2" />
+                                        Dossiers ({folders.length})
+                                    </h3>
+                                    <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4">
+                                        {folders.map((folder) => (
+                                            <motion.div
+                                                key={folder.Guid}
+                                                whileHover={{ scale: 1.02, backgroundColor: '#F9FAFB' }}
+                                                onClick={() => navigateToFolder(folder)}
+                                                className="cursor-pointer bg-white group hover:shadow-md border border-gray-200 hover:border-primary-200 p-3 rounded-xl flex flex-row items-center transition-all relative overflow-hidden"
+                                            >
+                                                <div className="flex-shrink-0 mr-3">
+                                                    <FolderIcon className="h-10 w-10 text-yellow-400 group-hover:text-yellow-500 transition-colors drop-shadow-sm" />
+                                                </div>
+                                                <span className="flex-1 text-sm font-medium text-gray-700 group-hover:text-gray-900 text-left truncate" title={folder.ObjectName}>
+                                                    {folder.ObjectName}
+                                                </span>
+                                            </motion.div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Images Grid */}
+                            {images.length > 0 && (
+                                <div>
+                                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center">
+                                        <PhotoIcon className="w-4 h-4 mr-2" />
+                                        Images ({images.length})
+                                    </h3>
+                                    {/* Pas besoin de refaire la logique Grid/List ici car ImageGallery gère sa propre grille, 
+                                        mais on pourrait passer une prop viewMode à ImageGallery si on voulait supporter le mode liste. 
+                                        Pour l'instant, gardons la grille par défaut mais améliorée. */}
+                                    <ImageGallery
+                                        images={images}
+                                        onDelete={handleDeleteFile}
+                                        onImageClick={onSelect}
+                                        editable={true}
+                                        className={viewMode === 'list' ? 'bg-white rounded-lg' : ''} // Placeholder for list mode styling if added later
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div >
+    );
+};

@@ -1,0 +1,127 @@
+{
+  "uid": "imo-business-overview",
+  "title": "ImoPanorama - Business Overview",
+  "tags": ["imopanorama", "business"],
+  "timezone": "browser",
+  "refresh": "5m",
+  "time": { "from": "now-30d", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Total Propriétés",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT COUNT(*) AS \"Total\" FROM \"Property\";", "format": "table" }],
+      "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "blue" }, "thresholds": { "steps": [{ "color": "blue", "value": null }] } } }
+    },
+    {
+      "id": 2,
+      "title": "Disponibles",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT COUNT(*) AS \"Disponibles\" FROM \"Property\" WHERE \"status\" = 'AVAILABLE';", "format": "table" }],
+      "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "green" }, "thresholds": { "steps": [{ "color": "green", "value": null }] } } }
+    },
+    {
+      "id": 3,
+      "title": "Réservées",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT COUNT(*) AS \"Réservées\" FROM \"Property\" WHERE \"status\" = 'RESERVED';", "format": "table" }],
+      "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "orange" }, "thresholds": { "steps": [{ "color": "orange", "value": null }] } } }
+    },
+    {
+      "id": 4,
+      "title": "Vendues",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT COUNT(*) AS \"Vendues\" FROM \"Property\" WHERE \"status\" = 'SOLD';", "format": "table" }],
+      "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "red" }, "thresholds": { "steps": [{ "color": "red", "value": null }] } } }
+    },
+    {
+      "id": 5,
+      "title": "Utilisateurs",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT COUNT(*) AS \"Utilisateurs\" FROM \"User\";", "format": "table" }],
+      "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "purple" }, "thresholds": { "steps": [{ "color": "purple", "value": null }] } } }
+    },
+    {
+      "id": 6,
+      "title": "Demandes de contact",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT COUNT(*) AS \"Contacts\" FROM \"PropertyContact\";", "format": "table" }],
+      "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "yellow" }, "thresholds": { "steps": [{ "color": "yellow", "value": null }] } } }
+    },
+    {
+      "id": 7,
+      "title": "Propriétés par type",
+      "type": "piechart",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 4 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT \"propertyType\" AS \"Type\", COUNT(*) AS \"Nombre\" FROM \"Property\" GROUP BY \"propertyType\" ORDER BY \"Nombre\" DESC;", "format": "table" }],
+      "options": { "legend": { "placement": "right", "displayMode": "table", "values": ["value", "percent"] }, "pieType": "donut" }
+    },
+    {
+      "id": 8,
+      "title": "Vente vs Location",
+      "type": "piechart",
+      "gridPos": { "h": 8, "w": 4, "x": 8, "y": 4 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT \"transactionType\" AS \"Transaction\", COUNT(*) AS \"Nombre\" FROM \"Property\" GROUP BY \"transactionType\";", "format": "table" }],
+      "options": { "legend": { "placement": "bottom" }, "pieType": "donut" }
+    },
+    {
+      "id": 9,
+      "title": "Top 10 Villes",
+      "type": "barchart",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT \"city\" AS \"Ville\", COUNT(*) AS \"Propriétés\" FROM \"Property\" GROUP BY \"city\" ORDER BY \"Propriétés\" DESC LIMIT 10;", "format": "table" }],
+      "options": { "orientation": "horizontal" }
+    },
+    {
+      "id": 10,
+      "title": "PageViews par jour",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 12 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT DATE(\"createdAt\") AS \"time\", COUNT(*) AS \"Vues\" FROM \"PageView\" GROUP BY DATE(\"createdAt\") ORDER BY \"time\";", "format": "time_series" }],
+      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 20, "gradientMode": "opacity", "lineWidth": 2 }, "color": { "mode": "fixed", "fixedColor": "blue" } } }
+    },
+    {
+      "id": 11,
+      "title": "Événements utilisateurs",
+      "type": "barchart",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT \"name\" AS \"Événement\", COUNT(*) AS \"Nombre\" FROM \"Event\" GROUP BY \"name\" ORDER BY \"Nombre\" DESC;", "format": "table" }],
+      "options": { "orientation": "horizontal" }
+    },
+    {
+      "id": 12,
+      "title": "Utilisateurs par rôle",
+      "type": "piechart",
+      "gridPos": { "h": 8, "w": 4, "x": 12, "y": 20 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT \"role\" AS \"Rôle\", COUNT(*) AS \"Nombre\" FROM \"User\" GROUP BY \"role\";", "format": "table" }],
+      "options": { "legend": { "placement": "bottom" }, "pieType": "donut" }
+    },
+    {
+      "id": 13,
+      "title": "Dernières propriétés ajoutées",
+      "type": "table",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 20 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT \"title\" AS \"Titre\", \"city\" AS \"Ville\", \"propertyType\" AS \"Type\", \"price\" AS \"Prix\", \"status\" AS \"Statut\", \"createdAt\" AS \"Créé le\" FROM \"Property\" ORDER BY \"createdAt\" DESC LIMIT 10;", "format": "table" }]
+    }
+  ],
+  "schemaVersion": 39
+}

@@ -1,0 +1,128 @@
+{
+  "uid": "imo-traffic-audience",
+  "title": "ImoPanorama - Traffic & Audience",
+  "tags": ["imopanorama", "traffic", "analytics"],
+  "timezone": "browser",
+  "refresh": "5m",
+  "time": { "from": "now-30d", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "PageViews (30j)",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT COUNT(*) AS \"PageViews\" FROM \"PageView\" WHERE \"createdAt\" >= NOW() - INTERVAL '30 days';", "format": "table" }],
+      "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "blue" } } }
+    },
+    {
+      "id": 2,
+      "title": "Sessions (30j)",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT COUNT(DISTINCT \"sessionId\") AS \"Sessions\" FROM \"AnalyticsSession\" WHERE \"startedAt\" >= NOW() - INTERVAL '30 days';", "format": "table" }],
+      "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "green" } } }
+    },
+    {
+      "id": 3,
+      "title": "Visiteurs uniques (30j)",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT COUNT(DISTINCT COALESCE(\"userId\", \"ipAddress\")) AS \"Visiteurs\" FROM \"AnalyticsSession\" WHERE \"startedAt\" >= NOW() - INTERVAL '30 days';", "format": "table" }],
+      "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "purple" } } }
+    },
+    {
+      "id": 4,
+      "title": "Durée moy. session (min)",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT ROUND(AVG(\"duration\") / 60.0, 1) AS \"Minutes\" FROM \"AnalyticsSession\" WHERE \"duration\" > 0 AND \"startedAt\" >= NOW() - INTERVAL '30 days';", "format": "table" }],
+      "fieldConfig": { "defaults": { "unit": "min", "color": { "mode": "fixed", "fixedColor": "orange" } } }
+    },
+    {
+      "id": 5,
+      "title": "Pages / Session",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT ROUND(AVG(\"pageViews\"), 1) AS \"Pages/Session\" FROM \"AnalyticsSession\" WHERE \"startedAt\" >= NOW() - INTERVAL '30 days';", "format": "table" }],
+      "fieldConfig": { "defaults": { "color": { "mode": "fixed", "fixedColor": "cyan" } } }
+    },
+    {
+      "id": 6,
+      "title": "Taux de rebond",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 0 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT ROUND(100.0 * COUNT(*) FILTER (WHERE \"pageViews\" <= 1) / NULLIF(COUNT(*), 0), 1) AS \"Rebond %\" FROM \"AnalyticsSession\" WHERE \"startedAt\" >= NOW() - INTERVAL '30 days';", "format": "table" }],
+      "fieldConfig": { "defaults": { "unit": "percent", "color": { "mode": "fixed", "fixedColor": "red" } } }
+    },
+    {
+      "id": 7,
+      "title": "PageViews par jour",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 16, "x": 0, "y": 4 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT DATE(\"createdAt\") AS \"time\", COUNT(*) AS \"PageViews\" FROM \"PageView\" GROUP BY DATE(\"createdAt\") ORDER BY \"time\";", "format": "time_series" }],
+      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 15, "gradientMode": "opacity", "lineWidth": 2, "pointSize": 4, "showPoints": "auto" }, "color": { "mode": "fixed", "fixedColor": "blue" } } }
+    },
+    {
+      "id": 8,
+      "title": "Appareil",
+      "type": "piechart",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 4 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT \"device\" AS \"Appareil\", COUNT(*) AS \"Sessions\" FROM \"AnalyticsSession\" WHERE \"device\" IS NOT NULL GROUP BY \"device\" ORDER BY \"Sessions\" DESC;", "format": "table" }],
+      "options": { "legend": { "placement": "right", "displayMode": "table", "values": ["value", "percent"] }, "pieType": "donut" }
+    },
+    {
+      "id": 9,
+      "title": "Top 10 Pages visitées",
+      "type": "barchart",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT \"path\" AS \"Page\", COUNT(*) AS \"Vues\" FROM \"PageView\" GROUP BY \"path\" ORDER BY \"Vues\" DESC LIMIT 10;", "format": "table" }],
+      "options": { "orientation": "horizontal" }
+    },
+    {
+      "id": 10,
+      "title": "Navigateurs",
+      "type": "piechart",
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 12 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT \"browser\" AS \"Navigateur\", COUNT(*) AS \"Sessions\" FROM \"AnalyticsSession\" WHERE \"browser\" IS NOT NULL GROUP BY \"browser\" ORDER BY \"Sessions\" DESC LIMIT 8;", "format": "table" }],
+      "options": { "legend": { "placement": "bottom" }, "pieType": "donut" }
+    },
+    {
+      "id": 11,
+      "title": "Systèmes d'exploitation",
+      "type": "piechart",
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 12 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT \"os\" AS \"OS\", COUNT(*) AS \"Sessions\" FROM \"AnalyticsSession\" WHERE \"os\" IS NOT NULL GROUP BY \"os\" ORDER BY \"Sessions\" DESC LIMIT 8;", "format": "table" }],
+      "options": { "legend": { "placement": "bottom" }, "pieType": "donut" }
+    },
+    {
+      "id": 12,
+      "title": "Sessions par jour",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT DATE(\"startedAt\") AS \"time\", COUNT(*) AS \"Sessions\" FROM \"AnalyticsSession\" GROUP BY DATE(\"startedAt\") ORDER BY \"time\";", "format": "time_series" }],
+      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 15, "gradientMode": "opacity", "lineWidth": 2 }, "color": { "mode": "fixed", "fixedColor": "green" } } }
+    },
+    {
+      "id": 13,
+      "title": "Top Referrers",
+      "type": "barchart",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
+      "datasource": { "type": "postgres", "uid": "postgres" },
+      "targets": [{ "rawSql": "SELECT COALESCE(NULLIF(\"referrer\", ''), 'Direct') AS \"Referrer\", COUNT(*) AS \"Sessions\" FROM \"AnalyticsSession\" GROUP BY COALESCE(NULLIF(\"referrer\", ''), 'Direct') ORDER BY \"Sessions\" DESC LIMIT 10;", "format": "table" }],
+      "options": { "orientation": "horizontal" }
+    }
+  ],
+  "schemaVersion": 39
+}
