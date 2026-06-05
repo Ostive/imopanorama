@@ -6,7 +6,7 @@ RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm ci --ignore-scripts
+RUN npm ci
 
 # ─────────────────────────────────────────────
 # Stage 2 — builder
@@ -24,6 +24,13 @@ RUN npx prisma generate
 # Build Next.js (standalone output)
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
+
+# Remove non-postgresql Prisma WASM engines before copying to runner (~56 MB)
+RUN rm -f \
+    node_modules/@prisma/client/runtime/*cockroachdb* \
+    node_modules/@prisma/client/runtime/*mysql* \
+    node_modules/@prisma/client/runtime/*sqlite* \
+    node_modules/@prisma/client/runtime/*sqlserver*
 
 # ─────────────────────────────────────────────
 # Stage 3 — runner (minimal production image)
@@ -47,7 +54,7 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static    ./.next/static
 
-# Prisma schema needed at runtime for migrations
+# Prisma schema needed at runtime
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma

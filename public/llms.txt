@@ -1,0 +1,34 @@
+# ImoPanorama
+
+> Plateforme immobilière de référence à Madagascar — achat, vente, location de propriétés résidentielles et commerciales.
+
+## À propos
+
+ImoPanorama est une agence immobilière basée à Madagascar. Nous proposons des annonces de propriétés à Antananarivo, Tamatave, Majunga, Nosy Be, Diego Suarez et Fianarantsoa.
+
+Nos services incluent :
+- Achat et vente de maisons, appartements, terrains et locaux commerciaux
+- Location longue durée et saisonnière
+- Estimation gratuite de bien immobilier
+- Construction et rénovation via BatiPanorama
+- Accompagnement juridique pour transactions immobilières à Madagascar
+
+## Pages principales
+
+- [Propriétés à vendre et à louer](https://imopanorama.mg/proprietes)
+- [Maisons à vendre Madagascar](https://imopanorama.mg/maisons-a-vendre)
+- [Appartements à louer Madagascar](https://imopanorama.mg/appartements-a-louer)
+- [Terrains à vendre Madagascar](https://imopanorama.mg/terrains-a-vendre)
+- [Estimation immobilière gratuite](https://imopanorama.mg/estimation)
+- [Guide achat immobilier Madagascar](https://imopanorama.mg/guide-achat)
+- [Investir à Madagascar](https://imopanorama.mg/investir-a-madagascar)
+- [BatiPanorama — construction & rénovation](https://imopanorama.mg/batipanorama)
+- [Actualités immobilières](https://imopanorama.mg/actualites)
+- [Villes : Antananarivo](https://imopanorama.mg/immobilier/antananarivo)
+- [Villes : Tamatave](https://imopanorama.mg/immobilier/tamatave)
+- [Villes : Nosy Be](https://imopanorama.mg/immobilier/nosy-be)
+
+## Contact
+
+- Site : https://imopanorama.mg
+- Contact : https://imopanorama.mg/contact
