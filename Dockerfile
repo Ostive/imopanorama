@@ -25,8 +25,15 @@ RUN npx prisma generate
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
-# Remove non-postgresql Prisma WASM engines before copying to runner (~56 MB)
-RUN rm -f \
+# Strip Prisma packages not needed at runtime (~150 MB saved):
+# - studio-core / dev: CLI-only tools
+# - engines: schema migration engine (not used by the WASM query client)
+# - non-postgresql WASM engines: only postgresql is used
+RUN rm -rf \
+    node_modules/@prisma/studio-core \
+    node_modules/@prisma/dev \
+    node_modules/@prisma/engines && \
+    rm -f \
     node_modules/@prisma/client/runtime/*cockroachdb* \
     node_modules/@prisma/client/runtime/*mysql* \
     node_modules/@prisma/client/runtime/*sqlite* \
@@ -54,10 +61,11 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static    ./.next/static
 
-# Prisma schema needed at runtime
+# Prisma: generated client + postgresql WASM runtime only (standalone already has @prisma/client traced)
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma/client/runtime ./node_modules/@prisma/client/runtime
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma/client/package.json ./node_modules/@prisma/client/package.json
 
 USER nextjs
 EXPOSE 3000
