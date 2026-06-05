@@ -95,7 +95,7 @@ export default function RegisterNewPage() {
       {/* Left Side - Branding */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden z-10">
         {/* Beautiful gradient background */}
-        <div className="absolute inset-0 bg-linear-to-br from-primary-600 via-primary-700 to-primary-800"></div>
+        <div className="absolute inset-0 bg-linear-to-br from-primary-600 via-primary-700 to-primary-600"></div>
         {/* Animated overlay pattern */}
         <div className="absolute inset-0">
           <div className="absolute top-0 right-0 w-96 h-96 bg-primary-400/20 rounded-full filter blur-3xl animate-pulse"></div>
@@ -113,7 +113,7 @@ export default function RegisterNewPage() {
             {/* Logo Image */}
             <div className="relative w-80 h-80 mb-8 mx-auto">
               <Image
-                src="/images/auth-illustration.png"
+                src="/images/auth/auth-illustration.png"
                 alt="ImoPanorama Logo"
                 fill
                 className="object-contain drop-shadow-2xl"
@@ -147,10 +147,10 @@ export default function RegisterNewPage() {
         {/* Back to Home Button */}
         <Link
           href="/"
-          className="absolute top-8 left-8 p-3 bg-white/80 hover:bg-white border-2 border-gray-200 hover:border-primary-500 rounded-xl shadow-lg hover:shadow-xl transition-all group"
+          className="absolute top-8 left-8 p-3 bg-white/80 dark:bg-gray-900/80 hover:bg-white dark:hover:bg-gray-900 border-2 border-border hover:border-primary-500 rounded-xl shadow-lg hover:shadow-xl transition-all group"
         >
           <svg
-            className="w-5 h-5 text-gray-600 group-hover:text-primary-600 transition-colors"
+            className="w-5 h-5 text-muted-foreground group-hover:text-primary-600 transition-colors"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -162,7 +162,7 @@ export default function RegisterNewPage() {
         {/* Mobile Logo */}
         <div className="lg:hidden absolute top-6 left-1/2 -translate-x-1/2">
           <Image
-            src="/images/logo.png"
+            src="/images/brand/logo.png"
             alt="ImoPanorama Madagascar"
             width={140}
             height={44}
@@ -181,7 +181,7 @@ export default function RegisterNewPage() {
             {/* Header */}
             <div className="mb-4 text-center">
               <h1 className="text-3xl font-bold text-primary-600 mb-1">Inscription</h1>
-              <p className="text-sm text-gray-700">Rejoignez ImoPanorama dès aujourd'hui</p>
+              <p className="text-sm text-foreground">Rejoignez ImoPanorama dès aujourd'hui</p>
             </div>
 
             {/* Error Message */}
@@ -189,7 +189,7 @@ export default function RegisterNewPage() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm"
+                className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-400 text-sm"
               >
                 {error}
               </motion.div>
@@ -200,36 +200,36 @@ export default function RegisterNewPage() {
               {/* Name Fields */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  <label className="block text-xs font-semibold text-foreground mb-1">
                     Prénom
                   </label>
                   <div className="relative group">
-                    <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
+                    <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 transition-colors" />
                     <input
                       type="text"
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleChange}
                       required
-                      className="w-full pl-12 pr-4 py-2 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white transition-all outline-none"
+                      className="w-full pl-12 pr-4 py-2 bg-muted border-2 border-border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white dark:focus:bg-gray-900 transition-all outline-none"
                       placeholder="Votre prénom"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  <label className="block text-xs font-semibold text-foreground mb-1">
                     Nom
                   </label>
                   <div className="relative group">
-                    <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
+                    <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 transition-colors" />
                     <input
                       type="text"
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleChange}
                       required
-                      className="w-full pl-12 pr-4 py-2 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white transition-all outline-none"
+                      className="w-full pl-12 pr-4 py-2 bg-muted border-2 border-border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white dark:focus:bg-gray-900 transition-all outline-none"
                       placeholder="Votre nom"
                     />
                   </div>
@@ -238,18 +238,18 @@ export default function RegisterNewPage() {
 
               {/* Email */}
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                <label className="block text-xs font-semibold text-foreground mb-1">
                   Email
                 </label>
                 <div className="relative group">
-                  <EnvelopeIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
+                  <EnvelopeIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 transition-colors" />
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full pl-12 pr-4 py-2 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white transition-all outline-none"
+                    className="w-full pl-12 pr-4 py-2 bg-muted border-2 border-border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white dark:focus:bg-gray-900 transition-all outline-none"
                     placeholder="votre@email.com"
                   />
                 </div>
@@ -257,17 +257,17 @@ export default function RegisterNewPage() {
 
               {/* Phone */}
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                <label className="block text-xs font-semibold text-foreground mb-1">
                   Téléphone (optionnel)
                 </label>
                 <div className="relative group">
-                  <PhoneIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
+                  <PhoneIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 transition-colors" />
                   <input
                     type="tel"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full pl-12 pr-4 py-2 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white transition-all outline-none"
+                    className="w-full pl-12 pr-4 py-2 bg-muted border-2 border-border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white dark:focus:bg-gray-900 transition-all outline-none"
                     placeholder="+261 34 XX XX XX XX"
                   />
                 </div>
@@ -276,24 +276,24 @@ export default function RegisterNewPage() {
               {/* Password Fields */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  <label className="block text-xs font-semibold text-foreground mb-1">
                     Mot de passe
                   </label>
                   <div className="relative group">
-                    <LockClosedIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
+                    <LockClosedIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 transition-colors" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       name="password"
                       value={formData.password}
                       onChange={handleChange}
                       required
-                      className="w-full pl-12 pr-12 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white transition-all outline-none"
+                      className="w-full pl-12 pr-12 py-3.5 bg-muted border-2 border-border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white dark:focus:bg-gray-900 transition-all outline-none"
                       placeholder="••••••••"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600 transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary-600 transition-colors"
                     >
                       {showPassword ? (
                         <EyeSlashIcon className="h-5 w-5" />
@@ -305,24 +305,24 @@ export default function RegisterNewPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  <label className="block text-xs font-semibold text-foreground mb-1">
                     Confirmer le mot de passe
                   </label>
                   <div className="relative group">
-                    <LockClosedIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
+                    <LockClosedIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 transition-colors" />
                     <input
                       type={showConfirmPassword ? 'text' : 'password'}
                       name="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleChange}
                       required
-                      className="w-full pl-12 pr-12 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white transition-all outline-none"
+                      className="w-full pl-12 pr-12 py-3.5 bg-muted border-2 border-border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white dark:focus:bg-gray-900 transition-all outline-none"
                       placeholder="••••••••"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600 transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary-600 transition-colors"
                     >
                       {showConfirmPassword ? (
                         <EyeSlashIcon className="h-5 w-5" />
@@ -357,10 +357,10 @@ export default function RegisterNewPage() {
             {/* Divider */}
             <div className="relative my-3">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
+                <div className="w-full border-t border-border"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500 font-medium">
+                <span className="px-4 bg-card text-muted-foreground font-medium">
                   Ou continuer avec
                 </span>
               </div>
@@ -378,7 +378,7 @@ export default function RegisterNewPage() {
                 }
               }}
               type="button"
-              className="w-full py-2.5 px-6 bg-white border-2 border-gray-200 hover:border-primary-300 hover:bg-gray-50 text-gray-700 font-semibold rounded-xl transition-all flex items-center justify-center gap-3 shadow-md"
+              className="w-full py-2.5 px-6 bg-card border-2 border-border hover:border-primary-300 dark:hover:border-primary-600 hover:bg-muted text-foreground font-semibold rounded-xl transition-all flex items-center justify-center gap-3 shadow-md"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -402,7 +402,7 @@ export default function RegisterNewPage() {
             </motion.button>
 
             {/* Footer */}
-            <div className="mt-3 text-center text-xs text-gray-600">
+            <div className="mt-3 text-center text-xs text-muted-foreground">
               Vous avez déjà un compte ?{' '}
               <Link
                 href="/login"

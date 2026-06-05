@@ -3,26 +3,21 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-
-const STORAGE_KEY = 'imopanorama.cookieConsent'
+import {
+  persistCookieConsent,
+  readCookieConsent,
+  type CookieConsentValue,
+} from '@/shared/utils/cookieConsent'
 
 export default function CookieBanner() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    try {
-      if (!window.localStorage.getItem(STORAGE_KEY)) setVisible(true)
-    } catch {
-      setVisible(true)
-    }
+    if (!readCookieConsent()) setVisible(true)
   }, [])
 
-  const persist = (value: 'accepted' | 'refused') => {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, value)
-    } catch {
-      // storage blocked (private mode) — silent fallback
-    }
+  const persist = (value: CookieConsentValue) => {
+    persistCookieConsent(value)
     setVisible(false)
   }
 
@@ -33,11 +28,11 @@ export default function CookieBanner() {
       role="dialog"
       aria-live="polite"
       aria-label="Préférences cookies"
-      className="fixed inset-x-4 bottom-4 z-50 mx-auto max-w-3xl rounded-2xl border border-gray-200 bg-white p-5 shadow-2xl dark:border-gray-700 dark:bg-gray-900 sm:inset-x-auto sm:left-6 sm:right-6"
+      className="fixed inset-x-4 bottom-4 z-50 mx-auto max-w-3xl rounded-2xl border border-gray-200 bg-white p-5 shadow-2xl dark:border-border dark:bg-gray-900 sm:inset-x-auto sm:left-6 sm:right-6"
     >
       <div className="flex items-start gap-4">
-        <div className="flex-1 text-sm text-gray-700 dark:text-gray-200">
-          <p className="font-bold text-gray-900 dark:text-white">On respecte votre vie privée</p>
+        <div className="flex-1 text-sm text-foreground">
+          <p className="font-bold text-foreground">On respecte votre vie privée</p>
           <p className="mt-1 leading-relaxed">
             On utilise des cookies pour faire fonctionner le site et mesurer son audience. Vous pouvez accepter ou refuser. Détails dans notre{' '}
             <Link href="/politique-confidentialite" className="font-semibold text-primary-600 hover:underline">
@@ -56,7 +51,7 @@ export default function CookieBanner() {
             <button
               type="button"
               onClick={() => persist('refused')}
-              className="rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 transition hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200"
+              className="rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 transition hover:bg-gray-50 dark:border-border dark:bg-gray-800 dark:text-gray-200"
             >
               Refuser
             </button>

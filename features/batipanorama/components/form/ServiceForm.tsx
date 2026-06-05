@@ -23,6 +23,7 @@ import { Progress } from '@/shared/components/ui/progress'
 import { Badge } from '@/shared/components/ui/badge'
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute'
 import { BatiServiceFormDataSchema } from '@/features/batipanorama/schemas/batipanorama.schema'
+import { getErrorMessage, readApiError } from '@/shared/utils/apiErrors'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -152,11 +153,12 @@ export default function ServiceForm({ mode, serviceId }: ServiceFormProps) {
         toast.success(isEdit ? 'Service modifié avec succès' : 'Service créé avec succès')
         router.push('/admin/batipanorama/services')
       } else {
-        const err = await res.json()
-        toast.error(err.error || (isEdit ? 'Erreur lors de la modification' : 'Erreur lors de la création'))
+        const apiError = await readApiError(res, isEdit ? 'Erreur lors de la modification du service' : 'Erreur lors de la creation du service')
+        setFieldErrors(apiError.fieldErrors)
+        toast.error(apiError.message)
       }
-    } catch {
-      toast.error('Une erreur est survenue')
+    } catch (error) {
+      toast.error(getErrorMessage(error))
     } finally {
       setIsSubmitting(false)
     }
@@ -184,7 +186,7 @@ export default function ServiceForm({ mode, serviceId }: ServiceFormProps) {
   if (isLoading) {
     return (
       <ProtectedRoute requiredRole={['admin', 'super_admin']}>
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950/20 flex items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 flex items-center justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
         </div>
       </ProtectedRoute>
@@ -195,7 +197,7 @@ export default function ServiceForm({ mode, serviceId }: ServiceFormProps) {
 
   return (
     <ProtectedRoute requiredRole={['admin', 'super_admin']}>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950/20 py-8">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Header */}
@@ -204,26 +206,26 @@ export default function ServiceForm({ mode, serviceId }: ServiceFormProps) {
               href="/admin/batipanorama/services"
               className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors mb-4 group"
             >
-              <div className="w-8 h-8 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center mr-2 group-hover:border-primary/50 group-hover:text-primary transition-all shadow-sm">
+              <div className="w-8 h-8 rounded-full bg-card border border-border flex items-center justify-center mr-2 group-hover:border-primary/50 group-hover:text-primary transition-all shadow-sm">
                 <ArrowLeftIcon className="h-4 w-4" />
               </div>
               Retour aux services
             </Link>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-gradient-to-br from-primary-500 to-blue-600 rounded-2xl shadow-lg shadow-primary-500/20">
+                <div className="p-3 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl shadow-lg shadow-primary-500/20">
                   <WrenchScrewdriverIcon className="h-8 w-8 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                  <h1 className="text-3xl font-bold text-foreground tracking-tight">
                     {isEdit ? 'Modifier le Service' : 'Nouveau Service'}
                   </h1>
-                  <p className="text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="text-muted-foreground mt-1">
                     {isEdit ? (formData.title || 'Chargement…') : 'Créez un nouveau service BatiPanorama'}
                   </p>
                 </div>
               </div>
-              <div className="hidden md:flex items-center gap-2 text-sm text-gray-500 bg-white dark:bg-gray-800 py-1.5 px-4 rounded-full border border-gray-200 dark:border-gray-700 shadow-sm">
+              <div className="hidden md:flex items-center gap-2 text-sm text-gray-500 bg-card py-1.5 px-4 rounded-full border border-border shadow-sm">
                 <span className={`w-2 h-2 rounded-full ${isSubmitting ? 'bg-yellow-400 animate-pulse' : isComplete ? 'bg-green-500' : 'bg-orange-400'}`} />
                 {isSubmitting ? 'Enregistrement…' : isEdit ? 'Mode édition' : 'Mode création'}
               </div>
@@ -238,8 +240,8 @@ export default function ServiceForm({ mode, serviceId }: ServiceFormProps) {
 
               {/* Informations du service */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-                <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-white dark:bg-gray-800">
-                  <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700 pb-4">
+                <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
+                  <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-border pb-4">
                     <div className="flex items-center gap-3">
                       <div className="p-2.5 bg-primary-100 dark:bg-primary-900/30 rounded-xl">
                         <WrenchScrewdriverIcon className="h-5 w-5 text-primary-600 dark:text-primary-400" />
@@ -306,7 +308,7 @@ export default function ServiceForm({ mode, serviceId }: ServiceFormProps) {
                       </Label>
                       <div className="space-y-2">
                         {formData.features.map((f, i) => (
-                          <div key={i} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                          <div key={i} className="flex items-center gap-2 text-sm text-foreground">
                             <CheckCircleIcon className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                             <span className="flex-1">{f}</span>
                             <button
@@ -334,10 +336,10 @@ export default function ServiceForm({ mode, serviceId }: ServiceFormProps) {
                     </div>
 
                     {/* Actif */}
-                    <div className="flex items-center justify-between rounded-xl border border-gray-100 dark:border-gray-700 p-4">
+                    <div className="flex items-center justify-between rounded-xl border border-border p-4">
                       <div>
-                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Service actif</p>
-                        <p className="text-xs text-gray-400 dark:text-gray-500">Visible sur le site public</p>
+                        <p className="text-sm font-medium text-foreground">Service actif</p>
+                        <p className="text-xs text-muted-foreground">Visible sur le site public</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge variant={formData.isActive ? 'default' : 'secondary'}>
@@ -362,9 +364,9 @@ export default function ServiceForm({ mode, serviceId }: ServiceFormProps) {
 
                 {/* Progression */}
                 <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-                  <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-white dark:bg-gray-800">
-                    <div className="p-5 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
-                      <h3 className="font-bold text-gray-900 dark:text-white flex items-center justify-between">
+                  <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
+                    <div className="p-5 border-b border-border bg-gray-50/50 dark:bg-gray-800/50">
+                      <h3 className="font-bold text-foreground flex items-center justify-between">
                         Progression
                         <span className={`text-sm font-bold ${isComplete ? 'text-green-600' : 'text-primary-600'}`}>
                           {completionPct}%
@@ -380,8 +382,8 @@ export default function ServiceForm({ mode, serviceId }: ServiceFormProps) {
                         {COMPLETION_STEPS.map(({ key, label, icon: Icon }) => {
                           const done = (formData as any)[key]?.toString().trim() !== ''
                           return (
-                            <li key={key} className={`flex items-center gap-3 text-sm ${done ? 'text-green-600 dark:text-green-400 font-medium' : 'text-gray-400 dark:text-gray-500'}`}>
-                              <div className={`w-6 h-6 rounded-full flex items-center justify-center border flex-shrink-0 ${done ? 'bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-700' : 'border-gray-200 dark:border-gray-600'}`}>
+                            <li key={key} className={`flex items-center gap-3 text-sm ${done ? 'text-green-600 dark:text-green-400 font-medium' : 'text-muted-foreground'}`}>
+                              <div className={`w-6 h-6 rounded-full flex items-center justify-center border flex-shrink-0 ${done ? 'bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-700' : 'border-border'}`}>
                                 {done
                                   ? <CheckCircleIcon className="w-4 h-4" />
                                   : <Icon className="w-3.5 h-3.5" />}
@@ -397,13 +399,13 @@ export default function ServiceForm({ mode, serviceId }: ServiceFormProps) {
 
                 {/* Actions */}
                 <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}>
-                  <Card className="border-none shadow-lg rounded-2xl bg-white dark:bg-gray-800">
+                  <Card className="border-none shadow-lg rounded-2xl bg-card">
                     <CardContent className="pt-6 space-y-3">
                       <Button
                         type="submit"
                         disabled={isSubmitting || !isComplete}
                         title={!isComplete ? `Complétez les ${COMPLETION_STEPS.length - completedSteps} étape(s) restante(s)` : undefined}
-                        className="w-full bg-gradient-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-primary-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-gradient-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold rounded-xl shadow-lg shadow-primary-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {isSubmitting
                           ? 'Enregistrement…'
@@ -420,12 +422,12 @@ export default function ServiceForm({ mode, serviceId }: ServiceFormProps) {
 
                 {/* Conseil */}
                 <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
-                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-5 border border-blue-100 dark:border-blue-800">
+                  <div className="bg-primary-50 dark:bg-primary-900/20 rounded-xl p-5 border border-primary-100 dark:border-primary-800">
                     <div className="flex gap-3">
-                      <SparklesIcon className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                      <SparklesIcon className="w-5 h-5 text-primary-600 dark:text-primary-400 flex-shrink-0 mt-0.5" />
                       <div>
-                        <h4 className="text-sm font-bold text-blue-900 dark:text-blue-300">Conseil</h4>
-                        <p className="text-xs text-blue-800 dark:text-blue-200 mt-1 leading-relaxed">
+                        <h4 className="text-sm font-bold text-primary-900 dark:text-primary-300">Conseil</h4>
+                        <p className="text-xs text-primary-800 dark:text-primary-200 mt-1 leading-relaxed">
                           Ajoutez des caractéristiques précises pour chaque service afin d'aider vos clients à comprendre exactement ce que vous proposez.
                         </p>
                       </div>
@@ -438,7 +440,7 @@ export default function ServiceForm({ mode, serviceId }: ServiceFormProps) {
 
             {/* Mobile — bouton flottant */}
             <div className="lg:hidden fixed bottom-6 left-4 right-4 z-50">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-4 flex gap-3">
+              <div className="bg-card rounded-2xl shadow-xl border border-border p-4 flex gap-3">
                 <Button type="button" variant="outline" onClick={() => router.push('/admin/batipanorama/services')} className="flex-1">
                   Annuler
                 </Button>

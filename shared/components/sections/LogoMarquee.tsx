@@ -105,7 +105,7 @@ export default function LogoMarquee() {
   const duplicatedPartners = [...partners, ...partners];
 
   return (
-    <section className="py-24 bg-linear-to-br from-gray-50 via-white to-blue-50/30 overflow-hidden relative">
+    <section className="py-24 bg-linear-to-br from-gray-50 via-white to-primary-50/30 overflow-hidden relative">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-grid-gray-100/50 mask-[radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
       
@@ -132,7 +132,7 @@ export default function LogoMarquee() {
           
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
             Ils nous font{' '}
-            <span className="bg-linear-to-r from-primary-600 via-blue-600 to-primary-700 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-primary-600 via-primary-600 to-primary-700 bg-clip-text text-transparent">
               confiance
             </span>
           </h2>
@@ -146,7 +146,7 @@ export default function LogoMarquee() {
         <div className="relative">
           {/* Enhanced Gradient overlays */}
           <div className="absolute left-0 top-0 bottom-0 w-32 md:w-48 bg-linear-to-r from-gray-50 via-white/80 to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-32 md:w-48 bg-linear-to-l from-blue-50/30 via-white/80 to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-32 md:w-48 bg-linear-to-l from-primary-50/30 via-white/80 to-transparent z-10 pointer-events-none"></div>
 
           {/* Marquee with enhanced styling */}
           <div className="flex overflow-hidden py-8">

@@ -32,6 +32,8 @@ const nextConfig: NextConfig = {
         ];
     },
 
+    allowedDevOrigins: ["10.35.210.30", "172.25.224.1"],
+
     reactStrictMode: true,
 
     experimental: {

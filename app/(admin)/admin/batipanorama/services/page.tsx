@@ -62,7 +62,7 @@ export default function BatiServicesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
         <AdminPageHeader
@@ -73,7 +73,7 @@ export default function BatiServicesPage() {
           backHref="/admin/batipanorama"
           actions={
             <Link href="/admin/batipanorama/services/new">
-              <Button className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-600 to-blue-600 text-white hover:opacity-90">
+              <Button className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-600 to-primary-600 text-white hover:opacity-90">
                 <PlusIcon className="h-5 w-5" /> Nouveau service
               </Button>
             </Link>
@@ -82,23 +82,23 @@ export default function BatiServicesPage() {
 
         {/* Table */}
         {isLoading ? (
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
+          <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
             <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+              <thead className="bg-muted border-b border-border">
                 <tr>
                   {['Icône', 'Titre', 'Caractéristiques', 'Statut', 'Actions'].map(h => (
-                    <th key={h} className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{h}</th>
+                    <th key={h} className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                 {[1,2,3,4].map(i => (
                   <tr key={i} className="animate-pulse">
-                    <td className="px-6 py-4"><div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-xl" /></td>
-                    <td className="px-6 py-4"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-40 mb-1" /><div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-56" /></td>
-                    <td className="px-6 py-4"><div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-32" /></td>
-                    <td className="px-6 py-4"><div className="h-5 bg-gray-200 dark:bg-gray-700 rounded-full w-16" /></td>
-                    <td className="px-6 py-4"><div className="flex gap-2"><div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded" /><div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded" /></div></td>
+                    <td className="px-6 py-4"><div className="w-10 h-10 bg-muted rounded-xl" /></td>
+                    <td className="px-6 py-4"><div className="h-4 bg-muted rounded w-40 mb-1" /><div className="h-3 bg-muted rounded w-56" /></td>
+                    <td className="px-6 py-4"><div className="h-3 bg-muted rounded w-32" /></td>
+                    <td className="px-6 py-4"><div className="h-5 bg-muted rounded-full w-16" /></td>
+                    <td className="px-6 py-4"><div className="flex gap-2"><div className="h-8 w-8 bg-muted rounded" /><div className="h-8 w-8 bg-muted rounded" /></div></td>
                   </tr>
                 ))}
               </tbody>
@@ -108,13 +108,13 @@ export default function BatiServicesPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-16 text-center shadow-sm"
+            className="bg-card rounded-2xl border border-border p-16 text-center shadow-sm"
           >
             <WrenchScrewdriverIcon className="w-14 h-14 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Aucun service</h3>
-            <p className="text-gray-500 dark:text-gray-400 mb-6">Commencez par créer votre premier service</p>
+            <h3 className="text-lg font-semibold text-foreground mb-2">Aucun service</h3>
+            <p className="text-muted-foreground mb-6">Commencez par créer votre premier service</p>
             <Link href="/admin/batipanorama/services/new">
-              <Button className="bg-gradient-to-r from-primary-600 to-blue-600 text-white hover:opacity-90 gap-2">
+              <Button className="bg-gradient-to-r from-primary-600 to-primary-600 text-white hover:opacity-90 gap-2">
                 <PlusIcon className="h-5 w-5" /> Créer un service
               </Button>
             </Link>
@@ -123,17 +123,17 @@ export default function BatiServicesPage() {
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm"
+            className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm"
           >
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <thead className="bg-muted border-b border-border">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Icône</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Titre</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Caractéristiques</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Statut</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Icône</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Titre</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Caractéristiques</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Statut</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -143,7 +143,7 @@ export default function BatiServicesPage() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: i * 0.04 }}
-                      className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                      className="hover:bg-muted/50 transition-colors"
                     >
                       <td className="px-6 py-4">
                         <div className="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-900/20 flex items-center justify-center text-2xl">
@@ -151,17 +151,17 @@ export default function BatiServicesPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="font-semibold text-gray-900 dark:text-white">{service.title}</div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1 max-w-xs">{service.description}</div>
+                        <div className="font-semibold text-foreground">{service.title}</div>
+                        <div className="text-sm text-muted-foreground line-clamp-1 max-w-xs">{service.description}</div>
                       </td>
                       <td className="px-6 py-4">
                         {service.features.length > 0 ? (
-                          <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
+                          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                             <CheckCircleIcon className="w-4 h-4 text-primary-500 shrink-0" />
                             {service.features.length} caractéristique{service.features.length > 1 ? 's' : ''}
                           </div>
                         ) : (
-                          <span className="text-sm text-gray-400 dark:text-gray-600">—</span>
+                          <span className="text-sm text-muted-foreground">—</span>
                         )}
                       </td>
                       <td className="px-6 py-4">
@@ -173,7 +173,7 @@ export default function BatiServicesPage() {
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/admin/batipanorama/services/${service.id}/edit`}
-                            className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                            className="p-2 text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors"
                             title="Modifier"
                           >
                             <PencilIcon className="w-4 h-4" />
@@ -192,7 +192,7 @@ export default function BatiServicesPage() {
                 </tbody>
               </table>
             </div>
-            <div className="px-6 py-3 border-t border-gray-100 dark:border-gray-800 text-sm text-gray-500 dark:text-gray-400">
+            <div className="px-6 py-3 border-t border-border text-sm text-muted-foreground">
               {services.length} service{services.length > 1 ? 's' : ''}
             </div>
           </motion.div>
@@ -211,7 +211,7 @@ export default function BatiServicesPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full p-6 border border-gray-100 dark:border-gray-800"
+              className="bg-card rounded-2xl shadow-2xl max-w-md w-full p-6 border border-border"
               onClick={e => e.stopPropagation()}
             >
               <div className="flex items-center gap-4 mb-4">
@@ -219,12 +219,12 @@ export default function BatiServicesPage() {
                   <TrashIcon className="w-6 h-6 text-red-600 dark:text-red-400" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">Supprimer le service</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Cette action est irréversible</p>
+                  <h3 className="text-lg font-bold text-foreground">Supprimer le service</h3>
+                  <p className="text-sm text-muted-foreground">Cette action est irréversible</p>
                 </div>
               </div>
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 mb-6 text-sm text-gray-700 dark:text-gray-300">
-                Supprimer <span className="font-bold text-gray-900 dark:text-white">&quot;{deleteModal.title}&quot;</span> ?
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 mb-6 text-sm text-foreground">
+                Supprimer <span className="font-bold text-foreground">&quot;{deleteModal.title}&quot;</span> ?
               </div>
               <div className="flex gap-3">
                 <Button variant="outline" className="flex-1" onClick={() => setDeleteModal({ show: false, id: null, title: '' })} disabled={isDeleting}>

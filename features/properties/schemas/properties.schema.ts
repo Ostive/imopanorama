@@ -13,6 +13,11 @@ export const PropertySchema = z.object({
     transactionType: z.enum(['SALE', 'RENT', 'SEASONAL_RENT'], { message: 'Le type de transaction est requis' }),
     location: z.string().min(1, 'La localisation est requise'),
     city: z.string().min(1, 'La ville est requise'),
+    country: z.string().min(2, 'Le pays est requis').default('MG'),
+    region: z.string().nullable().optional(),
+    district: z.string().nullable().optional(),
+    commune: z.string().nullable().optional(),
+    fokontany: z.string().nullable().optional(),
     address: z.string().nullable().optional(),
     zipCode: z.string().nullable().optional(),
     coordinates: z.any().optional(), // Json type in Prisma
@@ -21,7 +26,7 @@ export const PropertySchema = z.object({
     price: z.number().min(0, 'Le prix doit être positif'),
     pricePerM2: z.number().nullable().optional(),
     rentPrice: z.number().nullable().optional(),
-    currency: z.string().default('EUR'),
+    currency: z.string().default('MGA'),
 
     // Size & Dimensions
     totalSize: z.number().min(0, 'La surface totale doit être positive'),
@@ -55,6 +60,9 @@ export const PropertySchema = z.object({
 
     // References & Metadata
     reference: z.string().nullable().optional(),
+    legalStatus: z.enum(['TITLED', 'CADASTRAL', 'UNTITLED', 'LONG_TERM_LEASE', 'CO_OWNERSHIP', 'COMPANY_OWNED', 'OTHER']).nullable().optional(),
+    documentStatus: z.enum(['UNKNOWN', 'PENDING', 'PARTIAL', 'VERIFIED']).optional().default('UNKNOWN'),
+    isVerified: z.boolean().optional().default(false),
     energyClass: z.string().nullable().optional(),
     emissions: z.string().nullable().optional(),
     taxFonciere: z.number().nullable().optional(),

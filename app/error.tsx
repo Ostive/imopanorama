@@ -113,7 +113,7 @@ export default function Error({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={reset}
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg transition-all"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold rounded-xl shadow-lg transition-all"
             >
               <ArrowPathIcon className="h-5 w-5" />
                 Réessayer maintenant

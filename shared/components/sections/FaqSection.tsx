@@ -6,26 +6,23 @@ import {
   ChevronDownIcon,
   QuestionMarkCircleIcon,
   ChatBubbleLeftRightIcon,
+  ArrowRightIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { useFaqs } from '@/features/faqs/hooks/useFaqs'
 
 export default function FaqSection() {
   const [openItem, setOpenItem] = useState<string | null>(null)
-
-  const { faqs: faqItems, loading, error } = useFaqs({
-    limit: 4,
-    isActive: true,
-  })
+  const { faqs: faqItems, loading, error } = useFaqs({ limit: 4, isActive: true })
 
   const toggleItem = (id: string) => {
     setOpenItem(openItem === id ? null : id)
   }
 
   return (
-    <section className="py-24 bg-gray-50 dark:bg-gray-900/50">
+    <section className="py-28 bg-background">
       <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-3 gap-12 items-start">
+        <div className="grid lg:grid-cols-3 gap-16 items-start">
 
           {/* Left sidebar */}
           <motion.div
@@ -34,70 +31,79 @@ export default function FaqSection() {
             viewport={{ once: true }}
             className="lg:sticky lg:top-24"
           >
-            <span className="inline-block px-4 py-1.5 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full text-sm font-semibold mb-5">
-              FAQ
-            </span>
-            <h2 className="text-4xl font-black text-gray-900 dark:text-white leading-tight mb-4">
-              Vos questions, nos réponses{' '}
-              <span className="bg-gradient-to-r from-primary-600 via-blue-600 to-secondary-500 bg-clip-text text-transparent">
-                claires
+            <div className="flex items-center gap-3 mb-6">
+              <div className="h-px w-12 bg-primary-500" />
+              <span className="text-primary-600 dark:text-primary-400 text-xs font-bold tracking-widest uppercase">
+                FAQ
+              </span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black text-foreground leading-[1.05] mb-4">
+              Vos questions,{' '}
+              <span className="bg-linear-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
+                nos réponses
               </span>
             </h2>
-            <p className="text-gray-500 dark:text-gray-400 leading-relaxed mb-8">
+            <p className="text-muted-foreground leading-relaxed mb-10">
               Achat, location, terrain, construction : on répond aux questions qui reviennent vraiment.
             </p>
 
-            {/* Info card */}
-            <div className="p-6 bg-primary-50 dark:bg-primary-900/20 rounded-2xl border border-primary-100 dark:border-primary-800">
+            {/* Contact prompt */}
+            <div className="p-6 bg-primary-50/70 dark:bg-primary-900/20 rounded-2xl">
               <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/40 rounded-xl flex items-center justify-center mb-4">
                 <ChatBubbleLeftRightIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
               </div>
-              <p className="font-bold text-gray-900 dark:text-white mb-1">Une question reste ouverte ?</p>
-              <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+              <p className="font-bold text-foreground mb-1">Une question reste ouverte ?</p>
+              <p className="text-muted-foreground text-sm leading-relaxed mb-4">
                 Envoyez-nous votre demande, on vous répond avec une réponse claire et utile.
               </p>
+              <Link
+                href="/contact"
+                className="group inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider hover:gap-2.5 transition-all"
+              >
+                Nous contacter
+                <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
             </div>
           </motion.div>
 
-          {/* Right — FAQ accordion */}
+          {/* Right — accordion */}
           <div className="lg:col-span-2">
+            {/* Skeleton */}
             {loading && (
-              <div className="space-y-3 animate-pulse">
+              <div className="space-y-0 animate-pulse">
                 {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className="h-16 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700"
-                  />
+                  <div key={i} className="h-16 bg-muted/50 border-b border-border/40 last:border-0" />
                 ))}
               </div>
             )}
 
+            {/* Error */}
             {error && (
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-xl text-sm">
-                Nous n'arrivons pas à charger les questions pour le moment. Réessayez dans un instant.
+              <div className="bg-primary-50/60 dark:bg-primary-900/20 rounded-2xl px-6 py-5 text-sm text-muted-foreground">
+                Les questions ne sont pas disponibles pour le moment. Réessayez dans un instant.
               </div>
             )}
 
+            {/* Empty state */}
             {!loading && !error && faqItems.length === 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center py-16"
               >
-                <div className="w-16 h-16 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <QuestionMarkCircleIcon className="w-8 h-8 text-primary-600 dark:text-primary-400" />
+                <div className="w-14 h-14 bg-primary-50 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <QuestionMarkCircleIcon className="w-7 h-7 text-primary-500" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                  Les questions arrivent bientôt
-                </h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">
-                  Nous préparons une liste utile. En attendant, écrivez-nous et nous vous répondrons directement.
+                <p className="font-semibold text-foreground mb-1">Les questions arrivent bientôt</p>
+                <p className="text-sm text-muted-foreground">
+                  En attendant, écrivez-nous et nous vous répondrons directement.
                 </p>
               </motion.div>
             )}
 
+            {/* FAQ items — clean divider accordion */}
             {!loading && !error && faqItems.length > 0 && (
-              <div className="space-y-3">
+              <div>
                 {faqItems.map((item, index) => (
                   <motion.div
                     key={item.id}
@@ -105,32 +111,28 @@ export default function FaqSection() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.07 }}
-                    className={`rounded-2xl border-2 overflow-hidden transition-colors ${
-                      openItem === item.id
-                        ? 'border-primary-200 dark:border-primary-700 bg-white dark:bg-gray-800'
-                        : 'border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800'
-                    }`}
+                    className="border-b border-border/50 last:border-0"
                   >
                     <button
                       onClick={() => toggleItem(item.id)}
-                      className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left"
+                      className="w-full flex items-center justify-between gap-4 py-6 text-left group"
                     >
-                      <span
-                        className={`font-semibold text-base ${
-                          openItem === item.id
-                            ? 'text-primary-700 dark:text-primary-400'
-                            : 'text-gray-900 dark:text-white'
-                        }`}
-                      >
+                      <span className={`font-semibold text-base transition-colors ${
+                        openItem === item.id
+                          ? 'text-primary-600 dark:text-primary-400'
+                          : 'text-foreground group-hover:text-primary-600 dark:group-hover:text-primary-400'
+                      }`}>
                         {item.question}
                       </span>
-                      <ChevronDownIcon
-                        className={`flex-shrink-0 h-5 w-5 transition-transform duration-200 ${
-                          openItem === item.id
-                            ? 'rotate-180 text-primary-600 dark:text-primary-400'
-                            : 'text-gray-400 dark:text-gray-500'
-                        }`}
-                      />
+                      <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+                        openItem === item.id
+                          ? 'bg-primary-600 text-white'
+                          : 'bg-muted text-muted-foreground group-hover:bg-primary-50 dark:group-hover:bg-primary-900/30 group-hover:text-primary-600'
+                      }`}>
+                        <ChevronDownIcon className={`w-4 h-4 transition-transform duration-200 ${
+                          openItem === item.id ? 'rotate-180' : ''
+                        }`} />
+                      </div>
                     </button>
 
                     <AnimatePresence>
@@ -142,21 +144,22 @@ export default function FaqSection() {
                           transition={{ duration: 0.25 }}
                           className="overflow-hidden"
                         >
-                          <div className="px-6 pb-5 text-gray-600 dark:text-gray-300 text-sm leading-relaxed border-t border-gray-100 dark:border-gray-700 pt-4">
+                          <p className="pb-6 text-muted-foreground text-sm leading-relaxed pr-12">
                             {item.answer}
-                          </div>
+                          </p>
                         </motion.div>
                       )}
                     </AnimatePresence>
                   </motion.div>
                 ))}
 
-                <div className="pt-4 text-center">
+                <div className="pt-8 text-center">
                   <Link
                     href="/faq"
-                    className="inline-flex items-center gap-2 px-6 py-3 border-2 border-primary-200 dark:border-primary-700 text-primary-700 dark:text-primary-400 font-semibold rounded-xl hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors text-sm"
+                    className="group inline-flex items-center gap-2 text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest hover:gap-3 transition-all"
                   >
                     Voir toutes les réponses
+                    <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
               </div>

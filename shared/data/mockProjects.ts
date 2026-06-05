@@ -13,11 +13,11 @@ export const mockProjects: ProjectDetail[] = [
     category: 'residential',
     status: 'completed',
     tags: ['villa', 'moderne', 'piscine', 'vue panoramique'],
-    coverImage: '/images/batipanorama/projet1.jpg',
+    coverImage: '/images/batipanorama/projects/project-1.jpg',
     images: [
       {
         id: 1,
-        src: '/images/batipanorama/projet1.jpg',
+        src: '/images/batipanorama/projects/project-1.jpg',
         alt: 'Vue extérieure de la villa moderne',
         title: 'Façade principale',
         description: 'Façade avant avec entrée principale et jardin paysager',
@@ -25,28 +25,28 @@ export const mockProjects: ProjectDetail[] = [
       },
       {
         id: 2,
-        src: '/images/batipanorama/projet2.jpg',
+        src: '/images/batipanorama/projects/project-2.jpg',
         alt: 'Salon spacieux avec grandes baies vitrées',
         title: 'Espace de vie',
         description: 'Salon ouvert avec vue sur la piscine et la terrasse'
       },
       {
         id: 3,
-        src: '/images/batipanorama/projet3.jpg',
+        src: '/images/batipanorama/projects/project-3.jpg',
         alt: 'Cuisine américaine équipée',
         title: 'Cuisine moderne',
         description: 'Cuisine ouverte avec îlot central et équipements haut de gamme'
       },
       {
         id: 4,
-        src: '/images/batipanorama/projet4.jpg',
+        src: '/images/batipanorama/projects/project-4.jpg',
         alt: 'Chambre principale avec dressing',
         title: 'Suite parentale',
         description: 'Chambre principale avec salle de bain privative et dressing'
       },
       {
         id: 5,
-        src: '/images/batipanorama/projet5.jpg',
+        src: '/images/batipanorama/projects/project-5.jpg',
         alt: 'Piscine à débordement avec terrasse',
         title: 'Espace extérieur',
         description: 'Piscine à débordement avec vue sur la ville et espace détente'
@@ -79,11 +79,11 @@ export const mockProjects: ProjectDetail[] = [
     category: 'commercial',
     status: 'completed',
     tags: ['centre commercial', 'boutiques', 'parking', 'food court'],
-    coverImage: '/images/batipanorama/projet3.jpg',
+    coverImage: '/images/batipanorama/projects/project-3.jpg',
     images: [
       {
         id: 1,
-        src: '/images/batipanorama/projet3.jpg',
+        src: '/images/batipanorama/projects/project-3.jpg',
         alt: 'Façade principale du centre commercial',
         title: 'Entrée principale',
         description: 'Façade vitrée avec entrée principale et enseigne',
@@ -91,28 +91,28 @@ export const mockProjects: ProjectDetail[] = [
       },
       {
         id: 2,
-        src: '/images/batipanorama/projet1.jpg',
+        src: '/images/batipanorama/projects/project-1.jpg',
         alt: 'Galerie marchande intérieure',
         title: 'Galerie marchande',
         description: 'Espace de circulation avec boutiques de part et d\'autre'
       },
       {
         id: 3,
-        src: '/images/batipanorama/projet4.jpg',
+        src: '/images/batipanorama/projects/project-4.jpg',
         alt: 'Food court avec restaurants',
         title: 'Espace restauration',
         description: 'Zone de restauration avec différentes enseignes et places assises'
       },
       {
         id: 4,
-        src: '/images/batipanorama/projet2.jpg',
+        src: '/images/batipanorama/projects/project-2.jpg',
         alt: 'Parking souterrain',
         title: 'Parking',
         description: 'Parking souterrain avec 50 places et accès direct au centre'
       },
       {
         id: 5,
-        src: '/images/batipanorama/projet5.jpg',
+        src: '/images/batipanorama/projects/project-5.jpg',
         alt: 'Vue aérienne du centre commercial',
         title: 'Vue d\'ensemble',
         description: 'Vue aérienne montrant l\'intégration du bâtiment dans son environnement'
@@ -145,11 +145,11 @@ export const mockProjects: ProjectDetail[] = [
     category: 'residential',
     status: 'completed',
     tags: ['éco-responsable', 'énergie solaire', 'matériaux recyclés', 'autonomie'],
-    coverImage: '/images/batipanorama/projet2.jpg',
+    coverImage: '/images/batipanorama/projects/project-2.jpg',
     images: [
       {
         id: 1,
-        src: '/images/batipanorama/projet2.jpg',
+        src: '/images/batipanorama/projects/project-2.jpg',
         alt: 'Vue extérieure de la résidence éco-responsable',
         title: 'Vue d\'ensemble',
         description: 'Maison intégrée dans son environnement naturel',
@@ -157,28 +157,28 @@ export const mockProjects: ProjectDetail[] = [
       },
       {
         id: 2,
-        src: '/images/batipanorama/projet5.jpg',
+        src: '/images/batipanorama/projects/project-5.jpg',
         alt: 'Panneaux solaires sur le toit',
         title: 'Installation solaire',
         description: 'Système de panneaux solaires couvrant les besoins énergétiques'
       },
       {
         id: 3,
-        src: '/images/batipanorama/projet1.jpg',
+        src: '/images/batipanorama/projects/project-1.jpg',
         alt: 'Intérieur avec matériaux naturels',
         title: 'Salon écologique',
         description: 'Espace de vie avec matériaux naturels et ventilation passive'
       },
       {
         id: 4,
-        src: '/images/batipanorama/projet4.jpg',
+        src: '/images/batipanorama/projects/project-4.jpg',
         alt: 'Système de récupération d\'eau',
         title: 'Gestion de l\'eau',
         description: 'Système de récupération et filtration d\'eau de pluie'
       },
       {
         id: 5,
-        src: '/images/batipanorama/projet3.jpg',
+        src: '/images/batipanorama/projects/project-3.jpg',
         alt: 'Jardin potager intégré',
         title: 'Potager',
         description: 'Jardin potager permaculture intégré à la résidence'
@@ -211,11 +211,11 @@ export const mockProjects: ProjectDetail[] = [
     category: 'commercial',
     status: 'completed',
     tags: ['hôtel', 'bungalows', 'spa', 'restaurant', 'plage'],
-    coverImage: '/images/batipanorama/projet4.jpg',
+    coverImage: '/images/batipanorama/projects/project-4.jpg',
     images: [
       {
         id: 1,
-        src: '/images/batipanorama/projet4.jpg',
+        src: '/images/batipanorama/projects/project-4.jpg',
         alt: 'Vue aérienne du complexe hôtelier',
         title: 'Vue d\'ensemble',
         description: 'Vue aérienne montrant les bungalows et la piscine centrale',
@@ -223,28 +223,28 @@ export const mockProjects: ProjectDetail[] = [
       },
       {
         id: 2,
-        src: '/images/batipanorama/projet1.jpg',
+        src: '/images/batipanorama/projects/project-1.jpg',
         alt: 'Bungalow de luxe',
         title: 'Hébergement',
         description: 'Intérieur d\'un bungalow de luxe avec vue sur mer'
       },
       {
         id: 3,
-        src: '/images/batipanorama/projet3.jpg',
+        src: '/images/batipanorama/projects/project-3.jpg',
         alt: 'Restaurant avec vue panoramique',
         title: 'Restaurant',
         description: 'Espace de restauration avec terrasse et vue sur l\'océan'
       },
       {
         id: 4,
-        src: '/images/batipanorama/projet5.jpg',
+        src: '/images/batipanorama/projects/project-5.jpg',
         alt: 'Piscine à débordement',
         title: 'Piscine',
         description: 'Piscine à débordement avec bar aquatique et transats'
       },
       {
         id: 5,
-        src: '/images/batipanorama/projet2.jpg',
+        src: '/images/batipanorama/projects/project-2.jpg',
         alt: 'Spa et espace bien-être',
         title: 'Spa',
         description: 'Espace bien-être avec salles de massage et jacuzzi'
@@ -277,11 +277,11 @@ export const mockProjects: ProjectDetail[] = [
     category: 'renovation',
     status: 'completed',
     tags: ['rénovation', 'patrimoine', 'bureaux', 'colonial'],
-    coverImage: '/images/batipanorama/projet5.jpg',
+    coverImage: '/images/batipanorama/projects/project-5.jpg',
     images: [
       {
         id: 1,
-        src: '/images/batipanorama/projet5.jpg',
+        src: '/images/batipanorama/projects/project-5.jpg',
         alt: 'Façade rénovée du bâtiment colonial',
         title: 'Façade restaurée',
         description: 'Façade d\'origine restaurée avec ses détails architecturaux',
@@ -289,28 +289,28 @@ export const mockProjects: ProjectDetail[] = [
       },
       {
         id: 2,
-        src: '/images/batipanorama/projet2.jpg',
+        src: '/images/batipanorama/projects/project-2.jpg',
         alt: 'Hall d\'entrée avec escalier d\'origine',
         title: 'Hall d\'entrée',
         description: 'Hall d\'entrée avec escalier en bois restauré et sol en marbre'
       },
       {
         id: 3,
-        src: '/images/batipanorama/projet3.jpg',
+        src: '/images/batipanorama/projects/project-3.jpg',
         alt: 'Espace de bureaux moderne',
         title: 'Espace de travail',
         description: 'Bureaux modernes intégrés dans l\'architecture d\'origine'
       },
       {
         id: 4,
-        src: '/images/batipanorama/projet1.jpg',
+        src: '/images/batipanorama/projects/project-1.jpg',
         alt: 'Salle de réunion avec moulures d\'origine',
         title: 'Salle de conférence',
         description: 'Grande salle de réunion avec plafonds à moulures restaurés'
       },
       {
         id: 5,
-        src: '/images/batipanorama/projet4.jpg',
+        src: '/images/batipanorama/projects/project-4.jpg',
         alt: 'Cour intérieure aménagée',
         title: 'Patio',
         description: 'Cour intérieure transformée en espace de détente végétalisé'

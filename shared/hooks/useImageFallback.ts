@@ -2,7 +2,7 @@
 
 import { useCallback, useRef } from 'react'
 
-const PLACEHOLDER = '/images/placeholders/property.jpg'
+const PLACEHOLDER = '/images/properties/property-placeholder.jpg'
 
 // Set global partagé entre toutes les instances — si une image 404 une fois,
 // on ne la retente plus jamais pendant la session.

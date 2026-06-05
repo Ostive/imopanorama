@@ -145,7 +145,7 @@ export default function BatiPanoramaContactPage() {
       title: 'Téléphone',
       content: '+261 20 22 123 45',
       link: 'tel:+261202212345',
-      gradient: 'from-blue-500 to-cyan-500'
+      gradient: 'from-primary-500 to-cyan-500'
     },
     {
       icon: EnvelopeIcon,
@@ -171,7 +171,7 @@ export default function BatiPanoramaContactPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20">
       {/* Header */}
       <div className="bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -189,7 +189,7 @@ export default function BatiPanoramaContactPage() {
                 Retour à BatiPanorama
               </Link>
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 bg-linear-to-br from-primary-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <div className="w-12 h-12 bg-linear-to-br from-primary-600 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg">
                   <BuildingOffice2Icon className="w-6 h-6 text-white" />
                 </div>
                 <h1 className="text-4xl md:text-5xl font-bold">Contactez-nous</h1>
@@ -211,7 +211,7 @@ export default function BatiPanoramaContactPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Nos Coordonnées</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-6">Nos Coordonnées</h2>
               <div className="space-y-4">
                 {contactInfo.map((info, index) => {
                   const Icon = info.icon;
@@ -221,23 +221,23 @@ export default function BatiPanoramaContactPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 + index * 0.1 }}
-                      className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all group"
+                      className="bg-card rounded-2xl p-6 shadow-lg border border-border hover:shadow-xl transition-all group"
                     >
                       <div className="flex items-start gap-4">
                         <div className={`w-12 h-12 rounded-xl bg-linear-to-br ${info.gradient} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
                           <Icon className="h-6 w-6 text-white" />
                         </div>
                         <div className="flex-1">
-                          <h3 className="font-semibold text-gray-900 mb-1">{info.title}</h3>
+                          <h3 className="font-semibold text-foreground mb-1">{info.title}</h3>
                           {info.link ? (
                             <a
                               href={info.link}
-                              className="text-gray-600 hover:text-primary-600 transition-colors"
+                              className="text-muted-foreground hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                             >
                               {info.content}
                             </a>
                           ) : (
-                            <p className="text-gray-600">{info.content}</p>
+                            <p className="text-muted-foreground">{info.content}</p>
                           )}
                         </div>
                       </div>
@@ -252,9 +252,9 @@ export default function BatiPanoramaContactPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.7 }}
-              className="bg-linear-to-br from-primary-50 to-blue-50 rounded-2xl p-6 border border-primary-100"
+              className="bg-linear-to-br from-primary-50 to-primary-50 dark:from-primary-900/20 dark:to-primary-900/20 rounded-2xl p-6 border border-primary-100 dark:border-primary-900/40"
             >
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Pourquoi nous choisir ?</h3>
+              <h3 className="text-lg font-bold text-foreground mb-4">Pourquoi nous choisir ?</h3>
               <ul className="space-y-3">
                 {[
                   '15+ ans d\'expérience',
@@ -263,8 +263,8 @@ export default function BatiPanoramaContactPage() {
                   'Garantie décennale',
                   'Suivi personnalisé'
                 ].map((item, index) => (
-                  <li key={index} className="flex items-center gap-2 text-gray-700">
-                    <CheckCircleIcon className="h-5 w-5 text-primary-600 flex-shrink-0" />
+                  <li key={index} className="flex items-center gap-2 text-foreground">
+                    <CheckCircleIcon className="h-5 w-5 text-primary-600 dark:text-primary-400 flex-shrink-0" />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -279,20 +279,20 @@ export default function BatiPanoramaContactPage() {
             transition={{ delay: 0.4 }}
             className="lg:col-span-2"
           >
-            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+            <div className="bg-card rounded-2xl shadow-lg p-8 border border-border">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-linear-to-br from-primary-600 to-blue-600 rounded-xl flex items-center justify-center">
+                  <div className="w-10 h-10 bg-linear-to-br from-primary-600 to-primary-600 rounded-xl flex items-center justify-center">
                     <ChatBubbleLeftRightIcon className="h-5 w-5 text-white" />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900">Demande de devis</h2>
+                  <h2 className="text-2xl font-bold text-foreground">Demande de devis</h2>
                 </div>
 
                 {/* Auth Status Badge */}
                 {!authLoading && (
                   <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${isAuthenticated
-                      ? 'bg-green-100 text-green-700 border border-green-200'
-                      : 'bg-orange-100 text-orange-700 border border-orange-200'
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800'
+                      : 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-800'
                     }`}>
                     {isAuthenticated ? (
                       <>
@@ -314,13 +314,13 @@ export default function BatiPanoramaContactPage() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="mb-6 bg-linear-to-r from-orange-50 to-red-50 border-l-4 border-orange-500 p-6 rounded-xl"
+                  className="mb-6 bg-linear-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 border-l-4 border-orange-500 p-6 rounded-xl"
                 >
                   <div className="flex items-center gap-3">
-                    <ShieldExclamationIcon className="h-6 w-6 text-orange-600" />
+                    <ShieldExclamationIcon className="h-6 w-6 text-orange-600 dark:text-orange-400" />
                     <div>
-                      <h3 className="font-semibold text-orange-900 mb-1">Connexion requise</h3>
-                      <p className="text-orange-700 text-sm">
+                      <h3 className="font-semibold text-orange-900 dark:text-orange-200 mb-1">Connexion requise</h3>
+                      <p className="text-orange-700 dark:text-orange-300 text-sm">
                         Vous devez être connecté pour envoyer une demande de devis. Redirection vers la page de connexion...
                       </p>
                     </div>
@@ -332,13 +332,13 @@ export default function BatiPanoramaContactPage() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="mb-6 bg-linear-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-6 rounded-xl"
+                  className="mb-6 bg-linear-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-l-4 border-green-500 p-6 rounded-xl"
                 >
                   <div className="flex items-center gap-3">
-                    <CheckCircleIcon className="h-6 w-6 text-green-600" />
+                    <CheckCircleIcon className="h-6 w-6 text-green-600 dark:text-green-400" />
                     <div>
-                      <h3 className="font-bold text-green-800">Message envoyé avec succès !</h3>
-                      <p className="text-sm text-green-700 mt-1">
+                      <h3 className="font-bold text-green-800 dark:text-green-200">Message envoyé avec succès !</h3>
+                      <p className="text-sm text-green-700 dark:text-green-300 mt-1">
                         Nous vous répondrons dans les plus brefs délais.
                       </p>
                     </div>
@@ -350,13 +350,13 @@ export default function BatiPanoramaContactPage() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="mb-6 bg-linear-to-r from-red-50 to-rose-50 border-l-4 border-red-500 p-6 rounded-xl"
+                  className="mb-6 bg-linear-to-r from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 border-l-4 border-red-500 p-6 rounded-xl"
                 >
                   <div className="flex items-center gap-3">
-                    <ExclamationCircleIcon className="h-6 w-6 text-red-600" />
+                    <ExclamationCircleIcon className="h-6 w-6 text-red-600 dark:text-red-400" />
                     <div>
-                      <h3 className="font-bold text-red-800">Erreur</h3>
-                      <p className="text-sm text-red-700 mt-1">{errorMessage}</p>
+                      <h3 className="font-bold text-red-800 dark:text-red-200">Erreur</h3>
+                      <p className="text-sm text-red-700 dark:text-red-300 mt-1">{errorMessage}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -366,7 +366,7 @@ export default function BatiPanoramaContactPage() {
                 {/* Name Fields */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
+                    <label className="flex items-center text-sm font-semibold text-foreground mb-2">
                       <UserIcon className="h-4 w-4 mr-2" />
                       Prénom *
                     </label>
@@ -376,12 +376,12 @@ export default function BatiPanoramaContactPage() {
                       value={formData.firstName}
                       onChange={handleChange}
                       required
-                      className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                      className="w-full p-3 border border-border bg-card text-foreground rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
                       placeholder="Votre prénom"
                     />
                   </div>
                   <div>
-                    <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
+                    <label className="flex items-center text-sm font-semibold text-foreground mb-2">
                       <UserIcon className="h-4 w-4 mr-2" />
                       Nom *
                     </label>
@@ -391,7 +391,7 @@ export default function BatiPanoramaContactPage() {
                       value={formData.lastName}
                       onChange={handleChange}
                       required
-                      className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                      className="w-full p-3 border border-border bg-card text-foreground rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
                       placeholder="Votre nom"
                     />
                   </div>
@@ -400,7 +400,7 @@ export default function BatiPanoramaContactPage() {
                 {/* Contact Fields */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
+                    <label className="flex items-center text-sm font-semibold text-foreground mb-2">
                       <EnvelopeIcon className="h-4 w-4 mr-2" />
                       Email *
                     </label>
@@ -410,12 +410,12 @@ export default function BatiPanoramaContactPage() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                      className="w-full p-3 border border-border bg-card text-foreground rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
                       placeholder="votre@email.com"
                     />
                   </div>
                   <div>
-                    <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
+                    <label className="flex items-center text-sm font-semibold text-foreground mb-2">
                       <PhoneIcon className="h-4 w-4 mr-2" />
                       Téléphone *
                     </label>
@@ -425,7 +425,7 @@ export default function BatiPanoramaContactPage() {
                       value={formData.phone}
                       onChange={handleChange}
                       required
-                      className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                      className="w-full p-3 border border-border bg-card text-foreground rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
                       placeholder="+261 34 XX XX XX XX"
                     />
                   </div>
@@ -434,7 +434,7 @@ export default function BatiPanoramaContactPage() {
                 {/* Project Details */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
+                    <label className="flex items-center text-sm font-semibold text-foreground mb-2">
                       <HomeModernIcon className="h-4 w-4 mr-2" />
                       Type de projet *
                     </label>
@@ -458,7 +458,7 @@ export default function BatiPanoramaContactPage() {
                     </Select>
                   </div>
                   <div>
-                    <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
+                    <label className="flex items-center text-sm font-semibold text-foreground mb-2">
                       <CurrencyDollarIcon className="h-4 w-4 mr-2" />
                       Budget estimé *
                     </label>
@@ -485,7 +485,7 @@ export default function BatiPanoramaContactPage() {
 
                 {/* Location */}
                 <div>
-                  <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
+                  <label className="flex items-center text-sm font-semibold text-foreground mb-2">
                     <MapPinIcon className="h-4 w-4 mr-2" />
                     Localisation du projet *
                   </label>
@@ -495,14 +495,14 @@ export default function BatiPanoramaContactPage() {
                     value={formData.location}
                     onChange={handleChange}
                     required
-                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                    className="w-full p-3 border border-border bg-card text-foreground rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
                     placeholder="Ville ou région à Madagascar"
                   />
                 </div>
 
                 {/* Message */}
                 <div>
-                  <label className="flex items-center text-sm font-semibold text-gray-700 mb-2">
+                  <label className="flex items-center text-sm font-semibold text-foreground mb-2">
                     <ChatBubbleLeftRightIcon className="h-4 w-4 mr-2" />
                     Décrivez votre projet *
                   </label>
@@ -512,7 +512,7 @@ export default function BatiPanoramaContactPage() {
                     onChange={handleChange}
                     required
                     rows={6}
-                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all resize-none"
+                    className="w-full p-3 border border-border bg-card text-foreground rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all resize-none"
                     placeholder="Décrivez votre projet en détail : surface souhaitée, nombre de pièces, spécificités, délais..."
                   />
                 </div>
@@ -523,7 +523,7 @@ export default function BatiPanoramaContactPage() {
                   whileTap={{ scale: 0.98 }}
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-4 px-6 bg-linear-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full py-4 px-6 bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold rounded-xl shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <>

@@ -68,11 +68,11 @@ function ResetPasswordContent() {
   if (!token) {
     return (
       <div className="text-center">
-        <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-6">
-          <ExclamationTriangleIcon className="h-10 w-10 text-red-600" />
+        <div className="mx-auto w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-6">
+          <ExclamationTriangleIcon className="h-10 w-10 text-red-600 dark:text-red-400" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-3">Lien invalide</h1>
-        <p className="text-gray-600 mb-8">
+        <h1 className="text-3xl font-bold text-foreground mb-3">Lien invalide</h1>
+        <p className="text-muted-foreground mb-8">
           Ce lien de réinitialisation est invalide ou a expiré. Demandez un nouveau lien depuis la page de connexion.
         </p>
         <Link
@@ -93,11 +93,11 @@ function ResetPasswordContent() {
         animate={{ opacity: 1, scale: 1 }}
         className="text-center"
       >
-        <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
-          <CheckCircleIcon className="h-10 w-10 text-green-600" />
+        <div className="mx-auto w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-6">
+          <CheckCircleIcon className="h-10 w-10 text-green-600 dark:text-green-400" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-3">Mot de passe mis à jour</h1>
-        <p className="text-gray-600 mb-8">
+        <h1 className="text-3xl font-bold text-foreground mb-3">Mot de passe mis à jour</h1>
+        <p className="text-muted-foreground mb-8">
           Votre mot de passe a bien été réinitialisé. Vous allez être redirigé vers la page de connexion…
         </p>
         <Link
@@ -114,15 +114,15 @@ function ResetPasswordContent() {
   return (
     <>
       <div className="mb-6 text-center">
-        <h1 className="text-4xl font-bold text-primary-600 mb-2">Nouveau mot de passe</h1>
-        <p className="text-gray-700">Choisissez un mot de passe d'au moins 8 caractères.</p>
+        <h1 className="text-4xl font-bold text-primary-600 dark:text-primary-400 mb-2">Nouveau mot de passe</h1>
+        <p className="text-foreground">Choisissez un mot de passe d'au moins 8 caractères.</p>
       </div>
 
       {error && (
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm"
+          className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-300 text-sm"
         >
           {error}
         </motion.div>
@@ -130,11 +130,11 @@ function ResetPasswordContent() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-foreground mb-2">
             Nouveau mot de passe
           </label>
           <div className="relative group">
-            <LockClosedIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
+            <LockClosedIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 dark:group-focus-within:text-primary-400 transition-colors" />
             <input
               type={showPassword ? 'text' : 'password'}
               value={password}
@@ -142,13 +142,13 @@ function ResetPasswordContent() {
               required
               minLength={8}
               autoFocus
-              className="w-full pl-12 pr-12 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white transition-all outline-none"
+              className="w-full pl-12 pr-12 py-3 bg-muted border-2 border-border text-foreground rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white dark:focus:bg-gray-900 transition-all outline-none"
               placeholder="••••••••"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600 transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
             >
               {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
             </button>
@@ -156,18 +156,18 @@ function ResetPasswordContent() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-foreground mb-2">
             Confirmer le mot de passe
           </label>
           <div className="relative group">
-            <LockClosedIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
+            <LockClosedIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 dark:group-focus-within:text-primary-400 transition-colors" />
             <input
               type={showPassword ? 'text' : 'password'}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               minLength={8}
-              className="w-full pl-12 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white transition-all outline-none"
+              className="w-full pl-12 pr-4 py-3 bg-muted border-2 border-border text-foreground rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white dark:focus:bg-gray-900 transition-all outline-none"
               placeholder="••••••••"
             />
           </div>
@@ -191,8 +191,8 @@ function ResetPasswordContent() {
         </motion.button>
       </form>
 
-      <div className="mt-6 text-center text-sm text-gray-600">
-        <Link href="/login" className="text-primary-600 hover:text-primary-700 font-semibold">
+      <div className="mt-6 text-center text-sm text-muted-foreground">
+        <Link href="/login" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-semibold">
           Retour à la connexion
         </Link>
       </div>
@@ -202,15 +202,15 @@ function ResetPasswordContent() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="min-h-screen flex bg-linear-to-br from-primary-50 via-white to-accent-50 relative">
+    <div className="min-h-screen flex bg-linear-to-br from-primary-50 via-white to-accent-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 relative">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div className="absolute top-1/3 -left-40 w-80 h-80 bg-accent-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-secondary-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-200 dark:bg-primary-900/30 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+        <div className="absolute top-1/3 -left-40 w-80 h-80 bg-accent-200 dark:bg-accent-900/30 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-secondary-200 dark:bg-secondary-900/30 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
       </div>
 
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden z-10">
-        <div className="absolute inset-0 bg-linear-to-br from-primary-600 via-primary-700 to-primary-800"></div>
+        <div className="absolute inset-0 bg-linear-to-br from-primary-600 via-primary-700 to-primary-600"></div>
         <div className="absolute inset-0">
           <div className="absolute top-0 right-0 w-96 h-96 bg-primary-400/20 rounded-full filter blur-3xl animate-pulse"></div>
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary-300/10 rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
@@ -224,7 +224,7 @@ export default function ResetPasswordPage() {
           >
             <div className="relative w-80 h-80 mb-8 mx-auto">
               <Image
-                src="/images/auth-illustration.png"
+                src="/images/auth/auth-illustration.png"
                 alt="ImoPanorama Logo"
                 fill
                 className="object-contain drop-shadow-2xl"
@@ -241,14 +241,14 @@ export default function ResetPasswordPage() {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-4 relative z-10">
         <Link
           href="/login"
-          className="absolute top-8 left-8 p-3 bg-white/80 hover:bg-white border-2 border-gray-200 hover:border-primary-500 rounded-xl shadow-lg hover:shadow-xl transition-all group"
+          className="absolute top-8 left-8 p-3 bg-white/80 dark:bg-gray-900/80 hover:bg-white dark:hover:bg-gray-900 border-2 border-border hover:border-primary-500 rounded-xl shadow-lg hover:shadow-xl transition-all group"
         >
-          <ArrowLeftIcon className="w-5 h-5 text-gray-600 group-hover:text-primary-600 transition-colors" />
+          <ArrowLeftIcon className="w-5 h-5 text-muted-foreground group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors" />
         </Link>
 
         <div className="lg:hidden absolute top-6 left-1/2 -translate-x-1/2">
           <Image
-            src="/images/logo.png"
+            src="/images/brand/logo.png"
             alt="ImoPanorama Madagascar"
             width={140}
             height={44}
@@ -264,7 +264,7 @@ export default function ResetPasswordPage() {
           className="w-full max-w-md"
         >
           <div className="p-6">
-            <Suspense fallback={<div className="text-center text-gray-500">Chargement…</div>}>
+            <Suspense fallback={<div className="text-center text-muted-foreground">Chargement…</div>}>
               <ResetPasswordContent />
             </Suspense>
           </div>

@@ -30,7 +30,7 @@ export default function SeoLandingPage({
   sections,
 }: SeoLandingPageProps) {
   return (
-    <main className="bg-white dark:bg-gray-900">
+    <main className="bg-card">
       <section className="relative overflow-hidden bg-gray-950 text-white">
         <div className="absolute inset-0">
           <img src={image} alt="" className="h-full w-full object-cover opacity-35" />
@@ -60,12 +60,12 @@ export default function SeoLandingPage({
 
       <section className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[0.85fr_1.15fr] lg:px-8">
         <aside className="rounded-2xl bg-gray-50 p-6 dark:bg-gray-800">
-          <h2 className="text-2xl font-black text-gray-900 dark:text-white">À retenir</h2>
+          <h2 className="text-2xl font-black text-foreground">À retenir</h2>
           <div className="mt-5 space-y-3">
             {points.map((point) => (
               <div key={point} className="flex items-start gap-3">
                 <CheckCircleIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary-600 dark:text-primary-400" />
-                <p className="text-gray-700 dark:text-gray-200">{point}</p>
+                <p className="text-foreground">{point}</p>
               </div>
             ))}
           </div>
@@ -73,9 +73,9 @@ export default function SeoLandingPage({
 
         <div className="grid gap-5 md:grid-cols-2">
           {sections.map((section) => (
-            <article key={section.title} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-              <h2 className="text-xl font-black text-gray-900 dark:text-white">{section.title}</h2>
-              <p className="mt-3 leading-relaxed text-gray-600 dark:text-gray-300">{section.text}</p>
+            <article key={section.title} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-border dark:bg-gray-800">
+              <h2 className="text-xl font-black text-foreground">{section.title}</h2>
+              <p className="mt-3 leading-relaxed text-muted-foreground">{section.text}</p>
             </article>
           ))}
         </div>

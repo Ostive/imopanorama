@@ -27,7 +27,7 @@ export default function QuiSommesNousPage() {
       icon: ShieldCheckIcon,
       title: 'Confiance',
       description: 'La transparence et l\'honnêteté sont au cœur de nos relations clients.',
-      color: 'from-blue-500 to-cyan-500'
+      color: 'from-primary-500 to-cyan-500'
     },
     {
       icon: LightBulbIcon,
@@ -74,9 +74,9 @@ export default function QuiSommesNousPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/30">
       {/* Hero Section */}
-      <div className="relative bg-linear-to-r from-primary-600 to-blue-600 text-white py-20 overflow-hidden">
+      <div className="relative bg-linear-to-r from-primary-600 to-primary-600 text-white py-20 overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-white rounded-full blur-3xl"></div>
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-white rounded-full blur-3xl"></div>
@@ -137,16 +137,16 @@ export default function QuiSommesNousPage() {
               viewport={{ once: true }}
               className="space-y-6"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-100 text-primary-700 rounded-full text-sm font-medium">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium">
                 <BuildingOffice2Icon className="w-4 h-4" />
                 <span>Notre Histoire</span>
               </div>
-              
-              <h2 className="text-4xl font-bold text-gray-900">
+
+              <h2 className="text-4xl font-bold text-foreground">
                 Une passion pour l'immobilier malgache
               </h2>
-              
-              <div className="space-y-4 text-gray-700 leading-relaxed">
+
+              <div className="space-y-4 text-foreground leading-relaxed">
                 <p>
                   Fondée il y a plus de 10 ans, <strong>ImoPanorama</strong> est née d'une vision simple : 
                   faciliter l'accès à la propriété foncière à Madagascar et accompagner chaque client 
@@ -166,15 +166,15 @@ export default function QuiSommesNousPage() {
               </div>
 
               <div className="flex flex-wrap gap-4 pt-4">
-                <div className="flex items-center gap-2 text-primary-600">
+                <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400">
                   <CheckCircleIcon className="h-6 w-6" />
                   <span className="font-semibold">Terrains certifiés</span>
                 </div>
-                <div className="flex items-center gap-2 text-primary-600">
+                <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400">
                   <CheckCircleIcon className="h-6 w-6" />
                   <span className="font-semibold">Accompagnement complet</span>
                 </div>
-                <div className="flex items-center gap-2 text-primary-600">
+                <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400">
                   <CheckCircleIcon className="h-6 w-6" />
                   <span className="font-semibold">Prix transparents</span>
                 </div>
@@ -185,7 +185,7 @@ export default function QuiSommesNousPage() {
       </section>
 
       {/* Statistiques */}
-      <section className="py-20 bg-linear-to-r from-primary-600 to-blue-600 text-white">
+      <section className="py-20 bg-linear-to-r from-primary-600 to-primary-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
@@ -214,14 +214,14 @@ export default function QuiSommesNousPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-100 text-primary-700 rounded-full text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium mb-4">
               <SparklesIcon className="w-4 h-4" />
               <span>Nos Valeurs</span>
             </div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold text-foreground mb-4">
               Ce qui nous guide au quotidien
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Des principes forts qui définissent notre approche et notre engagement envers vous
             </p>
           </motion.div>
@@ -234,13 +234,13 @@ export default function QuiSommesNousPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all group"
+                className="bg-card rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all group"
               >
                 <div className={`w-16 h-16 bg-linear-to-br ${value.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
                   <value.icon className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{value.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{value.description}</p>
+                <h3 className="text-xl font-bold text-foreground mb-3">{value.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{value.description}</p>
               </motion.div>
             ))}
           </div>
@@ -248,7 +248,7 @@ export default function QuiSommesNousPage() {
       </section>
 
       {/* Notre Équipe */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-background/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -256,14 +256,14 @@ export default function QuiSommesNousPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-100 text-primary-700 rounded-full text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium mb-4">
               <UserGroupIcon className="w-4 h-4" />
               <span>Notre Équipe</span>
             </div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold text-foreground mb-4">
               Des experts à votre service
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Une équipe pluridisciplinaire dédiée à la réussite de votre projet
             </p>
           </motion.div>
@@ -276,14 +276,14 @@ export default function QuiSommesNousPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all"
+                className="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all"
               >
-                <div className="w-16 h-16 bg-linear-to-br from-primary-500 to-blue-500 rounded-full flex items-center justify-center mb-4 mx-auto">
+                <div className="w-16 h-16 bg-linear-to-br from-primary-500 to-primary-500 rounded-full flex items-center justify-center mb-4 mx-auto">
                   <UserGroupIcon className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2 text-center">{member.name}</h3>
-                <p className="text-primary-600 font-semibold text-sm mb-3 text-center">{member.role}</p>
-                <p className="text-gray-600 text-sm text-center leading-relaxed">{member.description}</p>
+                <h3 className="text-xl font-bold text-foreground mb-2 text-center">{member.name}</h3>
+                <p className="text-primary-600 dark:text-primary-400 font-semibold text-sm mb-3 text-center">{member.role}</p>
+                <p className="text-muted-foreground text-sm text-center leading-relaxed">{member.description}</p>
               </motion.div>
             ))}
           </div>
@@ -293,7 +293,7 @@ export default function QuiSommesNousPage() {
       {/* Notre Partenaire */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-linear-to-r from-primary-600 to-blue-600 rounded-3xl p-12 text-white overflow-hidden relative">
+          <div className="bg-linear-to-r from-primary-600 to-primary-600 rounded-3xl p-12 text-white overflow-hidden relative">
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
             </div>
@@ -355,29 +355,29 @@ export default function QuiSommesNousPage() {
       </section>
 
       {/* CTA Final */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-background/50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl font-bold text-foreground mb-6">
               Prêt à concrétiser votre projet ?
             </h2>
-            <p className="text-xl text-gray-600 mb-8">
+            <p className="text-xl text-muted-foreground mb-8">
               Découvrez nos terrains disponibles ou contactez-nous pour un accompagnement personnalisé
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link 
+              <Link
                 href="/proprietes"
-                className="inline-flex items-center justify-center px-8 py-4 bg-linear-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg transition-all hover:scale-105"
+                className="inline-flex items-center justify-center px-8 py-4 bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold rounded-xl shadow-lg transition-all hover:scale-105"
               >
                 Voir nos propriétés
               </Link>
-              <Link 
+              <Link
                 href="/contact"
-                className="inline-flex items-center justify-center px-8 py-4 bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-semibold rounded-xl transition-all hover:scale-105"
+                className="inline-flex items-center justify-center px-8 py-4 bg-card border-2 border-border hover:border-gray-400 dark:hover:border-gray-500 text-foreground font-semibold rounded-xl transition-all hover:scale-105"
               >
                 Nous contacter
               </Link>

@@ -1,62 +1,59 @@
 'use client'
 
-import React from 'react';
-import ThemeSelector from '@/shared/theme/ThemeSelector';
-import { useTheme } from '@/shared/theme/ThemeContext';
+import { MoonIcon, SunIcon } from '@heroicons/react/24/outline'
+import { useTheme } from '@/shared/theme/ThemeContext'
 
 export default function ThemeSettings() {
-  const { currentTheme } = useTheme();
-  
+  const { themeMode, setThemeMode } = useTheme()
+
   return (
-    <div>
-      <h2 className={`text-xl font-semibold mb-4 text-${currentTheme.colors.primary}-700 dark:text-${currentTheme.colors.primary}-300`}>
-        Paramètres d&apos;affichage
-      </h2>
-      
-      <div className="space-y-6">
-        <div>
-          <ThemeSelector showLabel={true} showModeToggle={true} />
-          
-          <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-            Personnalisez l&apos;apparence de l&apos;application en choisissant un thème de couleur et un mode d&apos;affichage.
-          </p>
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-base font-semibold text-foreground mb-1">Mode d&apos;affichage</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          La palette de marque est fixée sur le bleu ciel. Choisis le mode clair ou sombre.
+        </p>
+
+        <div className="grid grid-cols-2 gap-3 max-w-md">
+          <button
+            type="button"
+            onClick={() => setThemeMode('light')}
+            className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 transition-all ${
+              themeMode === 'light'
+                ? 'border-primary-500 bg-primary-50 dark:bg-primary-950/30 text-primary-700 dark:text-primary-300 shadow-sm'
+                : 'border-border bg-background text-muted-foreground hover:border-primary-300'
+            }`}
+          >
+            <SunIcon className="w-5 h-5" />
+            <span className="font-medium">Clair</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setThemeMode('dark')}
+            className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 transition-all ${
+              themeMode === 'dark'
+                ? 'border-primary-500 bg-primary-50 dark:bg-primary-950/30 text-primary-700 dark:text-primary-300 shadow-sm'
+                : 'border-border bg-background text-muted-foreground hover:border-primary-300'
+            }`}
+          >
+            <MoonIcon className="w-5 h-5" />
+            <span className="font-medium">Sombre</span>
+          </button>
         </div>
-        
-        <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-          <h3 className={`text-lg font-medium mb-3 text-${currentTheme.colors.primary}-600 dark:text-${currentTheme.colors.primary}-400`}>
-            Aperçu du thème actuel
-          </h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className={`p-4 rounded-md bg-${currentTheme.colors.primary}-100 dark:bg-${currentTheme.colors.primary}-900 text-${currentTheme.colors.primary}-800 dark:text-${currentTheme.colors.primary}-200`}>
-              Couleur primaire
+      </div>
+
+      <div className="pt-4 border-t border-border">
+        <h4 className="text-sm font-semibold text-foreground mb-3">Aperçu de la palette</h4>
+        <div className="grid grid-cols-5 gap-2 max-w-md">
+          {(['50', '100', '300', '500', '700', '900'] as const).map(shade => (
+            <div key={shade} className="text-center">
+              <div className={`h-10 rounded-lg bg-primary-${shade} border border-border`} />
+              <p className="text-xs text-muted-foreground mt-1">{shade}</p>
             </div>
-            <div className={`p-4 rounded-md bg-${currentTheme.colors.secondary}-100 dark:bg-${currentTheme.colors.secondary}-900 text-${currentTheme.colors.secondary}-800 dark:text-${currentTheme.colors.secondary}-200`}>
-              Couleur secondaire
-            </div>
-            <div className={`p-4 rounded-md bg-${currentTheme.colors.accent}-100 dark:bg-${currentTheme.colors.accent}-900 text-${currentTheme.colors.accent}-800 dark:text-${currentTheme.colors.accent}-200`}>
-              Couleur d&apos;accent
-            </div>
-            <div className="p-4 rounded-md bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
-              Fond et texte
-            </div>
-          </div>
-          
-          <div className="mt-4 space-y-3">
-            <button className={`bg-${currentTheme.colors.primary}-600 hover:bg-${currentTheme.colors.primary}-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200`}>
-              Bouton primaire
-            </button>
-            
-            <button className={`bg-${currentTheme.colors.secondary}-600 hover:bg-${currentTheme.colors.secondary}-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 ml-2`}>
-              Bouton secondaire
-            </button>
-            
-            <button className={`bg-${currentTheme.colors.accent}-600 hover:bg-${currentTheme.colors.accent}-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 ml-2`}>
-              Bouton accent
-            </button>
-          </div>
+          ))}
         </div>
       </div>
     </div>
-  );
+  )
 }

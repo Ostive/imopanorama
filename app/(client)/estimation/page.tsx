@@ -117,17 +117,17 @@ export default function EstimationPage() {
   }
 
   return (
-    <main className="bg-gray-50 dark:bg-gray-900">
-      <section className="relative overflow-hidden bg-white dark:bg-gray-900">
+    <main className="bg-background">
+      <section className="relative overflow-hidden bg-card">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col justify-center">
             <span className="inline-flex w-fit rounded-full bg-primary-50 px-4 py-1.5 text-sm font-bold text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
               Estimation immobilière
             </span>
-            <h1 className="mt-5 text-4xl font-black leading-tight text-gray-900 dark:text-white md:text-6xl">
+            <h1 className="mt-5 text-4xl font-black leading-tight text-foreground md:text-6xl">
               Obtenez un premier avis sur la valeur de votre bien
             </h1>
-            <p className="mt-5 text-lg leading-relaxed text-gray-600 dark:text-gray-300">
+            <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
               Donnez-nous quelques informations. Nous vous recontactons pour affiner l'estimation selon l'emplacement, l'état du bien et le marché local.
             </p>
           </motion.div>
@@ -140,7 +140,7 @@ export default function EstimationPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-gray-950/70 to-transparent" />
             <div className="absolute bottom-6 left-6 right-6 rounded-2xl bg-white/95 p-5 shadow-xl backdrop-blur dark:bg-gray-900/95">
               <p className="text-sm font-bold text-primary-600 dark:text-primary-400">Premier échange offert</p>
-              <p className="mt-1 text-xl font-black text-gray-900 dark:text-white">Une estimation plus utile qu'un simple chiffre automatique.</p>
+              <p className="mt-1 text-xl font-black text-foreground">Une estimation plus utile qu'un simple chiffre automatique.</p>
             </div>
           </motion.div>
         </div>
@@ -154,20 +154,20 @@ export default function EstimationPage() {
         ].map((item) => {
           const Icon = item.icon
           return (
-            <div key={item.title} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <div key={item.title} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-border dark:bg-gray-800">
               <Icon className="h-8 w-8 text-primary-600 dark:text-primary-400" />
-              <h2 className="mt-4 text-xl font-black text-gray-900 dark:text-white">{item.title}</h2>
-              <p className="mt-2 text-gray-600 dark:text-gray-300">{item.text}</p>
+              <h2 className="mt-4 text-xl font-black text-foreground">{item.title}</h2>
+              <p className="mt-2 text-muted-foreground">{item.text}</p>
             </div>
           )
         })}
       </section>
 
       <section className="mx-auto max-w-4xl px-4 py-14 sm:px-6 lg:px-8">
-        <form onSubmit={handleSubmit} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xl dark:border-gray-700 dark:bg-gray-800">
+        <form onSubmit={handleSubmit} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xl dark:border-border dark:bg-gray-800">
           <div className="mb-6">
-            <h2 className="text-3xl font-black text-gray-900 dark:text-white">Demander une estimation</h2>
-            <p className="mt-2 text-gray-600 dark:text-gray-300">Plus votre message est précis, plus notre premier retour sera utile.</p>
+            <h2 className="text-3xl font-black text-foreground">Demander une estimation</h2>
+            <p className="mt-2 text-muted-foreground">Plus votre message est précis, plus notre premier retour sera utile.</p>
           </div>
 
           {status === 'success' && (
@@ -189,19 +189,19 @@ export default function EstimationPage() {
 
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Prénom *" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-gray-600 dark:bg-gray-900 dark:text-white" />
+              <input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Prénom *" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
               {fieldErrors.firstName && <p className="mt-1 text-xs font-semibold text-red-600">{fieldErrors.firstName}</p>}
             </div>
             <div>
-              <input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Nom *" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-gray-600 dark:bg-gray-900 dark:text-white" />
+              <input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Nom *" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
               {fieldErrors.lastName && <p className="mt-1 text-xs font-semibold text-red-600">{fieldErrors.lastName}</p>}
             </div>
             <div>
-              <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email *" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-gray-600 dark:bg-gray-900 dark:text-white" />
+              <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email *" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
               {fieldErrors.email && <p className="mt-1 text-xs font-semibold text-red-600">{fieldErrors.email}</p>}
             </div>
             <div>
-              <input name="phone" value={formData.phone} onChange={handleChange} placeholder="Téléphone" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-gray-600 dark:bg-gray-900 dark:text-white" />
+              <input name="phone" value={formData.phone} onChange={handleChange} placeholder="Téléphone" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
               {fieldErrors.phone && <p className="mt-1 text-xs font-semibold text-red-600">{fieldErrors.phone}</p>}
             </div>
           </div>
@@ -210,7 +210,7 @@ export default function EstimationPage() {
             <div>
               <label className="relative block">
                 <HomeIcon className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                <select name="propertyType" value={formData.propertyType} onChange={handleChange} className="w-full rounded-xl border border-gray-200 py-3 pl-12 pr-4 dark:border-gray-600 dark:bg-gray-900 dark:text-white">
+                <select name="propertyType" value={formData.propertyType} onChange={handleChange} className="w-full rounded-xl border border-gray-200 py-3 pl-12 pr-4 dark:border-border dark:bg-gray-900 dark:text-white">
                   <option value="">Type de bien *</option>
                   {propertyTypes.map((type) => <option key={type} value={type}>{type}</option>)}
                 </select>
@@ -220,16 +220,16 @@ export default function EstimationPage() {
             <div>
               <label className="relative block">
                 <MapPinIcon className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                <input name="city" value={formData.city} onChange={handleChange} placeholder="Ville ou quartier *" className="w-full rounded-xl border border-gray-200 py-3 pl-12 pr-4 dark:border-gray-600 dark:bg-gray-900 dark:text-white" />
+                <input name="city" value={formData.city} onChange={handleChange} placeholder="Ville ou quartier *" className="w-full rounded-xl border border-gray-200 py-3 pl-12 pr-4 dark:border-border dark:bg-gray-900 dark:text-white" />
               </label>
               {fieldErrors.city && <p className="mt-1 text-xs font-semibold text-red-600">{fieldErrors.city}</p>}
             </div>
             <div>
-              <input type="number" name="surface" value={formData.surface} onChange={handleChange} min="1" placeholder="Surface en m² *" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-gray-600 dark:bg-gray-900 dark:text-white" />
+              <input type="number" name="surface" value={formData.surface} onChange={handleChange} min="1" placeholder="Surface en m² *" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
               {fieldErrors.surface && <p className="mt-1 text-xs font-semibold text-red-600">{fieldErrors.surface}</p>}
             </div>
             <div>
-              <select name="condition" value={formData.condition} onChange={handleChange} className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-gray-600 dark:bg-gray-900 dark:text-white">
+              <select name="condition" value={formData.condition} onChange={handleChange} className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white">
                 <option value="">État du bien *</option>
                 {conditions.map((condition) => <option key={condition} value={condition}>{condition}</option>)}
               </select>
@@ -237,7 +237,7 @@ export default function EstimationPage() {
             </div>
           </div>
 
-          <textarea name="message" value={formData.message} onChange={handleChange} rows={5} placeholder="Adresse approximative, accès, documents disponibles, prix souhaité, urgence de vente..." className="mt-4 w-full resize-none rounded-xl border border-gray-200 px-4 py-3 dark:border-gray-600 dark:bg-gray-900 dark:text-white" />
+          <textarea name="message" value={formData.message} onChange={handleChange} rows={5} placeholder="Adresse approximative, accès, documents disponibles, prix souhaité, urgence de vente..." className="mt-4 w-full resize-none rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
           <button disabled={isSubmitting} className="mt-5 w-full rounded-xl bg-primary-600 px-6 py-4 font-bold text-white hover:bg-primary-700 disabled:opacity-50">
             {isSubmitting ? 'Envoi en cours...' : 'Demander mon estimation'}
           </button>

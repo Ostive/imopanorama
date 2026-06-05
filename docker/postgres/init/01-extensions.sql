@@ -7,7 +7,7 @@
 --   docker exec -it imo-postgres psql -U postgres -d imopanorama -f /docker-entrypoint-initdb.d/01-extensions.sql
 -- ============================================
 
--- Recherche vectorielle (remplace Qdrant)
+-- Recherche vectorielle (pgvector)
 CREATE EXTENSION IF NOT EXISTS vector;
 
 -- Recherche textuelle fuzzy (trigrammes) + similarité

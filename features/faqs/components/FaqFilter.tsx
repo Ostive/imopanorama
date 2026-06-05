@@ -56,7 +56,7 @@ export default function FaqFilter({ onFilterChange, initialFilters = {} }: FaqFi
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6 transition-colors duration-200">
+    <div className="bg-card rounded-xl shadow-lg p-6 mb-6 transition-colors duration-200">
       <h2 className="text-lg font-semibold mb-4 text-primary-700 dark:text-primary-400">
         Filtrer les questions
       </h2>
@@ -69,7 +69,7 @@ export default function FaqFilter({ onFilterChange, initialFilters = {} }: FaqFi
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Rechercher..."
-            className="flex-grow px-4 py-3 rounded-l-lg bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+            className="flex-grow px-4 py-3 rounded-l-lg bg-gray-50 dark:bg-gray-700 border border-border text-foreground placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
           />
           <button
             type="submit"
@@ -83,7 +83,7 @@ export default function FaqFilter({ onFilterChange, initialFilters = {} }: FaqFi
       {/* Catégories */}
       {!loading && categories.length > 0 && (
         <div className="mb-4">
-          <h3 className="text-sm font-medium mb-3 text-gray-700 dark:text-gray-300">
+          <h3 className="text-sm font-medium mb-3 text-foreground">
             Catégories
           </h3>
           <div className="flex flex-wrap gap-2">
@@ -93,7 +93,7 @@ export default function FaqFilter({ onFilterChange, initialFilters = {} }: FaqFi
                 onClick={(e) => handleCategoryChange(e, category)}
                 className={`px-4 py-2 text-sm rounded-full transition-all duration-200 ${filters.category === category
                     ? 'bg-primary-600 dark:bg-primary-500 text-white shadow-lg'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 shadow-sm hover:shadow-md'
+                    : 'bg-gray-100 dark:bg-gray-700 text-foreground shadow-sm hover:shadow-md'
                   }`}
               >
                 {category.charAt(0).toUpperCase() + category.slice(1)}

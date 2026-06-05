@@ -1,4 +1,4 @@
-import { transporter } from './transporter';
+import { getMailFrom, transporter } from './transporter';
 import { GenericContactData } from './types';
 
 /**
@@ -6,7 +6,7 @@ import { GenericContactData } from './types';
  */
 export async function sendGenericContactConfirmation(data: GenericContactData) {
     const mailOptions = {
-        from: '"ImoPanorama" <noreply@demomailtrap.co>',
+        from: getMailFrom('ImoPanorama'),
         to: data.clientEmail,
         subject: `Confirmation de votre message - ImoPanorama`,
         html: `

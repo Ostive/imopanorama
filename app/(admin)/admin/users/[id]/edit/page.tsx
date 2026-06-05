@@ -112,7 +112,7 @@ export default function EditUserPage({ params }: EditUserPageProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <FormSkeleton fields={6} />
         </div>
@@ -122,7 +122,7 @@ export default function EditUserPage({ params }: EditUserPageProps) {
 
   if (error && !formData.email) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
             Erreur: {error}
@@ -140,7 +140,7 @@ export default function EditUserPage({ params }: EditUserPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -149,11 +149,11 @@ export default function EditUserPage({ params }: EditUserPageProps) {
           className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 gap-4"
         >
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-linear-to-br from-primary-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-14 h-14 bg-linear-to-br from-primary-600 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg">
               <UserCircleIcon className="w-7 h-7 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold bg-linear-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">
                 Modifier l'utilisateur
               </h1>
               <p className="mt-1 text-gray-600 font-medium">
@@ -279,7 +279,7 @@ export default function EditUserPage({ params }: EditUserPageProps) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-6 py-3 bg-linear-to-r from-primary-600 to-blue-600 text-white font-semibold rounded-xl hover:from-primary-700 hover:to-blue-700 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-3 bg-linear-to-r from-primary-600 to-primary-600 text-white font-semibold rounded-xl hover:from-primary-700 hover:to-primary-700 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Enregistrement...' : 'Enregistrer les modifications'}
               </button>

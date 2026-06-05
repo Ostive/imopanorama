@@ -12,7 +12,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { batiServiceRepository } from '@/infrastructure/database/repositories';
 import { requireAdmin } from '@/infrastructure/auth/auth-guard';
-import { withErrorHandler, apiError, extractParam } from '@/infrastructure/middleware/api-handler';
+import { withErrorHandler, apiError, extractParam, validationError } from '@/infrastructure/middleware/api-handler';
 
 // ---------------------------------------------------------------------------
 // GET /api/bati-services/[id]
@@ -44,12 +44,13 @@ export const PUT = withErrorHandler(async (
   const id = await extractParam(context, 'id');
   const body = await request.json();
 
-  const data = {
-    ...body,
-    order: typeof body.order === 'string' ? parseInt(body.order, 10) : body.order,
-  };
+  const { BatiServiceFormDataSchema } = await import('@/features/batipanorama/schemas/batipanorama.schema');
+  const validation = BatiServiceFormDataSchema.partial().safeParse(body);
+  if (!validation.success) {
+    return validationError(validation.error.issues, 'La mise a jour du service contient des champs invalides');
+  }
 
-  const service = await batiServiceRepository.update(id, data);
+  const service = await batiServiceRepository.update(id, validation.data);
   return NextResponse.json({ success: true, service });
 });
 

@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useTheme } from '@/shared/theme/ThemeContext';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { GalleryImage } from './types';
 
@@ -12,17 +11,16 @@ interface BatiPanoramaPreviewProps {
 }
 
 export default function BatiPanoramaPreview({ featuredImages }: BatiPanoramaPreviewProps) {
-  const { currentTheme } = useTheme();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <section className="py-12 bg-white dark:bg-gray-800 transition-colors duration-200">
+    <section className="py-12 bg-card transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className={`text-3xl font-bold text-${currentTheme.colors.primary}-600 dark:text-${currentTheme.colors.primary}-400`}>
+          <h2 className={`text-3xl font-bold text-primary-600 dark:text-primary-400`}>
             BatiPanorama
           </h2>
-          <p className="mt-4 text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          <p className="mt-4 text-xl text-muted-foreground max-w-3xl mx-auto">
             Découvrez nos projets de construction et rénovation à travers notre galerie d'images professionnelles
           </p>
         </div>
@@ -58,7 +56,7 @@ export default function BatiPanoramaPreview({ featuredImages }: BatiPanoramaPrev
         <div className="text-center">
           <Link 
             href="/batipanorama" 
-            className={`inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-${currentTheme.colors.primary}-600 hover:bg-${currentTheme.colors.primary}-700 transition-colors duration-200`}
+            className={`inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 transition-colors duration-200`}
           >
             Voir tous nos projets
             <ArrowRightIcon className="ml-2 -mr-1 h-5 w-5" aria-hidden="true" />

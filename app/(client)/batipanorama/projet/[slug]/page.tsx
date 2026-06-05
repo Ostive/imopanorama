@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { useTheme } from '@/shared/theme/ThemeContext';
 import { ImageGallery } from '@/shared/components/gallery';
 import { 
   ArrowLeftIcon, 
@@ -37,7 +36,6 @@ interface Project {
 export default function ProjectDetailPage() {
   const params = useParams();
   const projectId = params.slug as string; // Keep slug param name for URL compatibility
-  const { currentTheme } = useTheme();
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'gallery'>('overview');
@@ -98,7 +96,7 @@ export default function ProjectDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-800">
+      <div className="min-h-screen flex items-center justify-center bg-card">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
       </div>
     );
@@ -106,13 +104,13 @@ export default function ProjectDetailPage() {
 
   if (!project) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-800">
+      <div className="min-h-screen flex items-center justify-center bg-card">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Projet non trouvé</h1>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">Le projet que vous recherchez n&apos;existe pas ou a été déplacé.</p>
+          <h1 className="text-2xl font-bold text-foreground mb-4">Projet non trouvé</h1>
+          <p className="text-muted-foreground mb-6">Le projet que vous recherchez n&apos;existe pas ou a été déplacé.</p>
           <Link 
             href="/batipanorama" 
-            className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-${currentTheme.colors.primary}-600 hover:bg-${currentTheme.colors.primary}-700`}
+            className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700`}
           >
             <ArrowLeftIcon className="mr-2 h-4 w-4" />
             Retour aux projets
@@ -127,7 +125,7 @@ export default function ProjectDetailPage() {
       {/* Hero Section */}
       <div className="relative h-[40vh] md:h-[50vh] overflow-hidden">
         <Image
-          src={project.coverImage || project.images[0] || '/images/placeholders/project.jpg'}
+          src={project.coverImage || project.images[0] || '/images/batipanorama/project-placeholder.jpg'}
           alt={project.title}
           fill
           className="object-cover"
@@ -139,7 +137,7 @@ export default function ProjectDetailPage() {
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-500/20 rounded-full filter blur-3xl animate-blob"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/20 rounded-full filter blur-3xl animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary-500/20 rounded-full filter blur-3xl animate-blob animation-delay-2000"></div>
         </div>
 
         {/* Content */}
@@ -163,14 +161,14 @@ export default function ProjectDetailPage() {
               </h1>
               
               <div className="flex flex-wrap gap-2">
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-linear-to-r from-primary-500 to-blue-500 text-white shadow-lg">
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-linear-to-r from-primary-500 to-primary-500 text-white shadow-lg">
                   <span className="w-2 h-2 rounded-full bg-white"></span>
                   {project.category}
                 </span>
                 <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-white/20 backdrop-blur-md text-white border border-white/30">
                   <span className={`w-2 h-2 rounded-full ${
                     project.status === 'COMPLETED' ? 'bg-green-400' : 
-                    project.status === 'IN_PROGRESS' ? 'bg-yellow-400' : 'bg-blue-400'
+                    project.status === 'IN_PROGRESS' ? 'bg-yellow-400' : 'bg-primary-400'
                   }`}></span>
                   {project.status === 'COMPLETED' ? 'Terminé' : 
                    project.status === 'IN_PROGRESS' ? 'En cours' : 'Planifié'}
@@ -182,7 +180,7 @@ export default function ProjectDetailPage() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="bg-white/90 backdrop-blur-lg shadow-lg sticky top-0 z-40 border-b border-gray-100">
+      <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg shadow-lg sticky top-0 z-40 border-b border-border">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex space-x-1 md:space-x-4">
             <motion.button
@@ -192,13 +190,13 @@ export default function ProjectDetailPage() {
               className={`relative py-4 px-4 md:px-6 font-semibold text-sm md:text-base transition-all flex items-center gap-2 ${
                 activeTab === 'overview'
                   ? 'text-primary-600'
-                  : 'text-gray-500 hover:text-gray-700'
+                  : 'text-muted-foreground hover:text-gray-700 dark:hover:text-gray-200'
               }`}
             >
               <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
                 activeTab === 'overview' 
-                  ? 'bg-linear-to-br from-primary-500 to-blue-500 text-white' 
-                  : 'bg-gray-100 text-gray-400'
+                  ? 'bg-linear-to-br from-primary-500 to-primary-500 text-white' 
+                  : 'bg-muted text-muted-foreground'
               }`}>
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -208,7 +206,7 @@ export default function ProjectDetailPage() {
               {activeTab === 'overview' && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-primary-500 to-blue-500 rounded-t-full shadow-lg"
+                  className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-primary-500 to-primary-500 rounded-t-full shadow-lg"
                   transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 />
               )}
@@ -220,13 +218,13 @@ export default function ProjectDetailPage() {
               className={`relative py-4 px-4 md:px-6 font-semibold text-sm md:text-base transition-all flex items-center gap-2 ${
                 activeTab === 'gallery'
                   ? 'text-primary-600'
-                  : 'text-gray-500 hover:text-gray-700'
+                  : 'text-muted-foreground hover:text-gray-700 dark:hover:text-gray-200'
               }`}
             >
               <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
                 activeTab === 'gallery' 
-                  ? 'bg-linear-to-br from-primary-500 to-blue-500 text-white' 
-                  : 'bg-gray-100 text-gray-400'
+                  ? 'bg-linear-to-br from-primary-500 to-primary-500 text-white' 
+                  : 'bg-muted text-muted-foreground'
               }`}>
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -236,7 +234,7 @@ export default function ProjectDetailPage() {
               {activeTab === 'gallery' && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-primary-500 to-blue-500 rounded-t-full shadow-lg"
+                  className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-primary-500 to-primary-500 rounded-t-full shadow-lg"
                   transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 />
               )}
@@ -256,26 +254,26 @@ export default function ProjectDetailPage() {
           >
             <div className="md:col-span-2 space-y-6">
               {/* Description */}
-              <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="bg-card rounded-2xl shadow-lg p-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="bg-linear-to-br from-primary-500 to-blue-500 p-2 rounded-lg">
+                  <div className="bg-linear-to-br from-primary-500 to-primary-500 p-2 rounded-lg">
                     <SparklesIcon className="w-5 h-5 text-white" />
                   </div>
-                  <h2 className="text-2xl font-bold bg-linear-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent">
+                  <h2 className="text-2xl font-bold bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">
                     Description
                   </h2>
                 </div>
-                <p className="text-gray-700 leading-relaxed">{project.description}</p>
+                <p className="text-foreground leading-relaxed">{project.description}</p>
               </div>
 
               {/* Caractéristiques */}
               {project.features && project.features.length > 0 && (
-                <div className="bg-white rounded-2xl shadow-lg p-6">
+                <div className="bg-card rounded-2xl shadow-lg p-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="bg-linear-to-br from-primary-500 to-blue-500 p-2 rounded-lg">
+                    <div className="bg-linear-to-br from-primary-500 to-primary-500 p-2 rounded-lg">
                       <CheckCircleIcon className="w-5 h-5 text-white" />
                     </div>
-                    <h2 className="text-2xl font-bold bg-linear-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent">
+                    <h2 className="text-2xl font-bold bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">
                       Caractéristiques
                     </h2>
                   </div>
@@ -283,7 +281,7 @@ export default function ProjectDetailPage() {
                     {project.features.map((feature, index) => (
                       <li key={index} className="flex items-start gap-2">
                         <CheckCircleIcon className="h-5 w-5 text-primary-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-700">{feature}</span>
+                        <span className="text-foreground">{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -296,15 +294,15 @@ export default function ProjectDetailPage() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-white rounded-2xl shadow-lg p-5"
+                className="bg-card rounded-2xl shadow-lg p-5"
               >
-                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100">
-                  <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary-500 to-blue-500 flex items-center justify-center">
+                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border">
+                  <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary-500 to-primary-500 flex items-center justify-center">
                     <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-bold bg-linear-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent">
+                  <h3 className="text-lg font-bold bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">
                     Informations
                   </h3>
                 </div>
@@ -312,23 +310,23 @@ export default function ProjectDetailPage() {
                   <div className="flex items-start">
                     <MapPinIcon className="h-5 w-5 text-gray-400 mr-2 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Localisation</p>
-                      <p className="text-gray-900 dark:text-white">{project.location}</p>
+                      <p className="text-sm font-medium text-muted-foreground">Localisation</p>
+                      <p className="text-foreground">{project.location}</p>
                     </div>
                   </div>
                   <div className="flex items-start">
                     <CalendarIcon className="h-5 w-5 text-gray-400 mr-2 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Année</p>
-                      <p className="text-gray-900 dark:text-white">{project.year}</p>
+                      <p className="text-sm font-medium text-muted-foreground">Année</p>
+                      <p className="text-foreground">{project.year}</p>
                     </div>
                   </div>
                   {project.surface && (
                     <div className="flex items-start">
                       <SquaresFourIcon className="h-5 w-5 text-gray-400 mr-2 mt-0.5" />
                       <div>
-                        <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Surface</p>
-                        <p className="text-gray-900 dark:text-white">{project.surface} m²</p>
+                        <p className="text-sm font-medium text-muted-foreground">Surface</p>
+                        <p className="text-foreground">{project.surface} m²</p>
                       </div>
                     </div>
                   )}
@@ -338,8 +336,8 @@ export default function ProjectDetailPage() {
                         <span className="text-sm">👤</span>
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Client</p>
-                        <p className="text-gray-900 dark:text-white">{project.client}</p>
+                        <p className="text-sm font-medium text-muted-foreground">Client</p>
+                        <p className="text-foreground">{project.client}</p>
                       </div>
                     </div>
                   )}
@@ -349,8 +347,8 @@ export default function ProjectDetailPage() {
                         <span className="text-sm">💰</span>
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Budget</p>
-                        <p className="text-gray-900 dark:text-white">{project.budget}</p>
+                        <p className="text-sm font-medium text-muted-foreground">Budget</p>
+                        <p className="text-foreground">{project.budget}</p>
                       </div>
                     </div>
                   )}
@@ -361,15 +359,15 @@ export default function ProjectDetailPage() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 }}
-                className="bg-white rounded-2xl shadow-lg p-5"
+                className="bg-card rounded-2xl shadow-lg p-5"
               >
-                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100">
-                  <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary-500 to-blue-500 flex items-center justify-center">
+                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border">
+                  <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary-500 to-primary-500 flex items-center justify-center">
                     <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-bold bg-linear-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent">
+                  <h3 className="text-lg font-bold bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">
                     Tags
                   </h3>
                 </div>
@@ -377,7 +375,7 @@ export default function ProjectDetailPage() {
                   {project.tags.map((tag, index) => (
                     <span 
                       key={index}
-                      className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-linear-to-r from-primary-100 to-blue-100 text-primary-700 border border-primary-200 hover:scale-105 transition-transform"
+                      className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-linear-to-r from-primary-100 to-primary-100 text-primary-700 border border-primary-200 hover:scale-105 transition-transform"
                     >
                       {tag}
                     </span>
@@ -398,12 +396,12 @@ export default function ProjectDetailPage() {
             {/* Gallery Header */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="bg-linear-to-br from-primary-500 to-blue-500 p-2 rounded-lg">
+                <div className="bg-linear-to-br from-primary-500 to-primary-500 p-2 rounded-lg">
                   <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <h2 className="text-2xl font-bold bg-linear-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent">
+                <h2 className="text-2xl font-bold bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">
                   Galerie du projet
                 </h2>
               </div>
@@ -450,7 +448,7 @@ export default function ProjectDetailPage() {
             </div>
 
             {/* Gallery Info */}
-            <div className="bg-linear-to-r from-primary-50 to-blue-50 rounded-2xl p-6 border border-primary-100">
+            <div className="bg-linear-to-r from-primary-50 to-primary-50 rounded-2xl p-6 border border-primary-100">
               <div className="flex items-start gap-3">
                 <div className="bg-primary-500 rounded-lg p-2">
                   <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -458,7 +456,7 @@ export default function ProjectDetailPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Galerie complète</h3>
+                  <h3 className="font-semibold text-foreground mb-1">Galerie complète</h3>
                   <p className="text-gray-600 text-sm">
                     Cliquez sur les images pour les agrandir et découvrir tous les détails de ce projet.
                   </p>

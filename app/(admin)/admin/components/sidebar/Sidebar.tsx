@@ -51,7 +51,9 @@ function NavItem({ item, pathname, depth = 0 }: { item: MenuItem; pathname: stri
           type="button"
           onClick={() => setOpen((o) => !o)}
           className={`w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-            isParentActive ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-gray-100'
+            isParentActive
+              ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300'
+              : 'text-foreground hover:bg-gray-100 dark:hover:bg-gray-800'
           }`}
         >
           <div className="flex items-center gap-3">
@@ -61,7 +63,7 @@ function NavItem({ item, pathname, depth = 0 }: { item: MenuItem; pathname: stri
           <ChevronDownIcon className={`h-4 w-4 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
         </button>
         {open && (
-          <div className="mt-1 ml-4 pl-3 border-l border-gray-200 space-y-0.5">
+          <div className="mt-1 ml-4 pl-3 border-l border-border space-y-0.5">
             {item.submenu.map((sub) => (
               <NavItem key={sub.href} item={sub} pathname={pathname} depth={depth + 1} />
             ))}
@@ -76,10 +78,10 @@ function NavItem({ item, pathname, depth = 0 }: { item: MenuItem; pathname: stri
       href={item.href}
       className={`flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
         isActive
-          ? 'bg-primary-100 text-primary-900 border-r-2 border-primary-600'
+          ? 'bg-primary-100 dark:bg-primary-900/40 text-primary-900 dark:text-primary-200 border-r-2 border-primary-600'
           : depth > 0
-          ? 'text-gray-600 hover:bg-gray-50'
-          : 'text-gray-700 hover:bg-gray-100'
+          ? 'text-muted-foreground hover:bg-gray-50 dark:hover:bg-gray-800/50'
+          : 'text-foreground hover:bg-gray-100 dark:hover:bg-gray-800'
       }`}
     >
       <div className="flex items-center gap-3">
@@ -87,7 +89,7 @@ function NavItem({ item, pathname, depth = 0 }: { item: MenuItem; pathname: stri
         <span>{item.name}</span>
       </div>
       {!!item.count && (
-        <span className="bg-red-100 text-red-800 text-xs font-semibold px-2 py-0.5 rounded-full">
+        <span className="bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300 text-xs font-semibold px-2 py-0.5 rounded-full">
           {item.count}
         </span>
       )}
@@ -115,25 +117,25 @@ function UserDropdown({ user, onLogout }: { user: SidebarProps['user']; onLogout
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+        className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         title={`${user?.firstName} ${user?.lastName}`}
       >
-        <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-800 flex items-center justify-center font-semibold text-sm shrink-0">
+        <div className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/40 text-primary-800 dark:text-primary-200 flex items-center justify-center font-semibold text-sm shrink-0">
           {initials || '?'}
         </div>
         <div className="flex-1 min-w-0 text-left">
-          <p className="text-sm font-semibold text-gray-900 truncate">{user?.firstName} {user?.lastName}</p>
-          <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+          <p className="text-sm font-semibold text-foreground truncate">{user?.firstName} {user?.lastName}</p>
+          <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
         </div>
-        <ChevronDownIcon className={`h-4 w-4 shrink-0 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDownIcon className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
-        <div className="absolute bottom-full left-0 right-0 mb-1 bg-white border border-gray-200 rounded-xl shadow-xl py-1 z-50">
+        <div className="absolute bottom-full left-0 right-0 mb-1 bg-card border border-border rounded-xl shadow-xl py-1 z-50">
           {/* Identity */}
-          <div className="px-3 py-2.5 border-b border-gray-100">
-            <p className="text-sm font-semibold text-gray-900 truncate">{user?.firstName} {user?.lastName}</p>
-            <p className="text-xs text-gray-500 truncate mt-0.5">{user?.email}</p>
+          <div className="px-3 py-2.5 border-b border-border">
+            <p className="text-sm font-semibold text-foreground truncate">{user?.firstName} {user?.lastName}</p>
+            <p className="text-xs text-muted-foreground truncate mt-0.5">{user?.email}</p>
           </div>
 
           {/* Actions */}
@@ -141,25 +143,25 @@ function UserDropdown({ user, onLogout }: { user: SidebarProps['user']; onLogout
             <Link
               href="/admin/profile"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-2.5 px-3 py-2 text-sm text-foreground hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
-              <UserCircleIcon className="h-4 w-4 text-gray-400" />
+              <UserCircleIcon className="h-4 w-4 text-muted-foreground" />
               Mon profil
             </Link>
             <Link
               href="/"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-2.5 px-3 py-2 text-sm text-foreground hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
-              <ArrowTopRightOnSquareIcon className="h-4 w-4 text-gray-400" />
+              <ArrowTopRightOnSquareIcon className="h-4 w-4 text-muted-foreground" />
               Voir le site
             </Link>
           </div>
 
-          <div className="border-t border-gray-100 py-1">
+          <div className="border-t border-border py-1">
             <button
               onClick={() => { setOpen(false); onLogout() }}
-              className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+              className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
             >
               <ArrowLeftOnRectangleIcon className="h-4 w-4" />
               Se déconnecter
@@ -176,15 +178,15 @@ export function Sidebar({ user, menuItems, open, onClose, onLogout }: SidebarPro
 
   return (
     <div
-      className={`fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-lg flex flex-col transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static ${
+      className={`fixed inset-y-0 left-0 z-30 w-64 bg-card shadow-lg flex flex-col transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static ${
         open ? 'translate-x-0' : '-translate-x-full'
       }`}
     >
       {/* Logo */}
-      <div className="flex items-center justify-between h-16 px-4 border-b border-gray-100 shrink-0">
+      <div className="flex items-center justify-between h-16 px-4 border-b border-border shrink-0">
         <Link href="/" className="flex items-center">
           <Image
-            src="/images/logo.png"
+            src="/images/brand/logo.png"
             alt="Logo"
             width={140}
             height={48}
@@ -194,21 +196,21 @@ export function Sidebar({ user, menuItems, open, onClose, onLogout }: SidebarPro
         </Link>
         <button
           onClick={onClose}
-          className="lg:hidden p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+          className="lg:hidden p-1.5 rounded-lg text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         >
           <XMarkIcon className="h-5 w-5" />
         </button>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full">
+      <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 dark:[&::-webkit-scrollbar-thumb]:bg-gray-700 [&::-webkit-scrollbar-thumb]:rounded-full">
         {menuItems.map((item) => (
           <NavItem key={item.href} item={item} pathname={pathname} />
         ))}
       </nav>
 
       {/* User dropdown */}
-      <div className="px-3 py-3 border-t border-gray-100 shrink-0">
+      <div className="px-3 py-3 border-t border-border shrink-0">
         <UserDropdown user={user} onLogout={onLogout} />
       </div>
     </div>

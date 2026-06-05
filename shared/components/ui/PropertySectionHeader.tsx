@@ -2,7 +2,7 @@ import { CardDescription, CardTitle } from '@/shared/components/ui/card'
 
 const COLOR_MAP: Record<string, string> = {
   primary: 'bg-primary-100 dark:bg-primary-900/30 [&_svg]:text-primary-600 dark:[&_svg]:text-primary-400',
-  blue:    'bg-blue-100 dark:bg-blue-900/30 [&_svg]:text-blue-600 dark:[&_svg]:text-blue-400',
+  blue:    'bg-primary-100 dark:bg-primary-900/30 [&_svg]:text-primary-600 dark:[&_svg]:text-primary-400',
   green:   'bg-green-100 dark:bg-green-900/30 [&_svg]:text-green-600 dark:[&_svg]:text-green-400',
   purple:  'bg-purple-100 dark:bg-purple-900/30 [&_svg]:text-purple-600 dark:[&_svg]:text-purple-400',
   pink:    'bg-pink-100 dark:bg-pink-900/30 [&_svg]:text-pink-600 dark:[&_svg]:text-pink-400',

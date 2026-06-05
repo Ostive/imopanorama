@@ -15,7 +15,7 @@ export default function FaqItem({ faq }: FaqItemProps) {
   return (
     <div className={`rounded-xl overflow-hidden transition-all duration-300 ${isOpen
         ? 'bg-primary-50 dark:bg-primary-900/20 shadow-lg border-2 border-primary-200 dark:border-primary-700 -translate-y-1'
-        : 'bg-white dark:bg-gray-800 shadow-md border-2 border-transparent hover:shadow-lg'
+        : 'bg-card shadow-md border-2 border-transparent hover:shadow-lg'
       }`}>
       <button
         className={`flex justify-between items-center w-full px-6 py-5 text-left focus:outline-none transition-colors ${isOpen ? 'border-l-4 border-primary-500 dark:border-primary-400' : ''
@@ -27,7 +27,7 @@ export default function FaqItem({ faq }: FaqItemProps) {
         }}
         aria-expanded={isOpen}
       >
-        <h3 className={`text-lg font-semibold ${isOpen ? 'text-primary-700 dark:text-primary-400' : 'text-gray-900 dark:text-white'
+        <h3 className={`text-lg font-semibold ${isOpen ? 'text-primary-700 dark:text-primary-400' : 'text-foreground'
           }`}>
           {faq.question}
         </h3>
@@ -36,7 +36,7 @@ export default function FaqItem({ faq }: FaqItemProps) {
           transition={{ duration: 0.2 }}
           className="flex-shrink-0 ml-2"
         >
-          <ChevronDownIcon className={`h-6 w-6 ${isOpen ? 'text-primary-500 dark:text-primary-400' : 'text-gray-500 dark:text-gray-400'
+          <ChevronDownIcon className={`h-6 w-6 ${isOpen ? 'text-primary-500 dark:text-primary-400' : 'text-muted-foreground'
             }`} />
         </motion.div>
       </button>
@@ -50,10 +50,13 @@ export default function FaqItem({ faq }: FaqItemProps) {
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div
-              className="px-6 pb-6 pt-2 prose max-w-none text-gray-700 dark:text-gray-300 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: faq.answer.replace(/\n/g, '<br>') }}
-            />
+            <div className="px-6 pb-6 pt-2 prose max-w-none text-foreground leading-relaxed">
+              {faq.answer.split('\n').map((line, index) => (
+                <p key={index} className="mb-2 last:mb-0">
+                  {line}
+                </p>
+              ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

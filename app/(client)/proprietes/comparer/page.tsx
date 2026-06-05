@@ -41,7 +41,7 @@ function lowestPrice(values: (number | undefined | null)[], propIdx: number) {
 type RowDef =
   | { type: 'section'; label: string }
   | { type: 'text'; label: string; render: (p: Property) => string | null }
-  | { type: 'number'; label: string; getValue: (p: Property) => number | undefined | null; format: (v: number) => string; higherIsBetter?: boolean }
+  | { type: 'number'; label: string; getValue: (p: Property) => number | undefined | null; format: (v: number, p: Property) => string; higherIsBetter?: boolean }
   | { type: 'bool'; label: string; getValue: (p: Property) => boolean }
   | { type: 'list'; label: string; getValue: (p: Property) => string[] }
 
@@ -54,8 +54,8 @@ const ROWS: RowDef[] = [
   { type: 'text', label: 'État', render: p => p.condition ? (PROPERTY_CONDITION_LABELS?.[p.condition] ?? p.condition) : null },
   { type: 'text', label: 'Référence', render: p => p.reference || null },
   { type: 'section', label: 'Prix' },
-  { type: 'number', label: 'Prix', getValue: p => p.price, format: formatPrice, higherIsBetter: false },
-  { type: 'number', label: 'Prix / m²', getValue: p => p.pricePerM2 ?? undefined, format: v => `${Math.round(v).toLocaleString('fr-FR')} €/m²`, higherIsBetter: false },
+  { type: 'number', label: 'Prix', getValue: p => p.price, format: (v, p) => formatPrice(v, p.currency, p.country), higherIsBetter: false },
+  { type: 'number', label: 'Prix / m²', getValue: p => p.pricePerM2 ?? undefined, format: (v, p) => `${formatPrice(Math.round(v), p.currency, p.country)}/m²`, higherIsBetter: false },
   { type: 'section', label: 'Surfaces' },
   { type: 'number', label: 'Surface totale', getValue: p => p.totalSize, format: v => `${v.toLocaleString('fr-FR')} m²`, higherIsBetter: true },
   { type: 'number', label: 'Surface habitable', getValue: p => p.livingSize ?? undefined, format: v => `${v.toLocaleString('fr-FR')} m²`, higherIsBetter: true },
@@ -83,7 +83,7 @@ function Cell({ row, property, properties, propIdx }: { row: RowDef; property: P
   if (row.type === 'text') {
     const val = row.render(property)
     if (!val) return <span className="text-gray-400 text-sm">—</span>
-    return <span className="text-sm text-gray-900 dark:text-white">{val}</span>
+    return <span className="text-sm text-foreground">{val}</span>
   }
 
   if (row.type === 'number') {
@@ -96,8 +96,8 @@ function Cell({ row, property, properties, propIdx }: { row: RowDef; property: P
         ? lowestPrice(allVals, propIdx)
         : false
     return (
-      <span className={`text-sm font-semibold ${isBest ? 'text-green-600 dark:text-green-400' : 'text-gray-900 dark:text-white'}`}>
-        {row.format(val)}
+      <span className={`text-sm font-semibold ${isBest ? 'text-green-600 dark:text-green-400' : 'text-foreground'}`}>
+        {row.format(val, property)}
         {isBest && properties.filter(p => row.getValue(p) != null).length > 1 && (
           <span className="ml-1 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-1.5 py-0.5 rounded-full">✓</span>
         )}
@@ -118,7 +118,7 @@ function Cell({ row, property, properties, propIdx }: { row: RowDef; property: P
     return (
       <div className="flex flex-wrap gap-1">
         {items.slice(0, 6).map((item, i) => (
-          <span key={i} className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-full">{item}</span>
+          <span key={i} className="text-xs bg-gray-100 dark:bg-gray-700 text-foreground px-2 py-0.5 rounded-full">{item}</span>
         ))}
         {items.length > 6 && <span className="text-xs text-primary-600 font-medium">+{items.length - 6}</span>}
       </div>
@@ -133,7 +133,7 @@ function Cell({ row, property, properties, propIdx }: { row: RowDef; property: P
 function ComparerInner() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const ids = (searchParams.get('ids') || '').split(',').filter(Boolean)
+  const ids = (searchParams.get('ids') || '').split(',').map(id => id.trim()).filter(Boolean).slice(0, 4)
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const { safeImages } = useImageFallback()
@@ -148,13 +148,32 @@ function ComparerInner() {
   }
 
   useEffect(() => {
-    if (!ids.length) { setLoading(false); return }
-    Promise.all(
-      ids.map(id => fetch(`/api/properties/${id}`).then(r => r.json()).then(d => d.data).catch(() => null))
-    ).then(results => {
-      setProperties(results.filter(Boolean) as Property[])
-      setLoading(false)
-    })
+    const controller = new AbortController()
+
+    async function fetchComparedProperties() {
+      if (!ids.length) {
+        setProperties([])
+        setLoading(false)
+        return
+      }
+
+      setLoading(true)
+      try {
+        const response = await fetch(
+          `/api/properties?ids=${encodeURIComponent(ids.join(','))}&limit=${ids.length}`,
+          { signal: controller.signal }
+        )
+        const result = await response.json()
+        setProperties(result.success ? result.data as Property[] : [])
+      } catch (error) {
+        if (!controller.signal.aborted) setProperties([])
+      } finally {
+        if (!controller.signal.aborted) setLoading(false)
+      }
+    }
+
+    fetchComparedProperties()
+    return () => controller.abort()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams])
 
@@ -170,7 +189,7 @@ function ComparerInner() {
           <ChevronRightIcon className="w-4 h-4" />
           <Link href="/proprietes" className="hover:text-primary-600 transition-colors">Propriétés</Link>
           <ChevronRightIcon className="w-4 h-4" />
-          <span className="text-gray-900 dark:text-white font-semibold">Comparateur</span>
+          <span className="text-foreground font-semibold">Comparateur</span>
         </nav>
 
         {/* Header */}
@@ -179,9 +198,9 @@ function ComparerInner() {
             <div className="p-2 bg-primary-100 dark:bg-primary-900/30 rounded-xl">
               <ArrowsRightLeftIcon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
             </div>
-            <h1 className="text-3xl font-black text-gray-900 dark:text-white">Comparateur de propriétés</h1>
+            <h1 className="text-3xl font-black text-foreground">Comparateur de propriétés</h1>
           </div>
-          <p className="text-gray-500 dark:text-gray-400">Comparez jusqu'à 4 propriétés côte à côte</p>
+          <p className="text-muted-foreground">Comparez jusqu'à 4 propriétés côte à côte</p>
         </motion.div>
 
         {loading && (
@@ -193,7 +212,7 @@ function ComparerInner() {
         {!loading && properties.length === 0 && (
           <div className="text-center py-20">
             <div className="text-6xl mb-4">🔍</div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Aucune propriété à comparer</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-2">Aucune propriété à comparer</h2>
             <p className="text-gray-500 mb-6">Ajoutez des propriétés à comparer depuis le catalogue</p>
             <Button asChild>
               <Link href="/proprietes">Voir les propriétés</Link>
@@ -204,18 +223,18 @@ function ComparerInner() {
         {!loading && properties.length > 0 && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
             {/* Comparison grid */}
-            <div className="overflow-x-auto rounded-2xl border border-gray-200 dark:border-gray-700 shadow-xl bg-white dark:bg-gray-900">
+            <div className="overflow-x-auto rounded-2xl border border-border shadow-xl bg-card">
               <div className="min-w-120">
 
                 {/* Property cards header */}
                 <div
-                  className="grid sticky top-0 z-20 bg-white dark:bg-gray-900 border-b-2 border-gray-200 dark:border-gray-700"
+                  className="grid sticky top-0 z-20 bg-card border-b-2 border-border"
                   style={{ gridTemplateColumns: `repeat(${properties.length}, 1fr)` }}
                 >
                   {properties.map(property => {
                     const imgs = safeImages(property.images || [])
                     return (
-                      <div key={property.id} className="relative group border-r border-gray-200 dark:border-gray-700 last:border-r-0">
+                      <div key={property.id} className="relative group border-r border-border last:border-r-0">
                         <button
                           onClick={() => removeProperty(property.id)}
                           className="absolute top-2 right-2 p-1 bg-black/50 hover:bg-red-600 text-white rounded-full transition-colors z-10 backdrop-blur-sm"
@@ -224,7 +243,7 @@ function ComparerInner() {
                           <XMarkIcon className="w-4 h-4" />
                         </button>
                         <Link href={`/proprietes/${property.id}`} className="block">
-                          <div className="relative w-full aspect-video overflow-hidden bg-gray-100 dark:bg-gray-800">
+                          <div className="relative w-full aspect-video overflow-hidden bg-muted">
                             <Image
                               src={imgs[0]}
                               alt={property.title}
@@ -244,7 +263,7 @@ function ComparerInner() {
                             </div>
                           </div>
                         </Link>
-                        <div className="px-3 py-2 flex items-center justify-between gap-1 text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50">
+                        <div className="px-3 py-2 flex items-center justify-between gap-1 text-xs text-muted-foreground bg-muted/50">
                           <span className="flex items-center gap-1">
                             <MapPinIcon className="w-3 h-3 shrink-0" />
                             {property.city}
@@ -269,8 +288,8 @@ function ComparerInner() {
                 {ROWS.map((row, rowIdx) => {
                   if (row.type === 'section') {
                     return (
-                      <div key={rowIdx} className="px-4 py-2.5 bg-gray-50 dark:bg-gray-800/40 border-b border-gray-200 dark:border-gray-700">
-                        <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                      <div key={rowIdx} className="px-4 py-2.5 bg-muted/40 border-b border-border">
+                        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                           {row.label}
                         </span>
                       </div>
@@ -279,14 +298,14 @@ function ComparerInner() {
                   return (
                     <div
                       key={rowIdx}
-                      className="grid border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors"
+                      className="grid border-b border-border hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors"
                       style={{ gridTemplateColumns: `180px repeat(${properties.length}, 1fr)` }}
                     >
-                      <div className="p-4 text-sm text-gray-600 dark:text-gray-400 font-medium border-r border-gray-100 dark:border-gray-800 flex items-center">
+                      <div className="p-4 text-sm text-muted-foreground font-medium border-r border-border flex items-center">
                         {row.label}
                       </div>
                       {properties.map((property, propIdx) => (
-                        <div key={property.id} className="p-4 text-center border-r border-gray-100 dark:border-gray-800 last:border-r-0 flex items-center justify-center">
+                        <div key={property.id} className="p-4 text-center border-r border-border last:border-r-0 flex items-center justify-center">
                           <Cell row={row} property={property} properties={properties} propIdx={propIdx} />
                         </div>
                       ))}

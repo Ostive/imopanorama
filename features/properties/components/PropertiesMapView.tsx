@@ -16,7 +16,7 @@ const markerStyles = `
      which sets position:absolute. Overriding it breaks marker positioning. */
   .property-marker-container {
     width: 48px;
-    height: 48px;
+    height: 56px;
     cursor: pointer;
     display: flex;
     justify-content: center;
@@ -31,30 +31,32 @@ const markerStyles = `
   .property-marker-inner {
     width: 100%;
     height: 100%;
-    border-radius: 50%;
-    background-color: #0ea5e9;
-    border: 4px solid white;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    background: transparent;
+    border: 0;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.28));
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-weight: bold;
-    font-size: 18px;
-    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s, box-shadow 0.2s;
-    transform-origin: center center;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s;
+    transform-origin: center bottom;
     will-change: transform;
+  }
+
+  .property-marker-inner img {
+    width: 48px;
+    height: 56px;
+    display: block;
+    pointer-events: none;
   }
 
   .property-marker-container:hover .property-marker-inner {
     transform: scale(1.2);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    filter: drop-shadow(0 6px 14px rgba(0,0,0,0.36));
   }
 
   .property-marker-inner.selected {
     transform: scale(1.3);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-    background-color: #f59e0b;
+    filter: drop-shadow(0 8px 18px rgba(0,0,0,0.44));
   }
 
   .maplibregl-popup {
@@ -102,6 +104,13 @@ interface PropertiesMapViewProps {
   height?: string
 }
 
+function getMarkerSrc(property: Property) {
+  const proTypes = new Set(['OFFICE', 'SHOP', 'WAREHOUSE', 'BUILDING', 'HOTEL', 'RESTAURANT'])
+  return proTypes.has(property.propertyType)
+    ? '/images/markers/marker-pro.svg'
+    : '/images/markers/marker-estate.svg'
+}
+
 function PropertiesMapViewInner({
   properties,
   height = '600px'
@@ -130,7 +139,7 @@ function PropertiesMapViewInner({
     if (!document.querySelector('[data-map-styles]')) {
       const styleElement = document.createElement('style')
       styleElement.setAttribute('data-map-styles', 'true')
-      styleElement.innerHTML = markerStyles
+      styleElement.textContent = markerStyles
       document.head.appendChild(styleElement)
     }
 
@@ -160,7 +169,8 @@ function PropertiesMapViewInner({
         container: mapContainer.current,
         style: 'https://tiles.openfreemap.org/styles/liberty',
         center: [center.lng, center.lat],
-        zoom: 12
+        zoom: 12,
+        attributionControl: false,
       })
 
       map.current.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-left')
@@ -186,7 +196,12 @@ function PropertiesMapViewInner({
 
           const inner = document.createElement('div')
           inner.className = 'property-marker-inner'
-          inner.innerHTML = '🏠'
+          const markerImage = document.createElement('img')
+          markerImage.src = getMarkerSrc(property)
+          markerImage.alt = ''
+          markerImage.width = 48
+          markerImage.height = 56
+          inner.appendChild(markerImage)
           el.appendChild(inner)
 
           el.addEventListener('click', (e) => {
@@ -217,7 +232,7 @@ function PropertiesMapViewInner({
                 <img src="${getSafeImageSrc(property.coverImage)}"
                   alt="${property.title || ''}"
                   style="width:100%;height:100%;object-fit:cover;"
-                  onerror="this.onerror=null;this.src='/images/placeholders/property.jpg'"
+                  onerror="this.onerror=null;this.src='/images/properties/property-placeholder.jpg'"
                 />
                 <div style="position:absolute;top:8px;right:8px;background:white;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:600;">
                   ${property.transactionType === 'SALE' ? 'À vendre' : 'À louer'}
@@ -272,7 +287,7 @@ function PropertiesMapViewInner({
             })
           })
 
-          const marker = new maplibregl.Marker({ element: el, anchor: 'center' })
+          const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
             .setLngLat([coords.lng, coords.lat])
             .addTo(map.current!)
 
@@ -372,11 +387,11 @@ function PropertiesMapViewInner({
         {/* overflow-hidden retiré → le popup MapLibre n'est plus coupé */}
         <div
           ref={mapContainer}
-          className="w-full h-full rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700"
+          className="w-full h-full rounded-2xl shadow-lg"
         />
 
-        <div className="absolute top-4 left-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg px-4 py-2 z-10 border border-gray-200 dark:border-gray-700">
-          <p className="text-sm font-semibold text-gray-900 dark:text-white">
+        <div className="absolute top-4 left-4 bg-card rounded-xl shadow-lg px-4 py-2 z-10">
+          <p className="text-sm font-semibold text-foreground">
             {validProperties.length} propriété{validProperties.length !== 1 ? 's' : ''} sur la carte
           </p>
         </div>
@@ -384,12 +399,12 @@ function PropertiesMapViewInner({
 
       {/* Property Cards Section — desktop only */}
       <div className="hidden lg:flex lg:w-[30%] flex-col h-full">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col h-full">
-          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+        <div className="bg-card rounded-2xl shadow-lg overflow-hidden flex flex-col h-full">
+          <div className="p-4 border-b border-border/40">
+            <h3 className="text-lg font-bold text-foreground">
               {selectedProperty ? 'Propriété sélectionnée' : 'Propriétés disponibles'}
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               {selectedProperty
                 ? 'Cliquez sur la carte pour voir d\'autres propriétés'
                 : 'Cliquez sur un marqueur pour voir les détails'}
@@ -407,10 +422,10 @@ function PropertiesMapViewInner({
                   transition={{ duration: 0.3 }}
                 >
                   <div className="flex items-center justify-between mb-2 px-1">
-                    <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Propriété sélectionnée</span>
+                    <span className="text-xs font-medium text-muted-foreground">Propriété sélectionnée</span>
                     <button
                       onClick={() => setSelectedProperty(null)}
-                      className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg px-2 py-1 transition-colors"
+                      className="flex items-center gap-1 text-xs text-muted-foreground hover:text-gray-800 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg px-2 py-1 transition-colors"
                     >
                       <XMarkIcon className="w-3.5 h-3.5" />
                       Fermer

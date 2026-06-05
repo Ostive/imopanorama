@@ -19,7 +19,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AnalyticsService } from '@/features/analytics/services/analyticsService';
 import { DeviceType } from '@prisma/client';
-import { withErrorHandler, apiError } from '@/infrastructure/middleware/api-handler';
+import { withErrorHandler } from '@/infrastructure/middleware/api-handler';
+import { rateLimit } from '@/infrastructure/middleware/rate-limit';
+import { COOKIE_CONSENT_NAME } from '@/shared/utils/cookieConsent';
 
 // ---------------------------------------------------------------------------
 // User-Agent detection helpers
@@ -69,6 +71,13 @@ function getClientIP(request: NextRequest): string | undefined {
 // ---------------------------------------------------------------------------
 
 export const POST = withErrorHandler(async (request: NextRequest) => {
+  const limited = await rateLimit(request, { scope: 'analytics:track', limit: 120, windowMs: 60_000 });
+  if (limited) return limited;
+
+  if (request.cookies.get(COOKIE_CONSENT_NAME)?.value !== 'accepted') {
+    return NextResponse.json({ success: true, skipped: true, reason: 'cookie_consent_required' });
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let body: { type?: string; data?: Record<string, any> };
   try {

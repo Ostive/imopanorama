@@ -28,7 +28,7 @@ const XIcon = () => (
 )
 
 const CopyIcon = () => (
-  <svg className="w-4 h-4 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+  <svg className="w-4 h-4 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
   </svg>
 )
@@ -80,8 +80,8 @@ export function ShareDropdown({ title, text, url: urlProp, className }: ShareMen
       label: 'Facebook',
       sublabel: 'Partager sur Facebook',
       icon: <FacebookIcon />,
-      iconBg: 'bg-blue-600',
-      hoverBg: 'hover:bg-blue-50 dark:hover:bg-blue-900/20',
+      iconBg: 'bg-primary-600',
+      hoverBg: 'hover:bg-primary-50 dark:hover:bg-primary-900/20',
       separator: false,
       action: () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(getUrl())}`, '_blank', 'width=600,height=400'),
     },
@@ -100,7 +100,7 @@ export function ShareDropdown({ title, text, url: urlProp, className }: ShareMen
       label: 'Copier le lien',
       sublabel: 'Copier dans le presse-papier',
       icon: <CopyIcon />,
-      iconBg: 'bg-gray-200 dark:bg-gray-700',
+      iconBg: 'bg-muted',
       hoverBg: 'hover:bg-gray-50 dark:hover:bg-gray-800',
       separator: true,
       action: () =>
@@ -130,19 +130,19 @@ export function ShareDropdown({ title, text, url: urlProp, className }: ShareMen
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -8 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-0 top-full mt-2 z-50 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl overflow-hidden min-w-56"
+            className="absolute left-0 top-full mt-2 z-50 bg-card border border-border rounded-2xl shadow-2xl overflow-hidden min-w-56"
           >
             {ITEMS.map(item => (
               <button
                 key={item.key}
                 onClick={() => { setOpen(false); item.action() }}
-                className={`flex items-center gap-3 w-full px-4 py-3 ${item.hoverBg} transition-colors text-left${item.separator ? ' border-t border-gray-100 dark:border-gray-700' : ''}`}
+                className={`flex items-center gap-3 w-full px-4 py-3 ${item.hoverBg} transition-colors text-left${item.separator ? ' border-t border-border' : ''}`}
               >
                 <span className={`w-8 h-8 rounded-full ${item.iconBg} flex items-center justify-center shrink-0`}>
                   {item.icon}
                 </span>
                 <div>
-                  <div className="text-sm font-semibold text-gray-900 dark:text-white">{item.label}</div>
+                  <div className="text-sm font-semibold text-foreground">{item.label}</div>
                   <div className="text-xs text-gray-500">{item.sublabel}</div>
                 </div>
               </button>

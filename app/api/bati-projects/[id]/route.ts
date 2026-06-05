@@ -12,37 +12,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { batiProjectRepository } from '@/infrastructure/database/repositories';
 import { requireAdmin } from '@/infrastructure/auth/auth-guard';
-import { withErrorHandler, apiError, extractParam } from '@/infrastructure/middleware/api-handler';
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Build a partial update object from the request body,
- * only including fields that are explicitly provided.
- */
-function buildProjectUpdate(body: Record<string, unknown>): Record<string, unknown> {
-  const update: Record<string, unknown> = {};
-
-  const directFields = [
-    'title', 'description', 'location', 'category',
-    'duration', 'budget', 'images', 'coverImage', 'status',
-  ];
-
-  for (const field of directFields) {
-    if (body[field] !== undefined) update[field] = body[field];
-  }
-
-  // Fields requiring type coercion
-  if (body.surface !== undefined) {
-    update.surface = body.surface ? parseFloat(String(body.surface)) : null;
-  }
-  if (body.isPublished !== undefined) update.isPublished = body.isPublished;
-  if (body.order !== undefined) update.order = parseInt(String(body.order), 10);
-
-  return update;
-}
+import { withErrorHandler, apiError, extractParam, validationError } from '@/infrastructure/middleware/api-handler';
 
 // ---------------------------------------------------------------------------
 // GET /api/bati-projects/[id]
@@ -73,9 +43,13 @@ export const PUT = withErrorHandler(async (
 
   const id = await extractParam(context, 'id');
   const body = await request.json();
-  const data = buildProjectUpdate(body);
+  const { BatiProjectFormDataSchema } = await import('@/features/batipanorama/schemas/batipanorama.schema');
+  const validation = BatiProjectFormDataSchema.partial().safeParse(body);
+  if (!validation.success) {
+    return validationError(validation.error.issues, 'La mise a jour du projet contient des champs invalides');
+  }
 
-  const project = await batiProjectRepository.update(id, data);
+  const project = await batiProjectRepository.update(id, validation.data);
   return NextResponse.json({ success: true, project });
 });
 

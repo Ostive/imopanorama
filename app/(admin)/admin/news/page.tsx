@@ -50,10 +50,10 @@ type NewsItem = {
 const columnHelper = createColumnHelper<NewsItem>();
 
 const CATEGORY_COLORS: Record<string, string> = {
-  IMMOBILIER: 'bg-blue-100 text-blue-800',
-  CONSTRUCTION: 'bg-yellow-100 text-yellow-800',
-  EVENEMENT: 'bg-purple-100 text-purple-800',
-  ENTREPRISE: 'bg-green-100 text-green-800',
+  IMMOBILIER: 'bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300',
+  CONSTRUCTION: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300',
+  EVENEMENT: 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300',
+  ENTREPRISE: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300',
 };
 
 export default function NewsAdminPage() {
@@ -134,15 +134,15 @@ export default function NewsAdminPage() {
       header: 'Titre',
       cell: info => (
         <div className="max-w-md">
-          <p className="font-medium text-gray-900 truncate">{info.getValue()}</p>
-          <p className="text-sm text-gray-500 truncate">{info.row.original.slug}</p>
+          <p className="font-medium text-foreground truncate">{info.getValue()}</p>
+          <p className="text-sm text-muted-foreground truncate">{info.row.original.slug}</p>
         </div>
       ),
     }),
     columnHelper.accessor('category', {
       header: 'Catégorie',
       cell: info => (
-        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${CATEGORY_COLORS[info.getValue()] || 'bg-gray-100 text-gray-800'}`}>
+        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${CATEGORY_COLORS[info.getValue()] || 'bg-muted text-foreground'}`}>
           {info.getValue()}
         </span>
       ),
@@ -150,9 +150,9 @@ export default function NewsAdminPage() {
     columnHelper.accessor('isPublished', {
       header: 'Statut',
       cell: info => info.getValue() ? (
-        <span className="flex items-center text-green-600"><CheckCircleIcon className="w-4 h-4 mr-1" />Publié</span>
+        <span className="flex items-center text-green-600 dark:text-green-400"><CheckCircleIcon className="w-4 h-4 mr-1" />Publié</span>
       ) : (
-        <span className="flex items-center text-amber-600"><ClockIcon className="w-4 h-4 mr-1" />Brouillon</span>
+        <span className="flex items-center text-amber-600 dark:text-amber-400"><ClockIcon className="w-4 h-4 mr-1" />Brouillon</span>
       ),
     }),
     columnHelper.accessor('publishedAt', {
@@ -165,33 +165,33 @@ export default function NewsAdminPage() {
       cell: ({ row }) => (
         <>
           <div className="hidden md:flex items-center gap-2">
-            <Link href={`/actualites/${row.original.slug}`} target="_blank" className="p-2 text-primary-600 hover:text-primary-900 hover:bg-primary-50 rounded-lg transition-colors" title="Voir">
+            <Link href={`/actualites/${row.original.slug}`} target="_blank" className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors" title="Voir">
               <EyeIcon className="h-5 w-5" />
             </Link>
-            <Link href={`/admin/news/${row.original.id}/edit`} className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors" title="Modifier">
+            <Link href={`/admin/news/${row.original.id}/edit`} className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors" title="Modifier">
               <PencilIcon className="h-5 w-5" />
             </Link>
-            <button onClick={() => handleDelete(row.original.id)} className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-colors" title="Supprimer">
+            <button onClick={() => handleDelete(row.original.id)} className="p-2 text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Supprimer">
               <TrashIcon className="h-5 w-5" />
             </button>
           </div>
           <div className="md:hidden flex justify-end">
             <DropdownMenu>
-              <DropdownMenuTrigger className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+              <DropdownMenuTrigger className="p-2 text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
                 <EllipsisVerticalIcon className="h-5 w-5" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>
-                  <Link href={`/actualites/${row.original.slug}`} target="_blank" className="flex items-center gap-2 text-primary-600">
+                  <Link href={`/actualites/${row.original.slug}`} target="_blank" className="flex items-center gap-2 text-primary-600 dark:text-primary-400">
                     <EyeIcon className="h-4 w-4" />Voir
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href={`/admin/news/${row.original.id}/edit`} className="flex items-center gap-2 text-blue-600">
+                  <Link href={`/admin/news/${row.original.id}/edit`} className="flex items-center gap-2 text-primary-600 dark:text-primary-400">
                     <PencilIcon className="h-4 w-4" />Modifier
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleDelete(row.original.id)} className="flex items-center gap-2 text-red-600">
+                <DropdownMenuItem onClick={() => handleDelete(row.original.id)} className="flex items-center gap-2 text-red-600 dark:text-red-400">
                   <TrashIcon className="h-4 w-4" />Supprimer
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -217,31 +217,31 @@ export default function NewsAdminPage() {
   const hasActiveFilters = searchInput || selectedCategories.length > 0 || selectedStatuses.length > 0;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-linear-to-br from-primary-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 bg-linear-to-br from-primary-600 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
               <NewspaperIcon className="w-6 h-6 text-white" />
             </div>
             <div>
               <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-bold bg-linear-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent">
+                <h1 className="text-3xl font-bold bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">
                   Gestion des Actualités
                 </h1>
                 {isFetching && <Skeleton className="h-4 w-24" />}
               </div>
-              <p className="text-gray-600 font-medium mt-1">Gérez les actualités de votre site web</p>
+              <p className="text-muted-foreground font-medium mt-1">Gérez les actualités de votre site web</p>
             </div>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link href="/admin" className="inline-flex items-center px-4 py-2 text-gray-700 bg-white hover:bg-gray-50 font-semibold rounded-xl transition-all border border-gray-200 shadow-sm">
+            <Link href="/admin" className="inline-flex items-center px-4 py-2 text-foreground bg-card hover:bg-gray-50 dark:hover:bg-gray-800 font-semibold rounded-xl transition-all border border-border shadow-sm">
               <ArrowLeftIcon className="h-5 w-5 mr-2" /> Retour
             </Link>
             <Link href="/admin/news/new">
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="inline-flex items-center px-6 py-2 bg-linear-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 text-white font-semibold rounded-xl transition-all shadow-lg">
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="inline-flex items-center px-6 py-2 bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold rounded-xl transition-all shadow-lg">
                 <PlusIcon className="h-5 w-5 mr-2" /> Nouvelle actualité
               </motion.div>
             </Link>
@@ -264,12 +264,12 @@ export default function NewsAdminPage() {
         </div>
 
         {/* Filters */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-gray-100">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card rounded-2xl shadow-lg p-6 mb-6 border border-border">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <FunnelIcon className="w-5 h-5 text-gray-600" />
-              <h2 className="text-lg font-semibold text-gray-900">Filtres</h2>
-              {hasActiveFilters && <span className="px-2 py-1 bg-primary-100 text-primary-700 text-xs font-bold rounded-full">Actifs</span>}
+              <FunnelIcon className="w-5 h-5 text-muted-foreground" />
+              <h2 className="text-lg font-semibold text-foreground">Filtres</h2>
+              {hasActiveFilters && <span className="px-2 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-bold rounded-full">Actifs</span>}
             </div>
             {hasActiveFilters && (
               <button onClick={() => { setSearchInput(''); setSelectedCategories([]); setSelectedStatuses([]); }}
@@ -280,11 +280,11 @@ export default function NewsAdminPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="relative">
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <input type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="Titre, slug..."
-                className="w-full pl-10 pr-10 h-10 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" />
+                className="w-full pl-10 pr-10 h-10 border border-border rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" />
               {searchInput && (
-                <button onClick={() => setSearchInput('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                <button onClick={() => setSearchInput('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300">
                   <XMarkIcon className="h-5 w-5" />
                 </button>
               )}
@@ -313,36 +313,36 @@ export default function NewsAdminPage() {
         </motion.div>
 
         {/* Table */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-2xl shadow-lg overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-muted/50">
                 {table.getHeaderGroups().map(headerGroup => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map(header => (
-                      <th key={header.id} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th key={header.id} className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                       </th>
                     ))}
                   </tr>
                 ))}
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-card divide-y divide-gray-200 dark:divide-gray-700">
                 {loading ? (
                   [1, 2, 3, 4, 5].map(i => (
                     <tr key={i} className="animate-pulse">
-                      <td className="px-6 py-4"><div className="h-4 bg-gray-200 rounded w-48 mb-2"></div><div className="h-3 bg-gray-200 rounded w-32"></div></td>
-                      <td className="px-6 py-4"><div className="h-6 bg-gray-200 rounded-full w-24"></div></td>
-                      <td className="px-6 py-4"><div className="h-5 bg-gray-200 rounded w-20"></div></td>
-                      <td className="px-6 py-4"><div className="h-3 bg-gray-200 rounded w-28"></div></td>
-                      <td className="px-6 py-4"><div className="flex items-center space-x-2"><div className="h-8 w-8 bg-gray-200 rounded"></div><div className="h-8 w-8 bg-gray-200 rounded"></div><div className="h-8 w-8 bg-gray-200 rounded"></div></div></td>
+                      <td className="px-6 py-4"><div className="h-4 bg-muted rounded w-48 mb-2"></div><div className="h-3 bg-muted rounded w-32"></div></td>
+                      <td className="px-6 py-4"><div className="h-6 bg-muted rounded-full w-24"></div></td>
+                      <td className="px-6 py-4"><div className="h-5 bg-muted rounded w-20"></div></td>
+                      <td className="px-6 py-4"><div className="h-3 bg-muted rounded w-28"></div></td>
+                      <td className="px-6 py-4"><div className="flex items-center space-x-2"><div className="h-8 w-8 bg-muted rounded"></div><div className="h-8 w-8 bg-muted rounded"></div><div className="h-8 w-8 bg-muted rounded"></div></div></td>
                     </tr>
                   ))
                 ) : table.getRowModel().rows.length === 0 ? (
-                  <tr><td colSpan={columns.length} className="px-6 py-12 text-center text-gray-500">Aucune actualité trouvée</td></tr>
+                  <tr><td colSpan={columns.length} className="px-6 py-12 text-center text-muted-foreground">Aucune actualité trouvée</td></tr>
                 ) : (
                   table.getRowModel().rows.map(row => (
-                    <tr key={row.id} className="hover:bg-gray-50">
+                    <tr key={row.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                       {row.getVisibleCells().map(cell => (
                         <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}

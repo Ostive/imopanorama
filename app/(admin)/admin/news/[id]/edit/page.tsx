@@ -54,7 +54,7 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <FormSkeleton fields={6} />
         </div>
@@ -64,7 +64,7 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
 
   if (error || !newsData) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
             Erreur: {error || 'Article introuvable'}
@@ -82,7 +82,7 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <motion.nav

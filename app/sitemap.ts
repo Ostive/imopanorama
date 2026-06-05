@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import { prisma } from '@/infrastructure/database/prisma'
+import { MADAGASCAR_CITY_SEO } from '@/shared/data/madagascarSeo'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://imopanorama.mg'
@@ -128,6 +129,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
+  const citySeoPages: MetadataRoute.Sitemap = MADAGASCAR_CITY_SEO.map((city) => ({
+    url: `${baseUrl}/immobilier/${city.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.75,
+  }))
+
   try {
     // Dynamic property pages (only published ones for SEO)
     const properties = await prisma.property.findMany({
@@ -174,10 +182,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     }))
 
-    return [...staticPages, ...propertyPages, ...newsPages]
+    return [...staticPages, ...citySeoPages, ...propertyPages, ...newsPages]
   } catch (error) {
-    console.error('Error generating sitemap:', error)
+    const message = error instanceof Error ? error.message : 'unknown error'
+    console.warn(`Sitemap generated without dynamic DB pages: ${message}`)
     // Return at least static pages if DB query fails
-    return staticPages
+    return [...staticPages, ...citySeoPages]
   }
 }

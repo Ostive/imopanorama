@@ -64,23 +64,23 @@ export function MapFallback({
   icon?: 'offline' | 'error' | 'location'
 }) {
   const IconComponent = icon === 'offline' ? WifiIcon : icon === 'error' ? ExclamationTriangleIcon : MapPinIcon
-  const iconBgColor = icon === 'offline' ? 'bg-amber-100 dark:bg-amber-900/30' : icon === 'error' ? 'bg-red-100 dark:bg-red-900/30' : 'bg-blue-100 dark:bg-blue-900/30'
-  const iconColor = icon === 'offline' ? 'text-amber-500' : icon === 'error' ? 'text-red-500' : 'text-blue-500'
+  const iconBgColor = icon === 'offline' ? 'bg-amber-100 dark:bg-amber-900/30' : icon === 'error' ? 'bg-red-100 dark:bg-red-900/30' : 'bg-primary-100 dark:bg-primary-900/30'
+  const iconColor = icon === 'offline' ? 'text-amber-500' : icon === 'error' ? 'text-red-500' : 'text-primary-500'
 
   return (
     <div
-      className="w-full bg-gray-50 dark:bg-gray-800/50 rounded-2xl flex items-center justify-center border border-gray-200 dark:border-gray-700"
+      className="w-full bg-muted/50 rounded-2xl flex items-center justify-center border border-border"
       style={{ height }}
     >
       <div className="text-center px-6 max-w-sm">
         <div className={`w-16 h-16 ${iconBgColor} rounded-2xl flex items-center justify-center mx-auto mb-4`}>
           <IconComponent className={`w-8 h-8 ${iconColor}`} />
         </div>
-        <p className="font-semibold text-gray-900 dark:text-white text-base">
+        <p className="font-semibold text-foreground text-base">
           {message}
         </p>
         {subtitle && (
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 leading-relaxed">
+          <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
             {subtitle}
           </p>
         )}

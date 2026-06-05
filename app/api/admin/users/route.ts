@@ -12,7 +12,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { userRepository } from '@/infrastructure/database/repositories';
 import { requireAdmin } from '@/infrastructure/auth/auth-guard';
-import { withErrorHandler, apiError } from '@/infrastructure/middleware/api-handler';
+import { boundedIntParam, withErrorHandler, apiError } from '@/infrastructure/middleware/api-handler';
 import { logger } from '@/infrastructure/logger/logger';
 
 /** Projection used for user queries – excludes password hash. */
@@ -30,8 +30,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   if (!authorized) return errorResponse!;
 
   const sp = request.nextUrl.searchParams;
-  const page = parseInt(sp.get('page') || '1', 10);
-  const limit = parseInt(sp.get('limit') || '10', 10);
+  const page = boundedIntParam(sp, 'page', 1, 1, 10000);
+  const limit = boundedIntParam(sp, 'limit', 10, 1, 100);
   const role = sp.get('role');
   const isActiveParam = sp.get('isActive');
   const search = sp.get('search');

@@ -6,6 +6,7 @@ import { useRecaptcha } from '@/shared/hooks/useRecaptcha';
 import { useAuth } from '@/features/auth/context/AuthContext';
 import { useContacts } from '../context/ContactsContext';
 import { markContactFormAsSent, hasContactFormBeenSent } from '@/shared/utils/contactStorage';
+import { getErrorMessage, readApiError } from '@/shared/utils/apiErrors';
 import { logger } from '@/infrastructure/logger/logger';
 import {
   EnvelopeIcon,
@@ -139,7 +140,7 @@ export default function PropertyContactForm({
       }
 
       // Envoyer la demande de contact
-      const response = await fetch('/api/property-contacts', {
+      const response = await fetch('/api/contacts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -148,10 +149,9 @@ export default function PropertyContactForm({
         })
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.error || 'Erreur lors de l\'envoi du message');
+        const apiError = await readApiError(response, 'Erreur lors de l\'envoi du message');
+        throw new Error(apiError.message);
       }
 
       // Marquer comme envoyé dans le localStorage
@@ -176,7 +176,7 @@ export default function PropertyContactForm({
 
     } catch (err: any) {
       logger.error('Error submitting contact form:', err);
-      setError(err.message || 'Une erreur est survenue. Veuillez réessayer.');
+      setError(getErrorMessage(err, 'Une erreur est survenue. Veuillez reessayer.'));
     } finally {
       setLoading(false);
     }

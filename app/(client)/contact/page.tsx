@@ -70,7 +70,7 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="bg-gray-50 dark:bg-gray-900">
+    <main className="bg-background">
       <section className="relative overflow-hidden bg-gray-950 text-white">
         <div className="absolute inset-0">
           <img
@@ -103,15 +103,15 @@ export default function ContactPage() {
             { icon: MapPinIcon, title: 'Adresse', value: 'Antananarivo, Madagascar' },
           ].map((item) => {
             const Icon = item.icon
-            const content = <span className="text-gray-600 dark:text-gray-300">{item.value}</span>
+            const content = <span className="text-muted-foreground">{item.value}</span>
             return (
-              <div key={item.title} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+              <div key={item.title} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-border dark:bg-gray-800">
                 <div className="flex items-start gap-4">
                   <div className="rounded-xl bg-primary-50 p-3 text-primary-600 dark:bg-primary-900/30 dark:text-primary-400">
                     <Icon className="h-6 w-6" />
                   </div>
                   <div>
-                    <p className="font-bold text-gray-900 dark:text-white">{item.title}</p>
+                    <p className="font-bold text-foreground">{item.title}</p>
                     {item.href ? <a href={item.href}>{content}</a> : content}
                   </div>
                 </div>
@@ -120,14 +120,14 @@ export default function ContactPage() {
           })}
         </div>
 
-        <form onSubmit={handleSubmit} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xl dark:border-gray-700 dark:bg-gray-800 lg:col-span-2">
+        <form onSubmit={handleSubmit} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xl dark:border-border dark:bg-gray-800 lg:col-span-2">
           <div className="mb-6 flex items-center gap-3">
             <div className="rounded-xl bg-primary-600 p-3 text-white">
               <ChatBubbleLeftRightIcon className="h-6 w-6" />
             </div>
             <div>
-              <h2 className="text-2xl font-black text-gray-900 dark:text-white">Envoyer une demande</h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Réponse claire, sans pression commerciale inutile.</p>
+              <h2 className="text-2xl font-black text-foreground">Envoyer une demande</h2>
+              <p className="text-sm text-muted-foreground">Réponse claire, sans pression commerciale inutile.</p>
             </div>
           </div>
 
@@ -146,36 +146,36 @@ export default function ContactPage() {
 
           <div className="grid gap-4 md:grid-cols-2">
             <label className="space-y-2">
-              <span className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-200">
+              <span className="flex items-center gap-2 text-sm font-semibold text-foreground">
                 <UserIcon className="h-4 w-4" /> Prénom *
               </span>
-              <input name="firstName" value={formData.firstName} onChange={handleChange} required className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-gray-600 dark:bg-gray-900 dark:text-white" />
+              <input name="firstName" value={formData.firstName} onChange={handleChange} required className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-border dark:bg-gray-900 dark:text-white" />
             </label>
             <label className="space-y-2">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">Nom *</span>
-              <input name="lastName" value={formData.lastName} onChange={handleChange} required className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-gray-600 dark:bg-gray-900 dark:text-white" />
+              <span className="text-sm font-semibold text-foreground">Nom *</span>
+              <input name="lastName" value={formData.lastName} onChange={handleChange} required className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-border dark:bg-gray-900 dark:text-white" />
             </label>
             <label className="space-y-2">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">Email *</span>
-              <input type="email" name="email" value={formData.email} onChange={handleChange} required className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-gray-600 dark:bg-gray-900 dark:text-white" />
+              <span className="text-sm font-semibold text-foreground">Email *</span>
+              <input type="email" name="email" value={formData.email} onChange={handleChange} required className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-border dark:bg-gray-900 dark:text-white" />
             </label>
             <label className="space-y-2">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">Téléphone</span>
-              <input name="phone" value={formData.phone} onChange={handleChange} placeholder="+261 34 00 000 00" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-gray-600 dark:bg-gray-900 dark:text-white" />
+              <span className="text-sm font-semibold text-foreground">Téléphone</span>
+              <input name="phone" value={formData.phone} onChange={handleChange} placeholder="+261 34 00 000 00" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-border dark:bg-gray-900 dark:text-white" />
             </label>
           </div>
 
           <label className="mt-4 block space-y-2">
-            <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">Votre demande concerne *</span>
-            <select name="reason" value={formData.reason} onChange={handleChange} required className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-gray-600 dark:bg-gray-900 dark:text-white">
+            <span className="text-sm font-semibold text-foreground">Votre demande concerne *</span>
+            <select name="reason" value={formData.reason} onChange={handleChange} required className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-border dark:bg-gray-900 dark:text-white">
               <option value="">Choisissez un motif</option>
               {contactReasons.map((reason) => <option key={reason} value={reason}>{reason}</option>)}
             </select>
           </label>
 
           <label className="mt-4 block space-y-2">
-            <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">Message *</span>
-            <textarea name="message" value={formData.message} onChange={handleChange} required minLength={10} rows={6} placeholder="Expliquez-nous ce que vous recherchez ou ce que vous souhaitez vendre..." className="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-gray-600 dark:bg-gray-900 dark:text-white" />
+            <span className="text-sm font-semibold text-foreground">Message *</span>
+            <textarea name="message" value={formData.message} onChange={handleChange} required minLength={10} rows={6} placeholder="Expliquez-nous ce que vous recherchez ou ce que vous souhaitez vendre..." className="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-border dark:bg-gray-900 dark:text-white" />
           </label>
 
           <button disabled={isSubmitting} className="mt-6 w-full rounded-xl bg-primary-600 px-6 py-4 font-bold text-white shadow-lg transition hover:bg-primary-700 disabled:opacity-50">

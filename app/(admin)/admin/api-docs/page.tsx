@@ -32,7 +32,7 @@ if (typeof window !== 'undefined') {
 
 export default function ApiDocsPage() {
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -41,11 +41,11 @@ export default function ApiDocsPage() {
           className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 gap-4"
         >
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-linear-to-br from-primary-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-14 h-14 bg-linear-to-br from-primary-600 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg">
               <DocumentTextIcon className="w-7 h-7 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold bg-linear-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">
                 API Documentation
               </h1>
               <p className="mt-1 text-gray-600 font-medium">

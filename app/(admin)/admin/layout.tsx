@@ -17,6 +17,7 @@ import {
   NewspaperIcon,
   PhotoIcon,
   BuildingOffice2Icon,
+  BellIcon,
 } from '@heroicons/react/24/outline'
 import { AdminLayoutSkeleton, Sidebar } from './components'
 import type { MenuItem } from './components'
@@ -27,6 +28,7 @@ const MENU_ITEMS: MenuItem[] = [
   { name: 'Actualités',   href: '/admin/news',         icon: NewspaperIcon },
   { name: 'Utilisateurs', href: '/admin/users',        icon: UsersIcon },
   { name: 'Messages',     href: '/admin/contacts',     icon: ChatBubbleLeftRightIcon },
+  { name: 'Notifications', href: '/admin/notifications', icon: BellIcon },
   { name: 'FAQs',         href: '/admin/faqs',         icon: QuestionMarkCircleIcon },
   {
     name: 'BatiPanorama',
@@ -47,6 +49,7 @@ const MENU_ITEMS: MenuItem[] = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
+  const [unreadNotifications, setUnreadNotifications] = useState(0)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
   const { user, logout } = useAuth()
   const pathname = usePathname()
@@ -59,15 +62,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => { setSidebarOpen(false) }, [pathname])
 
   useEffect(() => {
-    fetch('/api/contacts/count')
-      .then((r) => r.ok ? r.json() : null)
-      .then((d) => d && setUnreadCount(d.unread || 0))
-      .catch(() => {})
+    Promise.all([
+      fetch('/api/contacts/count').then((r) => r.ok ? r.json() : null).catch(() => null),
+      fetch('/api/notifications/count').then((r) => r.ok ? r.json() : null).catch(() => null),
+    ]).then(([contacts, notifications]) => {
+      if (contacts) setUnreadCount(contacts.unread || 0)
+      if (notifications) setUnreadNotifications(notifications.unread || 0)
+    })
   }, [])
 
   const menuItems: MenuItem[] = MENU_ITEMS.map((item) =>
     item.href === '/admin/contacts' && unreadCount > 0
       ? { ...item, count: unreadCount }
+      : item.href === '/admin/notifications' && unreadNotifications > 0
+      ? { ...item, count: unreadNotifications }
       : item
   )
 
@@ -89,7 +97,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <ProtectedRoute requiredRole={['admin', 'super_admin']}>
-      <div className="flex h-screen overflow-hidden bg-gray-100">
+      <div className="fixed inset-0 flex overflow-hidden bg-gray-100 dark:bg-gray-950">
         {/* Mobile overlay */}
         {sidebarOpen && (
           <div
@@ -108,14 +116,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
           {/* Mobile topbar */}
-          <header className="lg:hidden flex items-center h-14 px-4 bg-white border-b border-gray-200 shrink-0">
+          <header className="lg:hidden flex items-center h-14 px-4 bg-card border-b border-border shrink-0">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="p-1.5 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-gray-700 dark:hover:text-gray-200 hover:bg-muted transition-colors"
             >
               <Bars3Icon className="h-5 w-5" />
             </button>
-            <span className="ml-3 text-sm font-semibold text-gray-900 capitalize">{pageTitle}</span>
+            <span className="ml-3 text-sm font-semibold text-foreground capitalize">{pageTitle}</span>
           </header>
 
           <main className="flex-1 overflow-y-auto">

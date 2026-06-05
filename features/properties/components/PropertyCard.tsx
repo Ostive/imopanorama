@@ -16,6 +16,7 @@ import { logger } from '@/infrastructure/logger/logger'
 import { useImageFallback } from '@/shared/hooks/useImageFallback'
 import { useCompare } from '@/features/properties/context/CompareContext'
 import { useFavorites } from '@/features/favorites/hooks/useFavorites'
+import { formatPrice } from '@/shared/utils'
 
 interface PropertyCardProps {
   property: Property
@@ -57,14 +58,6 @@ function PropertyCard({
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)
   }
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'EUR',
-      minimumFractionDigits: 0,
-    }).format(price)
-  }
-
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case 'AVAILABLE':
@@ -82,7 +75,7 @@ function PropertyCard({
   }
 
   // Formater le prix pour l'affichage
-  const formattedPrice = property.price ? formatPrice(property.price) : 'Prix sur demande';
+  const formattedPrice = property.price ? formatPrice(property.price, property.currency, property.country) : 'Prix sur demande';
 
   // Collect features for display
   const displayFeatures = property.amenities && property.amenities.length > 0
@@ -91,7 +84,7 @@ function PropertyCard({
 
   return (
     <motion.div
-      className="group relative w-full h-full rounded-3xl bg-white dark:bg-gray-800 shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700"
+      className="group relative w-full h-full rounded-3xl bg-card shadow-xl hover:shadow-2xl transition-all duration-300 border border-border"
       whileHover={{ y: -6, scale: 1.02 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
     >
@@ -163,6 +156,14 @@ function PropertyCard({
                 >
                   {PROPERTY_STATUS_LABELS[property.status] || 'Disponible'}
                 </motion.span>
+                {property.isVerified && (
+                  <motion.span
+                    whileHover={{ scale: 1.05 }}
+                    className="bg-emerald-600 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm"
+                  >
+                    Vérifié
+                  </motion.span>
+                )}
               </div>
 
               {/* Favorite + Compare buttons */}
@@ -243,10 +244,10 @@ function PropertyCard({
                 <MapPinIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
               </div>
               <div className="flex-1">
-                <p className="text-gray-900 dark:text-white text-sm font-semibold leading-tight">
+                <p className="text-foreground text-sm font-semibold leading-tight">
                   {property.title || 'Bien à découvrir'}
                 </p>
-                <p className="text-gray-500 dark:text-gray-400 text-xs mt-0.5">
+                <p className="text-muted-foreground text-xs mt-0.5">
                   {property.city || 'Localisation à confirmer'}
                 </p>
               </div>
@@ -258,10 +259,10 @@ function PropertyCard({
                 <ArrowsPointingOutIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
               </div>
               <div>
-                <p className="text-gray-900 dark:text-white text-sm font-semibold">
+                <p className="text-foreground text-sm font-semibold">
                   {property.totalSize ? property.totalSize.toLocaleString() : '—'} m²
                 </p>
-                <p className="text-gray-500 dark:text-gray-400 text-xs">
+                <p className="text-muted-foreground text-xs">
                   Surface totale
                 </p>
               </div>
@@ -273,10 +274,10 @@ function PropertyCard({
                     <HomeIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
                   </div>
                   <div>
-                    <p className="text-gray-900 dark:text-white text-sm font-semibold">
+                    <p className="text-foreground text-sm font-semibold">
                       {property.bedrooms} ch.
                     </p>
-                    <p className="text-gray-500 dark:text-gray-400 text-xs">
+                    <p className="text-muted-foreground text-xs">
                       Chambres
                     </p>
                   </div>
@@ -285,21 +286,21 @@ function PropertyCard({
             </div>
 
             {/* Price */}
-            <div className="mb-4 p-3 bg-gradient-to-r from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/20 rounded-xl border border-primary-100 dark:border-primary-800">
+            <div className="mb-4 p-3 bg-gradient-to-r from-primary-50 to-primary-50 dark:from-primary-900/20 dark:to-primary-900/20 rounded-xl border border-primary-100 dark:border-primary-800">
               <div className="flex flex-col gap-1">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-gray-900 dark:text-white text-2xl font-bold">
+                  <span className="text-foreground text-2xl font-bold">
                     {formattedPrice}
                   </span>
                   {property.transactionType === 'RENT' && (
-                    <span className="text-gray-500 dark:text-gray-400 text-sm font-medium">
+                    <span className="text-muted-foreground text-sm font-medium">
                       /mois
                     </span>
                   )}
                 </div>
                 {property.transactionType === 'SALE' && property.pricePerM2 && (
-                  <span className="text-gray-500 dark:text-gray-400 text-xs">
-                    {Math.round(property.pricePerM2).toLocaleString()}€/m²
+                  <span className="text-muted-foreground text-xs">
+                    {formatPrice(Math.round(property.pricePerM2), property.currency, property.country)}/m²
                   </span>
                 )}
               </div>
@@ -312,7 +313,7 @@ function PropertyCard({
                   <motion.span
                     key={index}
                     whileHover={{ scale: 1.05 }}
-                    className="text-xs font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600"
+                    className="text-xs font-semibold text-foreground bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-lg border border-border"
                   >
                     {feature}
                   </motion.span>

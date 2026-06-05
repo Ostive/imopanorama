@@ -1,6 +1,12 @@
 import { propertyRepository } from '@/infrastructure/database/repositories';
 import { logger } from '@/infrastructure/logger/logger';
-import { PropertyType, TransactionType, PropertyStatus, PropertyCondition, Prisma } from '@prisma/client';
+import {
+  scheduleEmbeddingSync,
+  updateAffectsEmbedding,
+  generateEmbedding,
+  searchPropertyIdsByEmbedding,
+} from '@/infrastructure/search/embeddings';
+import { PropertyType, TransactionType, PropertyStatus, PropertyCondition, PropertyLegalStatus, PropertyDocumentStatus, Prisma } from '@prisma/client';
 
 /* ─── Types ────────────────────────────────────────────────── */
 
@@ -10,8 +16,11 @@ interface PropertyListParams {
   sort?: string;
   view?: 'list' | 'full';
   filter?: {
+    ids?: string[];
     propertyType?: string;
     transactionType?: string;
+    country?: string;
+    region?: string;
     city?: string;
     status?: string;
     minPrice?: number;
@@ -49,6 +58,11 @@ interface CreatePropertyData {
   transactionType: TransactionType;
   location: string;
   city: string;
+  country?: string;
+  region?: string | null;
+  district?: string | null;
+  commune?: string | null;
+  fokontany?: string | null;
   address?: string | null;
   zipCode?: string | null;
   coordinates?: Prisma.InputJsonValue;
@@ -76,6 +90,9 @@ interface CreatePropertyData {
   isFeatured?: boolean;
   isPublished?: boolean;
   reference?: string | null;
+  legalStatus?: PropertyLegalStatus | null;
+  documentStatus?: PropertyDocumentStatus;
+  isVerified?: boolean;
   energyClass?: string | null;
   emissions?: string | null;
   taxFonciere?: number | null;
@@ -91,15 +108,24 @@ const LIST_SELECT = {
   propertyType: true,
   transactionType: true,
   city: true,
+  country: true,
+  region: true,
+  district: true,
+  commune: true,
+  fokontany: true,
   location: true,
   price: true,
   pricePerM2: true,
+  currency: true,
   totalSize: true,
   bedrooms: true,
   bathrooms: true,
   coverImage: true,
   images: true,
   status: true,
+  legalStatus: true,
+  documentStatus: true,
+  isVerified: true,
   isFeatured: true,
   coordinates: true,
   createdAt: true,
@@ -139,6 +165,9 @@ export const propertiesServerService = {
     }
 
     // Filters
+    if (filter.ids && filter.ids.length > 0) {
+      where.id = { in: filter.ids };
+    }
     if (filter.propertyType) {
       const types = filter.propertyType.split(',') as PropertyType[];
       where.propertyType = { in: types };
@@ -146,6 +175,12 @@ export const propertiesServerService = {
     if (filter.transactionType) {
       const types = filter.transactionType.split(',') as TransactionType[];
       where.transactionType = types.length === 1 ? types[0] : { in: types };
+    }
+    if (filter.country) {
+      where.country = filter.country.toUpperCase();
+    }
+    if (filter.region) {
+      where.region = { contains: filter.region, mode: 'insensitive' };
     }
     if (filter.city) {
       where.city = { contains: filter.city, mode: 'insensitive' };
@@ -199,34 +234,27 @@ export const propertiesServerService = {
       where.features = { hasEvery: filter.features };
     }
 
-    // Search (Qdrant + fallback)
+    // Search: pgvector semantic search with text fallback.
+    // - If embeddings work → restrict to matching IDs, sorted by similarity when sort=relevance.
+    // - If embeddings unavailable → fall back to ILIKE on title/description/location/city.
     const sort = rawSort || (filter.search ? 'relevance' : 'date_desc');
-    let qdrantIds: string[] | null = null;
+    let semanticIds: string[] | null = null;
 
     if (filter.search) {
-      try {
-        const { searchProperties } = await import('@/infrastructure/search/qdrant/search');
-        logger.debug('🔍 Attempting Qdrant search for:', filter.search);
-        const qdrantResults = await searchProperties(filter.search, {
-          city: filter.city || undefined,
-          type: filter.propertyType?.split(',')[0] || undefined,
-          minPrice: filter.minPrice,
-          maxPrice: filter.maxPrice,
-          minSize: filter.minSize,
-          maxSize: filter.maxSize,
-        }, { limit: 60 });
-
-        if (qdrantResults.results.length > 0) {
-          qdrantIds = qdrantResults.results.map(r => r.id);
-          logger.debug(`✅ Qdrant found ${qdrantIds.length} matches`);
+      const queryVec = await generateEmbedding(filter.search);
+      if (queryVec) {
+        const hits = await searchPropertyIdsByEmbedding(queryVec, 60).catch((err: unknown) => {
+          const message = err instanceof Error ? err.message : 'Unknown error';
+          logger.warn(`pgvector search failed, falling back to text (${message})`);
+          return [];
+        });
+        if (hits.length > 0) {
+          semanticIds = hits.map(h => h.id);
         }
-      } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Unknown error';
-        logger.warn(`⚠️ Qdrant search unavailable, falling back to database (${message})`);
       }
 
-      if (qdrantIds && qdrantIds.length > 0) {
-        where.id = { in: qdrantIds };
+      if (semanticIds && semanticIds.length > 0) {
+        where.id = { in: semanticIds };
       } else {
         where.OR = [
           { title: { contains: filter.search, mode: 'insensitive' } },
@@ -257,10 +285,11 @@ export const propertiesServerService = {
 
     const select = view === 'list' ? LIST_SELECT : undefined;
 
-    // Relevance-based sort (Qdrant order)
-    if (sort === 'relevance' && qdrantIds && qdrantIds.length > 0) {
+    // Relevance ordering: preserve the pgvector-ranked order of semanticIds.
+    if (sort === 'relevance' && semanticIds && semanticIds.length > 0) {
       const allMatches = await propertyRepository.findMany({ where, select });
-      allMatches.sort((a, b) => qdrantIds!.indexOf(a.id) - qdrantIds!.indexOf(b.id));
+      const rank = new Map(semanticIds.map((id, i) => [id, i]));
+      allMatches.sort((a, b) => (rank.get(a.id) ?? Infinity) - (rank.get(b.id) ?? Infinity));
       const total = allMatches.length;
       return {
         data: allMatches.slice(skip, skip + limit),
@@ -286,8 +315,12 @@ export const propertiesServerService = {
       })) : Promise.resolve(undefined),
     ]);
 
+    const data = filter.ids && filter.ids.length > 0
+      ? [...properties].sort((a, b) => filter.ids!.indexOf(a.id) - filter.ids!.indexOf(b.id))
+      : properties;
+
     return {
-      data: properties,
+      data,
       total,
       page,
       totalPages: Math.ceil(total / limit),
@@ -323,13 +356,18 @@ export const propertiesServerService = {
    * Crée une propriété
    */
   async create(data: CreatePropertyData) {
-    return propertyRepository.create({
+    const created = await propertyRepository.create({
       title: data.title,
       description: data.description,
       propertyType: data.propertyType,
       transactionType: data.transactionType,
       location: data.location,
       city: data.city,
+      country: data.country,
+      region: data.region,
+      district: data.district,
+      commune: data.commune,
+      fokontany: data.fokontany,
       address: data.address,
       zipCode: data.zipCode,
       coordinates: data.coordinates,
@@ -357,6 +395,9 @@ export const propertiesServerService = {
       isFeatured: data.isFeatured,
       isPublished: data.isPublished,
       reference: data.reference,
+      legalStatus: data.legalStatus,
+      documentStatus: data.documentStatus,
+      isVerified: data.isVerified,
       energyClass: data.energyClass,
       emissions: data.emissions,
       taxFonciere: data.taxFonciere,
@@ -364,6 +405,9 @@ export const propertiesServerService = {
       ownerId: data.ownerId,
       publishedAt: data.isPublished ? new Date() : null,
     });
+
+    scheduleEmbeddingSync(created.id);
+    return created;
   },
 
   /**
@@ -382,7 +426,12 @@ export const propertiesServerService = {
       updateData.publishedAt = null;
     }
 
-    return propertyRepository.update(id, updateData);
+    const updated = await propertyRepository.update(id, updateData);
+
+    if (updateAffectsEmbedding(updateData)) {
+      scheduleEmbeddingSync(id);
+    }
+    return updated;
   },
 
   /**

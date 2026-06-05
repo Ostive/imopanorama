@@ -12,7 +12,7 @@ import {
   XMarkIcon,
   HomeIcon,
   MapPinIcon,
-  CurrencyEuroIcon,
+  BanknotesIcon,
   SparklesIcon,
   BuildingOffice2Icon,
   PlusIcon,
@@ -42,6 +42,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/shar
 import { Separator } from '@/shared/components/ui/separator'
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute'
 import { FormSkeleton } from '@/shared/components/loading'
+import { DEFAULT_MARKET, MARKET_CONFIGS, SUPPORTED_CURRENCIES, getMarketConfig } from '@/shared/config/markets'
 
 // ─── Small helpers ────────────────────────────────────────────────────────────
 
@@ -83,6 +84,11 @@ const FIELD_LABELS: Record<string, string> = {
   transactionType: 'Type de transaction',
   location: 'Quartier',
   city: 'Ville',
+  country: 'Pays',
+  region: 'Region',
+  district: 'District',
+  commune: 'Commune',
+  fokontany: 'Fokontany',
   address: 'Adresse',
   zipCode: 'Code postal',
   price: 'Prix',
@@ -109,6 +115,7 @@ const FIELD_LABELS: Record<string, string> = {
 const OPTIONAL_FIELDS = new Set([
   'condition', 'energyClass', 'emissions', 'coverImage', 'virtualTour', 'videoUrl',
   'address', 'zipCode', 'description', 'reference',
+  'region', 'district', 'commune', 'fokontany', 'legalStatus',
   'pricePerM2', 'rentPrice', 'livingSize', 'landSize',
   'bedrooms', 'bathrooms', 'rooms', 'floors', 'floor', 'yearBuilt',
   'taxFonciere', 'charges',
@@ -140,13 +147,18 @@ const INITIAL_FORM_DATA = {
   transactionType: 'SALE',
   location: '',
   city: '',
+  country: DEFAULT_MARKET,
+  region: '',
+  district: '',
+  commune: '',
+  fokontany: '',
   address: '',
   zipCode: '',
   coordinates: { lat: -18.8792, lng: 47.5079 },
   price: '',
   pricePerM2: '',
   rentPrice: '',
-  currency: 'EUR',
+  currency: getMarketConfig(DEFAULT_MARKET).currency,
   totalSize: '',
   livingSize: '',
   landSize: '',
@@ -164,6 +176,9 @@ const INITIAL_FORM_DATA = {
   virtualTour: '',
   videoUrl: '',
   reference: '',
+  legalStatus: '',
+  documentStatus: 'UNKNOWN',
+  isVerified: false,
   energyClass: '',
   emissions: '',
   status: 'AVAILABLE',
@@ -201,6 +216,8 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
   const isResidential = ['VILLA', 'HOUSE', 'TOWNHOUSE', 'COUNTRY_HOUSE', 'APARTMENT', 'STUDIO', 'PENTHOUSE', 'DUPLEX', 'LOFT'].includes(formData.propertyType)
   const isApartment = ['APARTMENT', 'STUDIO', 'PENTHOUSE', 'DUPLEX', 'LOFT'].includes(formData.propertyType)
   const isHouse = ['VILLA', 'HOUSE', 'TOWNHOUSE', 'COUNTRY_HOUSE'].includes(formData.propertyType)
+  const currentMarket = getMarketConfig(formData.country)
+  const currencyLabel = formData.currency || currentMarket.currency
 
   // ─── Effects ───────────────────────────────────────────────────────────────
 
@@ -220,13 +237,18 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
           transactionType: data.transactionType || 'SALE',
           location: data.location || '',
           city: data.city || '',
+          country: data.country || DEFAULT_MARKET,
+          region: data.region || '',
+          district: data.district || '',
+          commune: data.commune || '',
+          fokontany: data.fokontany || '',
           address: data.address || '',
           zipCode: data.zipCode || '',
           coordinates: data.coordinates || { lat: -18.8792, lng: 47.5079 },
           price: data.price?.toString() || '',
           pricePerM2: data.pricePerM2?.toString() || '',
           rentPrice: data.rentPrice?.toString() || '',
-          currency: data.currency || 'EUR',
+          currency: data.currency || getMarketConfig(data.country || DEFAULT_MARKET).currency,
           totalSize: data.totalSize?.toString() || '',
           livingSize: data.livingSize?.toString() || '',
           landSize: data.landSize?.toString() || '',
@@ -244,6 +266,9 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
           virtualTour: data.virtualTour || '',
           videoUrl: data.videoUrl || '',
           reference: data.reference || '',
+          legalStatus: data.legalStatus || '',
+          documentStatus: data.documentStatus || 'UNKNOWN',
+          isVerified: data.isVerified || false,
           energyClass: data.energyClass || '',
           emissions: data.emissions || '',
           status: data.status || 'AVAILABLE',
@@ -408,7 +433,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
   if (isLoading) {
     return (
       <ProtectedRoute>
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/20 py-8">
+        <div className="min-h-full bg-gradient-to-br from-gray-50 via-white to-primary-50/20 py-8">
           <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
             <FormSkeleton fields={8} />
           </div>
@@ -421,7 +446,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
 
   return (
     <ProtectedRoute requiredRole={['admin', 'super_admin']}>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/20 py-8">
+      <div className="min-h-full bg-gradient-to-br from-gray-50 via-white to-primary-50/20 py-8">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* ── Header ── */}
@@ -430,27 +455,27 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
               href="/admin/proprietes"
               className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors mb-4 group"
             >
-              <div className="w-8 h-8 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center mr-2 group-hover:border-primary/50 group-hover:text-primary transition-all shadow-sm">
+              <div className="w-8 h-8 rounded-full bg-card border border-border flex items-center justify-center mr-2 group-hover:border-primary/50 group-hover:text-primary transition-all shadow-sm">
                 <ArrowLeftIcon className="h-4 w-4" />
               </div>
               Retour à la liste
             </Link>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-gradient-to-br from-primary-500 to-blue-600 rounded-2xl shadow-lg shadow-primary-500/20">
+                <div className="p-3 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl shadow-lg shadow-primary-500/20">
                   <BuildingOffice2Icon className="h-8 w-8 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                  <h1 className="text-3xl font-bold text-foreground tracking-tight">
                     {isEdit ? 'Modifier la Propriété' : 'Nouvelle Propriété'}
                   </h1>
-                  <p className="text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-2">
+                  <p className="text-muted-foreground mt-1 flex items-center gap-2">
                     <SparklesIcon className="w-4 h-4 text-yellow-500" />
                     {isEdit ? (formData.title || 'Chargement...') : 'Créez une annonce exceptionnelle'}
                   </p>
                 </div>
               </div>
-              <div className="hidden md:flex items-center gap-2 text-sm text-gray-500 bg-white dark:bg-gray-800 py-1.5 px-4 rounded-full border border-gray-200 dark:border-gray-700 shadow-sm">
+              <div className="hidden md:flex items-center gap-2 text-sm text-gray-500 bg-card py-1.5 px-4 rounded-full border border-border shadow-sm">
                 <span className={`w-2 h-2 rounded-full ${isSubmitting ? 'bg-yellow-400 animate-pulse' : 'bg-green-500'}`}></span>
                 {isSubmitting ? 'Enregistrement...' : isEdit ? 'Mode édition' : 'Mode création'}
               </div>
@@ -465,8 +490,8 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
 
               {/* BLOCK A — Informations de base */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-                <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-white dark:bg-gray-800">
-                  <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800 pb-4">
+                <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
+                  <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-border pb-4">
                     <div className="flex items-center gap-3">
                       <div className="p-2.5 bg-primary-100 dark:bg-primary-900/30 rounded-xl">
                         <HomeIcon className="h-5 w-5 text-primary-600 dark:text-primary-400" />
@@ -478,7 +503,18 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="currency">Devise *</Label>
+                        <Select value={formData.currency} onValueChange={(value) => setFormData(prev => ({ ...prev, currency: value as typeof prev.currency }))}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {SUPPORTED_CURRENCIES.map(currency => (
+                              <SelectItem key={currency} value={currency}>{currency}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                       <div className="md:col-span-2 space-y-2">
                         <TooltipLabel htmlFor="title" label="Titre" required tooltip="Un titre accrocheur et descriptif augmente le taux de clics. Incluez le type de bien et un point fort." />
                         <Input id="title" name="title" value={formData.title} onChange={handleChange} required placeholder="Ex: Villa moderne avec piscine" className={fieldErrors.title ? 'border-red-500' : ''} />
@@ -552,8 +588,8 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
 
               {/* BLOCK A2 — Statut & Visibilité */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}>
-                <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-white dark:bg-gray-800 border-l-4 border-l-indigo-500">
-                  <CardHeader className="bg-indigo-50/50 dark:bg-indigo-900/10 border-b border-gray-100 dark:border-gray-800 pb-4">
+                <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card border-l-4 border-l-indigo-500">
+                  <CardHeader className="bg-indigo-50/50 dark:bg-indigo-900/10 border-b border-border pb-4">
                     <div className="flex items-center gap-3">
                       <div className="p-2.5 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl">
                         <EyeIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
@@ -579,14 +615,14 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                           </SelectContent>
                         </Select>
                       </div>
-                      <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
+                      <div className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
                         <div>
                           <Label htmlFor="isPublished" className="font-medium cursor-pointer">Publié</Label>
                           <p className="text-xs text-muted-foreground mt-0.5">Visible par les visiteurs</p>
                         </div>
                         <Switch id="isPublished" checked={formData.isPublished} onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isPublished: checked }))} />
                       </div>
-                      <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
+                      <div className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
                         <div>
                           <Label htmlFor="isFeatured" className="font-medium cursor-pointer">En vedette</Label>
                           <p className="text-xs text-muted-foreground mt-0.5">Afficher en page d'accueil</p>
@@ -598,10 +634,66 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                 </Card>
               </motion.div>
 
+              {/* BLOCK A3 - Confiance & documents */}
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }}>
+                <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
+                  <CardHeader className="bg-emerald-50/50 dark:bg-emerald-900/10 border-b border-border pb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl">
+                        <CheckCircleIcon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                      </div>
+                      <div>
+                        <CardTitle>Confiance et documents</CardTitle>
+                        <CardDescription>Renseignez le statut juridique sans bloquer les autres marches</CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="legalStatus">Statut foncier / juridique</Label>
+                        <Select value={formData.legalStatus || 'NONE'} onValueChange={(value) => setFormData(prev => ({ ...prev, legalStatus: value === 'NONE' ? '' : value }))}>
+                          <SelectTrigger><SelectValue placeholder="Non renseigne" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="NONE">Non renseigne</SelectItem>
+                            <SelectItem value="TITLED">Titre foncier</SelectItem>
+                            <SelectItem value="CADASTRAL">Cadastre</SelectItem>
+                            <SelectItem value="UNTITLED">Non titre</SelectItem>
+                            <SelectItem value="LONG_TERM_LEASE">Bail long terme</SelectItem>
+                            <SelectItem value="CO_OWNERSHIP">Copropriete</SelectItem>
+                            <SelectItem value="COMPANY_OWNED">Detenu par societe</SelectItem>
+                            <SelectItem value="OTHER">Autre</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="documentStatus">Etat des documents</Label>
+                        <Select value={formData.documentStatus} onValueChange={(value) => setFormData(prev => ({ ...prev, documentStatus: value }))}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="UNKNOWN">Non renseigne</SelectItem>
+                            <SelectItem value="PENDING">En verification</SelectItem>
+                            <SelectItem value="PARTIAL">Documents partiels</SelectItem>
+                            <SelectItem value="VERIFIED">Documents verifies</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
+                        <div>
+                          <Label htmlFor="isVerified" className="font-medium cursor-pointer">Bien verifie</Label>
+                          <p className="text-xs text-muted-foreground mt-0.5">Visible comme signal de confiance</p>
+                        </div>
+                        <Switch id="isVerified" checked={formData.isVerified} onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isVerified: checked }))} />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
               {/* BLOCK B — Localisation */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-white dark:bg-gray-800">
-                  <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800 pb-4">
+                <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
+                  <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-border pb-4">
                     <div className="flex items-center gap-3">
                       <div className="p-2.5 bg-green-100 dark:bg-green-900/30 rounded-xl">
                         <MapPinIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
@@ -614,6 +706,26 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="country">Pays / marche *</Label>
+                        <Select
+                          value={formData.country}
+                          onValueChange={(value) => setFormData(prev => ({
+                            ...prev,
+                            country: value as typeof prev.country,
+                            currency: getMarketConfig(value).currency,
+                          }))}
+                        >
+                          <SelectTrigger><SelectValue placeholder="Selectionner..." /></SelectTrigger>
+                          <SelectContent>
+                            {Object.values(MARKET_CONFIGS).map(market => (
+                              <SelectItem key={market.country} value={market.country}>
+                                {market.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                       <div className="space-y-2">
                         <Label htmlFor="address">Adresse *</Label>
                         <Input id="address" name="address" value={formData.address} onChange={handleChange} required placeholder="Ex: Lot 123 Ivandry" className={fieldErrors.address ? 'border-red-500' : ''} />
@@ -632,6 +744,22 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                       <div className="space-y-2">
                         <Label htmlFor="zipCode">Code postal</Label>
                         <Input id="zipCode" name="zipCode" value={formData.zipCode} onChange={handleChange} placeholder="Ex: 101" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="region">Region</Label>
+                        <Input id="region" name="region" value={formData.region} onChange={handleChange} placeholder="Ex: Analamanga" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="district">District</Label>
+                        <Input id="district" name="district" value={formData.district} onChange={handleChange} placeholder="Ex: Antananarivo Avaradrano" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="commune">Commune</Label>
+                        <Input id="commune" name="commune" value={formData.commune} onChange={handleChange} placeholder="Ex: Antananarivo Renivohitra" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="fokontany">Fokontany / secteur</Label>
+                        <Input id="fokontany" name="fokontany" value={formData.fokontany} onChange={handleChange} placeholder="Ex: Ambatobe" />
                       </div>
                     </div>
                     <Separator />
@@ -664,11 +792,11 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
 
               {/* BLOCK C — Prix */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-                <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-white dark:bg-gray-800">
-                  <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800 pb-4">
+                <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
+                  <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-border pb-4">
                     <div className="flex items-center gap-3">
                       <div className="p-2.5 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl">
-                        <CurrencyEuroIcon className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+                        <BanknotesIcon className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
                       </div>
                       <div>
                         <CardTitle>Prix</CardTitle>
@@ -681,12 +809,13 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                       {formData.transactionType === 'SALE' && (
                         <>
                           <div className="space-y-2">
-                            <Label htmlFor="price">Prix de vente (€) *</Label>
+                            <Label htmlFor="price">Prix de vente ({currencyLabel}) *</Label>
                             <Input id="price" name="price" type="number" value={formData.price} onChange={handleChange} required min="0" step="0.01" className={fieldErrors.price ? 'border-red-500' : ''} />
+                            <p className="text-xs text-muted-foreground">Devise: {currencyLabel}</p>
                             <FieldError errors={fieldErrors} name="price" />
                           </div>
                           <div className="space-y-2">
-                            <TooltipLabel htmlFor="pricePerM2" label="Prix au m² (€)" tooltip="Calculé automatiquement à partir du prix de vente et de la surface totale." />
+                            <TooltipLabel htmlFor="pricePerM2" label={`Prix au m² (${currencyLabel})`} tooltip="Calculé automatiquement à partir du prix de vente et de la surface totale." />
                             <Input id="pricePerM2" name="pricePerM2" type="number" value={formData.pricePerM2} disabled className="bg-muted cursor-not-allowed" />
                             <p className="text-xs text-muted-foreground">Calculé automatiquement: Prix ÷ Surface totale</p>
                           </div>
@@ -695,7 +824,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                       {(formData.transactionType === 'RENT' || formData.transactionType === 'SEASONAL_RENT') && (
                         <div className="space-y-2">
                           <Label htmlFor="rentPrice">
-                            {formData.transactionType === 'SEASONAL_RENT' ? 'Prix de location saisonnière (€/nuit) *' : 'Prix de location (€/mois) *'}
+                            {formData.transactionType === 'SEASONAL_RENT' ? `Prix de location saisonniere (${currencyLabel}/nuit) *` : `Prix de location (${currencyLabel}/mois) *`}
                           </Label>
                           <Input id="rentPrice" name="rentPrice" type="number" value={formData.rentPrice} onChange={handleChange} required min="0" step="0.01" />
                         </div>
@@ -707,8 +836,8 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
 
               {/* BLOCK D — Dimensions */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-                <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-white dark:bg-gray-800">
-                  <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800 pb-4">
+                <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
+                  <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-border pb-4">
                     <div className="flex items-center gap-3">
                       <div className="p-2.5 bg-purple-100 dark:bg-purple-900/30 rounded-xl">
                         <ArrowsPointingOutIcon className="h-5 w-5 text-purple-600 dark:text-purple-400" />
@@ -740,8 +869,8 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
               </motion.div>
 
               {/* BLOCK E — Détails de la propriété */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Détails de la propriété</h2>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="bg-card rounded-xl shadow-lg p-6 border border-border">
+                <h2 className="text-xl font-bold text-foreground mb-6">Détails de la propriété</h2>
                 {isTerrain ? (
                   <div className="text-center py-8">
                     <p className="text-sm text-muted-foreground">Les détails de propriété ne sont pas applicables aux terrains.</p>
@@ -749,7 +878,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                   </div>
                 ) : (
                   <>
-                    {!isResidential && <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Ces champs sont optionnels pour ce type de propriété</p>}
+                    {!isResidential && <p className="text-sm text-muted-foreground mb-4">Ces champs sont optionnels pour ce type de propriété</p>}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="bedrooms">Chambres</Label>
@@ -814,11 +943,11 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
               </motion.div>
 
               {/* BLOCK F — Caractéristiques */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Caractéristiques</h2>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }} className="bg-card rounded-xl shadow-lg p-6 border border-border">
+                <h2 className="text-xl font-bold text-foreground mb-6">Caractéristiques</h2>
                 {formData.features.length > 0 && (
                   <div className="mb-4">
-                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">{formData.features.length} sélectionnée(s) :</p>
+                    <p className="text-xs font-medium text-muted-foreground mb-2">{formData.features.length} sélectionnée(s) :</p>
                     <div className="flex flex-wrap gap-2">
                       {formData.features.map((feature, index) => (
                         <span key={index} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-200 rounded-lg text-sm font-medium">
@@ -840,7 +969,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                     const isSelected = formData.features.includes(feature)
                     return (
                       <button key={feature} type="button" onClick={() => setFormData(prev => ({ ...prev, features: isSelected ? prev.features.filter(f => f !== feature) : [...prev.features, feature] }))}
-                        className={`px-2.5 py-1 text-sm rounded-lg transition-all ${isSelected ? 'bg-primary-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary-700'}`}>
+                        className={`px-2.5 py-1 text-sm rounded-lg transition-all ${isSelected ? 'bg-primary-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-gray-700 text-foreground hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary-700'}`}>
                         {isSelected ? <CheckCircleIcon className="h-3.5 w-3.5 inline mr-1" /> : <PlusIcon className="h-3 w-3 inline mr-1" />}
                         {feature}
                       </button>
@@ -854,21 +983,21 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
               </motion.div>
 
               {/* BLOCK G — Commodités */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="bg-card rounded-xl shadow-lg p-6 border border-border">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
                     <SparklesIcon className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Commodités</h2>
+                  <h2 className="text-xl font-bold text-foreground">Commodités</h2>
                 </div>
                 {formData.amenities.length > 0 && (
                   <div className="mb-4">
-                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">{formData.amenities.length} sélectionnée(s) :</p>
+                    <p className="text-xs font-medium text-muted-foreground mb-2">{formData.amenities.length} sélectionnée(s) :</p>
                     <div className="flex flex-wrap gap-2">
                       {formData.amenities.map((amenity, index) => (
-                        <span key={index} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded-lg text-sm font-medium">
+                        <span key={index} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-200 rounded-lg text-sm font-medium">
                           {amenity}
-                          <button type="button" onClick={() => removeAmenity(index)} className="text-blue-600 hover:text-blue-800 ml-0.5">
+                          <button type="button" onClick={() => removeAmenity(index)} className="text-primary-600 hover:text-primary-800 ml-0.5">
                             <XMarkIcon className="h-3.5 w-3.5" />
                           </button>
                         </span>
@@ -885,7 +1014,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                     const isSelected = formData.amenities.includes(amenity)
                     return (
                       <button key={amenity} type="button" onClick={() => setFormData(prev => ({ ...prev, amenities: isSelected ? prev.amenities.filter(a => a !== amenity) : [...prev.amenities, amenity] }))}
-                        className={`px-2.5 py-1 text-sm rounded-lg transition-all ${isSelected ? 'bg-blue-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:text-blue-700'}`}>
+                        className={`px-2.5 py-1 text-sm rounded-lg transition-all ${isSelected ? 'bg-primary-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-gray-700 text-foreground hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary-700'}`}>
                         {isSelected ? <CheckCircleIcon className="h-3.5 w-3.5 inline mr-1" /> : <PlusIcon className="h-3 w-3 inline mr-1" />}
                         {amenity}
                       </button>
@@ -899,15 +1028,15 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
               </motion.div>
 
               {/* BLOCK H — Images */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="bg-card rounded-xl shadow-lg p-6 border border-border">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-2 bg-pink-100 dark:bg-pink-900/30 rounded-lg">
                     <PhotoIcon className="h-5 w-5 text-pink-600 dark:text-pink-400" />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Images</h2>
+                  <h2 className="text-xl font-bold text-foreground">Images</h2>
                 </div>
                 <div className="flex justify-between items-center mb-4">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">💡 Astuce : Utilisez des images de haute qualité (min. 1200x800px) pour un meilleur rendu</p>
+                  <p className="text-sm text-muted-foreground">💡 Astuce : Utilisez des images de haute qualité (min. 1200x800px) pour un meilleur rendu</p>
                   <Button type="button" variant="outline" onClick={() => setShowMediaLibrary(true)} className="gap-2">
                     <FolderIcon className="w-4 h-4" />
                     Médiathèque
@@ -917,29 +1046,29 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
               </motion.div>
 
               {/* BLOCK I — Visite virtuelle & Vidéo */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.75 }} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.75 }} className="bg-card rounded-xl shadow-lg p-6 border border-border">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
                     <CubeTransparentIcon className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Visite virtuelle & Vidéo</h2>
+                  <h2 className="text-xl font-bold text-foreground">Visite virtuelle & Vidéo</h2>
                 </div>
                 <div className="space-y-5">
                   <div>
-                    <Label htmlFor="virtualTour" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <Label htmlFor="virtualTour" className="flex items-center gap-2 text-sm font-medium text-foreground mb-2">
                       <CubeTransparentIcon className="w-4 h-4 text-purple-500" />
                       URL visite virtuelle 360°
                     </Label>
                     <Input id="virtualTour" type="url" placeholder="https://my.matterport.com/show/?m=... ou autre lien 360°" value={formData.virtualTour || ''} onChange={(e) => setFormData(prev => ({ ...prev, virtualTour: e.target.value }))} className="font-mono text-sm" />
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Compatible Matterport, Kuula, Ricoh360, Pano2VR, etc. (lien iframe)</p>
+                    <p className="text-xs text-muted-foreground mt-1">Compatible Matterport, Kuula, Ricoh360, Pano2VR, etc. (lien iframe)</p>
                   </div>
                   <div>
-                    <Label htmlFor="videoUrl" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <Label htmlFor="videoUrl" className="flex items-center gap-2 text-sm font-medium text-foreground mb-2">
                       <VideoCameraIcon className="w-4 h-4 text-red-500" />
                       URL vidéo de présentation
                     </Label>
                     <Input id="videoUrl" type="url" placeholder="https://www.youtube.com/embed/... ou https://vimeo.com/..." value={formData.videoUrl || ''} onChange={(e) => setFormData(prev => ({ ...prev, videoUrl: e.target.value }))} className="font-mono text-sm" />
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Utilisez le lien d'intégration YouTube (<code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">youtube.com/embed/ID</code>) ou Vimeo
                     </p>
                   </div>
@@ -962,9 +1091,9 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
               <div className="sticky top-8 space-y-6">
 
                 {/* Progress */}
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-                  <div className="p-5 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
-                    <h3 className="font-bold text-gray-900 dark:text-white flex items-center justify-between">
+                <div className="bg-card rounded-xl shadow-lg border border-border overflow-hidden">
+                  <div className="p-5 border-b border-border bg-gray-50/50 dark:bg-gray-800/50">
+                    <h3 className="font-bold text-foreground flex items-center justify-between">
                       Progression
                       <span className="text-primary-600 text-sm">{Math.round((currentStep / totalSteps) * 100)}%</span>
                     </h3>
@@ -975,7 +1104,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                       {[
                         { step: 1, label: 'Infos de base', icon: HomeIcon },
                         { step: 2, label: 'Localisation', icon: MapPinIcon },
-                        { step: 3, label: 'Prix', icon: CurrencyEuroIcon },
+                        { step: 3, label: 'Prix', icon: BanknotesIcon },
                         { step: 4, label: 'Dimensions', icon: ArrowsPointingOutIcon },
                         { step: 5, label: 'Détails', icon: BuildingOffice2Icon },
                         { step: 6, label: 'Caractéristiques', icon: SparklesIcon },
@@ -993,12 +1122,12 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                 </div>
 
                 {/* Publication */}
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div className="bg-card rounded-xl shadow-lg border border-border overflow-hidden">
                   <div className="p-5">
-                    <h3 className="font-bold text-gray-900 dark:text-white mb-4">Publication</h3>
+                    <h3 className="font-bold text-foreground mb-4">Publication</h3>
                     <div className="space-y-4">
-                      <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Visibilité</span>
+                      <div className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
+                        <span className="text-sm font-medium text-foreground">Visibilité</span>
                         <Badge variant={formData.isPublished ? 'default' : 'secondary'}>
                           {formData.isPublished ? 'En ligne' : 'Brouillon'}
                         </Badge>
@@ -1016,12 +1145,12 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                 </div>
 
                 {/* Tips */}
-                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-5 border border-blue-100 dark:border-blue-800">
+                <div className="bg-primary-50 dark:bg-primary-900/20 rounded-xl p-5 border border-primary-100 dark:border-primary-800">
                   <div className="flex gap-3">
-                    <SparklesIcon className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                    <SparklesIcon className="w-5 h-5 text-primary-600 dark:text-primary-400 flex-shrink-0" />
                     <div>
-                      <h4 className="text-sm font-bold text-blue-900 dark:text-blue-300">Conseil Pro</h4>
-                      <p className="text-xs text-blue-800 dark:text-blue-200 mt-1 leading-relaxed">
+                      <h4 className="text-sm font-bold text-primary-900 dark:text-primary-300">Conseil Pro</h4>
+                      <p className="text-xs text-primary-800 dark:text-primary-200 mt-1 leading-relaxed">
                         Les annonces avec au moins 5 photos et une description détaillée obtiennent 3x plus de contacts. N'oubliez pas la visite virtuelle !
                       </p>
                     </div>
@@ -1033,7 +1162,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
 
             {/* MOBILE FLOATING ACTIONS */}
             <div className="lg:hidden fixed bottom-6 left-4 right-4 z-50">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-4 flex gap-3">
+              <div className="bg-card rounded-2xl shadow-xl border border-border p-4 flex gap-3">
                 <Button type="button" variant="outline" onClick={() => router.push('/admin/proprietes')} disabled={isSubmitting} className="flex-1">
                   Annuler
                 </Button>

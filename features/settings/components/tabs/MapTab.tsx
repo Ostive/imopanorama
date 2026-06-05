@@ -89,7 +89,7 @@ export function MapTab({ settings, onChange }: MapTabProps) {
                 />
               </div>
             </div>
-            <p className="text-xs text-gray-500 bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <p className="text-xs text-gray-500 bg-primary-50 border border-primary-200 rounded-lg p-3">
               ℹ️ Coordonnées par défaut: Antananarivo, Madagascar (-18.8792, 47.5079)
             </p>
           </div>

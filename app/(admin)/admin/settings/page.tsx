@@ -15,6 +15,7 @@ import {
   MapPinIcon,
   ChatBubbleLeftRightIcon,
   CurrencyEuroIcon,
+  BanknotesIcon,
 } from '@heroicons/react/24/outline';
 import ThemeSettings from '@/features/settings/components/ThemeSettings';
 import { AllSettings } from '@/features/settings/types/settings.types';
@@ -28,6 +29,7 @@ import {
   PricingTab,
   SecurityTab,
   MapTab,
+  SearchTab,
 } from '@/features/settings/components/tabs';
 
 const DEFAULT_SETTINGS: AllSettings = {
@@ -41,7 +43,7 @@ const DEFAULT_SETTINGS: AllSettings = {
     favicon: '',
     timezone: 'Indian/Antananarivo',
     language: 'fr',
-    currency: 'EUR',
+    currency: 'MGA',
   },
   contact: {
     city: 'Antananarivo',
@@ -102,7 +104,7 @@ const DEFAULT_SETTINGS: AllSettings = {
     robotsTxtEnabled: true,
   },
   pricing: {
-    currency: 'EUR',
+    currency: 'MGA',
     showPrices: true,
     showPriceOnRequest: true,
     minPrice: 0,
@@ -131,9 +133,10 @@ const TABS = [
   { id: 'appearance', name: 'Apparence', icon: PaintBrushIcon },
   { id: 'email', name: 'Email', icon: EnvelopeIcon },
   { id: 'seo', name: 'SEO', icon: MagnifyingGlassIcon },
-  { id: 'pricing', name: 'Tarification', icon: CurrencyEuroIcon },
+  { id: 'pricing', name: 'Tarification', icon: BanknotesIcon },
   { id: 'security', name: 'Sécurité', icon: ShieldCheckIcon },
   { id: 'map', name: 'Carte', icon: MapPinIcon },
+  { id: 'search', name: 'Recherche', icon: MagnifyingGlassIcon },
 ] as const;
 
 export default function SettingsPage() {
@@ -220,7 +223,7 @@ export default function SettingsPage() {
       case 'appearance':
         return (
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Apparence</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">Apparence</h3>
             <ThemeSettings />
           </div>
         );
@@ -234,13 +237,15 @@ export default function SettingsPage() {
         return <SecurityTab settings={settings.security} onChange={handleInputChange} />;
       case 'map':
         return <MapTab settings={settings.map} onChange={handleInputChange} />;
+      case 'search':
+        return <SearchTab />;
       default:
         return null;
     }
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -249,17 +254,17 @@ export default function SettingsPage() {
           className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-4"
         >
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-linear-to-br from-primary-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 bg-linear-to-br from-primary-600 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
               <Cog6ToothIcon className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold bg-linear-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent">Paramètres</h1>
-              <p className="text-gray-600 font-medium mt-1">Configurez les paramètres de votre site</p>
+              <h1 className="text-3xl font-bold bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">Paramètres</h1>
+              <p className="text-muted-foreground font-medium mt-1">Configurez les paramètres de votre site</p>
             </div>
           </div>
           <Link
             href="/admin"
-            className="inline-flex items-center px-4 py-2 text-gray-700 bg-white hover:bg-gray-50 font-semibold rounded-xl transition-all border border-gray-200 shadow-sm"
+            className="inline-flex items-center px-4 py-2 text-foreground bg-card hover:bg-gray-50 dark:hover:bg-gray-800 font-semibold rounded-xl transition-all border border-border shadow-sm"
           >
             <ArrowLeftIcon className="h-5 w-5 mr-2" /> Retour
           </Link>
@@ -272,7 +277,7 @@ export default function SettingsPage() {
             animate={{ opacity: 1, x: 0 }}
             className="w-64 shrink-0"
           >
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sticky top-8">
+            <div className="bg-card rounded-2xl shadow-lg border border-border p-4 sticky top-8">
               <nav className="space-y-1">
                 {TABS.map((tab) => {
                   const Icon = tab.icon;
@@ -283,8 +288,8 @@ export default function SettingsPage() {
                       onClick={() => setActiveTab(tab.id)}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                         activeTab === tab.id
-                          ? 'bg-linear-to-r from-primary-600 to-blue-600 text-white shadow-md'
-                          : 'text-gray-600 hover:bg-gray-50'
+                          ? 'bg-linear-to-r from-primary-600 to-primary-600 text-white shadow-md'
+                          : 'text-muted-foreground hover:bg-gray-50 dark:hover:bg-gray-800/50'
                       }`}
                     >
                       <Icon className="h-5 w-5" />
@@ -303,17 +308,17 @@ export default function SettingsPage() {
             transition={{ delay: 0.2 }}
             className="flex-1"
           >
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100">
+            <div className="bg-card rounded-2xl shadow-lg border border-border">
               <div className="p-8">
                 {renderActiveTab()}
 
                 {/* Save Button */}
-                <div className="mt-8 pt-6 border-t border-gray-200">
+                <div className="mt-8 pt-6 border-t border-border">
                   <div className="flex justify-end gap-3">
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="px-6 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 font-semibold rounded-xl transition-all"
+                      className="px-6 py-2 text-foreground bg-muted hover:bg-gray-200 dark:hover:bg-gray-700 font-semibold rounded-xl transition-all"
                     >
                       Annuler
                     </motion.button>
@@ -322,7 +327,7 @@ export default function SettingsPage() {
                       whileTap={{ scale: 0.98 }}
                       onClick={handleSave}
                       disabled={isSaving}
-                      className="px-6 py-2 bg-linear-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 text-white font-semibold rounded-xl transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                      className="px-6 py-2 bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold rounded-xl transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                       {isSaving ? (
                         <>

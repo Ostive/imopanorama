@@ -12,7 +12,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { propertiesServerService } from '@/features/properties/server/properties.service';
 import { requireStaff, requireAdmin } from '@/infrastructure/auth/auth-guard';
-import { withErrorHandler, apiError, extractParam } from '@/infrastructure/middleware/api-handler';
+import { withErrorHandler, apiError, extractParam, validationError } from '@/infrastructure/middleware/api-handler';
 
 // ---------------------------------------------------------------------------
 // GET /api/properties/[id]
@@ -52,7 +52,7 @@ export const PUT = withErrorHandler(async (
   const validation = PropertyFormDataSchema.partial().safeParse(body);
 
   if (!validation.success) {
-    return apiError('Erreur de validation');
+    return validationError(validation.error.issues, 'La mise a jour de la propriete contient des champs invalides');
   }
 
   // Keep only defined fields for the update

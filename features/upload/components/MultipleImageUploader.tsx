@@ -173,7 +173,7 @@ export const MultipleImageUploader = forwardRef<MultipleImageUploaderHandle, Mul
           relative mb-4 border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all
           ${isDragging
             ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 scale-[1.01]'
-            : 'border-gray-300 dark:border-gray-600 hover:border-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800/50'
+            : 'border-border hover:border-primary-400 hover:bg-muted'
           }
           ${images.length >= maxImages ? 'opacity-50 pointer-events-none' : ''}
         `}
@@ -188,18 +188,18 @@ export const MultipleImageUploader = forwardRef<MultipleImageUploaderHandle, Mul
         />
 
         <div className="flex flex-col items-center gap-2 py-2">
-          <PhotoIcon className={`h-10 w-10 ${isDragging ? 'text-primary-500' : 'text-gray-400'}`} />
+          <PhotoIcon className={`h-10 w-10 ${isDragging ? 'text-primary-500' : 'text-muted-foreground'}`} />
           <div>
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <p className="text-sm font-medium text-foreground">
               {isDragging ? 'Déposez vos images ici' : 'Glissez-déposez vos images ici'}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               ou cliquez pour parcourir — JPG, PNG, WebP, AVIF — max 10 Mo/image
             </p>
           </div>
         </div>
 
-        <div className="mt-2 text-xs text-gray-400">
+        <div className="mt-2 text-xs text-muted-foreground">
           {images.length} / {maxImages} images
         </div>
       </div>

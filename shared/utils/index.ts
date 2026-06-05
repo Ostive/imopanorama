@@ -1,9 +1,12 @@
 // Utilitaires partagés
-export const formatPrice = (price: number, currency = 'EUR'): string => {
-  return new Intl.NumberFormat('fr-FR', {
+import { getCurrencyLocale } from '@/shared/config/markets';
+
+export const formatPrice = (price: number, currency = 'MGA', country?: string): string => {
+  return new Intl.NumberFormat(getCurrencyLocale(currency, country), {
     style: 'currency',
     currency,
     minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(price);
 };
 

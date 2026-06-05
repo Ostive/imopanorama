@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useTheme } from '@/shared/theme/ThemeContext';
 import {
   MapPinIcon,
   CalendarIcon,
@@ -20,7 +19,6 @@ import { Project } from '@/features/batipanorama/types/batipanorama.types';
 
 
 export default function ProjectsPage() {
-  const { currentTheme } = useTheme();
   const [activeCategory, setActiveCategory] = useState<string>('all');
 
   const { data: projects = [], isLoading } = useQuery({
@@ -52,9 +50,9 @@ export default function ProjectsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20">
       {/* Hero Section */}
-      <div className="relative bg-linear-to-r from-primary-600 to-blue-600 text-white py-20 overflow-hidden">
+      <div className="relative bg-linear-to-r from-primary-600 to-primary-600 text-white py-20 overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-white/10 rounded-full filter blur-3xl"></div>
@@ -90,11 +88,11 @@ export default function ProjectsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white rounded-3xl shadow-xl p-6 mb-12"
+          className="bg-card rounded-3xl shadow-xl p-6 mb-12"
         >
           <div className="flex items-center gap-3 mb-4">
-            <BuildingOffice2Icon className="w-6 h-6 text-primary-600" />
-            <h2 className="text-xl font-bold text-gray-900">Filtrer par catégorie</h2>
+            <BuildingOffice2Icon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+            <h2 className="text-xl font-bold text-foreground">Filtrer par catégorie</h2>
           </div>
           <div className="flex flex-wrap gap-3">
             {categories.map((category, index) => (
@@ -107,16 +105,16 @@ export default function ProjectsPage() {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setActiveCategory(category.id)}
                 className={`px-6 py-3 rounded-xl text-sm font-semibold transition-all ${activeCategory === category.id
-                  ? 'bg-linear-to-r from-primary-600 to-blue-600 text-white shadow-lg'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-linear-to-r from-primary-600 to-primary-600 text-white shadow-lg'
+                  : 'bg-muted text-foreground hover:bg-gray-200 dark:hover:bg-gray-700'
                   }`}
               >
                 {category.label}
               </motion.button>
             ))}
           </div>
-          <div className="mt-4 text-sm text-gray-600">
-            <span className="font-semibold text-primary-600">{filteredProjects.length}</span> projet{filteredProjects.length > 1 ? 's' : ''} trouvé{filteredProjects.length > 1 ? 's' : ''}
+          <div className="mt-4 text-sm text-muted-foreground">
+            <span className="font-semibold text-primary-600 dark:text-primary-400">{filteredProjects.length}</span> projet{filteredProjects.length > 1 ? 's' : ''} trouvé{filteredProjects.length > 1 ? 's' : ''}
           </div>
         </motion.div>
 
@@ -124,15 +122,15 @@ export default function ProjectsPage() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse">
-                <div className="h-64 bg-gray-200"></div>
+              <div key={i} className="bg-card rounded-2xl shadow-lg overflow-hidden animate-pulse">
+                <div className="h-64 bg-muted"></div>
                 <div className="p-6 space-y-4">
-                  <div className="h-6 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-full"></div>
-                  <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                  <div className="h-6 bg-muted rounded w-3/4"></div>
+                  <div className="h-4 bg-muted rounded w-full"></div>
+                  <div className="h-4 bg-muted rounded w-5/6"></div>
                   <div className="flex items-center justify-between pt-4">
-                    <div className="h-6 bg-gray-200 rounded-full w-24"></div>
-                    <div className="h-10 bg-gray-200 rounded w-32"></div>
+                    <div className="h-6 bg-muted rounded-full w-24"></div>
+                    <div className="h-10 bg-muted rounded w-32"></div>
                   </div>
                 </div>
               </div>
@@ -155,14 +153,14 @@ export default function ProjectsPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-3xl shadow-xl p-12 text-center"
+            className="bg-card rounded-3xl shadow-xl p-12 text-center"
           >
             <div className="max-w-md mx-auto">
-              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-5xl">🔍</span>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Aucun projet trouvé</h3>
-              <p className="text-gray-600 mb-6 text-lg">
+              <h3 className="text-2xl font-bold text-foreground mb-3">Aucun projet trouvé</h3>
+              <p className="text-muted-foreground mb-6 text-lg">
                 Aucun projet ne correspond à cette catégorie.
               </p>
             </div>
@@ -185,7 +183,7 @@ function ProjectCard({ project }: { project: Project }) {
   const getCategoryColor = (category: string) => {
     const cat = category.toLowerCase();
     if (cat.includes('résidentiel')) return 'from-green-500 to-emerald-500';
-    if (cat.includes('commercial')) return 'from-blue-500 to-cyan-500';
+    if (cat.includes('commercial')) return 'from-primary-500 to-cyan-500';
     if (cat.includes('industriel')) return 'from-orange-500 to-red-500';
     if (cat.includes('rénovation')) return 'from-purple-500 to-pink-500';
     return 'from-gray-500 to-gray-600';
@@ -198,11 +196,11 @@ function ProjectCard({ project }: { project: Project }) {
     >
       <motion.div
         whileHover={{ y: -8 }}
-        className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all h-full"
+        className="bg-card rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all h-full"
       >
         <div className="relative h-64 overflow-hidden">
           <Image
-            src={project.coverImage || project.images[0] || '/images/placeholders/project.jpg'}
+            src={project.coverImage || project.images[0] || '/images/batipanorama/project-placeholder.jpg'}
             alt={project.title}
             fill
             className="object-cover group-hover:scale-110 transition-transform duration-500"
@@ -236,26 +234,26 @@ function ProjectCard({ project }: { project: Project }) {
         </div>
 
         <div className="p-6">
-          <p className="text-gray-600 line-clamp-2 mb-4 leading-relaxed">{project.description}</p>
+          <p className="text-muted-foreground line-clamp-2 mb-4 leading-relaxed">{project.description}</p>
 
           <div className="flex items-center justify-between">
             <div className="flex flex-wrap gap-2">
               {project.tags && project.tags.slice(0, 2).map((tag: string, index: number) => (
                 <span
                   key={index}
-                  className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-700"
+                  className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300"
                 >
                   {tag}
                 </span>
               ))}
               {project.tags && project.tags.length > 2 && (
-                <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-muted text-foreground">
                   +{project.tags.length - 2}
                 </span>
               )}
             </div>
             <motion.div
-              className="flex items-center gap-1 text-primary-600 font-semibold text-sm group-hover:gap-2 transition-all"
+              className="flex items-center gap-1 text-primary-600 dark:text-primary-400 font-semibold text-sm group-hover:gap-2 transition-all"
             >
               Voir
               <ArrowRightIcon className="w-4 h-4" />

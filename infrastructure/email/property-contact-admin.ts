@@ -1,4 +1,4 @@
-import { transporter } from './transporter';
+import { emailConfig, getMailFrom, transporter } from './transporter';
 import { PropertyContactData } from './types';
 
 /**
@@ -6,8 +6,8 @@ import { PropertyContactData } from './types';
  */
 export async function sendPropertyContactNotificationToAdmin(data: PropertyContactData) {
     const mailOptions = {
-        from: '"ImoPanorama Notifications" <noreply@demomailtrap.co>',
-        to: process.env.ADMIN_EMAIL || 'admin@demomailtrap.co',
+        from: getMailFrom('ImoPanorama Notifications'),
+        to: emailConfig.adminEmail,
         subject: `🔔 Nouvelle demande de contact - ${data.propertyTitle}`,
         html: `
       <!DOCTYPE html>

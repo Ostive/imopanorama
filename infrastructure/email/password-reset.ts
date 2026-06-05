@@ -1,4 +1,4 @@
-import { transporter } from './transporter';
+import { getMailFrom, transporter } from './transporter';
 
 interface PasswordResetData {
   email: string;
@@ -10,7 +10,7 @@ export async function sendPasswordResetEmail(data: PasswordResetData) {
   const greeting = data.userName ? `Bonjour ${data.userName}` : 'Bonjour';
 
   const mailOptions = {
-    from: '"ImoPanorama" <noreply@demomailtrap.co>',
+    from: getMailFrom('ImoPanorama'),
     to: data.email,
     subject: 'Réinitialisation de votre mot de passe - ImoPanorama',
     html: `

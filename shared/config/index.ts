@@ -3,7 +3,7 @@ export const config = {
   // Informations de l'entreprise
   company: {
     name: 'ImoPanorama',
-    description: 'Agence immobilière spécialisée dans la vente de terrains à Madagascar',
+    description: "Agence immobilière spécialisée dans l'achat, la vente, la location et la construction à Madagascar",
     location: 'Antananarivo, Madagascar',
     phone: '+261 34 XX XX XX XX',
     email: 'contact@imopanorama.mg',
@@ -37,14 +37,14 @@ export const config = {
   // Configuration des images
   images: {
     domains: ['images.unsplash.com', 'res.cloudinary.com'],
-    placeholder: '/images/placeholders/property.jpg'
+    placeholder: '/images/properties/property-placeholder.jpg'
   },
 
   // SEO
   seo: {
-    defaultTitle: 'ImoPanorama Madagascar - Vente de Terrains',
-    defaultDescription: 'Agence immobilière spécialisée dans la vente de terrains à Madagascar. Découvrez nos terrains disponibles et notre partenaire BatiPanorama pour la construction.',
-    keywords: ['immobilier', 'terrain', 'Madagascar', 'vente', 'construction', 'BatiPanorama']
+    defaultTitle: 'ImoPanorama Madagascar - Acheter, louer et construire',
+    defaultDescription: 'Agence immobilière à Madagascar: terrains, maisons, villas, appartements, locaux commerciaux et accompagnement construction avec BatiPanorama.',
+    keywords: ['immobilier', 'propriété', 'terrain', 'villa', 'appartement', 'Madagascar', 'vente', 'location', 'construction', 'BatiPanorama']
   },
 
   // Réseaux sociaux

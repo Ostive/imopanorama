@@ -12,7 +12,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { newsService } from '@/features/news/services/newsService';
 import { requireAdmin } from '@/infrastructure/auth/auth-guard';
-import { withErrorHandler, apiError, extractParam } from '@/infrastructure/middleware/api-handler';
+import { withErrorHandler, apiError, extractParam, validationError } from '@/infrastructure/middleware/api-handler';
 
 // ---------------------------------------------------------------------------
 // GET /api/news/id/[id]
@@ -48,7 +48,7 @@ export const PUT = withErrorHandler(async (
   const validation = NewsFormDataSchema.partial().safeParse(body);
 
   if (!validation.success) {
-    return apiError('Erreur de validation');
+    return validationError(validation.error.issues, 'La mise a jour de l actualite contient des champs invalides');
   }
 
   const updatedNews = await newsService.updateNews(id, validation.data);

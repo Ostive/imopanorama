@@ -32,10 +32,10 @@ type User = {
 const columnHelper = createColumnHelper<User>();
 
 const ROLE_CONFIG: Record<string, { bg: string; text: string; label: string }> = {
-  ADMIN: { bg: 'bg-red-100', text: 'text-red-800', label: 'Admin' },
-  SUPER_ADMIN: { bg: 'bg-purple-100', text: 'text-purple-800', label: 'Super Admin' },
-  AGENT: { bg: 'bg-blue-100', text: 'text-blue-800', label: 'Agent' },
-  CLIENT: { bg: 'bg-green-100', text: 'text-green-800', label: 'Client' },
+  ADMIN: { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-800 dark:text-red-300', label: 'Admin' },
+  SUPER_ADMIN: { bg: 'bg-purple-100 dark:bg-purple-900/30', text: 'text-purple-800 dark:text-purple-300', label: 'Super Admin' },
+  AGENT: { bg: 'bg-primary-100 dark:bg-primary-900/30', text: 'text-primary-800 dark:text-primary-300', label: 'Agent' },
+  CLIENT: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-800 dark:text-green-300', label: 'Client' },
 };
 
 export default function AdminUsersPage() {
@@ -139,15 +139,15 @@ export default function AdminUsersPage() {
       header: 'Nom',
       cell: info => (
         <div>
-          <p className="font-medium text-gray-900">{info.getValue()}</p>
-          <p className="text-sm text-gray-500">{info.row.original.email}</p>
+          <p className="font-medium text-foreground">{info.getValue()}</p>
+          <p className="text-sm text-muted-foreground">{info.row.original.email}</p>
         </div>
       ),
     }),
     columnHelper.accessor('role', {
       header: 'Rôle',
       cell: info => {
-        const cfg = ROLE_CONFIG[info.getValue()] || { bg: 'bg-gray-100', text: 'text-gray-800', label: info.getValue() };
+        const cfg = ROLE_CONFIG[info.getValue()] || { bg: 'bg-muted', text: 'text-foreground', label: info.getValue() };
         return <span className={`px-3 py-1 rounded-full text-xs font-semibold ${cfg.bg} ${cfg.text}`}>{cfg.label}</span>;
       },
     }),
@@ -158,7 +158,7 @@ export default function AdminUsersPage() {
       cell: ({ row }) => (
         <button
           onClick={() => handleToggleStatus(row.original.id, row.original.isActive)}
-          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${row.original.isActive ? 'bg-green-600 focus:ring-green-500' : 'bg-gray-300 focus:ring-gray-400'}`}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${row.original.isActive ? 'bg-green-600 focus:ring-green-500' : 'bg-gray-300 dark:bg-gray-600 focus:ring-gray-400'}`}
           title={row.original.isActive ? 'Cliquez pour désactiver' : 'Cliquez pour activer'}
         >
           <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${row.original.isActive ? 'translate-x-6' : 'translate-x-1'}`} />
@@ -175,33 +175,33 @@ export default function AdminUsersPage() {
       cell: ({ row }) => (
         <>
           <div className="hidden md:flex items-center gap-2">
-            <Link href={`/admin/users/${row.original.id}`} className="p-2 text-primary-600 hover:text-primary-900 hover:bg-primary-50 rounded-lg transition-colors" title="Voir">
+            <Link href={`/admin/users/${row.original.id}`} className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors" title="Voir">
               <EyeIcon className="h-5 w-5" />
             </Link>
-            <Link href={`/admin/users/${row.original.id}/edit`} className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors" title="Modifier">
+            <Link href={`/admin/users/${row.original.id}/edit`} className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors" title="Modifier">
               <PencilIcon className="h-5 w-5" />
             </Link>
-            <button onClick={() => handleDelete(row.original.id)} className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-colors" title="Supprimer">
+            <button onClick={() => handleDelete(row.original.id)} className="p-2 text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Supprimer">
               <TrashIcon className="h-5 w-5" />
             </button>
           </div>
           <div className="md:hidden flex justify-end">
             <DropdownMenu>
-              <DropdownMenuTrigger className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+              <DropdownMenuTrigger className="p-2 text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100 hover:bg-muted rounded-lg transition-colors">
                 <EllipsisVerticalIcon className="h-5 w-5" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>
-                  <Link href={`/admin/users/${row.original.id}`} className="flex items-center gap-2 text-primary-600">
+                  <Link href={`/admin/users/${row.original.id}`} className="flex items-center gap-2 text-primary-600 dark:text-primary-400">
                     <EyeIcon className="h-4 w-4" />Voir
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href={`/admin/users/${row.original.id}/edit`} className="flex items-center gap-2 text-blue-600">
+                  <Link href={`/admin/users/${row.original.id}/edit`} className="flex items-center gap-2 text-primary-600 dark:text-primary-400">
                     <PencilIcon className="h-4 w-4" />Modifier
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleDelete(row.original.id)} className="flex items-center gap-2 text-red-600">
+                <DropdownMenuItem onClick={() => handleDelete(row.original.id)} className="flex items-center gap-2 text-red-600 dark:text-red-400">
                   <TrashIcon className="h-4 w-4" />Supprimer
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -229,17 +229,17 @@ export default function AdminUsersPage() {
   if (loading) {
     return (
       <ProtectedRoute requiredRole="admin">
-        <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+        <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
           <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 animate-pulse space-y-8">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gray-200 rounded-xl"></div>
-              <div><div className="h-8 bg-gray-200 rounded w-64 mb-2"></div><div className="h-4 bg-gray-200 rounded w-48"></div></div>
+              <div className="w-12 h-12 bg-muted rounded-xl"></div>
+              <div><div className="h-8 bg-muted rounded w-64 mb-2"></div><div className="h-4 bg-muted rounded w-48"></div></div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[1, 2, 3].map(i => <div key={i} className="bg-white rounded-2xl p-6 shadow-lg h-24"></div>)}
+              {[1, 2, 3].map(i => <div key={i} className="bg-card rounded-2xl p-6 shadow-lg h-24"></div>)}
             </div>
-            <div className="bg-white rounded-2xl shadow-lg p-6 h-20"></div>
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden h-64"></div>
+            <div className="bg-card rounded-2xl shadow-lg p-6 h-20"></div>
+            <div className="bg-card rounded-2xl shadow-xl overflow-hidden h-64"></div>
           </div>
         </div>
       </ProtectedRoute>
@@ -248,7 +248,7 @@ export default function AdminUsersPage() {
 
   return (
     <ProtectedRoute requiredRole="admin">
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 py-8">
         <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
 
           <AdminPageHeader
@@ -259,7 +259,7 @@ export default function AdminUsersPage() {
             loading={isFetching}
             actions={
               <Link href="/admin/users/new">
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="inline-flex items-center px-6 py-2 bg-linear-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 text-white font-semibold rounded-xl transition-all shadow-lg">
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="inline-flex items-center px-6 py-2 bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold rounded-xl transition-all shadow-lg">
                   <PlusIcon className="h-5 w-5 mr-2" /> Nouvel utilisateur
                 </motion.div>
               </Link>
@@ -281,12 +281,12 @@ export default function AdminUsersPage() {
           </div>
 
           {/* Filters */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-gray-100">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card rounded-2xl shadow-lg p-6 mb-6 border border-border">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <FunnelIcon className="w-5 h-5 text-gray-600" />
-                <h2 className="text-lg font-semibold text-gray-900">Filtres</h2>
-                {hasActiveFilters && <span className="px-2 py-1 bg-primary-100 text-primary-700 text-xs font-bold rounded-full">Actifs</span>}
+                <FunnelIcon className="w-5 h-5 text-muted-foreground" />
+                <h2 className="text-lg font-semibold text-foreground">Filtres</h2>
+                {hasActiveFilters && <span className="px-2 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-bold rounded-full">Actifs</span>}
               </div>
               {hasActiveFilters && (
                 <button onClick={() => { setSearchInput(''); setSelectedRoles([]); setSelectedStatuses([]); }}
@@ -297,11 +297,11 @@ export default function AdminUsersPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="relative">
-                <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <input type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="Nom, email, entreprise..."
-                  className="w-full pl-10 pr-10 h-10 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" />
+                  className="w-full pl-10 pr-10 h-10 border border-border rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" />
                 {searchInput && (
-                  <button onClick={() => setSearchInput('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                  <button onClick={() => setSearchInput('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300">
                     <XMarkIcon className="h-5 w-5" />
                   </button>
                 )}
@@ -330,26 +330,26 @@ export default function AdminUsersPage() {
           </motion.div>
 
           {/* Table */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-2xl shadow-lg overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-muted/50">
                   {table.getHeaderGroups().map(headerGroup => (
                     <tr key={headerGroup.id}>
                       {headerGroup.headers.map(header => (
-                        <th key={header.id} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th key={header.id} className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                         </th>
                       ))}
                     </tr>
                   ))}
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-card divide-y divide-gray-200 dark:divide-gray-700">
                   {table.getRowModel().rows.length === 0 ? (
-                    <tr><td colSpan={columns.length} className="px-6 py-12 text-center text-gray-500">Aucun utilisateur trouvé</td></tr>
+                    <tr><td colSpan={columns.length} className="px-6 py-12 text-center text-muted-foreground">Aucun utilisateur trouvé</td></tr>
                   ) : (
                     table.getRowModel().rows.map(row => (
-                      <tr key={row.id} className="hover:bg-gray-50">
+                      <tr key={row.id} className="hover:bg-muted/50">
                         {row.getVisibleCells().map(cell => (
                           <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}

@@ -29,6 +29,17 @@ export type PropertyCondition = 'NEW' | 'EXCELLENT' | 'GOOD' | 'TO_RENOVATE' | '
 
 export type PropertyStatus = 'AVAILABLE' | 'RESERVED' | 'SOLD' | 'RENTED' | 'DRAFT' | 'ARCHIVED';
 
+export type PropertyLegalStatus =
+    | 'TITLED'
+    | 'CADASTRAL'
+    | 'UNTITLED'
+    | 'LONG_TERM_LEASE'
+    | 'CO_OWNERSHIP'
+    | 'COMPANY_OWNED'
+    | 'OTHER';
+
+export type PropertyDocumentStatus = 'UNKNOWN' | 'PENDING' | 'PARTIAL' | 'VERIFIED';
+
 export interface Property {
     id: string;
     title: string;
@@ -39,6 +50,11 @@ export interface Property {
     // Location
     location: string;
     city: string;
+    country?: string;
+    region?: string;
+    district?: string;
+    commune?: string;
+    fokontany?: string;
     address?: string;
     zipCode?: string;
     coordinates?: {
@@ -84,6 +100,9 @@ export interface Property {
 
     // References & Metadata
     reference?: string;
+    legalStatus?: PropertyLegalStatus;
+    documentStatus?: PropertyDocumentStatus;
+    isVerified?: boolean;
     energyClass?: string;
     emissions?: string;
     taxFonciere?: number;
@@ -143,6 +162,23 @@ export interface PropertyStats {
 // Helper type guards
 export const isTerrainType = (type: PropertyType): boolean => {
     return type.startsWith('TERRAIN_');
+};
+
+export const PROPERTY_LEGAL_STATUS_LABELS: Record<PropertyLegalStatus, string> = {
+    TITLED: 'TitrÃ©',
+    CADASTRAL: 'CadastrÃ©',
+    UNTITLED: 'Non titrÃ©',
+    LONG_TERM_LEASE: 'Bail long terme',
+    CO_OWNERSHIP: 'CopropriÃ©tÃ©',
+    COMPANY_OWNED: 'DÃ©tenu par sociÃ©tÃ©',
+    OTHER: 'Autre',
+};
+
+export const PROPERTY_DOCUMENT_STATUS_LABELS: Record<PropertyDocumentStatus, string> = {
+    UNKNOWN: 'Non renseignÃ©',
+    PENDING: 'En vÃ©rification',
+    PARTIAL: 'Documents partiels',
+    VERIFIED: 'Documents vÃ©rifiÃ©s',
 };
 
 export const isResidentialType = (type: PropertyType): boolean => {

@@ -16,6 +16,13 @@ interface PropertiesMapProps {
   onPropertyClick?: (propertyId: string) => void
 }
 
+function getMarkerSrc(property: Property) {
+  const proTypes = new Set(['OFFICE', 'SHOP', 'WAREHOUSE', 'BUILDING', 'HOTEL', 'RESTAURANT'])
+  return proTypes.has(property.propertyType)
+    ? '/images/markers/marker-pro.svg'
+    : '/images/markers/marker-estate.svg'
+}
+
 function PropertiesMapInner({
   properties,
   height = '600px',
@@ -74,7 +81,8 @@ function PropertiesMapInner({
         container: mapContainer.current,
         style: 'https://tiles.openfreemap.org/styles/liberty',
         center: [center.lng, center.lat],
-        zoom: 12
+        zoom: 12,
+        attributionControl: false,
       })
 
       map.current.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-left')
@@ -97,30 +105,27 @@ function PropertiesMapInner({
 
           const el = document.createElement('div')
           el.className = 'property-marker'
-          el.style.width = '40px'
-          el.style.height = '40px'
-          el.style.borderRadius = '50%'
-          el.style.backgroundColor = '#0ea5e9'
-          el.style.border = '3px solid white'
-          el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)'
+          el.style.width = '48px'
+          el.style.height = '56px'
+          el.style.filter = 'drop-shadow(0 4px 10px rgba(0,0,0,0.28))'
           el.style.cursor = 'pointer'
           el.style.display = 'flex'
           el.style.alignItems = 'center'
           el.style.justifyContent = 'center'
-          el.style.color = 'white'
-          el.style.fontWeight = 'bold'
-          el.style.fontSize = '14px'
-          el.style.transition = 'transform 0.2s, box-shadow 0.2s'
-          el.innerHTML = '€'
+          el.style.transformOrigin = 'center bottom'
+          el.style.transition = 'transform 0.2s, filter 0.2s'
+          el.innerHTML = `
+            <img src="${getMarkerSrc(property)}" alt="" width="48" height="56" style="width:48px;height:56px;display:block;pointer-events:none;" />
+          `
 
           el.addEventListener('mouseenter', () => {
             el.style.transform = 'scale(1.2)'
-            el.style.boxShadow = '0 4px 12px rgba(0,0,0,0.4)'
+            el.style.filter = 'drop-shadow(0 6px 14px rgba(0,0,0,0.36))'
           })
 
           el.addEventListener('mouseleave', () => {
             el.style.transform = 'scale(1)'
-            el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)'
+            el.style.filter = 'drop-shadow(0 4px 10px rgba(0,0,0,0.28))'
           })
 
           const formatPrice = (price: number) => {
@@ -138,7 +143,7 @@ function PropertiesMapInner({
                   src="${getSafeImageSrc(property.images && property.images.length > 0 ? property.images[0] : '')}"
                   alt="${property.title || 'Propriété'}"
                   style="width: 100%; height: 100%; object-fit: cover;"
-                  onerror="this.onerror=null;this.src='/images/placeholders/property.jpg'"
+                  onerror="this.onerror=null;this.src='/images/properties/property-placeholder.jpg'"
                 />
                 <div style="position: absolute; top: 8px; left: 8px;">
                   <span style="background-color: #0ea5e9; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;">
@@ -186,7 +191,7 @@ function PropertiesMapInner({
             maxWidth: '300px'
           }).setHTML(popupContent)
 
-          const marker = new maplibregl.Marker({ element: el })
+          const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
             .setLngLat([coords.lng, coords.lat])
             .setPopup(popup)
             .addTo(map.current!)
@@ -294,13 +299,13 @@ function PropertiesMapInner({
 
       <div
         ref={mapContainer}
-        className="w-full rounded-2xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700"
+        className="w-full rounded-2xl overflow-hidden shadow-lg"
         style={{ height }}
       />
 
       {/* Map Info Badge */}
-      <div className="absolute top-4 left-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg px-4 py-2 z-10 border border-gray-200 dark:border-gray-700">
-        <p className="text-sm font-semibold text-gray-900 dark:text-white">
+      <div className="absolute top-4 left-4 bg-card rounded-xl shadow-lg px-4 py-2 z-10 border border-border">
+        <p className="text-sm font-semibold text-foreground">
           {validProperties.length} propriété{validProperties.length !== 1 ? 's' : ''} sur la carte
         </p>
       </div>

@@ -102,14 +102,14 @@ export default function SimilarProperties({
         variants={itemVariants}
         className="flex items-center gap-3 mb-8"
       >
-        <div className="p-2.5 bg-gradient-to-br from-primary-100 to-blue-100 dark:from-primary-900/30 dark:to-blue-900/30 rounded-xl">
+        <div className="p-2.5 bg-gradient-to-br from-primary-100 to-primary-100 dark:from-primary-900/30 dark:to-primary-900/30 rounded-xl">
           <SparklesIcon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h2 className="text-2xl font-bold text-foreground">
             Propriétés similaires
           </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+          <p className="text-sm text-muted-foreground mt-0.5">
             Découvrez des biens qui pourraient également vous intéresser
           </p>
         </div>
@@ -121,13 +121,13 @@ export default function SimilarProperties({
           {Array.from({ length: limit }).map((_, i) => (
             <div
               key={i}
-              className="rounded-3xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden animate-pulse"
+              className="rounded-3xl bg-card shadow-xl border border-border overflow-hidden animate-pulse"
             >
-              <div className="h-64 bg-gray-200 dark:bg-gray-700" />
+              <div className="h-64 bg-muted" />
               <div className="p-6 space-y-4">
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-full w-3/4" />
-                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full w-1/2" />
-                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-xl w-2/3" />
+                <div className="h-4 bg-muted rounded-full w-3/4" />
+                <div className="h-3 bg-muted rounded-full w-1/2" />
+                <div className="h-8 bg-muted rounded-xl w-2/3" />
               </div>
             </div>
           ))}

@@ -88,7 +88,7 @@ export function formatPriceForCSV(price: number | null | undefined): string {
   
   return new Intl.NumberFormat('fr-FR', {
     style: 'currency',
-    currency: 'EUR'
+    currency: 'MGA'
   }).format(price);
 }
 

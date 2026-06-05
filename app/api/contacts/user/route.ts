@@ -10,7 +10,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ContactService } from '@/features/contacts/services/contactService';
 import { requireAuth } from '@/infrastructure/auth/auth-guard';
-import { withErrorHandler } from '@/infrastructure/middleware/api-handler';
+import { boundedIntParam, withErrorHandler } from '@/infrastructure/middleware/api-handler';
 
 // ---------------------------------------------------------------------------
 // GET /api/contacts/user
@@ -23,8 +23,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   const sp = request.nextUrl.searchParams;
 
   const result = await ContactService.getContacts({
-    page: parseInt(sp.get('page') || '1', 10),
-    limit: parseInt(sp.get('limit') || '20', 10),
+    page: boundedIntParam(sp, 'page', 1, 1, 10000),
+    limit: boundedIntParam(sp, 'limit', 20, 1, 100),
     filter: { userId: session.user.id },
     sort: 'date_desc',
   });

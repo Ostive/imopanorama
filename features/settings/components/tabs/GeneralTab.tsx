@@ -75,7 +75,7 @@ export function GeneralTab({ settings, onChange }: GeneralTabProps) {
               value={settings.logo}
               onChange={(e) => onChange('general', 'logo', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500"
-              placeholder="/images/logo.png"
+              placeholder="/images/brand/logo.png"
             />
           </div>
           <div>

@@ -1,9 +1,9 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ArrowRightIcon } from '@heroicons/react/24/outline'
+import { ArrowRightIcon, WifiIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
 import { useProperties } from '@/features/properties/hooks/useProperties'
 import PropertyCard from '@/features/properties/components/PropertyCard'
 
@@ -21,60 +21,52 @@ export default function PropertySection() {
       try {
         const settings = JSON.parse(savedSettings)
         setShowTitle(settings.homepage?.showPropertySectionTitle ?? true)
-      } catch (error) {
-        console.error('Error loading settings:', error)
+      } catch (e) {
+        console.error('Error loading settings:', e)
       }
     }
   }, [])
 
-  if (error) {
-    return (
-      <section className="py-24 bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-red-600">Nous n'arrivons pas à charger les biens pour le moment. Réessayez dans un instant.</p>
-        </div>
-      </section>
-    )
-  }
-
   return (
-    <section
-      id="proprietes"
-      className="py-24 bg-gray-50 dark:bg-gray-900 relative overflow-hidden"
-    >
-      <div className="container mx-auto px-4">
-        {/* Header */}
+    <section id="proprietes" className="py-28 bg-background relative overflow-hidden">
+      {/* Subtle dot grid */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgb(14_165_233/0.07)_1px,transparent_0)] bg-size-[28px_28px] pointer-events-none" />
+
+      <div className="container mx-auto px-4 relative z-10">
         {showTitle && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-12"
+            className="mb-16"
           >
-            <div>
-              <span className="inline-block px-4 py-1.5 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full text-sm font-semibold mb-3">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-px w-12 bg-primary-500" />
+              <span className="text-primary-600 dark:text-primary-400 text-xs font-bold tracking-widest uppercase">
                 Sélection du moment
               </span>
-              <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white">
-                Des biens choisis avec soin à{' '}
-                <span className="bg-gradient-to-r from-primary-600 via-blue-600 to-secondary-500 bg-clip-text text-transparent">
-                  Madagascar
-                </span>
-              </h2>
             </div>
-            <Link
-              href="/proprietes"
-              className="group inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold whitespace-nowrap hover:gap-3 transition-all"
-            >
-              Parcourir les biens
-              <ArrowRightIcon className="w-4 h-4" />
-            </Link>
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+              <h2 className="text-5xl md:text-6xl font-black text-foreground leading-[1.05] max-w-xl">
+                Des biens choisis{' '}
+                <span className="bg-linear-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
+                  avec soin
+                </span>{' '}
+                à Madagascar
+              </h2>
+              <Link
+                href="/proprietes"
+                className="group inline-flex items-center gap-2 text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest hover:gap-3 transition-all whitespace-nowrap shrink-0"
+              >
+                Tous les biens
+                <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
           </motion.div>
         )}
 
-        {/* Property Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {loading ? (
             Array.from({ length: 3 }).map((_, index) => (
               <motion.div
@@ -82,18 +74,42 @@ export default function PropertySection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm animate-pulse"
+                className="bg-card rounded-3xl overflow-hidden animate-pulse"
               >
-                <div className="h-64 bg-gray-200 dark:bg-gray-700" />
+                <div className="h-64 bg-muted" />
                 <div className="p-6 space-y-3">
-                  <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
+                  <div className="h-5 bg-muted rounded w-3/4" />
+                  <div className="h-4 bg-muted rounded w-1/2" />
                 </div>
               </motion.div>
             ))
+          ) : error ? (
+            <div className="col-span-3 flex justify-center py-10">
+              <div className="bg-primary-50/60 dark:bg-primary-900/20 rounded-2xl px-10 py-10 max-w-md w-full text-center space-y-5">
+                <div className="flex items-center justify-center w-14 h-14 rounded-full bg-primary-100 dark:bg-primary-900/40 mx-auto">
+                  <WifiIcon className="w-7 h-7 text-primary-500" />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-base font-semibold text-foreground">
+                    Les biens ne sont pas disponibles pour le moment
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Cela peut venir de votre connexion ou d'un problème temporaire de notre côté. Rechargez la page pour réessayer.
+                  </p>
+                </div>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-colors"
+                >
+                  <ArrowPathIcon className="w-4 h-4" />
+                  Recharger la page
+                </button>
+              </div>
+            </div>
           ) : properties.length === 0 ? (
-            <div className="col-span-3 text-center py-16 text-gray-400 dark:text-gray-500">
-              Aucun bien publié pour le moment. Revenez bientôt, de nouvelles opportunités arrivent.
+            <div className="col-span-3 text-center py-20">
+              <p className="font-semibold text-foreground mb-1">Aucun bien pour le moment</p>
+              <p className="text-sm text-muted-foreground">De nouvelles opportunités arrivent bientôt.</p>
             </div>
           ) : (
             properties.map((property, index) => (
@@ -111,8 +127,7 @@ export default function PropertySection() {
           )}
         </div>
 
-        {/* CTA — only shown on mobile (desktop has link in header) */}
-        {!loading && properties.length > 0 && (
+        {!loading && !error && properties.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

@@ -15,7 +15,7 @@ interface PropertyInfoItemProps {
 
 const COLOR_MAP: Record<string, string> = {
   primary: 'bg-primary-100 dark:bg-primary-900/30',
-  blue:    'bg-blue-100 dark:bg-blue-900/30',
+  blue:    'bg-primary-100 dark:bg-primary-900/30',
   green:   'bg-green-100 dark:bg-green-900/30',
   purple:  'bg-purple-100 dark:bg-purple-900/30',
   pink:    'bg-pink-100 dark:bg-pink-900/30',

@@ -27,7 +27,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <AdminPageHeader
           icon={<SparklesIcon className="w-6 h-6 text-white" />}
@@ -77,7 +77,7 @@ export default function AdminDashboard() {
           transition={{ delay: 0.2 }}
           className="mb-8"
         >
-          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+          <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
             <span className="text-2xl">⚡</span>
             Actions rapides
           </h2>

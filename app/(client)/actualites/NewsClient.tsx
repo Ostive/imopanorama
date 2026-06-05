@@ -5,7 +5,6 @@ import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useTheme } from '@/shared/theme/ThemeContext';
 import {
     CalendarIcon,
     ArrowRightIcon,
@@ -14,7 +13,6 @@ import {
 import { NewsItem } from '@/features/news/types/news.types';
 
 export default function NewsClient() {
-    const { currentTheme } = useTheme();
     const [activeCategory, setActiveCategory] = useState<string>('all');
 
     // Catégories d'actualités
@@ -55,7 +53,7 @@ export default function NewsClient() {
     const getCategoryBadgeClass = (category: string) => {
         switch (category) {
             case 'IMMOBILIER':
-                return 'bg-linear-to-r from-blue-500 to-cyan-500 text-white';
+                return 'bg-linear-to-r from-primary-500 to-cyan-500 text-white';
             case 'CONSTRUCTION':
                 return 'bg-linear-to-r from-yellow-500 to-orange-500 text-white';
             case 'EVENEMENT':
@@ -78,18 +76,18 @@ export default function NewsClient() {
     };
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-primary-50/40 via-white to-blue-50/30">
+        <div className="min-h-screen bg-linear-to-br from-primary-50/40 via-white to-primary-50/30">
             {/* Category Filter */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-6 mb-12 transition-colors duration-200"
+                    className="bg-card rounded-3xl shadow-xl p-6 mb-12 transition-colors duration-200"
                 >
                     <div className="flex items-center gap-3 mb-4">
                         <FunnelIcon className="w-6 h-6 text-primary-600" />
-                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Choisir un sujet</h2>
+                        <h2 className="text-xl font-bold text-foreground">Choisir un sujet</h2>
                     </div>
                     <div className="flex flex-wrap gap-3">
                         {categories.map((category, index) => (
@@ -102,15 +100,15 @@ export default function NewsClient() {
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => setActiveCategory(category.id)}
                                 className={`px-6 py-3 rounded-xl text-sm font-semibold transition-all ${activeCategory === category.id
-                                    ? 'bg-linear-to-r from-primary-600 to-blue-600 text-white shadow-lg'
-                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
+                                    ? 'bg-linear-to-r from-primary-600 to-primary-600 text-white shadow-lg'
+                                    : 'bg-gray-100 dark:bg-gray-700 text-foreground hover:bg-gray-200 dark:hover:bg-gray-600'
                                     }`}
                             >
                                 {category.label}
                             </motion.button>
                         ))}
                     </div>
-                    <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="mt-4 text-sm text-muted-foreground">
                         <span className="font-semibold text-primary-600 dark:text-primary-400">{newsItems.length}</span> article{newsItems.length > 1 ? 's' : ''} à lire
                     </div>
                 </motion.div>
@@ -118,16 +116,16 @@ export default function NewsClient() {
                 {isLoading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {[1, 2, 3, 4, 5, 6].map((i) => (
-                            <div key={i} className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden animate-pulse transition-colors duration-200">
-                                <div className="h-64 bg-gray-200 dark:bg-gray-700"></div>
+                            <div key={i} className="bg-card rounded-3xl shadow-xl overflow-hidden animate-pulse transition-colors duration-200">
+                                <div className="h-64 bg-muted"></div>
                                 <div className="p-8 space-y-4">
-                                    <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
-                                    <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
-                                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                                    <div className="h-6 bg-muted rounded w-24"></div>
+                                    <div className="h-8 bg-muted rounded w-full"></div>
+                                    <div className="h-4 bg-muted rounded w-full"></div>
+                                    <div className="h-4 bg-muted rounded w-3/4"></div>
                                     <div className="flex items-center justify-between pt-4">
-                                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
-                                        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-28"></div>
+                                        <div className="h-4 bg-muted rounded w-32"></div>
+                                        <div className="h-10 bg-muted rounded w-28"></div>
                                     </div>
                                 </div>
                             </div>
@@ -137,28 +135,28 @@ export default function NewsClient() {
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-12 text-center transition-colors duration-200"
+                        className="bg-card rounded-3xl shadow-xl p-12 text-center transition-colors duration-200"
                     >
                         <div className="max-w-md mx-auto">
                             <div className="w-24 h-24 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <span className="text-5xl">⚠️</span>
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Petit souci de chargement</h3>
-                            <p className="text-gray-600 dark:text-gray-400 mb-6 text-lg">{error instanceof Error ? error.message : String(error)}</p>
+                            <h3 className="text-2xl font-bold text-foreground mb-3">Impossible de charger les articles</h3>
+                            <p className="text-muted-foreground mb-6 text-lg">Une erreur est survenue lors du chargement. Veuillez réessayer dans quelques instants.</p>
                         </div>
                     </motion.div>
                 ) : newsItems.length === 0 ? (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-12 text-center transition-colors duration-200"
+                        className="bg-card rounded-3xl shadow-xl p-12 text-center transition-colors duration-200"
                     >
                         <div className="max-w-md mx-auto">
                             <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <span className="text-5xl">🔍</span>
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Aucun article dans cette catégorie</h3>
-                            <p className="text-gray-600 dark:text-gray-400 mb-6 text-lg">
+                            <h3 className="text-2xl font-bold text-foreground mb-3">Aucun article dans cette catégorie</h3>
+                            <p className="text-muted-foreground mb-6 text-lg">
                                 Essayez un autre sujet ou revenez bientôt, nous ajoutons régulièrement de nouveaux contenus.
                             </p>
                         </div>
@@ -178,7 +176,7 @@ export default function NewsClient() {
                                     href={`/actualites/${item.slug}`}
                                     className="group block h-full"
                                 >
-                                    <div className="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all h-full">
+                                    <div className="bg-card rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all h-full">
                                         <div className="relative h-56 overflow-hidden">
                                             {item.coverImage ? (
                                                 <Image
@@ -208,7 +206,7 @@ export default function NewsClient() {
 
                                             {/* Date Badge */}
                                             <div className="absolute bottom-4 left-4">
-                                                <span className="inline-flex items-center gap-1 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300">
+                                                <span className="inline-flex items-center gap-1 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg px-3 py-1 text-xs font-medium text-foreground">
                                                     <CalendarIcon className="w-3 h-3" />
                                                     {formatDate(item.publishedAt)}
                                                 </span>
@@ -216,10 +214,10 @@ export default function NewsClient() {
                                         </div>
 
                                         <div className="p-6">
-                                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{item.title}</h2>
-                                            <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2 leading-relaxed">{item.excerpt}</p>
+                                            <h2 className="text-xl font-bold text-foreground mb-3 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{item.title}</h2>
+                                            <p className="text-muted-foreground mb-4 line-clamp-2 leading-relaxed">{item.excerpt}</p>
 
-                                            <div className="flex items-center justify-end pt-4 border-t border-gray-100 dark:border-gray-700">
+                                            <div className="flex items-center justify-end pt-4 border-t border-border">
                                                 <motion.div
                                                     className="flex items-center gap-1 text-primary-600 dark:text-primary-400 font-semibold text-sm group-hover:gap-2 transition-all"
                                                 >

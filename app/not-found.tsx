@@ -10,7 +10,7 @@ import {
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-br from-purple-50 via-white to-primary-50 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -25,14 +25,14 @@ export default function NotFound() {
             className="relative mb-8"
           >
             {/* Large 404 Number */}
-            <h1 className="text-8xl md:text-9xl font-bold bg-linear-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent leading-none mb-6">
+            <h1 className="text-8xl md:text-9xl font-bold bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent leading-none mb-6">
               404
             </h1>
             
             {/* Home Icon Illustration */}
             <div className="relative w-40 h-40 mx-auto">
               {/* Background Glow */}
-              <div className="absolute inset-0 bg-linear-to-br from-primary-100 to-blue-100 rounded-full opacity-50 blur-2xl" />
+              <div className="absolute inset-0 bg-linear-to-br from-primary-100 to-primary-100 rounded-full opacity-50 blur-2xl" />
               
               {/* Main House Container */}
               <div className="relative w-full h-full">
@@ -41,7 +41,7 @@ export default function NotFound() {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.4 }}
-                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-28 h-20 bg-linear-to-br from-primary-500 to-blue-500 rounded-lg shadow-xl"
+                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-28 h-20 bg-linear-to-br from-primary-500 to-primary-500 rounded-lg shadow-xl"
                 >
                   {/* Door */}
                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-12 bg-white/30 rounded-t-lg" />
@@ -111,7 +111,7 @@ export default function NotFound() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg transition-all"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold rounded-xl shadow-lg transition-all"
               >
                 <HomeIcon className="h-5 w-5" />
                 Revenir à l&apos;accueil

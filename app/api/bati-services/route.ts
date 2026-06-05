@@ -11,7 +11,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { batiServiceRepository } from '@/infrastructure/database/repositories';
 import { requireAdmin } from '@/infrastructure/auth/auth-guard';
-import { withErrorHandler, apiError } from '@/infrastructure/middleware/api-handler';
+import { validationError, withErrorHandler } from '@/infrastructure/middleware/api-handler';
 
 // ---------------------------------------------------------------------------
 // GET /api/bati-services
@@ -39,7 +39,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const validation = BatiServiceFormDataSchema.safeParse(body);
 
   if (!validation.success) {
-    return apiError('Erreur de validation');
+    return validationError(validation.error.issues, 'Le service contient des champs invalides');
   }
 
   const { title, description, icon, features, isActive, order } = validation.data;

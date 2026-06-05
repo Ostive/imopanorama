@@ -11,61 +11,46 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
+const features = [
+  {
+    title: 'Un vrai choix, sans tourner en rond',
+    description: 'Découvrez des terrains, appartements, maisons et villas sélectionnés pour des projets concrets à Madagascar.',
+    icon: GlobeAltIcon,
+    accent: 'text-primary-500',
+  },
+  {
+    title: 'Des démarches plus rassurantes',
+    description: "On vous accompagne avec transparence, des premières questions jusqu'aux vérifications importantes.",
+    icon: ShieldCheckIcon,
+    accent: 'text-secondary-500',
+  },
+  {
+    title: 'Des opportunités qui ont du sens',
+    description: "Profitez de notre lecture du marché pour repérer les biens adaptés à vos objectifs et à votre budget.",
+    icon: CurrencyDollarIcon,
+    accent: 'text-accent-500',
+  },
+  {
+    title: 'Administratif simplifié',
+    description: 'Titres fonciers, bornages, permis ou régularisations : on vous aide à garder le fil sans stress inutile.',
+    icon: ClipboardDocumentCheckIcon,
+    accent: 'text-purple-500',
+  },
+  {
+    title: 'Une équipe réactive',
+    description: "Vous avancez avec des réponses claires, des suivis réguliers et une équipe disponible quand ça compte.",
+    icon: ClockIcon,
+    accent: 'text-green-500',
+  },
+]
+
 export default function AdvantagesSection() {
-  const features = [
-    {
-      id: 1,
-      title: 'Un vrai choix, sans tourner en rond',
-      description:
-        'Découvrez des terrains, appartements, maisons et villas sélectionnés pour des projets concrets à Madagascar.',
-      icon: GlobeAltIcon,
-      color: 'text-blue-600 dark:text-blue-400',
-      bg: 'bg-blue-50 dark:bg-blue-900/20',
-    },
-    {
-      id: 2,
-      title: 'Des démarches plus rassurantes',
-      description:
-        "On vous accompagne avec transparence, des premières questions jusqu'aux vérifications importantes.",
-      icon: ShieldCheckIcon,
-      color: 'text-green-600 dark:text-green-400',
-      bg: 'bg-green-50 dark:bg-green-900/20',
-    },
-    {
-      id: 3,
-      title: 'Des opportunités qui ont du sens',
-      description:
-        "Vous profitez de notre lecture du marché pour repérer les biens adaptés à vos objectifs et à votre budget.",
-      icon: CurrencyDollarIcon,
-      color: 'text-amber-600 dark:text-amber-400',
-      bg: 'bg-amber-50 dark:bg-amber-900/20',
-    },
-    {
-      id: 4,
-      title: 'Administratif simplifié',
-      description:
-        'Titres fonciers, bornages, permis ou régularisations : on vous aide à garder le fil sans stress inutile.',
-      icon: ClipboardDocumentCheckIcon,
-      color: 'text-rose-600 dark:text-rose-400',
-      bg: 'bg-rose-50 dark:bg-rose-900/20',
-    },
-    {
-      id: 5,
-      title: 'Une équipe réactive',
-      description:
-        'Vous avancez avec des réponses claires, des suivis réguliers et une équipe disponible quand ça compte.',
-      icon: ClockIcon,
-      color: 'text-purple-600 dark:text-purple-400',
-      bg: 'bg-purple-50 dark:bg-purple-900/20',
-    },
-  ]
-
   return (
-    <section className="py-24 bg-white dark:bg-gray-900 relative overflow-hidden">
+    <section className="py-28 bg-card relative overflow-hidden">
       <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-[1fr_1.3fr] gap-20 items-start">
 
-          {/* Left — sticky header */}
+          {/* Left — sticky editorial header */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -73,49 +58,55 @@ export default function AdvantagesSection() {
             transition={{ duration: 0.6 }}
             className="lg:sticky lg:top-24"
           >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 text-sm font-semibold mb-5">
-              Pourquoi avancer avec nous
-            </span>
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white leading-tight mb-6">
-              Un accompagnement simple, humain et{' '}
-              <span className="bg-gradient-to-r from-primary-600 via-blue-600 to-secondary-500 bg-clip-text text-transparent">
-                efficace
+            <div className="flex items-center gap-3 mb-6">
+              <div className="h-px w-12 bg-primary-500" />
+              <span className="text-primary-600 dark:text-primary-400 text-xs font-bold tracking-widest uppercase">
+                Pourquoi nous choisir
               </span>
-              , au même endroit.
+            </div>
+            <h2 className="text-5xl md:text-6xl font-black text-foreground leading-[1.05] mb-8">
+              Un accompagnement{' '}
+              <span className="bg-linear-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
+                simple
+              </span>{' '}
+              et humain, au même endroit.
             </h2>
-            <p className="text-gray-500 dark:text-gray-400 text-lg leading-relaxed mb-8">
-              Acheter, louer ou construire à Madagascar soulève beaucoup de questions. Notre rôle est de vous aider à y voir clair, sans jargon et sans pression.
+            <p className="text-muted-foreground text-lg leading-relaxed mb-10 max-w-sm">
+              Acheter, louer ou construire à Madagascar soulève beaucoup de questions. Notre rôle est de vous aider à y voir clair, sans jargon.
             </p>
             <Link
               href="/proprietes"
-              className="group inline-flex items-center gap-2 px-7 py-3.5 font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-all hover:shadow-lg hover:shadow-primary-500/30"
+              className="group inline-flex items-center gap-2 px-7 py-3.5 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-all hover:shadow-lg hover:shadow-primary-500/30"
             >
               Voir les biens disponibles
               <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
 
-          {/* Right — feature list */}
-          <div className="flex flex-col gap-4">
+          {/* Right — editorial numbered list */}
+          <div>
             {features.map((feature, index) => {
               const Icon = feature.icon
               return (
                 <motion.div
-                  key={feature.id}
+                  key={index}
                   initial={{ opacity: 0, x: 30 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.45, delay: index * 0.08 }}
-                  className="flex items-start gap-5 p-5 rounded-2xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-primary-200 dark:hover:border-primary-700 hover:bg-white dark:hover:bg-gray-800/80 transition-all group"
+                  className="group flex gap-5 py-8 border-b border-border/50 last:border-0 hover:translate-x-1 transition-transform duration-300"
                 >
-                  <div className={`flex-shrink-0 w-12 h-12 rounded-xl ${feature.bg} flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                    <Icon className={`w-6 h-6 ${feature.color}`} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900 dark:text-white mb-1">
-                      {feature.title}
-                    </h3>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+                  {/* Decorative number */}
+                  <span className="shrink-0 text-5xl font-black text-foreground/6 dark:text-white/4 group-hover:text-primary-200/30 dark:group-hover:text-primary-800/30 transition-colors tabular-nums leading-none pt-1 w-14 text-right select-none">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-2">
+                      <Icon className={`w-5 h-5 shrink-0 ${feature.accent}`} />
+                      <h3 className="font-bold text-foreground">{feature.title}</h3>
+                    </div>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
                       {feature.description}
                     </p>
                   </div>

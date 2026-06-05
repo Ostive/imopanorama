@@ -10,7 +10,7 @@ interface ContactInfoItemProps {
 
 const BG_MAP: Record<string, string> = {
   primary: 'bg-primary-100 group-hover:bg-primary-600 [&_svg]:text-primary-600 [&_svg]:group-hover:text-white',
-  blue:    'bg-blue-100 group-hover:bg-blue-600 [&_svg]:text-blue-600 [&_svg]:group-hover:text-white',
+  blue:    'bg-primary-100 group-hover:bg-primary-600 [&_svg]:text-primary-600 [&_svg]:group-hover:text-white',
   green:   'bg-green-100 group-hover:bg-green-600 [&_svg]:text-green-600 [&_svg]:group-hover:text-white',
   purple:  'bg-purple-100 group-hover:bg-purple-600 [&_svg]:text-purple-600 [&_svg]:group-hover:text-white',
 }

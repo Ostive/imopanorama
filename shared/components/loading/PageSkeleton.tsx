@@ -2,7 +2,7 @@ import { Skeleton } from '@/shared/components/ui/skeleton'
 
 export function PageSkeleton() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-4xl px-4 space-y-8">
         <div className="space-y-4">
           <Skeleton className="h-12 w-3/4 mx-auto" />

@@ -2,7 +2,6 @@
 # ============================================
 # ImoPanorama - Automated Backup Script
 # PostgreSQL et Redis sont natifs sur le VPS
-# Qdrant tourne en Docker
 # Run via cron: 0 3 * * * /chemin/vers/backup.sh
 # ============================================
 
@@ -49,21 +48,7 @@ else
 fi
 
 # =====================
-# 3. Qdrant (Docker)
-# =====================
-log "Snapshot Qdrant..."
-if curl -s -X POST "http://localhost:6333/collections/properties/snapshots" > /dev/null 2>&1; then
-    SNAPSHOT_NAME=$(curl -s "http://localhost:6333/collections/properties/snapshots" | grep -o '"name":"[^"]*"' | head -1 | cut -d'"' -f4)
-    if [ -n "${SNAPSHOT_NAME}" ]; then
-        curl -s "http://localhost:6333/collections/properties/snapshots/${SNAPSHOT_NAME}" -o "${BACKUP_PATH}/qdrant_${TIMESTAMP}.snapshot"
-        log "  ✓ Qdrant"
-    fi
-else
-    warn "  ✗ Qdrant (service pas disponible)"
-fi
-
-# =====================
-# 4. Cleanup
+# 3. Cleanup
 # =====================
 log "Nettoyage des backups > ${RETENTION_DAYS} jours..."
 find "${BACKUP_DIR}" -maxdepth 1 -type d -mtime +${RETENTION_DAYS} -exec rm -rf {} + 2>/dev/null || true

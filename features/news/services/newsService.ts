@@ -1,4 +1,4 @@
-import { News, NewsCategory } from '@prisma/client';
+import { News, NewsCategory, Prisma } from '@prisma/client';
 import { slugify } from '@/shared/utils';
 import { prisma } from '@/infrastructure/database/prisma';
 
@@ -18,6 +18,51 @@ export type CreateNewsInput = {
 export type UpdateNewsInput = Partial<CreateNewsInput>;
 
 export const newsService = {
+  async listNews(params: {
+    page?: number;
+    limit?: number;
+    includeUnpublished?: boolean;
+    category?: NewsCategory;
+    isPublished?: boolean;
+    search?: string;
+  } = {}) {
+    const page = params.page ?? 1;
+    const limit = params.limit ?? 10;
+    const where: Prisma.NewsWhereInput = {
+      ...(params.includeUnpublished ? {} : { isPublished: true }),
+      ...(params.category ? { category: params.category } : {}),
+      ...(params.isPublished !== undefined ? { isPublished: params.isPublished } : {}),
+      ...(params.search ? {
+        OR: [
+          { title: { contains: params.search, mode: 'insensitive' } },
+          { slug: { contains: params.search, mode: 'insensitive' } },
+          { excerpt: { contains: params.search, mode: 'insensitive' } },
+        ],
+      } : {}),
+    };
+
+    const [data, total] = await Promise.all([
+      prisma.news.findMany({
+        where,
+        orderBy: [{ publishedAt: 'desc' }, { createdAt: 'desc' }],
+        skip: (page - 1) * limit,
+        take: limit,
+        include: {
+          author: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
+        },
+      }),
+      prisma.news.count({ where }),
+    ]);
+
+    return { data, total, page, limit };
+  },
+
   /**
    * Récupère toutes les actualités
    */

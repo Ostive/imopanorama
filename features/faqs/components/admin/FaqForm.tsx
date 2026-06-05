@@ -182,7 +182,7 @@ export default function FaqForm({ initialData, onSubmit, isSubmitting, colorPale
           <button
             type="button"
             onClick={() => handlePaletteChange('blue')}
-            className={`px-3 py-1 rounded-md text-xs font-medium ${selectedPalette === 'blue' ? 'bg-blue-100 text-blue-800 ring-2 ring-blue-500' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
+            className={`px-3 py-1 rounded-md text-xs font-medium ${selectedPalette === 'blue' ? 'bg-primary-100 text-primary-800 ring-2 ring-primary-500' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
           >
             Bleu
           </button>

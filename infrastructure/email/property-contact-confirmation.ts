@@ -1,4 +1,4 @@
-import { transporter } from './transporter';
+import { getMailFrom, transporter } from './transporter';
 import { PropertyContactData } from './types';
 
 /**
@@ -6,7 +6,7 @@ import { PropertyContactData } from './types';
  */
 export async function sendPropertyContactConfirmation(data: PropertyContactData) {
     const mailOptions = {
-        from: '"ImoPanorama" <noreply@demomailtrap.co>',
+        from: getMailFrom('ImoPanorama'),
         to: data.clientEmail,
         subject: `Confirmation de votre demande de contact - ${data.propertyTitle}`,
         html: `

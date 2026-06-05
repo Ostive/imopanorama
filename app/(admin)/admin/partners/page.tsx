@@ -172,7 +172,7 @@ export default function PartnersAdminPage() {
 
   return (
     <ProtectedRoute requiredRole="admin">
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
         <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div 
@@ -181,17 +181,17 @@ export default function PartnersAdminPage() {
           className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-4"
         >
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-linear-to-br from-primary-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 bg-linear-to-br from-primary-600 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
               <BuildingOfficeIcon className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold bg-linear-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent">Gestion des Partenaires</h1>
+              <h1 className="text-3xl font-bold bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">Gestion des Partenaires</h1>
               <p className="text-gray-600 font-medium mt-1">Gérez les logos des partenaires affichés sur le site</p>
             </div>
           </div>
           <button
             onClick={() => openModal()}
-            className="inline-flex items-center px-6 py-3 bg-linear-to-r from-primary-600 to-blue-600 text-white font-semibold rounded-xl hover:from-primary-700 hover:to-blue-700 transition-all shadow-lg"
+            className="inline-flex items-center px-6 py-3 bg-linear-to-r from-primary-600 to-primary-600 text-white font-semibold rounded-xl hover:from-primary-700 hover:to-primary-700 transition-all shadow-lg"
           >
             <PlusIcon className="h-5 w-5 mr-2" />
             Ajouter un partenaire
@@ -260,7 +260,7 @@ export default function PartnersAdminPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => openModal(partner)}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      className="p-2 text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
                     >
                       <PencilIcon className="h-4 w-4" />
                     </button>
@@ -388,7 +388,7 @@ export default function PartnersAdminPage() {
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-2 bg-linear-to-r from-primary-600 to-blue-600 text-white font-semibold rounded-lg hover:from-primary-700 hover:to-blue-700 transition-all shadow-lg"
+                    className="px-6 py-2 bg-linear-to-r from-primary-600 to-primary-600 text-white font-semibold rounded-lg hover:from-primary-700 hover:to-primary-700 transition-all shadow-lg"
                   >
                     {editingPartner ? 'Mettre à jour' : 'Ajouter'}
                   </button>

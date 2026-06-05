@@ -1,14 +1,14 @@
-import { transporter } from './transporter';
+import { emailConfig, getMailFrom, transporter } from './transporter';
 import { GenericContactData } from './types';
 
 /**
  * Notifie l'admin d'un nouveau contact générique
  */
 export async function sendGenericContactNotificationToAdmin(data: GenericContactData) {
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@imopanorama.mg';
+    const adminEmail = emailConfig.adminEmail;
 
     const mailOptions = {
-        from: '"ImoPanorama" <noreply@demomailtrap.co>',
+        from: getMailFrom('ImoPanorama'),
         to: adminEmail,
         subject: `[ImoPanorama] Nouveau message de contact de ${data.clientName}`,
         html: `

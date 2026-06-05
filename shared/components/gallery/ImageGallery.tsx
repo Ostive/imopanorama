@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { useTheme } from '@/shared/theme/ThemeContext';
 import { 
   ArrowLeftIcon, 
   ArrowRightIcon, 
@@ -24,7 +23,6 @@ interface ImageGalleryProps {
 }
 
 export default function ImageGallery({ images }: ImageGalleryProps) {
-  const { currentTheme } = useTheme();
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
@@ -107,7 +105,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
         {images.map((image) => (
           <div 
             key={image.id} 
-            className="group relative bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl"
+            className="group relative bg-card rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl"
           >
             <div className="aspect-w-16 aspect-h-9 relative">
               <Image
@@ -120,7 +118,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
                 <button
                   onClick={() => openLightbox(image)}
-                  className="bg-white dark:bg-gray-800 text-gray-800 dark:text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 transition-all duration-300"
+                  className="bg-card text-gray-800 dark:text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 transition-all duration-300"
                   aria-label="Agrandir l'image"
                 >
                   <MagnifyingGlassIcon className="h-6 w-6" />
@@ -129,12 +127,12 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
             </div>
             <div className="p-4">
               {image.title && (
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h3 className="text-lg font-semibold text-foreground">
                   {image.title}
                 </h3>
               )}
               {image.description && (
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+                <p className="mt-1 text-sm text-muted-foreground">
                   {image.description}
                 </p>
               )}
@@ -168,7 +166,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
                 e.stopPropagation();
                 navigateGallery('prev');
               }}
-              className={`absolute left-4 top-1/2 transform -translate-y-1/2 bg-${currentTheme.colors.primary}-600 text-white p-3 rounded-full opacity-70 hover:opacity-100 transition-opacity duration-200`}
+              className={`absolute left-4 top-1/2 transform -translate-y-1/2 bg-primary-600 text-white p-3 rounded-full opacity-70 hover:opacity-100 transition-opacity duration-200`}
               aria-label="Image précédente"
             >
               <ArrowLeftIcon className="h-6 w-6" />
@@ -179,7 +177,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
                 e.stopPropagation();
                 navigateGallery('next');
               }}
-              className={`absolute right-4 top-1/2 transform -translate-y-1/2 bg-${currentTheme.colors.primary}-600 text-white p-3 rounded-full opacity-70 hover:opacity-100 transition-opacity duration-200`}
+              className={`absolute right-4 top-1/2 transform -translate-y-1/2 bg-primary-600 text-white p-3 rounded-full opacity-70 hover:opacity-100 transition-opacity duration-200`}
               aria-label="Image suivante"
             >
               <ArrowRightIcon className="h-6 w-6" />
@@ -225,7 +223,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
                   }}
                   className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${
                     selectedImage.id === img.id 
-                      ? `bg-${currentTheme.colors.primary}-500 w-4` 
+                      ? `bg-primary-500 w-4` 
                       : 'bg-gray-400 bg-opacity-50 hover:bg-opacity-75'
                   }`}
                   aria-label={`Image ${index + 1}`}

@@ -198,9 +198,9 @@ export default function BatiProjectsPage() {
 
   const getStatusBadge = (status: Project['status']) => {
     const badges = {
-      COMPLETED: { label: 'Terminé', color: 'bg-green-100 text-green-800', icon: CheckCircleIcon },
-      IN_PROGRESS: { label: 'En cours', color: 'bg-yellow-100 text-yellow-800', icon: ClockIcon },
-      PLANNED: { label: 'Planifié', color: 'bg-gray-100 text-gray-800', icon: ClockIcon },
+      COMPLETED: { label: 'Terminé', color: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300', icon: CheckCircleIcon },
+      IN_PROGRESS: { label: 'En cours', color: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300', icon: ClockIcon },
+      PLANNED: { label: 'Planifié', color: 'bg-muted text-gray-800 dark:text-gray-300', icon: ClockIcon },
     };
     
     const badge = badges[status];
@@ -217,7 +217,7 @@ export default function BatiProjectsPage() {
   const getPublicationBadge = (isPublished: boolean) => {
     return (
       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-        isPublished ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+        isPublished ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 'bg-muted text-gray-800 dark:text-gray-300'
       }`}>
         {isPublished ? 'Publié' : 'Brouillon'}
       </span>
@@ -285,7 +285,7 @@ export default function BatiProjectsPage() {
 
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
       {/* Notification Toast */}
       {notification && (
         <motion.div
@@ -389,7 +389,7 @@ export default function BatiProjectsPage() {
           actions={
             <Link
               href="/admin/batipanorama/projects/new"
-              className="inline-flex items-center px-4 py-2 bg-linear-to-r from-primary-600 to-blue-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all"
+              className="inline-flex items-center px-4 py-2 bg-linear-to-r from-primary-600 to-primary-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all"
             >
               <PlusIcon className="h-5 w-5 mr-2" /> Nouveau projet
             </Link>
@@ -507,7 +507,7 @@ export default function BatiProjectsPage() {
             <p className="text-gray-600 mb-6">Commencez par créer votre premier projet</p>
             <Link
               href="/admin/batipanorama/projects/new"
-              className="inline-flex items-center px-6 py-3 bg-linear-to-r from-primary-600 to-blue-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all"
+              className="inline-flex items-center px-6 py-3 bg-linear-to-r from-primary-600 to-primary-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all"
             >
               <PlusIcon className="h-5 w-5 mr-2" /> Créer un projet
             </Link>
@@ -564,7 +564,7 @@ export default function BatiProjectsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
                           {project.category}
                         </span>
                       </td>
@@ -586,7 +586,7 @@ export default function BatiProjectsPage() {
                           </Link>
                           <Link
                             href={`/admin/batipanorama/projects/${project.id}/edit`}
-                            className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="p-2 text-primary-600 hover:text-primary-900 hover:bg-primary-50 rounded-lg transition-colors"
                             title="Modifier"
                           >
                             <PencilIcon className="w-5 h-5" />
@@ -619,7 +619,7 @@ export default function BatiProjectsPage() {
                               <DropdownMenuItem asChild>
                                 <Link
                                   href={`/admin/batipanorama/projects/${project.id}/edit`}
-                                  className="flex items-center gap-2 text-blue-600"
+                                  className="flex items-center gap-2 text-primary-600"
                                 >
                                   <PencilIcon className="w-4 h-4" />
                                   Modifier

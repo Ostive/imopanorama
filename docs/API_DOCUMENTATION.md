@@ -142,10 +142,6 @@ fetch('/api/properties', {
 - `PUT /api/bati-quotes/{id}` - Update quote (Admin)
 - `DELETE /api/bati-quotes/{id}` - Delete quote (Admin)
 
-### Search (`/api/search`)
-- `GET /api/search` - Semantic search with Qdrant vector DB
-- `POST /api/search/sync` - Sync search index for properties (Admin)
-
 ### Analytics (`/api/analytics`)
 - `POST /api/analytics/track` - Track page views and events (Public)
 - `GET /api/analytics/data` - Get analytics data (Admin)
@@ -343,10 +339,6 @@ BETTER_AUTH_SECRET=your-secret-key
 
 # CDN
 BUNNYCDN_ACCESS_KEY=your-cdn-key
-
-# Search
-QDRANT_URL=http://localhost:6333
-QDRANT_API_KEY=your-api-key
 
 # Email (Optional)
 SMTP_HOST=smtp.gmail.com

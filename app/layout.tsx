@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Script from 'next/script'
 import { Poppins } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/features/auth/context/AuthContext'
@@ -7,6 +6,7 @@ import { ThemeProvider } from '@/shared/theme/ThemeContext'
 import { FavoritesProvider } from '@/features/favorites/context/FavoritesContext'
 import { ContactsProvider } from '@/features/contacts/context/ContactsContext'
 import { ReactQueryProvider } from '@/shared/providers/react-query'
+import CookieConsentScripts from '@/shared/components/layout/CookieConsentScripts'
 import { Toaster } from 'react-hot-toast'
 
 const poppins = Poppins({
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/images/og-image.png',
+        url: '/images/social/og-image.png',
         width: 1200,
         height: 630,
         alt: 'ImoPanorama Madagascar',
@@ -56,10 +56,18 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'ImoPanorama Madagascar - Vente & Location de Propriétés',
     description: 'Agence immobilière spécialisée dans la vente de propriétés à Madagascar.',
-    images: ['/images/og-image.png'],
+    images: ['/images/social/og-image.png'],
   },
   icons: {
-    icon: '/favicon.png',
+    icon: [
+      { url: '/favicon/favicon.ico', sizes: 'any' },
+      { url: '/favicon/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+    ],
+    shortcut: '/favicon/favicon.ico',
+    apple: [
+      { url: '/favicon/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
   },
   robots: {
     index: true,
@@ -89,16 +97,6 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#2563eb" />
-        {process.env.NODE_ENV === 'production' &&
-          process.env.NEXT_PUBLIC_UMAMI_URL &&
-          process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID && (
-            <Script
-              defer
-              src={`${process.env.NEXT_PUBLIC_UMAMI_URL}/custom-analytics`}
-              data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
-              strategy="afterInteractive"
-            />
-          )}
       </head>
       <body className={poppins.variable}>
         <ReactQueryProvider>
@@ -107,6 +105,7 @@ export default function RootLayout({
               <ContactsProvider>
                 <ThemeProvider>
                   {children}
+                  <CookieConsentScripts />
                   <Toaster
                     position="top-right"
                     toastOptions={{

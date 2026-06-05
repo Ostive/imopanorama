@@ -1,4 +1,5 @@
 import { bunnyCdnConfig } from '@/shared/config/bunnycdn';
+import { sanitizeStorageDirectory, sanitizeStoragePath } from '@/shared/utils/storagePath';
 
 export class BunnyCdnService {
   private storageZoneName: string;
@@ -26,7 +27,7 @@ export class BunnyCdnService {
 
       // Générer un nom de fichier unique
       const fileName = this.generateUniqueFileName(file.name);
-      const fullPath = `${path}${fileName}`.replace(/\/\//g, '/');
+      const fullPath = `${sanitizeStorageDirectory(path)}${fileName}`.replace(/\/\//g, '/');
       
       // Créer l'URL de l'API BunnyCDN
       const apiUrl = `https://${this.hostname}/${this.storageZoneName}${fullPath}`;
@@ -67,7 +68,7 @@ export class BunnyCdnService {
       this.validateConfig();
       
       // Extraire le chemin relatif à partir de l'URL complète si nécessaire
-      const relativePath = this.extractRelativePath(filePath);
+      const relativePath = sanitizeStoragePath(this.extractRelativePath(filePath));
       
       // Créer l'URL de l'API BunnyCDN
       const apiUrl = `https://${this.hostname}/${this.storageZoneName}${relativePath}`;
@@ -104,7 +105,7 @@ export class BunnyCdnService {
       this.validateConfig();
       
       // S'assurer que le chemin commence par un slash
-      const path = directory.startsWith('/') ? directory : `/${directory}`;
+      const path = sanitizeStorageDirectory(directory);
       
       // Créer l'URL de l'API BunnyCDN
       const apiUrl = `https://${this.hostname}/${this.storageZoneName}${path}`;
@@ -148,8 +149,7 @@ export class BunnyCdnService {
       this.validateConfig();
       
       // S'assurer que le chemin commence par un slash et se termine par un slash
-      let path = directory.startsWith('/') ? directory : `/${directory}`;
-      if (!path.endsWith('/')) path += '/';
+      const path = sanitizeStorageDirectory(directory);
       
       // Créer l'URL de l'API BunnyCDN
       const apiUrl = `https://${this.hostname}/${this.storageZoneName}${path}`;
@@ -179,8 +179,7 @@ export class BunnyCdnService {
   async deleteDirectory(directory: string): Promise<boolean> {
     try {
       this.validateConfig();
-      let path = directory.startsWith('/') ? directory : `/${directory}`;
-      if (!path.endsWith('/')) path += '/';
+      const path = sanitizeStorageDirectory(directory);
       
       // 1. Lister tous les fichiers et sous-répertoires
       try {

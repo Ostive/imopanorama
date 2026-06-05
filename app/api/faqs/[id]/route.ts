@@ -12,7 +12,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { faqsServerService } from '@/features/faqs/server/faqs.service';
 import { requireAdmin } from '@/infrastructure/auth/auth-guard';
-import { withErrorHandler, apiError, extractParam } from '@/infrastructure/middleware/api-handler';
+import { withErrorHandler, apiError, extractParam, validationError } from '@/infrastructure/middleware/api-handler';
 
 // ---------------------------------------------------------------------------
 // GET /api/faqs/[id]
@@ -42,8 +42,14 @@ export const PUT = withErrorHandler(async (
   if (!authorized) return errorResponse!;
 
   const id = await extractParam(context, 'id');
-  const data = await request.json();
-  const updatedFaq = await faqsServerService.update(id, data);
+  const body = await request.json();
+  const { FaqFormDataSchema } = await import('@/features/faqs/schemas/faqs.schema');
+  const validation = FaqFormDataSchema.partial().safeParse(body);
+  if (!validation.success) {
+    return validationError(validation.error.issues, 'La mise a jour de la FAQ contient des champs invalides');
+  }
+
+  const updatedFaq = await faqsServerService.update(id, validation.data);
 
   if (!updatedFaq) return apiError('FAQ non trouvée', 404);
 

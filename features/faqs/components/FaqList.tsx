@@ -55,16 +55,16 @@ export default function FaqList({
       {loading ? (
         <div className="space-y-4 animate-pulse">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div key={i} className="bg-card rounded-xl p-6 shadow-sm border border-border">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
-                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                  <div className="h-6 bg-muted rounded w-3/4"></div>
                 </div>
-                <div className="h-6 w-6 bg-gray-200 dark:bg-gray-700 rounded-full ml-4"></div>
+                <div className="h-6 w-6 bg-muted rounded-full ml-4"></div>
               </div>
               <div className="space-y-2">
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/5"></div>
+                <div className="h-4 bg-muted rounded w-full"></div>
+                <div className="h-4 bg-muted rounded w-4/5"></div>
               </div>
             </div>
           ))}
@@ -74,7 +74,7 @@ export default function FaqList({
           Une erreur est survenue lors du chargement des questions fréquentes.
         </div>
       ) : faqs.length === 0 ? (
-        <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-4 py-8 rounded-xl text-center">
+        <div className="bg-muted border border-border text-foreground px-4 py-8 rounded-xl text-center">
           Aucune question fréquente ne correspond à vos critères.
         </div>
       ) : (
@@ -97,8 +97,8 @@ export default function FaqList({
               }}
               disabled={currentPage === 1}
               className={`relative inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${currentPage === 1
-                  ? 'bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-70'
-                  : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-md'
+                  ? 'bg-muted text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-70'
+                  : 'bg-card text-muted-foreground hover:bg-muted shadow-md'
                 }`}
             >
               &laquo; Précédent
@@ -115,7 +115,7 @@ export default function FaqList({
                   }}
                   className={`relative inline-flex items-center justify-center w-10 h-10 rounded-lg text-sm font-medium transition-all duration-200 ${currentPage === page
                       ? 'bg-primary-600 dark:bg-primary-500 text-white shadow-lg -translate-y-1 font-semibold'
-                      : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-md'
+                      : 'bg-card text-muted-foreground hover:bg-muted shadow-md'
                     }`}
                 >
                   {page}
@@ -131,8 +131,8 @@ export default function FaqList({
               }}
               disabled={currentPage === totalPages}
               className={`relative inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${currentPage === totalPages
-                  ? 'bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-70'
-                  : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-md'
+                  ? 'bg-muted text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-70'
+                  : 'bg-card text-muted-foreground hover:bg-muted shadow-md'
                 }`}
             >
               Suivant &raquo;

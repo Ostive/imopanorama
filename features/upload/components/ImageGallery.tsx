@@ -3,7 +3,6 @@ import Image from 'next/image';
 import { XCircleIcon, ArrowsPointingOutIcon } from '@heroicons/react/24/outline';
 import { InlineLoader } from '@/shared/components/ui/Loader';
 import { bunnyCdnService } from '../services/bunnyCdnService';
-import { useTheme } from '@/shared/theme/ThemeContext';
 
 interface ImageGalleryProps {
   images: string[];
@@ -24,7 +23,6 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
   className = '',
   editable = true
 }) => {
-  const { currentTheme } = useTheme();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState<number | null>(null);
 
@@ -53,13 +51,13 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
   // Rendu quand il n'y a pas d'images
   if (images.length === 0) {
     return (
-      <div className={`bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 text-center ${className}`}>
+      <div className={`bg-muted border border-border rounded-lg p-6 text-center ${className}`}>
         {loading ? (
           <div className="flex justify-center">
             <InlineLoader text="Chargement des images..." />
           </div>
         ) : (
-          <p className="text-gray-500 dark:text-gray-400">Aucune image disponible</p>
+          <p className="text-muted-foreground">Aucune image disponible</p>
         )}
       </div>
     );
@@ -71,7 +69,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {images.map((imageUrl, index) => (
           <div key={`image-${index}`} className="relative group aspect-square">
-            <div className="relative w-full h-full overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-700">
+            <div className="relative w-full h-full overflow-hidden rounded-lg bg-muted">
               <img
                 src={imageUrl}
                 alt={`Image ${index + 1}`}
@@ -129,10 +127,10 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
         >
           <div className="relative max-w-4xl max-h-full">
             <button
-              className="absolute top-4 right-4 bg-white dark:bg-gray-800 rounded-full p-1 shadow-lg transition-colors"
+              className="absolute top-4 right-4 bg-card rounded-full p-1 shadow-lg transition-colors"
               onClick={closeFullscreen}
             >
-              <XCircleIcon className="h-6 w-6 text-gray-800 dark:text-gray-200" />
+              <XCircleIcon className="h-6 w-6 text-foreground" />
             </button>
             <div className="relative w-full h-full">
               <img

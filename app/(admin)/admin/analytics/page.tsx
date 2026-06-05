@@ -96,7 +96,7 @@ interface AnalyticsData {
 
 function ProgressBar({ label, value, color }: { label: string; value: number; color: string }) {
   const colorMap: Record<string, string> = {
-    green: 'bg-green-500', blue: 'bg-blue-500', purple: 'bg-purple-500', orange: 'bg-orange-500',
+    green: 'bg-green-500', blue: 'bg-primary-500', purple: 'bg-purple-500', orange: 'bg-orange-500',
     red: 'bg-red-500', amber: 'bg-amber-500', cyan: 'bg-cyan-500', pink: 'bg-pink-500',
   };
   return (
@@ -121,7 +121,7 @@ function ConversionCard({ title, current, previous, icon: Icon, color }: {
   const diff = previous > 0 ? Math.round(((current - previous) / previous) * 100) : current > 0 ? 100 : 0;
   const isUp = diff > 0;
   const colorMap: Record<string, string> = {
-    blue: 'text-blue-600', green: 'text-green-600', purple: 'text-purple-600',
+    blue: 'text-primary-600', green: 'text-green-600', purple: 'text-purple-600',
     orange: 'text-orange-600', red: 'text-red-600', pink: 'text-pink-600',
   };
 
@@ -193,7 +193,7 @@ export default function AnalyticsPage() {
 
   if (error || !analytics) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8 flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600 mb-4">{error || 'Erreur de chargement'}</p>
           <button onClick={fetchAnalytics} className="btn-primary">Réessayer</button>
@@ -203,7 +203,7 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <AdminPageHeader
           icon={<ChartBarIcon className="w-6 h-6 text-white" />}
@@ -220,7 +220,7 @@ export default function AnalyticsPage() {
                   onClick={() => setTimeRange(range.value)}
                   className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
                     timeRange === range.value
-                      ? 'bg-linear-to-r from-primary-600 to-blue-600 text-white shadow-md'
+                      ? 'bg-linear-to-r from-primary-600 to-primary-600 text-white shadow-md'
                       : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
                   }`}
                 >
@@ -494,8 +494,8 @@ export default function AnalyticsPage() {
                 <h3 className="text-base font-bold text-gray-900 mb-4">Appareils</h3>
                 <div className="space-y-4">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-xl">
-                      <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                    <div className="w-12 h-12 rounded-xl bg-primary-50 flex items-center justify-center text-xl">
+                      <svg className="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between mb-1">
@@ -503,7 +503,7 @@ export default function AnalyticsPage() {
                         <span className="text-sm font-bold text-gray-900">{analytics.devices.mobile}%</span>
                       </div>
                       <div className="w-full bg-gray-100 rounded-full h-2">
-                        <div className="h-2 rounded-full bg-blue-500" style={{ width: `${analytics.devices.mobile}%` }} />
+                        <div className="h-2 rounded-full bg-primary-500" style={{ width: `${analytics.devices.mobile}%` }} />
                       </div>
                     </div>
                   </div>
@@ -574,9 +574,9 @@ export default function AnalyticsPage() {
                   <p className="text-2xl font-bold text-green-700">{analytics.traffic.organic}%</p>
                   <p className="text-sm text-green-600 mt-1">Recherche organique</p>
                 </div>
-                <div className="text-center p-4 rounded-xl bg-blue-50">
-                  <p className="text-2xl font-bold text-blue-700">{analytics.traffic.direct}%</p>
-                  <p className="text-sm text-blue-600 mt-1">Accès direct</p>
+                <div className="text-center p-4 rounded-xl bg-primary-50">
+                  <p className="text-2xl font-bold text-primary-700">{analytics.traffic.direct}%</p>
+                  <p className="text-sm text-primary-600 mt-1">Accès direct</p>
                 </div>
                 <div className="text-center p-4 rounded-xl bg-purple-50">
                   <p className="text-2xl font-bold text-purple-700">{analytics.traffic.social}%</p>

@@ -174,7 +174,7 @@ export default function SellPage() {
   }
 
   return (
-    <main className="bg-white dark:bg-gray-900">
+    <main className="bg-card">
       <section className="relative overflow-hidden bg-gray-950 text-white">
         <div className="absolute inset-0">
           <img
@@ -214,7 +214,7 @@ export default function SellPage() {
           <span className="inline-flex rounded-full bg-primary-50 px-4 py-1.5 text-sm font-bold text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
             Notre méthode
           </span>
-          <h2 className="mt-4 text-3xl font-black text-gray-900 dark:text-white md:text-5xl">
+          <h2 className="mt-4 text-3xl font-black text-foreground md:text-5xl">
             Un accompagnement vendeur plus propre, plus clair
           </h2>
         </div>
@@ -222,12 +222,12 @@ export default function SellPage() {
           {highlights.map((item) => {
             const Icon = item.icon
             return (
-              <div key={item.title} className="rounded-2xl border border-gray-100 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
+              <div key={item.title} className="rounded-2xl border border-gray-100 bg-gray-50 p-6 dark:border-border dark:bg-gray-800">
                 <div className="mb-4 inline-flex rounded-xl bg-primary-50 p-3 text-primary-600 dark:bg-primary-900/30 dark:text-primary-400">
                   <Icon className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-black text-gray-900 dark:text-white">{item.title}</h3>
-                <p className="mt-2 text-gray-600 dark:text-gray-300">{item.text}</p>
+                <h3 className="text-xl font-black text-foreground">{item.title}</h3>
+                <p className="mt-2 text-muted-foreground">{item.text}</p>
               </div>
             )
           })}
@@ -240,10 +240,10 @@ export default function SellPage() {
             <span className="inline-flex rounded-full bg-primary-50 px-4 py-1.5 text-sm font-bold text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
               Formulaire vendeur
             </span>
-            <h2 className="mt-4 text-3xl font-black text-gray-900 dark:text-white md:text-5xl">
+            <h2 className="mt-4 text-3xl font-black text-foreground md:text-5xl">
               Donnez-nous les premières informations
             </h2>
-            <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+            <p className="mt-4 text-lg text-muted-foreground">
               Ce formulaire nous permet de comprendre votre bien avant le premier échange. Vous n'avez pas besoin d'avoir un dossier parfait pour commencer.
             </p>
             <div className="mt-8 space-y-3">
@@ -254,7 +254,7 @@ export default function SellPage() {
               ].map((item) => {
                 const Icon = item.icon
                 return (
-                  <div key={item.text} className="flex items-center gap-3 text-gray-700 dark:text-gray-200">
+                  <div key={item.text} className="flex items-center gap-3 text-foreground">
                     <span className="rounded-lg bg-white p-2 text-primary-600 shadow-sm dark:bg-gray-800 dark:text-primary-400">
                       <Icon className="h-5 w-5" />
                     </span>
@@ -265,7 +265,7 @@ export default function SellPage() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xl dark:border-gray-700 dark:bg-gray-800">
+          <form onSubmit={handleSubmit} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xl dark:border-border dark:bg-gray-800">
             {status === 'success' && (
               <div className="mb-6 flex gap-3 rounded-xl border border-green-200 bg-green-50 p-4 text-green-800">
                 <CheckCircleIcon className="h-5 w-5 shrink-0" />
@@ -287,7 +287,7 @@ export default function SellPage() {
               <div className="grid gap-4 md:grid-cols-2">
                 <Field label="Type de bien *" error={fieldErrors.propertyType}>
                   <Select value={formData.propertyType} onValueChange={(value) => updateField('propertyType', value)}>
-                    <SelectTrigger className="h-12 w-full rounded-xl border-gray-200 bg-white px-4 dark:border-gray-600 dark:bg-gray-900">
+                    <SelectTrigger className="h-12 w-full rounded-xl border-gray-200 bg-white px-4 dark:border-border dark:bg-gray-900">
                       <SelectValue placeholder="Sélectionner le bien" />
                     </SelectTrigger>
                     <SelectContent>
@@ -301,7 +301,7 @@ export default function SellPage() {
                 </Field>
                 <Field label="Votre lien avec le bien *" error={fieldErrors.ownershipStatus}>
                   <Select value={formData.ownershipStatus} onValueChange={(value) => updateField('ownershipStatus', value)}>
-                    <SelectTrigger className="h-12 w-full rounded-xl border-gray-200 bg-white px-4 dark:border-gray-600 dark:bg-gray-900">
+                    <SelectTrigger className="h-12 w-full rounded-xl border-gray-200 bg-white px-4 dark:border-border dark:bg-gray-900">
                       <SelectValue placeholder="Choisir le statut" />
                     </SelectTrigger>
                     <SelectContent>
@@ -319,16 +319,16 @@ export default function SellPage() {
             <FormSection number="02" title="Localisation et surface">
               <div className="grid gap-4 md:grid-cols-2">
                 <Field label="Ville *" error={fieldErrors.city}>
-                  <Input name="city" value={formData.city} onChange={handleChange} placeholder="Antananarivo" className="h-12 rounded-xl border-gray-200 px-4 dark:border-gray-600 dark:bg-gray-900" />
+                  <Input name="city" value={formData.city} onChange={handleChange} placeholder="Antananarivo" className="h-12 rounded-xl border-gray-200 px-4 dark:border-border dark:bg-gray-900" />
                 </Field>
                 <Field label="Quartier ou zone">
-                  <Input name="district" value={formData.district} onChange={handleChange} placeholder="Ivandry, Analakely..." className="h-12 rounded-xl border-gray-200 px-4 dark:border-gray-600 dark:bg-gray-900" />
+                  <Input name="district" value={formData.district} onChange={handleChange} placeholder="Ivandry, Analakely..." className="h-12 rounded-xl border-gray-200 px-4 dark:border-border dark:bg-gray-900" />
                 </Field>
                 <Field label="Surface approximative *" error={fieldErrors.surface}>
-                  <Input type="number" min="1" name="surface" value={formData.surface} onChange={handleChange} placeholder="Ex: 450" className="h-12 rounded-xl border-gray-200 px-4 dark:border-gray-600 dark:bg-gray-900" />
+                  <Input type="number" min="1" name="surface" value={formData.surface} onChange={handleChange} placeholder="Ex: 450" className="h-12 rounded-xl border-gray-200 px-4 dark:border-border dark:bg-gray-900" />
                 </Field>
                 <Field label="Prix souhaité">
-                  <Input name="priceExpectation" value={formData.priceExpectation} onChange={handleChange} placeholder="Ex: 75 000 € ou à discuter" className="h-12 rounded-xl border-gray-200 px-4 dark:border-gray-600 dark:bg-gray-900" />
+                  <Input name="priceExpectation" value={formData.priceExpectation} onChange={handleChange} placeholder="Ex: 75 000 € ou à discuter" className="h-12 rounded-xl border-gray-200 px-4 dark:border-border dark:bg-gray-900" />
                 </Field>
               </div>
             </FormSection>
@@ -337,7 +337,7 @@ export default function SellPage() {
               <div className="grid gap-4 md:grid-cols-2">
                 <Field label="Délai souhaité *" error={fieldErrors.timeline}>
                   <Select value={formData.timeline} onValueChange={(value) => updateField('timeline', value)}>
-                    <SelectTrigger className="h-12 w-full rounded-xl border-gray-200 bg-white px-4 dark:border-gray-600 dark:bg-gray-900">
+                    <SelectTrigger className="h-12 w-full rounded-xl border-gray-200 bg-white px-4 dark:border-border dark:bg-gray-900">
                       <SelectValue placeholder="Choisir un délai" />
                     </SelectTrigger>
                     <SelectContent>
@@ -355,16 +355,16 @@ export default function SellPage() {
             <FormSection number="04" title="Vos coordonnées">
               <div className="grid gap-4 md:grid-cols-2">
                 <Field label="Prénom *" error={fieldErrors.firstName}>
-                  <Input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Votre prénom" className="h-12 rounded-xl border-gray-200 px-4 dark:border-gray-600 dark:bg-gray-900" />
+                  <Input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Votre prénom" className="h-12 rounded-xl border-gray-200 px-4 dark:border-border dark:bg-gray-900" />
                 </Field>
                 <Field label="Nom *" error={fieldErrors.lastName}>
-                  <Input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Votre nom" className="h-12 rounded-xl border-gray-200 px-4 dark:border-gray-600 dark:bg-gray-900" />
+                  <Input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Votre nom" className="h-12 rounded-xl border-gray-200 px-4 dark:border-border dark:bg-gray-900" />
                 </Field>
                 <Field label="Email *" error={fieldErrors.email}>
-                  <Input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="votre@email.com" className="h-12 rounded-xl border-gray-200 px-4 dark:border-gray-600 dark:bg-gray-900" />
+                  <Input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="votre@email.com" className="h-12 rounded-xl border-gray-200 px-4 dark:border-border dark:bg-gray-900" />
                 </Field>
                 <Field label="Téléphone" error={fieldErrors.phone}>
-                  <Input name="phone" value={formData.phone} onChange={handleChange} placeholder="+261 34 00 000 00" className="h-12 rounded-xl border-gray-200 px-4 dark:border-gray-600 dark:bg-gray-900" />
+                  <Input name="phone" value={formData.phone} onChange={handleChange} placeholder="+261 34 00 000 00" className="h-12 rounded-xl border-gray-200 px-4 dark:border-border dark:bg-gray-900" />
                 </Field>
               </div>
             </FormSection>
@@ -377,7 +377,7 @@ export default function SellPage() {
                   onChange={handleChange}
                   rows={5}
                   placeholder="État du bien, accès, documents disponibles, occupation actuelle, contraintes, photos déjà prêtes..."
-                  className="min-h-32 resize-none rounded-xl border-gray-200 px-4 py-3 dark:border-gray-600 dark:bg-gray-900"
+                  className="min-h-32 resize-none rounded-xl border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900"
                 />
               </Field>
             </FormSection>
@@ -396,7 +396,7 @@ export default function SellPage() {
 function Field({ label, children, error }: { label: string; children: React.ReactNode; error?: string }) {
   return (
     <label className="block space-y-2">
-      <span className="text-sm font-bold text-gray-700 dark:text-gray-200">{label}</span>
+      <span className="text-sm font-bold text-foreground">{label}</span>
       {children}
       {error && <span className="block text-xs font-semibold text-red-600">{error}</span>}
     </label>
@@ -405,12 +405,12 @@ function Field({ label, children, error }: { label: string; children: React.Reac
 
 function FormSection({ number, title, children }: { number: string; title: string; children: React.ReactNode }) {
   return (
-    <section className="mb-6 rounded-2xl border border-gray-100 bg-gray-50/70 p-4 dark:border-gray-700 dark:bg-gray-900/50">
+    <section className="mb-6 rounded-2xl border border-gray-100 bg-gray-50/70 p-4 dark:border-border dark:bg-gray-900/50">
       <div className="mb-4 flex items-center gap-3">
         <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-xs font-black text-white">
           {number}
         </span>
-        <h3 className="text-lg font-black text-gray-900 dark:text-white">{title}</h3>
+        <h3 className="text-lg font-black text-foreground">{title}</h3>
       </div>
       {children}
     </section>

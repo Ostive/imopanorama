@@ -1,4 +1,4 @@
-import { PrismaClient, PropertyType, TransactionType, PropertyCondition, PropertyStatus, Prisma } from '@prisma/client';
+import { PrismaClient, PropertyType, TransactionType, PropertyCondition, PropertyStatus, PropertyDocumentStatus, PropertyLegalStatus, Prisma } from '@prisma/client';
 
 export async function seedProperties(prisma: PrismaClient, users: any) {
   console.log('\n📦 Seeding Properties...');
@@ -18,7 +18,7 @@ export async function seedProperties(prisma: PrismaClient, users: any) {
       zipCode: '101',
       price: 450000,
       pricePerM2: 1800,
-      currency: 'EUR',
+      currency: 'MGA',
       totalSize: 250,
       livingSize: 220,
       landSize: 800,
@@ -56,7 +56,7 @@ export async function seedProperties(prisma: PrismaClient, users: any) {
       price: 120000,
       rentPrice: 800,
       pricePerM2: 1412,
-      currency: 'EUR',
+      currency: 'MGA',
       totalSize: 85,
       livingSize: 85,
       bedrooms: 2,
@@ -93,7 +93,7 @@ export async function seedProperties(prisma: PrismaClient, users: any) {
       zipCode: '102',
       price: 80000,
       pricePerM2: 80,
-      currency: 'EUR',
+      currency: 'MGA',
       totalSize: 1000,
       landSize: 1000,
       features: ['Viabilisé', 'Plat', 'Clôturé', 'Accès goudronné'],
@@ -120,7 +120,7 @@ export async function seedProperties(prisma: PrismaClient, users: any) {
       zipCode: '101',
       price: 280000,
       pricePerM2: 1556,
-      currency: 'EUR',
+      currency: 'MGA',
       totalSize: 180,
       livingSize: 160,
       landSize: 400,
@@ -157,7 +157,7 @@ export async function seedProperties(prisma: PrismaClient, users: any) {
       price: 45000,
       rentPrice: 350,
       pricePerM2: 1500,
-      currency: 'EUR',
+      currency: 'MGA',
       totalSize: 30,
       livingSize: 30,
       bedrooms: 1,
@@ -183,17 +183,17 @@ export async function seedProperties(prisma: PrismaClient, users: any) {
       owner: adminUser ? { connect: { id: adminUser.id } } : undefined,
     },
     {
-      title: 'Villa de Luxe Vue Mer',
-      description: 'Exceptionnelle villa de luxe de 400m² avec vue imprenable sur la mer. 6 chambres en suite, piscine à débordement, spa, home cinéma, cuisine gastronomique. Prestations haut de gamme.',
+      title: 'Villa de Luxe Vue Mer - Nosy Be',
+      description: 'Exceptionnelle villa de luxe de 400m² avec vue dégagée à Nosy Be. 6 chambres en suite, piscine à débordement, spa, home cinéma, cuisine gastronomique. Prestations haut de gamme.',
       propertyType: PropertyType.VILLA,
       transactionType: TransactionType.SALE,
-      location: 'Flic en Flac',
-      city: 'Rivière Noire',
-      address: 'Coastal Road',
-      zipCode: '90000',
+      location: 'Andilana',
+      city: 'Nosy Be',
+      address: 'Route d Andilana',
+      zipCode: '207',
       price: 1200000,
       pricePerM2: 3000,
-      currency: 'EUR',
+      currency: 'MGA',
       totalSize: 400,
       livingSize: 350,
       landSize: 1500,
@@ -232,7 +232,7 @@ export async function seedProperties(prisma: PrismaClient, users: any) {
       price: 180000,
       rentPrice: 1500,
       pricePerM2: 1500,
-      currency: 'EUR',
+      currency: 'MGA',
       totalSize: 120,
       livingSize: 120,
       floors: 1,
@@ -263,7 +263,7 @@ export async function seedProperties(prisma: PrismaClient, users: any) {
       zipCode: '101',
       price: 650000,
       pricePerM2: 3250,
-      currency: 'EUR',
+      currency: 'MGA',
       totalSize: 200,
       livingSize: 200,
       bedrooms: 3,
@@ -294,7 +294,18 @@ export async function seedProperties(prisma: PrismaClient, users: any) {
 
   for (const property of properties) {
     await prisma.property.create({
-      data: property,
+      data: {
+        ...property,
+        country: 'MG',
+        region: property.city === 'Nosy Be' ? 'Diana' : 'Analamanga',
+        currency: 'MGA',
+        price: property.price * 4500,
+        rentPrice: property.rentPrice ? property.rentPrice * 4500 : undefined,
+        pricePerM2: property.pricePerM2 ? property.pricePerM2 * 4500 : undefined,
+        legalStatus: PropertyLegalStatus.TITLED,
+        documentStatus: PropertyDocumentStatus.VERIFIED,
+        isVerified: true,
+      },
     });
   }
 

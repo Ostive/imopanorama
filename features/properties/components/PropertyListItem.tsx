@@ -20,6 +20,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import { logger } from '@/infrastructure/logger/logger'
 import { useImageFallback } from '@/shared/hooks/useImageFallback'
+import { formatPrice } from '@/shared/utils'
 
 interface PropertyListItemProps {
   property: Property
@@ -37,14 +38,6 @@ export default function PropertyListItem({
   const router = useRouter()
   const { handleImageError, safeImages } = useImageFallback()
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'EUR',
-      minimumFractionDigits: 0,
-    }).format(price)
-  }
-
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case 'AVAILABLE': return 'bg-emerald-500 text-white'
@@ -55,7 +48,7 @@ export default function PropertyListItem({
     }
   }
 
-  const formattedPrice = property.price ? formatPrice(property.price) : 'Prix non renseigné'
+  const formattedPrice = property.price ? formatPrice(property.price, property.currency, property.country) : 'Prix non renseigné'
   const images = safeImages(property.images || [])
   const displayFeatures = property.amenities?.length ? property.amenities : property.features || []
 
@@ -82,7 +75,7 @@ export default function PropertyListItem({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-200 border border-gray-100 dark:border-gray-700 overflow-hidden"
+      className="group bg-card rounded-2xl shadow-sm hover:shadow-lg transition-all duration-200 border border-border overflow-hidden"
     >
       <Link href={`/proprietes/${property.id}`} className="flex flex-row h-full">
 
@@ -132,6 +125,11 @@ export default function PropertyListItem({
                   Coup de cœur
                 </span>
               )}
+              {property.isVerified && (
+                <span className="hidden sm:inline-flex items-center gap-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-full text-xs font-bold">
+                  Vérifié
+                </span>
+              )}
             </div>
             <motion.button
               onClick={handleFavorite}
@@ -147,12 +145,12 @@ export default function PropertyListItem({
           </div>
 
           {/* Title */}
-          <h3 className="text-sm sm:text-lg font-bold text-gray-900 dark:text-white line-clamp-1 sm:line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-0.5">
+          <h3 className="text-sm sm:text-lg font-bold text-foreground line-clamp-1 sm:line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-0.5">
             {property.title || 'Propriété sans titre'}
           </h3>
 
           {/* Location */}
-          <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 mb-2">
+          <div className="flex items-center gap-1 text-muted-foreground mb-2">
             <MapPinIcon className="w-3 h-3 shrink-0" />
             <span className="text-xs line-clamp-1">{property.city || 'Localisation non renseignée'}</span>
           </div>
@@ -160,13 +158,13 @@ export default function PropertyListItem({
           {/* Stats row */}
           <div className="flex items-center gap-3 mb-2">
             {property.totalSize && (
-              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
+              <div className="flex items-center gap-1 text-muted-foreground">
                 <ArrowsPointingOutIcon className="w-3.5 h-3.5 text-primary-500" />
                 <span className="text-xs font-semibold">{property.totalSize.toLocaleString()} m²</span>
               </div>
             )}
             {property.bedrooms && (
-              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300">
+              <div className="flex items-center gap-1 text-muted-foreground">
                 <HomeIcon className="w-3.5 h-3.5 text-primary-500" />
                 <span className="text-xs font-semibold">{property.bedrooms} ch.</span>
               </div>
@@ -177,7 +175,7 @@ export default function PropertyListItem({
           {displayFeatures.length > 0 && (
             <div className="hidden sm:flex flex-wrap gap-1.5 mb-3">
               {displayFeatures.slice(0, 4).map((f, i) => (
-                <span key={i} className="text-xs text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-md border border-gray-200 dark:border-gray-600">
+                <span key={i} className="text-xs text-muted-foreground bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-md border border-border">
                   {f}
                 </span>
               ))}
@@ -201,8 +199,8 @@ export default function PropertyListItem({
                 )}
               </div>
               {property.transactionType === 'SALE' && property.pricePerM2 && (
-                <span className="hidden sm:block text-xs text-gray-500 dark:text-gray-400">
-                  {Math.round(property.pricePerM2).toLocaleString()}€/m²
+                <span className="hidden sm:block text-xs text-muted-foreground">
+                  {formatPrice(Math.round(property.pricePerM2), property.currency, property.country)}/m²
                 </span>
               )}
             </div>

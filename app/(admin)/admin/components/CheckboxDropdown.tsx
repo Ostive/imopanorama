@@ -44,7 +44,9 @@ export function CheckboxDropdown({ label, selected, onChange, options, groups }:
         type="button"
         onClick={() => setOpen(!open)}
         className={`w-full h-10 flex items-center justify-between px-3 border rounded-lg text-sm transition-colors ${
-          count > 0 ? 'border-primary-300 bg-primary-50 text-primary-700' : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+          count > 0
+            ? 'border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300'
+            : 'border-border bg-card text-foreground hover:bg-gray-50 dark:hover:bg-gray-800'
         }`}
       >
         <span className="truncate">{displayLabel}</span>
@@ -52,25 +54,25 @@ export function CheckboxDropdown({ label, selected, onChange, options, groups }:
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full min-w-48 bg-white border border-gray-200 rounded-xl shadow-xl py-1 max-h-72 overflow-y-auto">
+        <div className="absolute z-50 mt-1 w-full min-w-48 bg-card border border-border rounded-xl shadow-xl py-1 max-h-72 overflow-y-auto">
           {count > 0 && (
-            <button onClick={() => onChange([])} className="w-full px-3 py-1.5 text-xs text-primary-600 hover:bg-primary-50 text-left font-medium">
+            <button onClick={() => onChange([])} className="w-full px-3 py-1.5 text-xs text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 text-left font-medium">
               Tout décocher
             </button>
           )}
           {options?.map((opt) => (
-            <label key={opt.value} className="flex items-center gap-2.5 px-3 py-2 hover:bg-gray-50 cursor-pointer">
+            <label key={opt.value} className="flex items-center gap-2.5 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
               <Checkbox checked={selected.includes(opt.value)} onCheckedChange={() => toggle(opt.value)} />
-              <span className="text-sm text-gray-700">{opt.label}</span>
+              <span className="text-sm text-foreground">{opt.label}</span>
             </label>
           ))}
           {groups?.map((group) => (
             <div key={group.label}>
-              <p className="px-3 pt-2 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wide">{group.label}</p>
+              <p className="px-3 pt-2 pb-1 text-xs font-semibold text-muted-foreground uppercase tracking-wide">{group.label}</p>
               {group.options.map((opt) => (
-                <label key={opt.value} className="flex items-center gap-2.5 px-3 py-2 hover:bg-gray-50 cursor-pointer">
+                <label key={opt.value} className="flex items-center gap-2.5 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
                   <Checkbox checked={selected.includes(opt.value)} onCheckedChange={() => toggle(opt.value)} />
-                  <span className="text-sm text-gray-700">{opt.label}</span>
+                  <span className="text-sm text-foreground">{opt.label}</span>
                 </label>
               ))}
             </div>

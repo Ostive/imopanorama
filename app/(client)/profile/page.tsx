@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/features/auth/context/AuthContext';
-import { useTheme } from '@/shared/theme/ThemeContext';
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
 import { UpdateProfileData, ChangePasswordData, User } from './types';
 import {
@@ -71,13 +70,13 @@ function ProfileForm() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-gray-100 dark:border-gray-700"
+      className="bg-card rounded-2xl shadow-lg p-8 border border-border"
     >
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-linear-to-br from-primary-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+        <div className="w-10 h-10 bg-linear-to-br from-primary-600 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
           <UserIcon className="h-5 w-5 text-white" />
         </div>
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+        <h3 className="text-xl font-bold text-foreground">
           Informations personnelles
         </h3>
       </div>
@@ -115,7 +114,7 @@ function ProfileForm() {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="flex items-center text-sm font-semibold text-foreground mb-2">
               <UserIcon className="h-4 w-4 mr-2" />
               Prénom
             </label>
@@ -124,12 +123,12 @@ function ProfileForm() {
               name="firstName"
               value={formData.firstName}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 dark:text-white transition-all"
+              className="w-full p-3 border border-border bg-input rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-foreground transition-all"
             />
           </div>
 
           <div>
-            <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="flex items-center text-sm font-semibold text-foreground mb-2">
               <UserIcon className="h-4 w-4 mr-2" />
               Nom
             </label>
@@ -138,13 +137,13 @@ function ProfileForm() {
               name="lastName"
               value={formData.lastName}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 dark:text-white transition-all"
+              className="w-full p-3 border border-border bg-input rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-foreground transition-all"
             />
           </div>
         </div>
 
         <div>
-          <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <label className="flex items-center text-sm font-semibold text-foreground mb-2">
             <PhoneIcon className="h-4 w-4 mr-2" />
             Téléphone
           </label>
@@ -153,13 +152,13 @@ function ProfileForm() {
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 dark:text-white transition-all"
+            className="w-full p-3 border border-border bg-input rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-foreground transition-all"
             placeholder="+261 34 XX XX XX XX"
           />
         </div>
 
         <div>
-          <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <label className="flex items-center text-sm font-semibold text-foreground mb-2">
             <BuildingOfficeIcon className="h-4 w-4 mr-2" />
             Entreprise
           </label>
@@ -168,7 +167,7 @@ function ProfileForm() {
             name="company"
             value={formData.company}
             onChange={handleChange}
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 dark:text-white transition-all"
+            className="w-full p-3 border border-border bg-input rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-foreground transition-all"
             placeholder="Nom de votre entreprise"
           />
         </div>
@@ -178,7 +177,7 @@ function ProfileForm() {
           whileTap={{ scale: 0.98 }}
           type="submit"
           disabled={loading}
-          className="flex items-center justify-center w-full md:w-auto px-6 py-3 rounded-xl bg-linear-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 text-white font-semibold shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center justify-center w-full md:w-auto px-6 py-3 rounded-xl bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? (
             <>
@@ -246,13 +245,13 @@ function PasswordForm() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-gray-100 dark:border-gray-700"
+      className="bg-card rounded-2xl shadow-lg p-8 border border-border"
     >
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-linear-to-br from-primary-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+        <div className="w-10 h-10 bg-linear-to-br from-primary-600 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
           <KeyIcon className="h-5 w-5 text-white" />
         </div>
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+        <h3 className="text-xl font-bold text-foreground">
           Sécurité du compte
         </h3>
       </div>
@@ -289,7 +288,7 @@ function PasswordForm() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <label className="flex items-center text-sm font-semibold text-foreground mb-2">
             <KeyIcon className="h-4 w-4 mr-2" />
             Mot de passe actuel
           </label>
@@ -300,7 +299,7 @@ function PasswordForm() {
               value={formData.currentPassword}
               onChange={handleChange}
               required
-              className="w-full p-3 pr-10 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 dark:text-white transition-all"
+              className="w-full p-3 pr-10 border border-border bg-input rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-foreground transition-all"
             />
             <button
               type="button"
@@ -317,7 +316,7 @@ function PasswordForm() {
         </div>
 
         <div>
-          <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <label className="flex items-center text-sm font-semibold text-foreground mb-2">
             <KeyIcon className="h-4 w-4 mr-2" />
             Nouveau mot de passe
           </label>
@@ -328,7 +327,7 @@ function PasswordForm() {
               value={formData.newPassword}
               onChange={handleChange}
               required
-              className="w-full p-3 pr-10 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 dark:text-white transition-all"
+              className="w-full p-3 pr-10 border border-border bg-input rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-foreground transition-all"
             />
             <button
               type="button"
@@ -345,7 +344,7 @@ function PasswordForm() {
         </div>
 
         <div>
-          <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <label className="flex items-center text-sm font-semibold text-foreground mb-2">
             <KeyIcon className="h-4 w-4 mr-2" />
             Confirmer le nouveau mot de passe
           </label>
@@ -356,7 +355,7 @@ function PasswordForm() {
               value={formData.confirmPassword}
               onChange={handleChange}
               required
-              className="w-full p-3 pr-10 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 dark:text-white transition-all"
+              className="w-full p-3 pr-10 border border-border bg-input rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-foreground transition-all"
             />
             <button
               type="button"
@@ -377,7 +376,7 @@ function PasswordForm() {
           whileTap={{ scale: 0.98 }}
           type="submit"
           disabled={loading}
-          className="flex items-center justify-center w-full md:w-auto px-6 py-3 rounded-xl bg-linear-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 text-white font-semibold shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center justify-center w-full md:w-auto px-6 py-3 rounded-xl bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? (
             <>
@@ -408,13 +407,13 @@ function UserStats({ user }: { user: any }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-gray-100 dark:border-gray-700"
+      className="bg-card rounded-2xl shadow-lg p-8 border border-border"
     >
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-linear-to-br from-primary-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+        <div className="w-10 h-10 bg-linear-to-br from-primary-600 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
           <ChartBarIcon className="h-5 w-5 text-white" />
         </div>
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+        <h3 className="text-xl font-bold text-foreground">
           Statistiques du compte
         </h3>
       </div>
@@ -422,12 +421,12 @@ function UserStats({ user }: { user: any }) {
       <div className="space-y-4">
         <div className="flex items-center justify-between p-4 bg-linear-to-r from-gray-50 to-gray-100 dark:from-gray-700/50 dark:to-gray-700/30 rounded-xl">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-              <CalendarIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <div className="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
+              <CalendarIcon className="h-5 w-5 text-primary-600 dark:text-primary-400" />
             </div>
-            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Membre depuis</span>
+            <span className="text-sm font-semibold text-foreground">Membre depuis</span>
           </div>
-          <span className="text-sm font-bold text-gray-900 dark:text-white">
+          <span className="text-sm font-bold text-foreground">
             {stats.memberSince ? new Date(stats.memberSince).toLocaleDateString('fr-FR', {
               day: 'numeric',
               month: 'long',
@@ -441,9 +440,9 @@ function UserStats({ user }: { user: any }) {
             <div className="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
               <CalendarIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
             </div>
-            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Dernière connexion</span>
+            <span className="text-sm font-semibold text-foreground">Dernière connexion</span>
           </div>
-          <span className="text-sm font-bold text-gray-900 dark:text-white">
+          <span className="text-sm font-bold text-foreground">
             {stats.lastLoginDate ? new Date(stats.lastLoginDate).toLocaleDateString('fr-FR', {
               day: 'numeric',
               month: 'long',
@@ -460,7 +459,7 @@ function UserStats({ user }: { user: any }) {
             e.preventDefault();
             router.push('/favoris');
           }}
-          className="flex items-center justify-between p-4 bg-linear-to-r from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/20 rounded-xl hover:from-primary-100 hover:to-blue-100 dark:hover:from-primary-900/30 dark:hover:to-blue-900/30 transition-all cursor-pointer group"
+          className="flex items-center justify-between p-4 bg-linear-to-r from-primary-50 to-primary-50 dark:from-primary-900/20 dark:to-primary-900/20 rounded-xl hover:from-primary-100 hover:to-primary-100 dark:hover:from-primary-900/30 dark:hover:to-primary-900/30 transition-all cursor-pointer group"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -499,34 +498,34 @@ export default function ProfilePage() {
 
   return (
     <ProtectedRoute requireAuth>
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 dark:bg-gray-900 py-8">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:bg-gray-900 py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-8 border border-gray-100 dark:border-gray-700"
+            className="bg-card rounded-2xl shadow-lg p-8 mb-8 border border-border"
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-linear-to-br from-primary-600 to-blue-600 text-white rounded-2xl flex items-center justify-center shadow-lg">
+                <div className="w-16 h-16 bg-linear-to-br from-primary-600 to-primary-600 text-white rounded-2xl flex items-center justify-center shadow-lg">
                   <span className="text-2xl font-bold">
                     {user?.firstName?.charAt(0)?.toUpperCase() || '?'}{user?.lastName?.charAt(0)?.toUpperCase() || '?'}
                   </span>
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <h1 className="text-2xl font-bold text-foreground">
                     {user?.firstName || ''} {user?.lastName || ''}
                   </h1>
                   <div className="flex items-center gap-2 mt-1">
-                    <EnvelopeIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                    <p className="text-gray-600 dark:text-gray-300">{user?.email || ''}</p>
+                    <EnvelopeIcon className="h-4 w-4 text-muted-foreground" />
+                    <p className="text-muted-foreground">{user?.email || ''}</p>
                   </div>
                   <div className="flex items-center mt-2">
                     <span className={`inline-flex items-center px-3 py-1 rounded-xl text-xs font-bold shadow-sm ${user?.role?.toLowerCase() === 'admin'
                       ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border border-red-200'
                       : user?.role?.toLowerCase() === 'agent'
-                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200'
+                        ? 'bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-400 border border-primary-200'
                         : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border border-green-200'
                       }`}>
                       <ShieldCheckIcon className="-ml-0.5 mr-1.5 h-3 w-3" />
@@ -547,7 +546,7 @@ export default function ProfilePage() {
                       e.preventDefault();
                       router.push('/admin');
                     }}
-                    className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-linear-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 text-white font-semibold shadow-lg transition-all"
+                    className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold shadow-lg transition-all"
                   >
                     <ShieldCheckIcon className="-ml-1 mr-2 h-5 w-5" />
                     Administration
@@ -579,8 +578,8 @@ export default function ProfilePage() {
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setActiveTab(tab.id)}
                         className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold text-sm transition-all ${activeTab === tab.id
-                          ? 'bg-linear-to-r from-primary-600 to-blue-600 text-white shadow-lg'
-                          : 'text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-700'
+                          ? 'bg-linear-to-r from-primary-600 to-primary-600 text-white shadow-lg'
+                          : 'text-muted-foreground hover:bg-white dark:hover:bg-gray-700'
                           }`}
                       >
                         <Icon className="h-5 w-5" />

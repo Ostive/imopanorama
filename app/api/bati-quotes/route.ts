@@ -13,7 +13,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { batiQuoteRepository } from '@/infrastructure/database/repositories';
 import { requireAdmin, requireAuth } from '@/infrastructure/auth/auth-guard';
-import { withErrorHandler, apiError } from '@/infrastructure/middleware/api-handler';
+import { validationError, withErrorHandler } from '@/infrastructure/middleware/api-handler';
+import { rateLimit } from '@/infrastructure/middleware/rate-limit';
 import { logger } from '@/infrastructure/logger/logger';
 
 /** Fields to expose when including the related user. */
@@ -40,13 +41,16 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 // ---------------------------------------------------------------------------
 
 export const POST = withErrorHandler(async (request: NextRequest) => {
+  const limited = await rateLimit(request, { scope: 'bati-quotes:post', limit: 3, windowMs: 60_000 });
+  if (limited) return limited;
+
   const body = await request.json();
 
   const { BatipanoramaContactFormDataSchema } = await import('@/features/batipanorama/schemas/batipanorama.schema');
   const validation = BatipanoramaContactFormDataSchema.safeParse(body);
 
   if (!validation.success) {
-    return apiError('Erreur de validation');
+    return validationError(validation.error.issues, 'La demande de devis contient des champs invalides');
   }
 
   const data = validation.data;

@@ -13,6 +13,7 @@ import {
   EyeIcon,
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
+import { sanitizeHtml } from '@/shared/utils/sanitizeHtml';
 
 interface ViewNewsPageProps {
   params: Promise<{
@@ -55,7 +56,7 @@ export default function ViewNewsPage({ params }: ViewNewsPageProps) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <FormSkeleton fields={6} />
         </div>
@@ -65,7 +66,7 @@ export default function ViewNewsPage({ params }: ViewNewsPageProps) {
 
   if (error || !newsData) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
             Erreur: {error || 'Article introuvable'}
@@ -83,7 +84,7 @@ export default function ViewNewsPage({ params }: ViewNewsPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -115,7 +116,7 @@ export default function ViewNewsPage({ params }: ViewNewsPageProps) {
             </Link>
             <Link
               href={`/admin/news/${id}/edit`}
-              className="inline-flex items-center px-4 py-2 bg-linear-to-r from-primary-600 to-blue-600 text-white font-semibold rounded-xl hover:from-primary-700 hover:to-blue-700 transition-all shadow-lg"
+              className="inline-flex items-center px-4 py-2 bg-linear-to-r from-primary-600 to-primary-600 text-white font-semibold rounded-xl hover:from-primary-700 hover:to-primary-700 transition-all shadow-lg"
             >
               <PencilIcon className="h-5 w-5 mr-2" />
               Modifier
@@ -154,7 +155,7 @@ export default function ViewNewsPage({ params }: ViewNewsPageProps) {
               </div>
               <div className="flex items-center gap-2">
                 <TagIcon className="h-4 w-4" />
-                <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">
+                <span className="px-2 py-1 bg-primary-100 text-primary-800 rounded-full text-xs font-semibold">
                   {newsData.category}
                 </span>
               </div>
@@ -170,7 +171,7 @@ export default function ViewNewsPage({ params }: ViewNewsPageProps) {
 
             {/* Excerpt */}
             {newsData.excerpt && (
-              <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+              <div className="mb-6 p-4 bg-primary-50 border-l-4 border-primary-500 rounded">
                 <p className="text-gray-700 italic">{newsData.excerpt}</p>
               </div>
             )}
@@ -178,7 +179,7 @@ export default function ViewNewsPage({ params }: ViewNewsPageProps) {
             {/* Content */}
             <div
               className="prose prose-lg max-w-none mb-6"
-              dangerouslySetInnerHTML={{ __html: newsData.content }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(newsData.content) }}
             />
 
             {/* Tags */}

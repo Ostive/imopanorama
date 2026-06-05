@@ -61,7 +61,7 @@ export default function Hero() {
   ]
 
   return (
-    <section className="relative min-h-[calc(100vh-80px)] flex items-center bg-linear-to-br from-primary-50/40 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 lg:bg-none dark:lg:bg-linear-to-br dark:lg:from-gray-900 dark:lg:to-gray-800 transition-colors duration-200">
+    <section className="relative min-h-[calc(100vh-80px)] flex items-center bg-linear-to-br from-primary-50/40 via-white to-primary-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 lg:bg-none dark:lg:bg-linear-to-br dark:lg:from-gray-900 dark:lg:to-gray-800 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-8 relative z-10 w-full">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 relative">
           {/* Content */}
@@ -80,11 +80,11 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3, duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-                    className="text-left text-[1.75rem] leading-[1.1] sm:text-4xl lg:text-6xl font-black text-gray-900 dark:text-white tracking-tight lg:px-0"
+                    className="text-left text-[1.75rem] leading-[1.1] sm:text-4xl lg:text-6xl font-black text-foreground tracking-tight lg:px-0"
                   >
                     Trouvez un lieu qui vous ressemble{' '}
                     <span className="relative inline-block">
-                      <span className="bg-linear-to-r from-primary-600 via-blue-600 to-secondary-500 bg-clip-text text-transparent">
+                      <span className="bg-linear-to-r from-primary-600 via-primary-600 to-secondary-500 bg-clip-text text-transparent">
                         vraiment
                       </span>
                       <svg className="absolute -bottom-2 left-0 w-full h-3" viewBox="0 0 200 12" preserveAspectRatio="none">
@@ -99,7 +99,7 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.45, duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-                    className="hidden md:block lg:hidden text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed font-medium"
+                    className="hidden md:block lg:hidden text-sm sm:text-base text-muted-foreground leading-relaxed font-medium"
                   >
                     Achat, location ou investissement : on vous aide à avancer sereinement, avec des biens sélectionnés et des conseils clairs à chaque étape.
                   </motion.p>
@@ -107,7 +107,7 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5, duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-                    className="hidden lg:block text-lg text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl"
+                    className="hidden lg:block text-lg text-muted-foreground leading-relaxed max-w-2xl"
                   >
                     Achat, location ou investissement : on vous aide à avancer sereinement, avec des biens sélectionnés et des conseils clairs à chaque étape.
                   </motion.p>
@@ -120,12 +120,11 @@ export default function Hero() {
                   transition={{ duration: 1, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
                   className="w-[45%] h-[220px] lg:hidden relative flex items-end justify-center mr-[-16px] z-0 translate-y-6"
                 >
-                  {/* Background Blob */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-primary-100 to-blue-50 rounded-full blur-2xl opacity-60 scale-75"></div>
+                  <div className="absolute inset-x-4 bottom-0 h-32 rounded-t-[48px] bg-primary-100/70"></div>
 
                   <div className="relative w-full h-full">
                     <Image
-                      src="/images/hero-person.png"
+                      src="/images/hero/home-agent.png"
                       alt="Agent"
                       fill
                       className="object-contain object-bottom drop-shadow-xl scale-125 origin-bottom"
@@ -149,7 +148,7 @@ export default function Hero() {
             >
               {/* Tabs (Connected Folder design) */}
               <div className="relative z-20 -mb-px w-full lg:w-fit">
-                <div className="flex w-full lg:w-auto bg-white/95 dark:bg-gray-800/95 lg:bg-white/80 lg:dark:bg-gray-800/80 backdrop-blur-md rounded-t-4xl lg:rounded-t-3xl p-0 lg:p-1.5 lg:pb-2 border-b-0 border-white/50 dark:border-gray-700/50 shadow-[0_-5px_15px_-5px_rgba(0,0,0,0.05)]">
+                <div className="flex w-full lg:w-auto bg-white/95 dark:bg-gray-800/95 lg:bg-white/80 lg:dark:bg-gray-800/80 backdrop-blur-md rounded-t-4xl lg:rounded-t-3xl p-0 lg:p-1.5 lg:pb-2 border-b-0 border-white/50 dark:border-border/50 shadow-[0_-5px_15px_-5px_rgba(0,0,0,0.05)]">
                   <button
                     type="button"
                     onClick={() => setTransactionType('SALE')}
@@ -165,7 +164,7 @@ export default function Hero() {
                     type="button"
                     onClick={() => setTransactionType('RENT')}
                     className={`flex-1 lg:flex-none justify-center px-4 py-4 lg:px-8 lg:py-3 rounded-none first:rounded-tr-none last:rounded-tr-4xl lg:last:rounded-[1.2rem] font-bold text-base transition-all duration-300 flex items-center gap-2 ${transactionType === 'RENT'
-                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
+                      ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/30'
                       : 'bg-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50'
                       }`}
                   >
@@ -176,7 +175,7 @@ export default function Hero() {
               </div>
 
               {/* Main Container Card */}
-              <div className="bg-white/95 dark:bg-gray-800/95 lg:bg-white/80 lg:dark:bg-gray-800/80 backdrop-blur-md p-6 pb-12 lg:p-16 rounded-4xl rounded-t-none lg:rounded-4xl lg:rounded-tl-none shadow-2xl border border-white/50 dark:border-gray-700/50 z-10 relative">
+              <div className="bg-white/95 dark:bg-gray-800/95 lg:bg-white/80 lg:dark:bg-gray-800/80 backdrop-blur-md p-6 pb-12 lg:p-16 rounded-4xl rounded-t-none lg:rounded-4xl lg:rounded-tl-none shadow-2xl border border-white/50 dark:border-border/50 z-10 relative">
 
                 {/* Inputs Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
@@ -192,7 +191,7 @@ export default function Hero() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Où souhaitez-vous chercher ?"
-                        className="block w-full pl-11 pr-4 py-4 h-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[1.2rem] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium"
+                        className="block w-full pl-11 pr-4 py-4 h-full bg-card border border-border rounded-[1.2rem] text-foreground placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium"
                       />
                     </div>
                   </div>
@@ -206,14 +205,14 @@ export default function Hero() {
                       <button
                         type="button"
                         onClick={() => setIsPropertyTypeOpen(!isPropertyTypeOpen)}
-                        className="w-full pl-11 pr-4 py-4 h-auto min-h-14.5 bg-white border border-gray-200 rounded-[1.2rem] text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium flex items-center justify-between group"
+                        className="w-full pl-11 pr-4 py-4 h-auto min-h-14.5 bg-card border border-border rounded-[1.2rem] text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium flex items-center justify-between group"
                       >
-                        <span className={`truncate ${propertyTypes.length > 0 ? 'text-gray-900' : 'text-gray-400'}`}>
+                        <span className={`truncate ${propertyTypes.length > 0 ? 'text-foreground' : 'text-muted-foreground'}`}>
                           {propertyTypes.length > 0
                             ? propertyTypes.map(t => PROPERTY_TYPES.find(pt => pt.id === t)?.label).join(', ')
                             : 'Quel type de bien ?'}
                         </span>
-                        <ChevronDownIcon className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isPropertyTypeOpen ? 'rotate-180' : ''}`} />
+                        <ChevronDownIcon className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${isPropertyTypeOpen ? 'rotate-180' : ''}`} />
                       </button>
 
                       <AnimatePresence>
@@ -223,13 +222,13 @@ export default function Hero() {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 8, scale: 0.97 }}
                             transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
-                            className="absolute top-[calc(100%+8px)] left-0 w-full bg-white rounded-[1.2rem] shadow-xl border border-gray-100 p-2 z-50 overflow-hidden"
+                            className="absolute top-[calc(100%+8px)] left-0 w-full bg-card rounded-[1.2rem] shadow-xl border border-border p-2 z-50 overflow-hidden"
                           >
                             <div className="flex flex-col gap-1">
                               {PROPERTY_TYPES.map((type) => (
                                 <div
                                   key={type.id}
-                                  className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-xl cursor-pointer transition-colors"
+                                  className="flex items-center space-x-3 p-3 hover:bg-muted/50 rounded-xl cursor-pointer transition-colors"
                                   onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
@@ -241,14 +240,14 @@ export default function Hero() {
                                     w-5 h-5 rounded border flex items-center justify-center transition-colors
                                     ${propertyTypes.includes(type.id)
                                       ? 'bg-primary-600 border-primary-600'
-                                      : 'border-gray-300 bg-white'
+                                      : 'border-border bg-input'
                                     }
                                   `}>
                                     {propertyTypes.includes(type.id) && (
                                       <CheckIcon className="w-3.5 h-3.5 text-white stroke-3" />
                                     )}
                                   </div>
-                                  <span className="text-sm font-medium text-gray-700 cursor-pointer flex-1">
+                                  <span className="text-sm font-medium text-foreground cursor-pointer flex-1">
                                     {type.label}
                                   </span>
                                 </div>
@@ -271,7 +270,7 @@ export default function Hero() {
                         value={budget}
                         onChange={(e) => setBudget(e.target.value)}
                         placeholder="Votre budget max"
-                        className="block w-full pl-11 pr-4 py-4 h-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[1.2rem] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium"
+                        className="block w-full pl-11 pr-4 py-4 h-full bg-card border border-border rounded-[1.2rem] text-foreground placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium"
                       />
                     </div>
                   </div>
@@ -306,14 +305,12 @@ export default function Hero() {
             transition={{ duration: 1, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
             className="hidden lg:block relative"
           >
-            {/* Enhanced Background with Gradient Glow */}
-            <div className="absolute inset-0 bg-linear-to-br from-primary-100/80 via-blue-50/60 to-secondary-100/80 rounded-4xl"></div>
-            <div className="absolute top-1/4 right-1/4 w-48 h-48 bg-linear-to-br from-primary-300/40 to-blue-300/40 rounded-full filter blur-[100px]"></div>
-            <div className="absolute bottom-1/4 left-1/4 w-56 h-56 bg-linear-to-br from-secondary-300/40 to-primary-300/40 rounded-full filter blur-[100px]"></div>
+            <div className="absolute inset-0 bg-linear-to-br from-primary-100/80 via-primary-50/60 to-secondary-100/80 rounded-4xl"></div>
+            <div className="absolute inset-0 rounded-4xl bg-[linear-gradient(rgba(255,255,255,0.34)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.26)_1px,transparent_1px)] bg-[size:36px_36px]"></div>
 
             <div className="relative h-137.5 flex items-end justify-center overflow-hidden rounded-4xl">
               <Image
-                src="/images/hero-person.png"
+                src="/images/hero/home-agent.png"
                 alt="Agent immobilier professionnel"
                 width={480}
                 height={550}
@@ -328,15 +325,15 @@ export default function Hero() {
               initial={{ opacity: 0, x: -20, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{ delay: 0.9, duration: 0.7, type: "spring", stiffness: 80, damping: 15 }}
-              className="absolute top-16 -left-6 bg-white/95 backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-white/60 z-20"
+              className="absolute top-16 -left-6 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-white/60 dark:border-border/60 z-20"
             >
               <div className="flex items-center gap-3">
                 <div className="bg-linear-to-br from-green-400 to-green-600 p-3 rounded-xl">
                   <ShieldCheckIcon className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-gray-900 leading-tight">Conseil local</p>
-                  <p className="text-xs text-gray-600 font-medium leading-tight">À votre écoute</p>
+                  <p className="text-sm font-bold text-foreground leading-tight">Conseil local</p>
+                  <p className="text-xs text-muted-foreground font-medium leading-tight">À votre écoute</p>
                 </div>
               </div>
             </motion.div>
@@ -346,15 +343,15 @@ export default function Hero() {
               initial={{ opacity: 0, x: 20, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{ delay: 1.1, duration: 0.7, type: "spring", stiffness: 80, damping: 15 }}
-              className="absolute top-1/3 -right-6 bg-white/95 backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-white/60 z-20"
+              className="absolute top-1/3 -right-6 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-white/60 dark:border-border/60 z-20"
             >
               <div className="flex items-center gap-3">
                 <div className="bg-linear-to-br from-amber-400 to-amber-600 p-3 rounded-xl">
                   <SparklesIcon className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-gray-900 leading-tight">5.0/5</p>
-                  <p className="text-xs text-gray-600 font-medium leading-tight">Clients accompagnés</p>
+                  <p className="text-sm font-bold text-foreground leading-tight">5.0/5</p>
+                  <p className="text-xs text-muted-foreground font-medium leading-tight">Clients accompagnés</p>
                 </div>
               </div>
             </motion.div>
@@ -366,11 +363,11 @@ export default function Hero() {
               initial={{ opacity: 0, y: -15, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ delay: 1.35, duration: 0.7, type: "spring", stiffness: 80, damping: 15 }}
-              className="absolute -top-6 -right-6 bg-white/95 backdrop-blur-xl p-5 rounded-2xl shadow-2xl border border-white/60 z-20"
+              className="absolute -top-6 -right-6 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl p-5 rounded-2xl shadow-2xl border border-white/60 dark:border-border/60 z-20"
             >
               <div className="text-center">
-                <div className="text-3xl font-black bg-linear-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent">500+</div>
-                <p className="text-sm text-gray-600 font-semibold mt-1">Biens à découvrir</p>
+                <div className="text-3xl font-black bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">500+</div>
+                <p className="text-sm text-muted-foreground font-semibold mt-1">Biens à découvrir</p>
               </div>
             </motion.div>
           </motion.div>

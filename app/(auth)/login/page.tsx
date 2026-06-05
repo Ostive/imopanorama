@@ -87,7 +87,7 @@ export default function LoginNewPage() {
       {/* Left Side - Branding */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden z-10">
         {/* Beautiful gradient background */}
-        <div className="absolute inset-0 bg-linear-to-br from-primary-600 via-primary-700 to-primary-800"></div>
+        <div className="absolute inset-0 bg-linear-to-br from-primary-600 via-primary-700 to-primary-600"></div>
         {/* Animated overlay pattern */}
         <div className="absolute inset-0">
           <div className="absolute top-0 right-0 w-96 h-96 bg-primary-400/20 rounded-full filter blur-3xl animate-pulse"></div>
@@ -105,7 +105,7 @@ export default function LoginNewPage() {
             {/* Logo Image */}
             <div className="relative w-80 h-80 mb-8 mx-auto">
               <Image
-                src="/images/auth-illustration.png"
+                src="/images/auth/auth-illustration.png"
                 alt="ImoPanorama Logo"
                 fill
                 className="object-contain drop-shadow-2xl"
@@ -139,10 +139,10 @@ export default function LoginNewPage() {
         {/* Back to Home Button */}
         <Link
           href="/"
-          className="absolute top-8 left-8 p-3 bg-white/80 hover:bg-white border-2 border-gray-200 hover:border-primary-500 rounded-xl shadow-lg hover:shadow-xl transition-all group"
+          className="absolute top-8 left-8 p-3 bg-white/80 dark:bg-gray-900/80 hover:bg-white dark:hover:bg-gray-900 border-2 border-border hover:border-primary-500 rounded-xl shadow-lg hover:shadow-xl transition-all group"
         >
           <svg
-            className="w-5 h-5 text-gray-600 group-hover:text-primary-600 transition-colors"
+            className="w-5 h-5 text-muted-foreground group-hover:text-primary-600 transition-colors"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -154,7 +154,7 @@ export default function LoginNewPage() {
         {/* Mobile Logo */}
         <div className="lg:hidden absolute top-6 left-1/2 -translate-x-1/2">
           <Image
-            src="/images/logo.png"
+            src="/images/brand/logo.png"
             alt="ImoPanorama Madagascar"
             width={140}
             height={44}
@@ -173,7 +173,7 @@ export default function LoginNewPage() {
             {/* Header */}
             <div className="mb-6 text-center">
               <h1 className="text-4xl font-bold text-primary-600 mb-2">Connexion</h1>
-              <p className="text-gray-700">Bienvenue ! Connectez-vous pour continuer</p>
+              <p className="text-foreground">Bienvenue ! Connectez-vous pour continuer</p>
             </div>
 
             {/* Error Message */}
@@ -181,7 +181,7 @@ export default function LoginNewPage() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm"
+                className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-400 text-sm"
               >
                 {error}
               </motion.div>
@@ -190,40 +190,40 @@ export default function LoginNewPage() {
             {/* Email/Password Form */}
             <form onSubmit={handleEmailSignIn} className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-foreground mb-2">
                   Email
                 </label>
                 <div className="relative group">
-                  <EnvelopeIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
+                  <EnvelopeIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 transition-colors" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full pl-12 pr-4 py-2.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white transition-all outline-none"
+                    className="w-full pl-12 pr-4 py-2.5 bg-muted border-2 border-border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white dark:focus:bg-gray-900 transition-all outline-none"
                     placeholder="votre@email.com"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-foreground mb-2">
                   Mot de passe
                 </label>
                 <div className="relative group">
-                  <LockClosedIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
+                  <LockClosedIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 transition-colors" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full pl-12 pr-12 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white transition-all outline-none"
+                    className="w-full pl-12 pr-12 py-3.5 bg-muted border-2 border-border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white dark:focus:bg-gray-900 transition-all outline-none"
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600 transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary-600 transition-colors"
                   >
                     {showPassword ? (
                       <EyeSlashIcon className="h-5 w-5" />
@@ -263,10 +263,10 @@ export default function LoginNewPage() {
             {/* Divider */}
             <div className="relative my-8">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
+                <div className="w-full border-t border-border"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500 font-medium">
+                <span className="px-4 bg-card text-muted-foreground font-medium">
                   Ou continuer avec
                 </span>
               </div>
@@ -279,7 +279,7 @@ export default function LoginNewPage() {
                 whileTap={{ scale: 0.98 }}
                 onClick={handleGoogleSignIn}
                 type="button"
-                className="w-full py-3.5 px-6 bg-white border-2 border-gray-200 hover:border-primary-300 hover:bg-gray-50 text-gray-700 font-semibold rounded-xl transition-all flex items-center justify-center gap-3 shadow-md"
+                className="w-full py-3.5 px-6 bg-card border-2 border-border hover:border-primary-300 hover:bg-muted text-foreground font-semibold rounded-xl transition-all flex items-center justify-center gap-3 shadow-md"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path
@@ -303,7 +303,7 @@ export default function LoginNewPage() {
               </motion.button>
 
               {/* OAuth Info */}
-              <p className="text-xs text-center text-gray-500 px-4">
+              <p className="text-xs text-center text-muted-foreground px-4">
                 En vous connectant avec Google, un compte sera automatiquement créé si vous n'en avez pas encore.
               </p>
             </div>
@@ -314,11 +314,11 @@ export default function LoginNewPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="mt-6 p-4 bg-linear-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl"
+                className="mt-6 p-4 bg-linear-to-r from-primary-50 to-purple-50 dark:from-primary-900/20 dark:to-purple-900/20 border border-primary-200 dark:border-primary-800 rounded-xl"
               >
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                  <p className="text-xs font-bold text-gray-700 uppercase tracking-wide">
+                  <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
+                  <p className="text-xs font-bold text-foreground uppercase tracking-wide">
                     Comptes de test
                   </p>
                 </div>
@@ -330,7 +330,7 @@ export default function LoginNewPage() {
                       setEmail('admin@imopanorama.mg');
                       setPassword('Admin123!');
                     }}
-                    className="px-3 py-2 bg-white hover:bg-linear-to-r hover:from-primary-600 hover:to-blue-600 hover:text-white border border-gray-200 hover:border-transparent rounded-lg text-xs font-semibold transition-all flex items-center gap-2 shadow-sm"
+                    className="px-3 py-2 bg-card hover:bg-linear-to-r hover:from-primary-600 hover:to-primary-600 hover:text-white border border-border hover:border-transparent rounded-lg text-xs font-semibold transition-all flex items-center gap-2 shadow-sm"
                   >
                     <span className="text-base">👑</span>
                     Admin
@@ -343,7 +343,7 @@ export default function LoginNewPage() {
                       setEmail('superadmin@imopanorama.mg');
                       setPassword('SuperAdmin123!');
                     }}
-                    className="px-3 py-2 bg-white hover:bg-linear-to-r hover:from-purple-600 hover:to-pink-600 hover:text-white border border-gray-200 hover:border-transparent rounded-lg text-xs font-semibold transition-all flex items-center gap-2 shadow-sm"
+                    className="px-3 py-2 bg-card hover:bg-linear-to-r hover:from-purple-600 hover:to-pink-600 hover:text-white border border-border hover:border-transparent rounded-lg text-xs font-semibold transition-all flex items-center gap-2 shadow-sm"
                   >
                     <span className="text-base">⚡</span>
                     Super Admin
@@ -356,7 +356,7 @@ export default function LoginNewPage() {
                       setEmail('agent@imopanorama.mg');
                       setPassword('Agent123!');
                     }}
-                    className="px-3 py-2 bg-white hover:bg-linear-to-r hover:from-green-600 hover:to-teal-600 hover:text-white border border-gray-200 hover:border-transparent rounded-lg text-xs font-semibold transition-all flex items-center gap-2 shadow-sm"
+                    className="px-3 py-2 bg-card hover:bg-linear-to-r hover:from-green-600 hover:to-teal-600 hover:text-white border border-border hover:border-transparent rounded-lg text-xs font-semibold transition-all flex items-center gap-2 shadow-sm"
                   >
                     <span className="text-base">👔</span>
                     Agent
@@ -369,7 +369,7 @@ export default function LoginNewPage() {
                       setEmail('client@imopanorama.mg');
                       setPassword('Client123!');
                     }}
-                    className="px-3 py-2 bg-white hover:bg-linear-to-r hover:from-orange-600 hover:to-red-600 hover:text-white border border-gray-200 hover:border-transparent rounded-lg text-xs font-semibold transition-all flex items-center gap-2 shadow-sm"
+                    className="px-3 py-2 bg-card hover:bg-linear-to-r hover:from-orange-600 hover:to-red-600 hover:text-white border border-border hover:border-transparent rounded-lg text-xs font-semibold transition-all flex items-center gap-2 shadow-sm"
                   >
                     <span className="text-base">💼</span>
                     Client
@@ -382,7 +382,7 @@ export default function LoginNewPage() {
                       setEmail('user@imopanorama.mg');
                       setPassword('User123!');
                     }}
-                    className="px-3 py-2 bg-white hover:bg-linear-to-r hover:from-gray-600 hover:to-gray-700 hover:text-white border border-gray-200 hover:border-transparent rounded-lg text-xs font-semibold transition-all flex items-center gap-2 shadow-sm"
+                    className="px-3 py-2 bg-card hover:bg-linear-to-r hover:from-gray-600 hover:to-gray-700 hover:text-white border border-border hover:border-transparent rounded-lg text-xs font-semibold transition-all flex items-center gap-2 shadow-sm"
                   >
                     <span className="text-base">👤</span>
                     Utilisateur
@@ -392,7 +392,7 @@ export default function LoginNewPage() {
             )}
 
             {/* Footer */}
-            <div className="mt-4 text-center text-sm text-gray-600">
+            <div className="mt-4 text-center text-sm text-muted-foreground">
               Pas encore de compte ?{' '}
               <Link
                 href="/register"

@@ -32,32 +32,32 @@ const testimonials = [
 
 export default function TestimonialsPage() {
   return (
-    <main className="bg-gray-50 dark:bg-gray-900">
+    <main className="bg-background">
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
           <span className="inline-flex rounded-full bg-primary-50 px-4 py-1.5 text-sm font-bold text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
             Témoignages
           </span>
-          <h1 className="mt-5 text-4xl font-black leading-tight text-gray-900 dark:text-white md:text-6xl">
+          <h1 className="mt-5 text-4xl font-black leading-tight text-foreground md:text-6xl">
             Des clients accompagnés avec sérieux et simplicité
           </h1>
-          <p className="mt-5 text-lg text-gray-600 dark:text-gray-300">
+          <p className="mt-5 text-lg text-muted-foreground">
             Chaque projet est différent. Notre rôle est de rendre les étapes plus claires, que ce soit pour acheter, louer, vendre ou construire.
           </p>
         </div>
 
         <div className="mt-12 grid gap-6 md:grid-cols-2">
           {testimonials.map((testimonial) => (
-            <article key={testimonial.name} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <article key={testimonial.name} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-border dark:bg-gray-800">
               <div className="flex gap-1 text-amber-400">
                 {Array.from({ length: 5 }).map((_, index) => (
                   <StarIcon key={index} className="h-5 w-5" />
                 ))}
               </div>
-              <p className="mt-5 text-lg leading-relaxed text-gray-700 dark:text-gray-200">“{testimonial.text}”</p>
-              <div className="mt-6 border-t border-gray-100 pt-4 dark:border-gray-700">
-                <p className="font-black text-gray-900 dark:text-white">{testimonial.name}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</p>
+              <p className="mt-5 text-lg leading-relaxed text-foreground">“{testimonial.text}”</p>
+              <div className="mt-6 border-t border-gray-100 pt-4 dark:border-border">
+                <p className="font-black text-foreground">{testimonial.name}</p>
+                <p className="text-sm text-muted-foreground">{testimonial.role}</p>
               </div>
             </article>
           ))}

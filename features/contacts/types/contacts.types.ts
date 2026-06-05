@@ -7,6 +7,13 @@ export interface Contact {
     message: string;
     createdAt: Date;
     isRead: boolean;
+    leadStatus: LeadStatus;
+    leadPriority: LeadPriority;
+    assignedAgentId: string | null;
+    nextFollowUpAt: Date | string | null;
+    scheduledVisitAt: Date | string | null;
+    visitOutcome: string | null;
+    internalNotes: string | null;
     propertyId: string | null;
     userId: string | null;
     property?: {
@@ -23,6 +30,38 @@ export interface Contact {
     } | null;
 }
 
+export type LeadStatus =
+    | 'NEW'
+    | 'TO_CONTACT'
+    | 'CONTACTED'
+    | 'VISIT_SCHEDULED'
+    | 'VISIT_DONE'
+    | 'NEGOTIATION'
+    | 'WON'
+    | 'LOST'
+    | 'ARCHIVED';
+
+export type LeadPriority = 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
+
+export const LEAD_STATUS_LABELS: Record<LeadStatus, string> = {
+    NEW: 'Nouveau',
+    TO_CONTACT: 'A contacter',
+    CONTACTED: 'Contacte',
+    VISIT_SCHEDULED: 'Visite planifiee',
+    VISIT_DONE: 'Visite faite',
+    NEGOTIATION: 'Negociation',
+    WON: 'Converti',
+    LOST: 'Perdu',
+    ARCHIVED: 'Archive',
+};
+
+export const LEAD_PRIORITY_LABELS: Record<LeadPriority, string> = {
+    LOW: 'Basse',
+    NORMAL: 'Normale',
+    HIGH: 'Haute',
+    URGENT: 'Urgente',
+};
+
 export interface ContactFormData {
     firstName: string;
     lastName: string;
@@ -38,9 +77,22 @@ export interface ContactFormData {
 
 export interface ContactFilter {
     isRead?: boolean;
+    leadStatus?: LeadStatus;
+    leadPriority?: LeadPriority;
     propertyId?: string;
     userId?: string;
     search?: string;
+}
+
+export interface ContactCrmUpdateData {
+    isRead?: boolean;
+    leadStatus?: LeadStatus;
+    leadPriority?: LeadPriority;
+    assignedAgentId?: string | null;
+    nextFollowUpAt?: string | null;
+    scheduledVisitAt?: string | null;
+    visitOutcome?: string | null;
+    internalNotes?: string | null;
 }
 
 export interface ContactSearchParams {

@@ -11,7 +11,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { newsService } from '@/features/news/services/newsService';
 import { requireAdmin } from '@/infrastructure/auth/auth-guard';
-import { withErrorHandler, apiError } from '@/infrastructure/middleware/api-handler';
+import { boundedIntParam, validationError, withErrorHandler } from '@/infrastructure/middleware/api-handler';
 import { cached, invalidateCache } from '@/infrastructure/cache';
 
 // ---------------------------------------------------------------------------
@@ -28,7 +28,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   const news = await cached(key, async () => {
     if (search) return newsService.searchNews(search);
     if (category) return newsService.getNewsByCategory(category as Parameters<typeof newsService.getNewsByCategory>[0]);
-    if (limit) return newsService.getRecentNews(parseInt(limit, 10));
+    if (limit) return newsService.getRecentNews(boundedIntParam(sp, 'limit', 6, 1, 50));
     return newsService.getAllNews();
   }, 120);
 
@@ -48,7 +48,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const validation = NewsFormDataSchema.safeParse(body);
 
   if (!validation.success) {
-    return apiError('Erreur de validation');
+    return validationError(validation.error.issues, 'L actualite contient des champs invalides');
   }
 
   const news = await newsService.createNews({

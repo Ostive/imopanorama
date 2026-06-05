@@ -12,7 +12,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { batiProcessRepository } from '@/infrastructure/database/repositories';
 import { requireAdmin } from '@/infrastructure/auth/auth-guard';
-import { withErrorHandler, apiError, extractParam } from '@/infrastructure/middleware/api-handler';
+import { withErrorHandler, apiError, extractParam, validationError } from '@/infrastructure/middleware/api-handler';
 
 // ---------------------------------------------------------------------------
 // GET /api/bati-process/[id]
@@ -44,12 +44,13 @@ export const PUT = withErrorHandler(async (
   const id = await extractParam(context, 'id');
   const body = await request.json();
 
-  const data = {
-    ...body,
-    step: typeof body.step === 'string' ? parseInt(body.step, 10) : body.step,
-  };
+  const { BatiProcessStepFormDataSchema } = await import('@/features/batipanorama/schemas/batipanorama.schema');
+  const validation = BatiProcessStepFormDataSchema.partial().safeParse(body);
+  if (!validation.success) {
+    return validationError(validation.error.issues, 'La mise a jour de l etape contient des champs invalides');
+  }
 
-  const processStep = await batiProcessRepository.update(id, data);
+  const processStep = await batiProcessRepository.update(id, validation.data);
   return NextResponse.json({ success: true, step: processStep });
 });
 

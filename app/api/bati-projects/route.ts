@@ -11,7 +11,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { batiProjectRepository } from '@/infrastructure/database/repositories';
 import { requireAdmin } from '@/infrastructure/auth/auth-guard';
-import { withErrorHandler, apiError } from '@/infrastructure/middleware/api-handler';
+import { validationError, withErrorHandler } from '@/infrastructure/middleware/api-handler';
 
 // ---------------------------------------------------------------------------
 // GET /api/bati-projects
@@ -42,7 +42,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const validation = BatiProjectFormDataSchema.safeParse(body);
 
   if (!validation.success) {
-    return apiError('Erreur de validation');
+    return validationError(validation.error.issues, 'Le projet contient des champs invalides');
   }
 
   const {

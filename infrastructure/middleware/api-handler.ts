@@ -1,46 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { ZodError, type ZodIssue } from 'zod';
 import { logger } from '@/infrastructure/logger/logger';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-/**
- * Type definition for a Next.js API route handler.
- * Accepts a request and optional dynamic route context (e.g. `{ params: { id } }`).
- */
 type RouteHandler = (
   request: NextRequest,
   context?: any
 ) => Promise<NextResponse>;
 
-/**
- * Map of known Prisma error codes to user-friendly HTTP responses.
- * Centralises database error translation so individual routes don't have to.
- */
 const PRISMA_ERROR_MAP: Record<string, { message: string; status: number }> = {
-  P2002: { message: 'Cette valeur existe déjà.', status: 400 },
-  P2003: { message: "Impossible de supprimer cette ressource car elle est liée à d'autres données.", status: 400 },
+  P2002: { message: 'Cette valeur existe deja.', status: 400 },
+  P2003: { message: "Impossible de supprimer cette ressource car elle est liee a d'autres donnees.", status: 400 },
+  P2022: { message: 'La base de donnees n est pas alignee avec le schema. Lancez les migrations.', status: 503 },
   P2025: { message: 'Ressource introuvable.', status: 404 },
 };
 
-// ---------------------------------------------------------------------------
-// Public helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Wraps an API route handler with standardised error handling.
- *
- * - Catches **all** errors thrown by `handler`.
- * - Translates common Prisma error codes into appropriate HTTP responses.
- * - Falls back to a generic 500 for any unrecognised error.
- *
- * @example
- * ```ts
- * export const GET = withErrorHandler(async (request) => {
- *   const data = await myService.list();
- *   return NextResponse.json({ success: true, data });
- * });
- * ```
- */
 export function withErrorHandler(handler: RouteHandler): RouteHandler {
   return async (request, context) => {
     try {
@@ -51,38 +26,47 @@ export function withErrorHandler(handler: RouteHandler): RouteHandler {
   };
 }
 
-/**
- * Builds a standardised JSON error response.
- *
- * @param message - Human-readable error message.
- * @param status  - HTTP status code (default `400`).
- */
 export function apiError(message: string, status = 400): NextResponse {
   return NextResponse.json({ success: false, error: message }, { status });
 }
 
-/**
- * Builds a standardised JSON success response.
- *
- * @param data   - Payload to include in the response body.
- * @param status - HTTP status code (default `200`).
- */
 export function apiSuccess<T>(data: T, status = 200): NextResponse {
   return NextResponse.json({ success: true, ...data as object }, { status });
 }
 
-/**
- * Extracts a single dynamic-route parameter from the Next.js route context.
- *
- * @param context - The route context containing `params`.
- * @param key     - The parameter name to extract (e.g. `"id"`).
- * @returns The string value of the parameter.
- *
- * @example
- * ```ts
- * const id = await extractParam(context, 'id');
- * ```
- */
+export function fieldErrorsFromIssues(issues: ZodIssue[]): Record<string, string> {
+  const fieldErrors: Record<string, string> = {};
+
+  for (const issue of issues) {
+    const key = issue.path.join('.') || 'form';
+    if (!fieldErrors[key]) fieldErrors[key] = issue.message;
+  }
+
+  return fieldErrors;
+}
+
+export function validationError(issues: ZodIssue[], message = 'Certains champs sont invalides'): NextResponse {
+  return NextResponse.json(
+    {
+      success: false,
+      error: message,
+      fieldErrors: fieldErrorsFromIssues(issues),
+      issues,
+    },
+    { status: 400 },
+  );
+}
+
+export function boundedIntParam(sp: URLSearchParams, key: string, fallback: number, min: number, max: number): number {
+  const raw = parseInt(sp.get(key) || String(fallback), 10);
+  if (!Number.isFinite(raw)) return fallback;
+  return Math.min(Math.max(raw, min), max);
+}
+
+export function parseEnumParam<T extends string>(value: string | null, allowed: readonly T[]): T | undefined {
+  return value && allowed.includes(value as T) ? value as T : undefined;
+}
+
 export async function extractParam(
   context: { params: Promise<Record<string, string>> } | undefined,
   key: string,
@@ -91,23 +75,18 @@ export async function extractParam(
   return params[key];
 }
 
-// ---------------------------------------------------------------------------
-// Internal
-// ---------------------------------------------------------------------------
-
-/**
- * Converts an unknown error into a consistent JSON response.
- * Handles known Prisma errors and logs anything unexpected.
- */
 function handleApiError(error: unknown): NextResponse {
+  if (error instanceof ZodError) {
+    return validationError(error.issues);
+  }
+
   const prismaError = error as { code?: string; meta?: { target?: string[] } };
   const mapped = prismaError.code ? PRISMA_ERROR_MAP[prismaError.code] : undefined;
 
   if (mapped) {
-    // For P2002 we can include the conflicting field name when available
     const message =
       prismaError.code === 'P2002' && prismaError.meta?.target?.[0]
-        ? `Cette valeur pour ${prismaError.meta.target[0]} existe déjà.`
+        ? `Cette valeur pour ${prismaError.meta.target[0]} existe deja.`
         : mapped.message;
 
     return apiError(message, mapped.status);

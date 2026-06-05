@@ -8,8 +8,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import dynamicImport from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Property, PROPERTY_TYPE_LABELS, PROPERTY_STATUS_LABELS, PROPERTY_CONDITION_LABELS } from '@/features/properties/types';
+import { Property, PROPERTY_TYPE_LABELS, PROPERTY_STATUS_LABELS, PROPERTY_CONDITION_LABELS, PROPERTY_LEGAL_STATUS_LABELS, PROPERTY_DOCUMENT_STATUS_LABELS } from '@/features/properties/types';
 import { formatPrice, formatDate } from '@/shared/utils';
+import { getMarketConfig } from '@/shared/config/markets';
 import { useFavorites } from '@/features/favorites/context/FavoritesContext';
 import { logger } from '@/infrastructure/logger/logger';
 import { toast } from 'react-hot-toast';
@@ -49,14 +50,24 @@ import {
   ChevronRightIcon,
   StarIcon,
   HomeModernIcon,
+  HomeIcon,
   BoltIcon,
   ClockIcon,
   EyeIcon,
   VideoCameraIcon,
   CubeTransparentIcon,
   DocumentTextIcon,
+  TagIcon,
+  BanknotesIcon,
+  BuildingOfficeIcon,
+  BuildingOffice2Icon,
+  BookmarkIcon,
+  PhotoIcon,
+  ExclamationCircleIcon,
+  ShieldCheckIcon,
 } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { Bed, Bath, DoorOpen, Trees } from 'lucide-react';
 
 interface ImageGalleryProps {
   images: string[];
@@ -94,7 +105,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
       <Card className="aspect-video">
         <CardContent className="flex items-center justify-center h-full">
           <div className="text-center text-muted-foreground">
-            <div className="text-6xl mb-4">🏞️</div>
+            <PhotoIcon className="w-16 h-16 mx-auto mb-4 text-gray-400" />
             <p className="text-lg font-medium">Aucune image disponible</p>
           </div>
         </CardContent>
@@ -121,8 +132,8 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
             priority
             onError={(e) => {
               const target = e.target as HTMLImageElement
-              if (target.src !== '/images/placeholders/property.jpg') {
-                target.src = '/images/placeholders/property.jpg'
+              if (target.src !== '/images/properties/property-placeholder.jpg') {
+                target.src = '/images/properties/property-placeholder.jpg'
               }
             }}
           />
@@ -666,8 +677,6 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
   );
 }
 
-// Le formulaire de contact est maintenant géré par le composant TerrainContactForm
-
 export default function PropertyDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -677,7 +686,6 @@ export default function PropertyDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const { addToFavorites, removeFromFavorites, isFavorite: checkIsFavorite } = useFavorites();
 
-  // Fetch property data
   useEffect(() => {
     if (propertyId) {
       fetchProperty();
@@ -701,10 +709,11 @@ export default function PropertyDetailPage() {
       setLoading(false);
     }
   };
+
   const [isFavorite, setIsFavorite] = useState(false);
   const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
   const [showVisitModal, setShowVisitModal] = useState(false);
-  // Check if property is favorite on mount
+
   useEffect(() => {
     const checkFavorite = async () => {
       if (!propertyId) return;
@@ -718,31 +727,23 @@ export default function PropertyDetailPage() {
     checkFavorite();
   }, [propertyId, checkIsFavorite]);
 
-  // Fonction pour gérer les favoris
   const handleToggleFavorite = async () => {
     if (!property) return;
 
     const previousState = isFavorite;
     setIsTogglingFavorite(true);
-
-    // Optimistic update
     setIsFavorite(!isFavorite);
 
     try {
       if (isFavorite) {
-        // Remove from favorites (updates navbar automatically)
         await removeFromFavorites(property.id);
         toast.success('Retiré des favoris');
       } else {
-        // Add to favorites (updates navbar automatically)
         await addToFavorites(property.id);
-        toast.success('❤️ Ajouté aux favoris');
+        toast.success('Ajouté aux favoris');
       }
     } catch (error: any) {
-      console.error('Error toggling favorite:', error);
-      // Revert on error
       setIsFavorite(previousState);
-
       if (error.message?.includes('401') || error.message?.includes('Non autorisé')) {
         toast.error('Veuillez vous connecter pour gérer vos favoris');
       } else {
@@ -753,24 +754,22 @@ export default function PropertyDetailPage() {
     }
   };
 
-  // Fonction pour programmer une visite
   const handleScheduleVisit = () => {
     setShowVisitModal(true);
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-background to-muted/20 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="animate-pulse space-y-8">
-            <div className="h-12 bg-muted rounded-2xl w-2/3"></div>
-            <div className="aspect-video bg-muted rounded-3xl"></div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2 space-y-6">
-                <Card className="h-96" />
-              </div>
-              <Card className="h-[600px]" />
+      <div className="min-h-screen bg-[#f8f7f5] dark:bg-gray-950 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-pulse space-y-6">
+          <div className="h-10 bg-gray-200 dark:bg-gray-800 rounded-xl w-1/3" />
+          <div className="aspect-video bg-gray-200 dark:bg-gray-800 rounded-2xl" />
+          <div className="h-28 bg-gray-200 dark:bg-gray-800 rounded-2xl" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-5">
+              {[1, 2, 3].map(i => <div key={i} className="h-36 bg-gray-200 dark:bg-gray-800 rounded-2xl" />)}
             </div>
+            <div className="h-[520px] bg-gray-200 dark:bg-gray-800 rounded-2xl" />
           </div>
         </div>
       </div>
@@ -779,18 +778,16 @@ export default function PropertyDetailPage() {
 
   if (error || !property) {
     return (
-      <div className="min-h-screen bg-background py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="text-center p-12">
-            <CardContent>
-              <div className="text-6xl mb-4">❌</div>
-              <h1 className="text-2xl font-bold mb-2">Propriété introuvable</h1>
-              <p className="text-muted-foreground mb-6">Cette propriété n'existe pas ou a été supprimée.</p>
-              <Button asChild>
-                <Link href="/proprietes">Retour aux propriétés</Link>
-              </Button>
-            </CardContent>
-          </Card>
+      <div className="min-h-screen bg-[#f8f7f5] dark:bg-gray-950 flex items-center justify-center py-8 px-4">
+        <div className="text-center max-w-sm">
+          <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+            <ExclamationCircleIcon className="w-10 h-10 text-red-500" />
+          </div>
+          <h1 className="text-2xl font-black text-gray-900 dark:text-gray-50 mb-2">Propriété introuvable</h1>
+          <p className="text-gray-500 dark:text-gray-400 mb-8">Cette propriété n'existe pas ou a été supprimée.</p>
+          <Button asChild className="rounded-full px-8">
+            <Link href="/proprietes">Retour aux propriétés</Link>
+          </Button>
         </div>
       </div>
     );
@@ -799,16 +796,72 @@ export default function PropertyDetailPage() {
   const statusConfig = {
     available: { label: 'Disponible', variant: 'default' as const },
     sold: { label: 'Vendu', variant: 'destructive' as const },
-    reserved: { label: 'Réservé', variant: 'secondary' as const }
+    reserved: { label: 'Réservé', variant: 'secondary' as const },
   };
-
   const status = statusConfig[property.status as keyof typeof statusConfig] || statusConfig.available;
+  const market = getMarketConfig(property.country);
+  const locationParts = [property.location, property.city, property.region, market.label].filter(Boolean);
+  const locationLabel = locationParts.length > 0 ? locationParts.join(', ') : 'Localisation non renseignée';
+  const documentLabel = property.documentStatus
+    ? PROPERTY_DOCUMENT_STATUS_LABELS[property.documentStatus] || property.documentStatus
+    : null;
+  const legalLabel = property.legalStatus
+    ? PROPERTY_LEGAL_STATUS_LABELS[property.legalStatus] || property.legalStatus
+    : null;
+
+  const pricePerM2Display = property.pricePerM2
+    ? formatPrice(Math.round(property.pricePerM2), property.currency, property.country)
+    : property.price && property.totalSize && property.totalSize > 0
+      ? formatPrice(Math.round(property.price / property.totalSize), property.currency, property.country)
+      : null;
+
+  const statusBadgeClass =
+    property.status === 'AVAILABLE' ? 'bg-emerald-500/90'
+    : property.status === 'SOLD' ? 'bg-red-500/90'
+    : property.status === 'RESERVED' ? 'bg-amber-500/90'
+    : 'bg-emerald-500/90';
+
+  const legalItems = [
+    { label: 'Statut foncier', value: legalLabel || 'À confirmer', ok: !!legalLabel },
+    { label: 'Documents du bien', value: documentLabel || 'Non renseigné', ok: property.documentStatus === 'VERIFIED' },
+    { label: 'Titre foncier / cadastre', value: property.legalStatus === 'TITLED' || property.legalStatus === 'CADASTRAL' ? legalLabel || 'Document déclaré' : 'À demander', ok: property.legalStatus === 'TITLED' || property.legalStatus === 'CADASTRAL' },
+    { label: 'Bornage et limites', value: property.fokontany || property.commune ? 'Zone localisée' : 'À vérifier sur place', ok: !!property.fokontany || !!property.commune },
+    { label: 'Propriétaire', value: property.isVerified ? 'Bien vérifié' : 'Vérification recommandée', ok: !!property.isVerified },
+    { label: 'Mutation / vente', value: 'À valider avec les documents originaux', ok: false },
+  ];
+
+  const charItems = [
+    { label: 'Surface totale', value: `${property.totalSize} m²`, icon: <ArrowsPointingOutIcon className="w-4 h-4" /> },
+    { label: 'Type de bien', value: PROPERTY_TYPE_LABELS[property.propertyType] || property.propertyType, icon: <HomeModernIcon className="w-4 h-4" /> },
+    { label: 'Transaction', value: property.transactionType === 'SALE' ? 'Vente' : property.transactionType === 'RENT' ? 'Location' : 'Saisonnier', icon: <BanknotesIcon className="w-4 h-4" /> },
+    { label: 'Ville', value: property.city, icon: <MapPinIcon className="w-4 h-4" /> },
+    ...(property.bedrooms ? [{ label: 'Chambres', value: String(property.bedrooms), icon: <Bed className="w-4 h-4" /> }] : []),
+    ...(property.bathrooms ? [{ label: 'Salles de bain', value: String(property.bathrooms), icon: <Bath className="w-4 h-4" /> }] : []),
+    ...(property.rooms ? [{ label: 'Pièces', value: String(property.rooms), icon: <DoorOpen className="w-4 h-4" /> }] : []),
+    ...(property.livingSize && property.livingSize !== property.totalSize ? [{ label: 'Surface habitable', value: `${property.livingSize} m²`, icon: <HomeIcon className="w-4 h-4" /> }] : []),
+    ...(property.landSize ? [{ label: 'Terrain', value: `${property.landSize} m²`, icon: <Trees className="w-4 h-4" /> }] : []),
+  ];
+
+  const detailItems = [
+    ...(property.yearBuilt ? [{ label: 'Année de construction', value: String(property.yearBuilt), icon: <ClockIcon className="w-4 h-4" /> }] : []),
+    ...(property.condition ? [{ label: 'État', value: PROPERTY_CONDITION_LABELS[property.condition] || property.condition, icon: <CheckCircleIcon className="w-4 h-4" /> }] : []),
+    ...(property.energyClass ? [{ label: 'Classe énergétique', value: property.energyClass, icon: <BoltIcon className="w-4 h-4" /> }] : []),
+    ...(property.floor !== null && property.floor !== undefined ? [{ label: 'Étage', value: `${property.floor}ème`, icon: <BuildingOfficeIcon className="w-4 h-4" /> }] : []),
+    ...(property.floors ? [{ label: "Nb d'étages", value: String(property.floors), icon: <BuildingOffice2Icon className="w-4 h-4" /> }] : []),
+    ...(property.reference ? [{ label: 'Référence', value: property.reference, icon: <BookmarkIcon className="w-4 h-4" /> }] : []),
+    ...(property.commune ? [{ label: 'Commune', value: property.commune, icon: <MapPinIcon className="w-4 h-4" /> }] : []),
+    ...(property.fokontany ? [{ label: 'Fokontany / secteur', value: property.fokontany, icon: <MapPinIcon className="w-4 h-4" /> }] : []),
+    ...(legalLabel ? [{ label: 'Statut foncier', value: legalLabel, icon: <DocumentTextIcon className="w-4 h-4" /> }] : []),
+    ...(documentLabel && property.documentStatus !== 'UNKNOWN' ? [{ label: 'Documents', value: documentLabel, icon: <CheckCircleIcon className="w-4 h-4" /> }] : []),
+  ];
+
+  const hasDetails = detailItems.length > 0;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50/40 via-white to-blue-50/30">
-      {/* Modal de programmation de visite */}
+    <div className="min-h-screen bg-[#f8f7f5] dark:bg-gray-950 pb-28 lg:pb-12">
+      {/* Visit modal */}
       {showVisitModal && property && (
-        <ScheduleVisitModal 
+        <ScheduleVisitModal
           isOpen={showVisitModal}
           onClose={() => setShowVisitModal(false)}
           propertyId={property.id}
@@ -816,233 +869,336 @@ export default function PropertyDetailPage() {
         />
       )}
 
-      {/* Navigation */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
+      {/* Sticky transparent breadcrumb nav */}
+      <motion.nav
+        initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40 shadow-sm"
+        className="sticky top-0 z-40 bg-white/85 dark:bg-gray-900/85 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <nav className="flex items-center space-x-2 text-sm">
-            <Link href="/" className="text-gray-600 hover:text-primary-600 transition-colors flex items-center gap-1">
-              Accueil
-            </Link>
-            <ChevronRightIcon className="w-4 h-4 text-gray-400" />
-            <Link href="/proprietes" className="text-gray-600 hover:text-primary-600 transition-colors">Propriétés</Link>
-            <ChevronRightIcon className="w-4 h-4 text-gray-400" />
-            <span className="text-gray-900 font-semibold">{property.title}</span>
-          </nav>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center gap-1.5 text-sm">
+          <Link href="/" className="text-gray-400 hover:text-primary transition-colors shrink-0 font-medium">Accueil</Link>
+          <ChevronRightIcon className="w-3.5 h-3.5 text-gray-300 shrink-0" />
+          <Link href="/proprietes" className="text-gray-400 hover:text-primary transition-colors shrink-0 font-medium">Propriétés</Link>
+          <ChevronRightIcon className="w-3.5 h-3.5 text-gray-300 shrink-0" />
+          <span className="text-gray-800 dark:text-gray-100 font-semibold truncate">{property.title}</span>
         </div>
-      </motion.div>
+      </motion.nav>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Galerie d'images */}
-        <div className="mb-8">
-          <ImageGallery images={property.images || []} title={property.title} />
-        </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
 
-        {/* En-tête */}
+        {/* Gallery with floating badge overlay */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          initial={{ opacity: 0, scale: 0.995 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+          className="relative"
         >
-          <Card className="p-8 border-gray-200 shadow-xl">
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-              <div className="flex-1">
-                <h1 className="text-4xl lg:text-5xl font-black mb-4 text-gray-900 dark:text-white">
-                    {property.title || 'Propriété sans titre'}
-                </h1>
-                <div className="flex flex-wrap items-center gap-4">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <MapPinIcon className="w-5 h-5 text-primary" />
-                    <span className="font-medium">{property.city || 'Localisation non renseignée'}</span>
-                  </div>
-                  <Badge variant={status.variant} className="px-4 py-2 text-sm">
-                    {status.label}
-                  </Badge>
-                  {property.views && property.views > 0 && (
-                    <Badge variant="secondary" className="px-4 py-2 text-sm gap-2">
-                      <EyeIcon className="w-4 h-4" />
-                      <span>{property.views.toLocaleString()} vues</span>
-                    </Badge>
-                  )}
-                </div>
+          <ImageGallery images={property.images || []} title={property.title} />
+
+          {/* Status / type badges — desktop, bottom-left of gallery */}
+          <div className="hidden lg:flex absolute bottom-5 left-5 flex-wrap gap-2 z-10 pointer-events-none">
+            <span className="bg-black/60 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+              {PROPERTY_TYPE_LABELS[property.propertyType] || property.propertyType}
+            </span>
+            <span className={`${statusBadgeClass} backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full`}>
+              {PROPERTY_STATUS_LABELS[property.status] || status.label}
+            </span>
+            {property.isVerified && (
+              <span className="bg-blue-500/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1">
+                <ShieldCheckIcon className="w-3.5 h-3.5" />
+                Vérifié
+              </span>
+            )}
+            {property.views && property.views > 0 && (
+              <span className="bg-black/50 backdrop-blur-sm text-white/80 text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                <EyeIcon className="w-3.5 h-3.5" />
+                {property.views.toLocaleString()} vues
+              </span>
+            )}
+          </div>
+        </motion.div>
+
+        {/* ── Hero info strip ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-white dark:bg-gray-900 rounded-b-2xl shadow-[0_8px_32px_rgba(0,0,0,0.07)] px-5 sm:px-7 py-5 mb-8"
+        >
+          {/* Title + price */}
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-5">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl lg:text-[1.85rem] font-black text-gray-900 dark:text-gray-50 leading-tight tracking-tight mb-2">
+                {property.title}
+              </h1>
+              <div className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
+                <MapPinIcon className="w-4 h-4 text-primary shrink-0" />
+                <span className="truncate">{locationLabel}</span>
               </div>
-              <div className="text-left lg:text-right">
-                <div className="text-4xl lg:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-2">
-                  {property.price ? formatPrice(property.price) : 'Prix sur demande'}
+            </div>
+            <div className="shrink-0 lg:text-right">
+              <div className="text-3xl lg:text-4xl font-black text-primary leading-none">
+                {property.price ? formatPrice(property.price, property.currency, property.country) : 'Prix sur demande'}
+              </div>
+              {pricePerM2Display && (
+                <div className="text-sm text-gray-400 font-medium mt-1">
+                  {pricePerM2Display}<span className="text-xs">/m²</span>
                 </div>
-                <div className="text-muted-foreground font-medium">
-                  {property.pricePerM2
-                    ? `${formatPrice(Math.round(property.pricePerM2))}/m²`
-                    : property.price && property.totalSize && property.totalSize > 0
-                      ? `${formatPrice(Math.round(property.price / property.totalSize))}/m²`
-                      : '-'}
+              )}
+            </div>
+          </div>
+
+          {/* Stats chips + actions */}
+          <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-gray-100 dark:border-gray-800">
+            <div className="flex flex-wrap gap-2 flex-1 min-w-0">
+              <div className="flex items-center gap-1.5 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl">
+                <ArrowsPointingOutIcon className="w-4 h-4 text-primary" />
+                <span className="text-sm font-bold text-gray-900 dark:text-gray-100">{property.totalSize} m²</span>
+              </div>
+              {property.bedrooms && (
+                <div className="flex items-center gap-1.5 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl">
+                  <Bed className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-bold text-gray-900 dark:text-gray-100">{property.bedrooms}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">ch.</span>
                 </div>
+              )}
+              {property.bathrooms && (
+                <div className="flex items-center gap-1.5 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl">
+                  <Bath className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-bold text-gray-900 dark:text-gray-100">{property.bathrooms}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">sdb</span>
+                </div>
+              )}
+              {property.rooms && (
+                <div className="flex items-center gap-1.5 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl">
+                  <DoorOpen className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-bold text-gray-900 dark:text-gray-100">{property.rooms}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">pièces</span>
+                </div>
+              )}
+              {property.landSize && (
+                <div className="flex items-center gap-1.5 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl">
+                  <Trees className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-bold text-gray-900 dark:text-gray-100">{property.landSize} m²</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">terrain</span>
+                </div>
+              )}
+              <div className="flex items-center gap-1.5 bg-primary/10 dark:bg-primary/20 px-3 py-1.5 rounded-xl">
+                <BanknotesIcon className="w-4 h-4 text-primary" />
+                <span className="text-sm font-bold text-primary">
+                  {property.transactionType === 'SALE' ? 'Vente' : property.transactionType === 'RENT' ? 'Location' : 'Saisonnier'}
+                </span>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3 mt-6">
+            {/* Actions */}
+            <div className="flex items-center gap-2 shrink-0">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   onClick={handleToggleFavorite}
                   disabled={isTogglingFavorite}
-                  variant="secondary"
-                  className="gap-2"
+                  variant="ghost"
+                  size="sm"
+                  className="rounded-full gap-1.5 text-sm"
                 >
-                  {isFavorite ? (
-                    <HeartSolidIcon className="w-5 h-5 text-red-500" />
-                  ) : (
-                    <HeartIcon className="w-5 h-5" />
-                  )}
-                  <span>{isFavorite ? 'Retiré des favoris' : 'Ajouter aux favoris'}</span>
+                  {isFavorite
+                    ? <HeartSolidIcon className="w-4 h-4 text-red-500" />
+                    : <HeartIcon className="w-4 h-4" />
+                  }
+                  <span className="hidden sm:inline text-xs">{isFavorite ? 'Favori' : 'Sauvegarder'}</span>
                 </Button>
               </motion.div>
               <ShareDropdown
                 title={property.title}
-                text={`${property.title} à ${property.city} — ${formatPrice(property.price)}`}
+                text={`${property.title} à ${property.city} — ${formatPrice(property.price, property.currency, property.country)}`}
               />
             </div>
-          </Card>
+          </div>
         </motion.div>
 
+        {/* ── Main grid ── */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Contenu principal */}
-          <div className="lg:col-span-2 space-y-8">
 
-            {/* Informations principales - Bullet Points */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="py-8"
-            >
-              <PropertySectionHeader
-                icon={<ArrowsPointingOutIcon className="h-6 w-6" />}
-                title="Caractéristiques"
-                description="Détails complets de la propriété"
-                color="primary"
-              />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">
-                <PropertyInfoItem icon={<ArrowsPointingOutIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />} label="Surface totale" value={`${property.totalSize || 0} m²`} color="primary" delay={0} />
-                <PropertyInfoItem icon="🏷️" label="Type de propriété" value={PROPERTY_TYPE_LABELS[property.propertyType] || 'Non renseigné'} color="blue" delay={0.05} />
-                <PropertyInfoItem icon="💰" label="Type de transaction" value={property.transactionType === 'SALE' ? 'Vente' : property.transactionType === 'RENT' ? 'Location' : 'Location saisonnière'} color="purple" delay={0.1} />
-                <PropertyInfoItem icon={<MapPinIcon className="w-5 h-5 text-green-600 dark:text-green-400" />} label="Ville" value={property.city || 'Non renseignée'} color="green" delay={0.15} />
-                {property.bedrooms && <PropertyInfoItem icon="🛏️" label="Chambres" value={property.bedrooms} color="pink" delay={0.2} />}
-                {property.bathrooms && <PropertyInfoItem icon="🚿" label="Salles de bain" value={property.bathrooms} color="cyan" delay={0.25} />}
-                {property.rooms && <PropertyInfoItem icon="🚪" label="Nombre de pièces" value={property.rooms} color="amber" delay={0.3} />}
-                {property.livingSize && property.livingSize !== property.totalSize && <PropertyInfoItem icon="🏠" label="Surface habitable" value={`${property.livingSize} m²`} color="orange" delay={0.35} />}
-                {property.landSize && <PropertyInfoItem icon="🌳" label="Surface terrain" value={`${property.landSize} m²`} color="emerald" delay={0.4} />}
-              </div>
-              <div className="mt-8 border-t border-border"></div>
-            </motion.div>
+          {/* Left column */}
+          <div className="lg:col-span-2">
 
             {/* Description */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
+            <motion.section
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="py-8"
+              className="py-8 border-b border-gray-100 dark:border-gray-800/60"
             >
-              <PropertySectionHeader
-                icon={<DocumentTextIcon className="h-6 w-6" />}
-                title="Description"
-                description="Présentation détaillée de la propriété"
-                color="slate"
-              />
-              <div className="text-muted-foreground leading-relaxed text-lg">
-                {property.description ? (
-                  <p className="whitespace-pre-line">{property.description}</p>
-                ) : (
-                  <div>
-                    Magnifique propriété de {property.totalSize || property.landSize} m² située à {property.city}.
-                    Idéal pour votre projet immobilier dans un environnement privilégié.
-                    N'hésitez pas à nous contacter pour plus d'informations ou pour organiser une visite.
-                  </div>
-                )}
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-[3px] h-7 bg-primary rounded-full shrink-0" />
+                <DocumentTextIcon className="w-5 h-5 text-primary shrink-0" />
+                <h2 className="text-lg font-bold text-gray-900 dark:text-gray-50">Description</h2>
               </div>
-              <div className="mt-8 border-t border-border"></div>
-            </motion.div>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-[15px] whitespace-pre-line">
+                {property.description
+                  ? property.description
+                  : `Magnifique propriété de ${property.totalSize || property.landSize} m² située à ${property.city}. Idéal pour votre projet immobilier dans un environnement privilégié. N'hésitez pas à nous contacter pour plus d'informations ou pour organiser une visite.`
+                }
+              </p>
+            </motion.section>
 
-            {/* Features Section */}
+            {/* Caractéristiques */}
+            <motion.section
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="py-8 border-b border-gray-100 dark:border-gray-800/60"
+            >
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-[3px] h-7 bg-primary rounded-full shrink-0" />
+                <ArrowsPointingOutIcon className="w-5 h-5 text-primary shrink-0" />
+                <h2 className="text-lg font-bold text-gray-900 dark:text-gray-50">Caractéristiques</h2>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {charItems.map((item, i) => (
+                  <motion.div
+                    key={item.label}
+                    initial={{ opacity: 0, y: 8 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.04 }}
+                    className="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-3.5 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    <div className="flex items-center gap-1.5 text-gray-400 dark:text-gray-500 mb-1.5">
+                      {item.icon}
+                      <span className="text-xs">{item.label}</span>
+                    </div>
+                    <div className="font-bold text-gray-900 dark:text-gray-100 text-sm leading-snug">{item.value}</div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.section>
+
+            {/* Points forts (features) */}
             {property.features && property.features.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
+              <motion.section
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="py-8"
+                className="py-8 border-b border-gray-100 dark:border-gray-800/60"
               >
-                <PropertySectionHeader
-                  icon={<StarIcon className="h-6 w-6" />}
-                  title="Caractéristiques spéciales"
-                  description="Points forts et atouts de la propriété"
-                  color="amber"
-                />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
-                  {property.features.map((feature: string, index: number) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-[3px] h-7 bg-primary rounded-full shrink-0" />
+                  <StarIcon className="w-5 h-5 text-primary shrink-0" />
+                  <h2 className="text-lg font-bold text-gray-900 dark:text-gray-50">Points forts</h2>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {property.features.map((feature: string, i: number) => (
+                    <motion.span
+                      key={i}
+                      initial={{ opacity: 0, scale: 0.88 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
-                      transition={{ delay: index * 0.03 }}
-                      className="flex items-start gap-3 p-3 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-colors"
+                      transition={{ delay: i * 0.03 }}
+                      className="inline-flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/50 px-3.5 py-1.5 rounded-full text-sm font-medium"
                     >
-                      <div className="w-8 h-8 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <StarIcon className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                      <StarIcon className="w-3.5 h-3.5 shrink-0" />
+                      {feature}
+                    </motion.span>
+                  ))}
+                </div>
+              </motion.section>
+            )}
+
+            {/* Détails du bien */}
+            {hasDetails && (
+              <motion.section
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="py-8 border-b border-gray-100 dark:border-gray-800/60"
+              >
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-[3px] h-7 bg-primary rounded-full shrink-0" />
+                  <HomeModernIcon className="w-5 h-5 text-primary shrink-0" />
+                  <h2 className="text-lg font-bold text-gray-900 dark:text-gray-50">Détails du bien</h2>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {detailItems.map((item, i) => (
+                    <motion.div
+                      key={item.label}
+                      initial={{ opacity: 0, y: 8 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.04 }}
+                      className="bg-gray-50 dark:bg-gray-800/60 rounded-xl p-3.5 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    >
+                      <div className="flex items-center gap-1.5 text-gray-400 dark:text-gray-500 mb-1.5">
+                        {item.icon}
+                        <span className="text-xs">{item.label}</span>
                       </div>
-                      <span className="font-medium text-foreground flex-1 min-w-0">{feature}</span>
+                      <div className="font-bold text-gray-900 dark:text-gray-100 text-sm leading-snug">{item.value}</div>
                     </motion.div>
                   ))}
                 </div>
-                <div className="mt-8 border-t border-border"></div>
-              </motion.div>
+              </motion.section>
             )}
 
-            {/* Property Details Section */}
-            {(property.yearBuilt || property.condition || property.energyClass || property.floor || property.floors) && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="py-8"
-              >
-                <PropertySectionHeader
-                  icon={<HomeModernIcon className="h-6 w-6" />}
-                  title="Détails du bien"
-                  description="Informations complémentaires sur la propriété"
-                  color="blue"
-                />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">
-                  {property.yearBuilt && <PropertyInfoItem icon={<ClockIcon className="w-5 h-5" />} label="Année de construction" value={property.yearBuilt} color="blue" delay={0} />}
-                  {property.condition && <PropertyInfoItem icon={<CheckCircleIcon className="w-5 h-5" />} label="État" value={PROPERTY_CONDITION_LABELS[property.condition] || property.condition} color="emerald" delay={0.03} />}
-                  {property.energyClass && <PropertyInfoItem icon={<BoltIcon className="w-5 h-5" />} label="Classe énergétique" value={property.energyClass} color="amber" delay={0.06} />}
-                  {property.floor !== null && property.floor !== undefined && <PropertyInfoItem icon="🏢" label="Étage" value={`${property.floor}ème`} color="purple" delay={0.09} />}
-                  {property.floors && <PropertyInfoItem icon="🏗️" label="Nombre d'étages" value={property.floors} color="cyan" delay={0.12} />}
-                  {property.reference && <PropertyInfoItem icon="🔖" label="Référence" value={property.reference} color="slate" delay={0.15} />}
-                </div>
-                <div className="mt-8 border-t border-border"></div>
-              </motion.div>
-            )}
+            {/* Confiance juridique */}
+            <motion.section
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="py-8 border-b border-gray-100 dark:border-gray-800/60"
+            >
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-[3px] h-7 bg-primary rounded-full shrink-0" />
+                <ShieldCheckIcon className="w-5 h-5 text-primary shrink-0" />
+                <h2 className="text-lg font-bold text-gray-900 dark:text-gray-50">Confiance juridique</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                {legalItems.map((item, i) => (
+                  <motion.div
+                    key={item.label}
+                    initial={{ opacity: 0, x: -8 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.05 }}
+                    className={`bg-white dark:bg-gray-900 rounded-xl p-4 shadow-sm border-l-4 ${
+                      item.ok
+                        ? 'border-l-emerald-500 dark:border-l-emerald-400'
+                        : 'border-l-amber-400 dark:border-l-amber-500'
+                    }`}
+                  >
+                    <div className="flex items-start gap-2.5">
+                      {item.ok
+                        ? <CheckCircleIcon className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                        : <ExclamationCircleIcon className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
+                      }
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900 dark:text-gray-50">{item.label}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{item.value}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+              <div className="bg-amber-50 dark:bg-amber-950/30 rounded-xl p-4 text-sm text-amber-800 dark:text-amber-200 leading-relaxed">
+                Cette checklist aide à poser les bonnes questions. La validation finale doit se faire avec les documents originaux et, si nécessaire, un professionnel local du foncier.
+              </div>
+            </motion.section>
 
-            {/* Virtual Tour & Video */}
+            {/* Visite virtuelle */}
             {(property.virtualTour || property.videoUrl) && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
+              <motion.section
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="py-8"
+                className="py-8 border-b border-gray-100 dark:border-gray-800/60"
               >
-                <PropertySectionHeader
-                  icon={<CubeTransparentIcon className="h-6 w-6" />}
-                  title="Visite virtuelle"
-                  description="Explorez la propriété en immersion 360°"
-                  color="purple"
-                />
-                <div className="space-y-6">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-[3px] h-7 bg-primary rounded-full shrink-0" />
+                  <CubeTransparentIcon className="w-5 h-5 text-primary shrink-0" />
+                  <h2 className="text-lg font-bold text-gray-900 dark:text-gray-50">Visite virtuelle</h2>
+                </div>
+                <div className="space-y-4">
                   {property.virtualTour && (
-                    <div className="relative aspect-video rounded-2xl overflow-hidden bg-muted">
+                    <div className="relative aspect-video rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800">
                       <iframe
                         src={property.virtualTour}
                         className="absolute inset-0 w-full h-full"
@@ -1052,9 +1208,8 @@ export default function PropertyDetailPage() {
                       />
                     </div>
                   )}
-
                   {property.videoUrl && (
-                    <div className="relative aspect-video rounded-2xl overflow-hidden bg-muted">
+                    <div className="relative aspect-video rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800">
                       <iframe
                         src={property.videoUrl}
                         className="absolute inset-0 w-full h-full"
@@ -1065,80 +1220,93 @@ export default function PropertyDetailPage() {
                     </div>
                   )}
                 </div>
-                <div className="mt-8 border-t border-border"></div>
-              </motion.div>
+              </motion.section>
             )}
 
-            {/* Carte de la propriété */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
+            {/* Localisation */}
+            <motion.section
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="py-8"
+              className="py-8 border-b border-gray-100 dark:border-gray-800/60"
             >
-              <PropertySectionHeader
-                icon={<MapPinIcon className="h-6 w-6" />}
-                title="Localisation"
-                description="Emplacement exact de la propriété sur la carte"
-                color="red"
-              />
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-[3px] h-7 bg-primary rounded-full shrink-0" />
+                <MapPinIcon className="w-5 h-5 text-primary shrink-0" />
+                <h2 className="text-lg font-bold text-gray-900 dark:text-gray-50">Localisation</h2>
+              </div>
               <div className="rounded-2xl overflow-hidden">
                 <PropertyMap property={property} height="400px" />
               </div>
-              <div className="mt-8 border-t border-border"></div>
-            </motion.div>
+            </motion.section>
 
-            {/* Caractéristiques et équipements */}
+            {/* Équipements */}
             {property.amenities && property.amenities.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
+              <motion.section
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 className="py-8"
               >
-                <PropertySectionHeader
-                  icon={<CheckCircleIcon className="h-6 w-6" />}
-                  title="Équipements et services"
-                  description="Tous les équipements disponibles dans cette propriété"
-                  color="green"
-                />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
-                  {property.amenities.map((feature: string, index: number) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-[3px] h-7 bg-primary rounded-full shrink-0" />
+                  <CheckCircleIcon className="w-5 h-5 text-primary shrink-0" />
+                  <h2 className="text-lg font-bold text-gray-900 dark:text-gray-50">Équipements & services</h2>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {property.amenities.map((amenity: string, i: number) => (
+                    <motion.span
+                      key={i}
+                      initial={{ opacity: 0, scale: 0.88 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
-                      transition={{ delay: index * 0.03 }}
-                      className="flex items-start gap-3 p-3 rounded-lg hover:bg-green-50 dark:hover:bg-green-950/20 transition-colors"
+                      transition={{ delay: i * 0.03 }}
+                      className="inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50 px-3.5 py-1.5 rounded-full text-sm font-medium"
                     >
-                      <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <CheckCircleIcon className="w-4 h-4 text-green-600 dark:text-green-400" />
-                      </div>
-                      <span className="font-medium text-foreground flex-1 min-w-0">{feature}</span>
-                    </motion.div>
+                      <CheckCircleIcon className="w-3.5 h-3.5 shrink-0" />
+                      {amenity}
+                    </motion.span>
                   ))}
                 </div>
-              </motion.div>
+              </motion.section>
             )}
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-8 h-fit">
-            {/* Formulaire de contact */}
+          {/* ── Right sidebar ── */}
+          <div className="space-y-5 lg:sticky lg:top-16 h-fit" id="contact-section">
+
+            {/* Contact form — gradient header + form */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
+              transition={{ delay: 0.15 }}
+              className="rounded-2xl overflow-hidden shadow-xl border border-gray-100 dark:border-gray-800"
             >
-              <ContactForm propertyId={property.id} propertyTitle={property.title} />
+              <div className="bg-gradient-to-br from-primary via-primary/95 to-primary/80 px-5 py-5">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-11 h-11 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm shrink-0">
+                    <BuildingOfficeIcon className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-white text-[15px] leading-tight">ImoPanorama</p>
+                    <p className="text-white/60 text-xs mt-0.5">Agence immobilière · Madagascar</p>
+                  </div>
+                </div>
+                <div className="border-t border-white/20 pt-3">
+                  <p className="text-white/90 text-sm font-semibold">Intéressé par ce bien ?</p>
+                  <p className="text-white/55 text-xs mt-0.5 leading-relaxed">Envoyez un message, nous vous répondrons dans les 24h.</p>
+                </div>
+              </div>
+              <div className="bg-white dark:bg-gray-900">
+                <ContactForm propertyId={property.id} propertyTitle={property.title} />
+              </div>
             </motion.div>
 
-            {/* Actions rapides */}
+            {/* Quick actions */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
+              transition={{ delay: 0.25 }}
             >
               <AgencyActionButtons
                 propertyTitle={property.title}
@@ -1147,21 +1315,59 @@ export default function PropertyDetailPage() {
               />
             </motion.div>
 
-            {/* Informations de contact */}
+            {/* Business card contact info */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
+              transition={{ delay: 0.35 }}
+              className="bg-white dark:bg-gray-900 rounded-2xl px-5 py-5 border border-gray-100 dark:border-gray-800 shadow-sm"
             >
-              <div className="space-y-1">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Nous contacter</h3>
-                <ContactInfoItem icon={<EnvelopeIcon className="w-6 h-6" />} label="Email" content="contact@imopanorama.mg" href="mailto:contact@imopanorama.mg" color="primary" />
-                <ContactInfoItem icon={<PhoneIcon className="w-6 h-6" />} label="Téléphone" content="+261 20 22 123 45" href="tel:+261202212345" color="blue" />
-                <ContactInfoItem icon={<MapPinIcon className="w-6 h-6" />} label="Adresse" content="Antananarivo, Madagascar" color="green" />
-                <ContactInfoItem icon={<span className="text-2xl">🕒</span>} label="Horaires" content="Lun-Ven: 8h-17h" color="primary" />
+              <h3 className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Contact direct</h3>
+              <div className="space-y-0.5">
+                <ContactInfoItem icon={<EnvelopeIcon className="w-5 h-5" />} label="Email" content="contact@imopanorama.mg" href="mailto:contact@imopanorama.mg" color="primary" />
+                <ContactInfoItem icon={<PhoneIcon className="w-5 h-5" />} label="Téléphone" content="+261 20 22 123 45" href="tel:+261202212345" color="blue" />
+                <ContactInfoItem icon={<MapPinIcon className="w-5 h-5" />} label="Adresse" content="Antananarivo, Madagascar" color="green" />
+                <ContactInfoItem icon={<ClockIcon className="w-5 h-5" />} label="Horaires" content="Lun–Ven : 8h–17h" color="primary" />
               </div>
             </motion.div>
           </div>
+        </div>
+      </div>
+
+      {/* ── Mobile sticky bottom bar ── */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-gray-800 px-4 py-3">
+        <div className="flex items-center gap-3 max-w-lg mx-auto">
+          <div className="flex-1 min-w-0">
+            <div className="text-lg font-black text-primary leading-tight truncate">
+              {property.price ? formatPrice(property.price, property.currency, property.country) : 'Prix sur demande'}
+            </div>
+            <div className="text-xs text-gray-500 truncate mt-0.5">{property.city} · {property.totalSize} m²</div>
+          </div>
+          <Button
+            className="rounded-full px-5 font-semibold gap-1.5 shrink-0"
+            onClick={() => {
+              const el = document.getElementById('contact-section');
+              el?.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            <EnvelopeIcon className="w-4 h-4" />
+            Contacter
+          </Button>
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+            <Button
+              onClick={handleToggleFavorite}
+              disabled={isTogglingFavorite}
+              variant="outline"
+              size="icon"
+              className="rounded-full shrink-0 border-gray-200 dark:border-gray-700"
+              aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+            >
+              {isFavorite
+                ? <HeartSolidIcon className="w-5 h-5 text-red-500" />
+                : <HeartIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              }
+            </Button>
+          </motion.div>
         </div>
       </div>
     </div>

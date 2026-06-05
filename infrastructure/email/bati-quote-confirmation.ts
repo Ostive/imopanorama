@@ -1,4 +1,4 @@
-import { transporter } from './transporter';
+import { getMailFrom, transporter } from './transporter';
 import { BatiQuoteData } from './types';
 
 /**
@@ -6,7 +6,7 @@ import { BatiQuoteData } from './types';
  */
 export async function sendBatiQuoteConfirmation(data: BatiQuoteData) {
   const mailOptions = {
-    from: '"BatiPanorama" <noreply@demomailtrap.co>',
+    from: getMailFrom('BatiPanorama'),
     to: data.clientEmail,
     subject: `Confirmation de votre demande de devis - ${data.projectType}`,
     html: `

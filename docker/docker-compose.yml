@@ -8,37 +8,25 @@ name: imopanorama
 #   docker compose up -d
 #
 # Services Docker:
-#   - postgres    : PostgreSQL 16 + pgvector/pg_trgm/unaccent/earthdistance (host port 5433 → container 5432)
+#   - postgres    : PostgreSQL 16 + pgvector/pg_trgm/unaccent/earthdistance (host port 5433 -> container 5432)
 #   - redis       : Cache / Sessions / Queue (port 6379)
 #   - umami       : Analytics (port 3100)
 #   - grafana     : Dashboards monitoring (port 3200)
-#   - loki        : Agrégation de logs (port 3101)
+#   - loki        : Agregation de logs (port 3101)
 #   - promtail    : Collecteur de logs
 #   - uptime-kuma : Monitoring uptime (port 3300)
 #
 # Services natifs (VPS) :
-#   - Next.js (PM2) → localhost:3000
+#   - Next.js (PM2) -> localhost:3000
 # ============================================
 
 services:
-
-  # =====================
-  # POSTGRES - Base de données principale
-  # Image `pgvector/pgvector:pg16` = Postgres 16 officiel + extension vector déjà compilée
-  # Les extensions pg_trgm / unaccent / earthdistance / btree_gin sont `contrib` (shippées avec Postgres),
-  # il suffit de faire CREATE EXTENSION → voir ./postgres/init/01-extensions.sql (exécuté au 1er démarrage)
-  # =====================
   postgres:
     image: pgvector/pgvector:pg16
     container_name: imo-postgres
     restart: unless-stopped
     ports:
-      # HOST:CONTAINER → 5433:5432 (Postgres écoute sur 5432 dans le conteneur, exposé sur 5433 côté host)
-      # Évite le conflit avec un Postgres natif occupant déjà 5432.
-      # Depuis l'app locale : DATABASE_URL=postgresql://postgres:root@localhost:5433/db_imo
       - "127.0.0.1:5433:5432"
-    # env_file = lu relativement à ce fichier compose → robuste quel que soit le CWD
-    # Contient POSTGRES_USER / POSTGRES_PASSWORD / POSTGRES_DB (voir docker/.env)
     env_file:
       - ./.env
     volumes:
@@ -55,10 +43,6 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  # =====================
-  # REDIS - Cache / Sessions / Queue
-  # En prod VPS: peut être remplacé par redis natif (apt install redis-server)
-  # =====================
   redis:
     image: redis:7-alpine
     container_name: imo-redis
@@ -78,10 +62,7 @@ services:
       options:
         max-size: "5m"
         max-file: "3"
-  # =====================
-  # UMAMI - Analytics
-  # Utilise le PostgreSQL natif du VPS (host.docker.internal)
-  # =====================
+
   umami:
     image: ghcr.io/umami-software/umami:postgresql-latest
     container_name: imo-umami
@@ -105,9 +86,6 @@ services:
         max-size: "5m"
         max-file: "3"
 
-  # =====================
-  # GRAFANA - Dashboards & Monitoring
-  # =====================
   grafana:
     image: grafana/grafana:latest
     container_name: imo-grafana
@@ -138,9 +116,6 @@ services:
         max-size: "5m"
         max-file: "3"
 
-  # =====================
-  # LOKI - Log Aggregation
-  # =====================
   loki:
     image: grafana/loki:3.4.3
     container_name: imo-loki
@@ -162,9 +137,6 @@ services:
         max-size: "5m"
         max-file: "3"
 
-  # =====================
-  # PROMTAIL - Log Collector → Loki
-  # =====================
   promtail:
     image: grafana/promtail:3.4.3
     container_name: imo-promtail
@@ -183,9 +155,6 @@ services:
         max-size: "5m"
         max-file: "3"
 
-  # =====================
-  # UPTIME KUMA - Uptime Monitoring
-  # =====================
   uptime-kuma:
     image: louislam/uptime-kuma:1
     container_name: imo-uptime-kuma
@@ -205,9 +174,6 @@ services:
         max-size: "5m"
         max-file: "3"
 
-# =====================
-# VOLUMES
-# =====================
 volumes:
   postgres_data:
     driver: local

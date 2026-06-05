@@ -7,3 +7,4 @@ export { SeoTab } from './SeoTab';
 export { PricingTab } from './PricingTab';
 export { SecurityTab } from './SecurityTab';
 export { MapTab } from './MapTab';
+export { SearchTab } from './SearchTab';

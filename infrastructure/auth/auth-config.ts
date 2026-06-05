@@ -76,10 +76,15 @@ export const auth = betterAuth({
       },
     },
   },
+  trustedOrigins: [
+    "http://localhost:3000",
+    "http://10.35.210.30:3000",
+    "http://172.25.224.1:3000",
+    ...(process.env.NEXT_PUBLIC_APP_URL ? [process.env.NEXT_PUBLIC_APP_URL] : []),
+  ],
   advanced: {
     database: {
       generateId: () => {
-        // Generate UUID v4
         return crypto.randomUUID();
       },
     },

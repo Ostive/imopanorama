@@ -42,7 +42,7 @@ function NewsSection() {
               readTime: `${Math.ceil(
                 item.content.replace(/<[^>]*>/g, '').split(/\s+/).length / 200
               )} min de lecture`,
-              image: item.coverImage || '/images/og-image.png',
+              image: item.coverImage || '/images/social/og-image.png',
               slug: item.slug,
             }))
           )
@@ -57,26 +57,29 @@ function NewsSection() {
   }, [])
 
   return (
-    <section className="py-24 bg-gray-50 dark:bg-gray-900">
+    <section className="py-28 bg-card">
       <div className="container mx-auto px-4">
 
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-12">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-14">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <span className="inline-block px-4 py-1.5 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full text-sm font-semibold mb-3">
-              À lire
-            </span>
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-px w-12 bg-primary-500" />
+              <span className="text-primary-600 dark:text-primary-400 text-xs font-bold tracking-widest uppercase">
+                À lire
+              </span>
+            </div>
+            <h2 className="text-5xl md:text-6xl font-black text-foreground leading-[1.05]">
               Comprendre le marché{' '}
-              <span className="bg-gradient-to-r from-primary-600 via-blue-600 to-secondary-500 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
                 sans jargon
               </span>
             </h2>
-            <p className="mt-2 text-gray-500 dark:text-gray-400 text-base max-w-md">
+            <p className="mt-3 text-muted-foreground text-base max-w-md">
               Conseils pratiques, tendances locales et nouvelles utiles pour avancer avec plus de confiance.
             </p>
           </motion.div>
@@ -85,13 +88,14 @@ function NewsSection() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
+            className="shrink-0"
           >
             <Link
               href="/actualites"
-              className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold text-sm hover:border-primary-300 dark:hover:border-primary-600 hover:text-primary-700 dark:hover:text-primary-400 transition-all"
+              className="group inline-flex items-center gap-2 text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest hover:gap-3 transition-all"
             >
-              Lire les articles
-              <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              Tous les articles
+              <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
         </div>
@@ -100,13 +104,13 @@ function NewsSection() {
         {isLoading && (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden">
-                <div className="h-52 bg-gray-200 dark:bg-gray-700" />
+              <div key={i} className="bg-background rounded-3xl overflow-hidden">
+                <div className="h-52 bg-muted" />
                 <div className="p-5 space-y-3">
-                  <div className="h-3 w-20 bg-gray-200 dark:bg-gray-700 rounded-full" />
-                  <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded" />
-                  <div className="h-5 w-4/5 bg-gray-200 dark:bg-gray-700 rounded" />
-                  <div className="h-3 w-1/2 bg-gray-100 dark:bg-gray-700 rounded" />
+                  <div className="h-3 w-20 bg-muted rounded-full" />
+                  <div className="h-5 bg-muted rounded" />
+                  <div className="h-5 w-4/5 bg-muted rounded" />
+                  <div className="h-3 w-1/2 bg-muted rounded" />
                 </div>
               </div>
             ))}
@@ -116,13 +120,12 @@ function NewsSection() {
         {/* Empty state */}
         {!isLoading && articles.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-gray-400 dark:text-gray-500">
-              Aucun article disponible pour le moment. De nouveaux contenus arrivent bientôt.
-            </p>
+            <p className="font-semibold text-foreground mb-1">Aucun article pour le moment</p>
+            <p className="text-sm text-muted-foreground">De nouveaux contenus arrivent bientôt.</p>
           </div>
         )}
 
-        {/* Articles grid */}
+        {/* Articles — editorial grid: first article featured (spans 2 cols on lg) */}
         {!isLoading && articles.length > 0 && (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {articles.map((article, index) => (
@@ -132,12 +135,13 @@ function NewsSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
+                className={index === 0 ? 'sm:col-span-2 lg:col-span-2' : ''}
               >
                 <Link href={`/actualites/${article.slug}`} className="group block h-full">
-                  <div className="h-full flex flex-col bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100 dark:border-gray-700">
+                  <div className="h-full flex flex-col bg-background rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
 
                     {/* Image */}
-                    <div className="relative h-52 overflow-hidden flex-shrink-0">
+                    <div className={`relative overflow-hidden shrink-0 ${index === 0 ? 'h-64 sm:h-72' : 'h-52'}`}>
                       <Image
                         src={article.image}
                         alt={article.title}
@@ -145,24 +149,24 @@ function NewsSection() {
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
                       <span className="absolute top-4 left-4 bg-primary-600 text-white text-xs font-bold px-3 py-1 rounded-lg">
                         {article.category}
                       </span>
                     </div>
 
                     {/* Content */}
-                    <div className="flex flex-col flex-1 p-5">
-                      <h3 className="font-bold text-gray-900 dark:text-white text-base leading-snug line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-2">
+                    <div className="flex flex-col flex-1 p-6">
+                      <h3 className={`font-bold text-foreground leading-snug line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-2 ${index === 0 ? 'text-lg' : 'text-base'}`}>
                         {article.title}
                       </h3>
-                      <p className="text-gray-500 dark:text-gray-400 text-sm line-clamp-2 leading-relaxed flex-1">
+                      <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed flex-1">
                         {article.excerpt}
                       </p>
 
                       {/* Footer */}
-                      <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-                        <div className="flex items-center gap-3 text-xs text-gray-400 dark:text-gray-500">
+                      <div className="flex items-center justify-between mt-5 pt-4 border-t border-border/50">
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <CalendarIcon className="w-3.5 h-3.5" />
                             {article.date}
@@ -172,9 +176,7 @@ function NewsSection() {
                             {article.readTime}
                           </span>
                         </div>
-                        <span className="text-primary-600 dark:text-primary-400 group-hover:translate-x-1 transition-transform">
-                          <ArrowRightIcon className="w-4 h-4" />
-                        </span>
+                        <ArrowRightIcon className="w-4 h-4 text-primary-500 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>
                   </div>

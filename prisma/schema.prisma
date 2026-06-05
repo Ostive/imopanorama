@@ -30,10 +30,13 @@ model User {
   // Relations
   properties        Property[] // Relation avec les propriétés (propriétaire)
   contacts          Contact[] // Messages de contact envoyés par l'utilisateur
+  assignedContacts  Contact[] @relation("AssignedContacts")
   propertyContacts  PropertyContact[] // Messages de contact pour les propriétés
+  assignedPropertyContacts PropertyContact[] @relation("AssignedPropertyContacts")
   propertyFavorites PropertyFavorite[] // Propriétés favorites de l'utilisateur
   batiQuotes        BatiQuote[] // Demandes de devis BatiPanorama
   news              News[] // Articles d'actualité créés par l'utilisateur
+  notifications     Notification[]
   sessions          Session[] // BetterAuth sessions
   accounts          Account[] // BetterAuth OAuth accounts
 }
@@ -106,6 +109,11 @@ model Property {
   // Location
   location    String
   city        String
+  country     String  @default("MG") // ISO 3166-1 alpha-2: MG, FR, GB, etc.
+  region      String?
+  district    String?
+  commune     String?
+  fokontany   String?
   address     String?
   zipCode     String?
   coordinates Json? // { lat: number, lng: number }
@@ -114,7 +122,7 @@ model Property {
   price      Float
   pricePerM2 Float?
   rentPrice  Float? // Prix de location mensuel si applicable
-  currency   String @default("EUR")
+  currency   String @default("MGA")
 
   // Size & Dimensions
   totalSize  Float // Surface totale en m²
@@ -140,6 +148,9 @@ model Property {
   virtualTour String? // URL visite virtuelle 360°
   videoUrl    String?
 
+  // Semantic search (pgvector). Read/write via $queryRaw/$executeRaw — not exposed in TS client.
+  embedding Unsupported("vector(1536)")?
+
   // Status & Visibility
   status      PropertyStatus @default(AVAILABLE)
   isFeatured  Boolean        @default(false)
@@ -148,6 +159,9 @@ model Property {
 
   // References & Metadata
   reference   String? @unique // Référence unique du bien
+  legalStatus PropertyLegalStatus?
+  documentStatus PropertyDocumentStatus @default(UNKNOWN)
+  isVerified Boolean @default(false)
   energyClass String? // Classe énergétique (A, B, C, etc.)
   emissions   String? // Émissions GES
   taxFonciere Float? // Taxe foncière annuelle
@@ -165,7 +179,9 @@ model Property {
   publishedAt DateTime?
 
   @@index([propertyType])
+  @@index([country])
   @@index([city])
+  @@index([region])
   @@index([status])
   @@index([transactionType])
   @@index([price])
@@ -227,6 +243,25 @@ enum PropertyStatus {
   ARCHIVED // Archivé
 }
 
+// Statut juridique/foncier du bien. Certains statuts sont surtout utiles
+// a Madagascar, mais la liste reste generale pour couvrir d'autres marches.
+enum PropertyLegalStatus {
+  TITLED // Titre
+  CADASTRAL // Cadastre
+  UNTITLED // Non titre
+  LONG_TERM_LEASE // Bail long terme / emphyteotique
+  CO_OWNERSHIP // Copropriete
+  COMPANY_OWNED // Detenu par une societe
+  OTHER // Autre
+}
+
+enum PropertyDocumentStatus {
+  UNKNOWN // Non renseigne
+  PENDING // En cours de verification
+  PARTIAL // Documents partiels
+  VERIFIED // Documents verifies
+}
+
 // Contact pour les propriétés
 model PropertyContact {
   id        String   @id @default(uuid())
@@ -237,6 +272,14 @@ model PropertyContact {
   message   String   @db.Text
   createdAt DateTime @default(now())
   isRead    Boolean  @default(false)
+  leadStatus LeadStatus @default(NEW)
+  leadPriority LeadPriority @default(NORMAL)
+  assignedAgentId String?
+  assignedAgent User? @relation("AssignedPropertyContacts", fields: [assignedAgentId], references: [id])
+  nextFollowUpAt DateTime?
+  scheduledVisitAt DateTime?
+  visitOutcome String?
+  internalNotes String? @db.Text
 
   propertyId String
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
@@ -268,8 +311,74 @@ model Contact {
   message   String   @db.Text
   createdAt DateTime @default(now())
   isRead    Boolean  @default(false)
+  leadStatus LeadStatus @default(NEW)
+  leadPriority LeadPriority @default(NORMAL)
+  assignedAgentId String?
+  assignedAgent User? @relation("AssignedContacts", fields: [assignedAgentId], references: [id])
+  nextFollowUpAt DateTime?
+  scheduledVisitAt DateTime?
+  visitOutcome String?
+  internalNotes String? @db.Text
   userId    String?
   user      User?    @relation(fields: [userId], references: [id])
+}
+
+enum LeadStatus {
+  NEW
+  TO_CONTACT
+  CONTACTED
+  VISIT_SCHEDULED
+  VISIT_DONE
+  NEGOTIATION
+  WON
+  LOST
+  ARCHIVED
+}
+
+enum LeadPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+model Notification {
+  id          String               @id @default(uuid())
+  type        NotificationType
+  title       String
+  message     String               @db.Text
+  priority    NotificationPriority @default(NORMAL)
+  targetUrl   String?
+  entityType  String?
+  entityId    String?
+  isRead      Boolean              @default(false)
+  readAt      DateTime?
+  recipientId String?
+  recipient   User?                @relation(fields: [recipientId], references: [id], onDelete: SetNull)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  @@index([isRead])
+  @@index([type])
+  @@index([priority])
+  @@index([recipientId])
+  @@index([createdAt])
+}
+
+enum NotificationType {
+  CONTACT_CREATED
+  PROPERTY_CONTACT_CREATED
+  VISIT_REQUESTED
+  CRM_FOLLOW_UP
+  PROPERTY_CREATED
+  SYSTEM
+}
+
+enum NotificationPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
 }
 
 // Modèle BatiQuote pour les demandes de devis BatiPanorama

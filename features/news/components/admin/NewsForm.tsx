@@ -32,6 +32,7 @@ import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { MediaLibraryModal } from '@/features/upload/components/MediaLibraryModal';
+import { sanitizeHtml } from '@/shared/utils/sanitizeHtml';
 import toast from 'react-hot-toast';
 import './NewsForm.css';
 
@@ -498,7 +499,7 @@ L'article doit être structuré avec des balises HTML sémantiques propres, prê
                   const exampleHtml = `<div class="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-2xl border">
   <!-- Titre -->
   <h2 class="text-2xl font-bold text-gray-800 mb-4">📰 Actualité immobilière à Madagascar</h2>
-  <h3 class="text-xl font-semibold text-blue-600 mb-6">Les étapes d'une vente immobilière</h3>
+  <h3 class="text-xl font-semibold text-primary-600 mb-6">Les étapes d'une vente immobilière</h3>
 
   <!-- Étapes -->
   <ol class="space-y-4 list-decimal list-inside text-gray-700">
@@ -517,7 +518,7 @@ L'article doit être structuré avec des balises HTML sémantiques propres, prê
   </ol>
 
   <!-- Info complémentaire -->
-  <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+  <div class="mt-6 p-4 bg-primary-50 border border-primary-200 rounded-xl">
     <p class="text-sm text-gray-600">
       ⚖️ En pratique à Madagascar, le rôle du notaire est central pour sécuriser la transaction.
     </p>
@@ -690,8 +691,8 @@ L'article doit être structuré avec des balises HTML sémantiques propres, prê
           {/* Category */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
-                <FolderIcon className="w-4 h-4 text-blue-600" />
+              <div className="w-8 h-8 bg-primary-50 rounded-lg flex items-center justify-center">
+                <FolderIcon className="w-4 h-4 text-primary-600" />
               </div>
               <h3 className="font-bold text-gray-900">Catégorie</h3>
             </div>
@@ -842,7 +843,7 @@ L'article doit être structuré avec des balises HTML sémantiques propres, prê
                 {/* HTML Content — exactly as client renders it */}
                 <div
                   className="article-content"
-                  dangerouslySetInnerHTML={{ __html: rawHtmlContent || formData.content }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(rawHtmlContent || formData.content) }}
                 />
 
                 {/* Tags */}

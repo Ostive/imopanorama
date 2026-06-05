@@ -44,7 +44,7 @@ export default function EditFaqPage({ params }: EditFaqPageProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
       </div>
     );
@@ -52,14 +52,14 @@ export default function EditFaqPage({ params }: EditFaqPageProps) {
 
   if (error || !faq) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
           Erreur: Impossible de charger la question. Veuillez réessayer plus tard.
         </div>
         <button
           onClick={() => router.push('/admin/faqs')}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          className="mt-4 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
         >
           Retour à la liste
         </button>
@@ -69,7 +69,7 @@ export default function EditFaqPage({ params }: EditFaqPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/20 py-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Modifier la FAQ</h1>

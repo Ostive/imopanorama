@@ -11,7 +11,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { faqsServerService } from '@/features/faqs/server/faqs.service';
 import { requireAdmin } from '@/infrastructure/auth/auth-guard';
-import { withErrorHandler, apiError } from '@/infrastructure/middleware/api-handler';
+import { boundedIntParam, validationError, withErrorHandler } from '@/infrastructure/middleware/api-handler';
 import { cached, invalidateCache } from '@/infrastructure/cache';
 
 // ---------------------------------------------------------------------------
@@ -23,8 +23,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   const isActiveParam = sp.get('isActive');
 
   const params = {
-    page: parseInt(sp.get('page') || '1', 10),
-    limit: parseInt(sp.get('limit') || '10', 10),
+    page: boundedIntParam(sp, 'page', 1, 1, 10000),
+    limit: boundedIntParam(sp, 'limit', 10, 1, 100),
     category: sp.get('category') || undefined,
     isActive: isActiveParam === 'true' ? true : isActiveParam === 'false' ? false : undefined,
     search: sp.get('search') || undefined,
@@ -49,7 +49,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const validation = FaqFormDataSchema.safeParse(body);
 
   if (!validation.success) {
-    return apiError('Erreur de validation');
+    return validationError(validation.error.issues, 'La FAQ contient des champs invalides');
   }
 
   const newFaq = await faqsServerService.create(validation.data);

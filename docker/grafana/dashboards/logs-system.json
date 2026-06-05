@@ -52,19 +52,10 @@
       "fieldConfig": { "defaults": { "custom": { "fillOpacity": 20, "lineWidth": 1 }, "color": { "mode": "palette-classic" } } }
     },
     {
-      "id": 6,
-      "title": "Logs Qdrant",
-      "type": "logs",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 40 },
-      "datasource": { "type": "loki", "uid": "loki" },
-      "targets": [{ "expr": "{container_name=\"imo-qdrant\"}", "refId": "A" }],
-      "options": { "showTime": true, "showLabels": false, "wrapLogMessage": true, "enableLogDetails": true, "sortOrder": "Descending" }
-    },
-    {
       "id": 7,
       "title": "Logs Redis",
       "type": "logs",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 40 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 40 },
       "datasource": { "type": "loki", "uid": "loki" },
       "targets": [{ "expr": "{container_name=\"imo-redis\"}", "refId": "A" }],
       "options": { "showTime": true, "showLabels": false, "wrapLogMessage": true, "enableLogDetails": true, "sortOrder": "Descending" }

@@ -2,7 +2,7 @@
 export * from './types';
 
 // Export transporter and connection test
-export { transporter, testMailtrapConnection } from './transporter';
+export { emailConfig, getMailFrom, transporter, testEmailConnection, testMailtrapConnection } from './transporter';
 
 // Export property contact emails
 export { sendPropertyContactConfirmation } from './property-contact-confirmation';

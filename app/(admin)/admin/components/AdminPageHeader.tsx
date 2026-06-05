@@ -31,21 +31,21 @@ export function AdminPageHeader({
     >
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-12 h-12 bg-linear-to-br from-primary-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+          <div className="w-12 h-12 bg-linear-to-br from-primary-600 to-primary-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
             {icon}
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold bg-linear-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">
                 {title}
               </h1>
               {loading && (
-                <div className="flex items-center gap-2 text-sm text-gray-500">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Skeleton className="h-4 w-24" />
                 </div>
               )}
             </div>
-            <p className="text-gray-600 font-medium mt-1">{subtitle}</p>
+            <p className="text-muted-foreground font-medium mt-1">{subtitle}</p>
           </div>
         </div>
         {(showBackButton || actions) && (
@@ -53,7 +53,7 @@ export function AdminPageHeader({
             {showBackButton && (
               <Link
                 href={backHref}
-                className="inline-flex items-center px-4 py-2 text-gray-700 bg-white hover:bg-gray-50 font-semibold rounded-xl transition-all border border-gray-200 shadow-sm"
+                className="inline-flex items-center px-4 py-2 text-foreground bg-card hover:bg-gray-50 dark:hover:bg-gray-800 font-semibold rounded-xl transition-all border border-border shadow-sm"
               >
                 <ArrowLeftIcon className="h-5 w-5 mr-2" /> Retour
               </Link>

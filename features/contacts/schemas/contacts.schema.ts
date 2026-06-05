@@ -14,6 +14,20 @@ export const ContactSchema = z.object({
 export const ContactSourceEnum = z.enum(['contact', 'seller', 'estimation', 'newsletter']);
 export type ContactSource = z.infer<typeof ContactSourceEnum>;
 
+export const LeadStatusSchema = z.enum([
+    'NEW',
+    'TO_CONTACT',
+    'CONTACTED',
+    'VISIT_SCHEDULED',
+    'VISIT_DONE',
+    'NEGOTIATION',
+    'WON',
+    'LOST',
+    'ARCHIVED',
+]);
+
+export const LeadPrioritySchema = z.enum(['LOW', 'NORMAL', 'HIGH', 'URGENT']);
+
 export const ContactFormDataSchema = z.object({
     firstName: z.string().trim().min(2, 'Le prénom doit contenir au moins 2 caractères').max(60),
     lastName: z.string().trim().min(2, 'Le nom doit contenir au moins 2 caractères').max(60),
@@ -29,3 +43,14 @@ export const ContactFormDataSchema = z.object({
 });
 
 export type ContactFormData = z.infer<typeof ContactFormDataSchema>;
+
+export const ContactCrmUpdateSchema = z.object({
+    isRead: z.boolean().optional(),
+    leadStatus: LeadStatusSchema.optional(),
+    leadPriority: LeadPrioritySchema.optional(),
+    assignedAgentId: z.string().nullable().optional(),
+    nextFollowUpAt: z.string().datetime().nullable().optional().or(z.literal('')),
+    scheduledVisitAt: z.string().datetime().nullable().optional().or(z.literal('')),
+    visitOutcome: z.string().max(500).nullable().optional(),
+    internalNotes: z.string().max(5000).nullable().optional(),
+});

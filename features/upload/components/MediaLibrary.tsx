@@ -17,7 +17,8 @@ import {
     ViewColumnsIcon,
     Squares2X2Icon,
     TrashIcon,
-    EllipsisHorizontalIcon
+    EllipsisHorizontalIcon,
+    ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
 
 interface BunnyCdnFile {
@@ -213,12 +214,12 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
         const pathParts = currentPath.split('/').filter(Boolean);
 
         return (
-            <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300 mb-4 overflow-x-auto scrollbar-hide">
+            <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-4 overflow-x-auto scrollbar-hide">
                 <button
                     onClick={() => setCurrentPath('/images/')}
-                    className="hover:text-primary-600 dark:hover:text-primary-400 flex items-center transition-colors px-2 py-1 rounded-md hover:bg-gray-100"
+                    className="hover:text-primary-600 dark:hover:text-primary-400 flex items-center transition-colors px-2 py-1 rounded-md hover:bg-muted"
                 >
-                    <FolderIcon className="h-4 w-4 mr-1 text-gray-400" />
+                    <FolderIcon className="h-4 w-4 mr-1 text-muted-foreground" />
                     <span>Racine</span>
                 </button>
 
@@ -228,10 +229,10 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
 
                     return (
                         <React.Fragment key={path}>
-                            <span className="text-gray-300">/</span>
+                            <span className="text-muted-foreground">/</span>
                             <button
                                 onClick={() => setCurrentPath(path)}
-                                className={`hover:text-primary-600 transistion-colors px-2 py-1 rounded-md hover:bg-gray-100 ${index === pathParts.length - 1 ? 'font-semibold text-gray-900 bg-gray-50' : ''}`}
+                                className={`hover:text-primary-600 transistion-colors px-2 py-1 rounded-md hover:bg-muted ${index === pathParts.length - 1 ? 'font-semibold text-foreground bg-muted' : ''}`}
                             >
                                 {part}
                             </button>
@@ -254,16 +255,16 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
     return (
         <div className={`flex flex-col h-full ${className}`}>
             {/* Header / Toolbar */}
-            <div className={`${selectionMode ? 'mb-4' : 'bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6'}`}>
+            <div className={`${selectionMode ? 'mb-4' : 'bg-card rounded-xl shadow-sm border border-border p-4 mb-6'}`}>
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     {!selectionMode && (
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
+                            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center shadow-md">
                                 <PhotoIcon className="w-5 h-5 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-xl font-bold text-gray-900">Médiathèque</h1>
-                                <p className="text-xs text-gray-500">{files.length} éléments • {formatBytes(totalSize)}</p>
+                                <h1 className="text-xl font-bold text-foreground">Médiathèque</h1>
+                                <p className="text-xs text-muted-foreground">{files.length} éléments • {formatBytes(totalSize)}</p>
                             </div>
                         </div>
                     )}
@@ -272,11 +273,11 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                         {/* Search Bar */}
                         <div className="relative flex-1">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <MagnifyingGlassIcon className="h-4 w-4 text-gray-400" />
+                                <MagnifyingGlassIcon className="h-4 w-4 text-muted-foreground" />
                             </div>
                             <input
                                 type="text"
-                                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-shadow shadow-sm"
+                                className="block w-full pl-10 pr-3 py-2 border border-border rounded-lg leading-5 bg-card placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-shadow shadow-sm"
                                 placeholder="Rechercher un fichier..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -284,16 +285,16 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                         </div>
 
                         {/* View Toggle */}
-                        <div className="flex bg-gray-100 rounded-lg p-1 border border-gray-200 h-[38px] items-center shrink-0">
+                        <div className="flex bg-muted rounded-lg p-1 border border-border h-[38px] items-center shrink-0">
                             <button
                                 onClick={() => setViewMode('grid')}
-                                className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-card shadow-sm text-primary-600' : 'text-muted-foreground hover:text-foreground'}`}
                             >
                                 <Squares2X2Icon className="h-4 w-4" />
                             </button>
                             <button
                                 onClick={() => setViewMode('list')}
-                                className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-card shadow-sm text-primary-600' : 'text-muted-foreground hover:text-foreground'}`}
                             >
                                 <ViewColumnsIcon className="h-4 w-4" />
                             </button>
@@ -302,13 +303,13 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                         {/* Actions */}
                         <div className="flex gap-2 shrink-0">
                             {!selectionMode && (
-                                <Link href="/admin" className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg border border-transparent hover:border-gray-200 transition-colors">
+                                <Link href="/admin" className="p-2 text-muted-foreground hover:bg-muted rounded-lg border border-transparent hover:border-border transition-colors">
                                     <ArrowLeftIcon className="h-5 w-5" />
                                 </Link>
                             )}
                             <button
                                 onClick={() => setShowNewFolderInput(!showNewFolderInput)}
-                                className="p-2 text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg shadow-sm transition-all"
+                                className="p-2 text-foreground bg-card border border-border hover:bg-muted rounded-lg shadow-sm transition-all"
                                 title="Nouveau dossier"
                             >
                                 <FolderPlusIcon className="h-5 w-5" />
@@ -323,7 +324,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                             />
                             <button
                                 onClick={handleTriggerUpload}
-                                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-700 hover:to-indigo-700 text-white font-medium rounded-lg shadow-md transition-all transform hover:scale-[1.02]"
+                                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-medium rounded-lg shadow-md transition-all transform hover:scale-[1.02]"
                             >
                                 <PlusIcon className="h-5 w-5" />
                                 <span className="hidden sm:inline">{selectionMode ? 'Uploader' : 'Ajouter'}</span>
@@ -337,9 +338,10 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                 <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center"
+                    className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2"
                 >
-                    <span className="mr-2">⚠️</span> {error}
+                    <ExclamationTriangleIcon className="w-5 h-5 shrink-0" />
+                    <span>{error}</span>
                 </motion.div>
             )}
 
@@ -351,14 +353,14 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                         exit={{ height: 0, opacity: 0 }}
                         className="overflow-hidden"
                     >
-                        <div className="flex items-center space-x-2 bg-gray-50 p-4 rounded-xl border border-gray-200 mb-4 shadow-inner">
-                            <FolderIcon className="w-5 h-5 text-gray-400" />
+                        <div className="flex items-center space-x-2 bg-muted p-4 rounded-xl border border-border mb-4 shadow-inner">
+                            <FolderIcon className="w-5 h-5 text-muted-foreground" />
                             <input
                                 type="text"
                                 value={newFolderName}
                                 onChange={(e) => setNewFolderName(e.target.value)}
                                 placeholder="Nom du nouveau dossier"
-                                className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500"
+                                className="flex-1 px-3 py-2 text-sm border border-border rounded-lg focus:ring-primary-500 focus:border-primary-500"
                                 autoFocus
                             />
                             <div className="flex gap-2">
@@ -373,7 +375,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                                         setShowNewFolderInput(false);
                                         setNewFolderName('');
                                     }}
-                                    className="px-3 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg text-sm font-medium shadow-sm"
+                                    className="px-3 py-2 bg-card border border-border hover:bg-muted text-foreground rounded-lg text-sm font-medium shadow-sm"
                                 >
                                     Annuler
                                 </button>
@@ -389,10 +391,10 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                         exit={{ height: 0, opacity: 0 }}
                         className="overflow-hidden mb-6"
                     >
-                        <div className="bg-white border border-gray-200 p-4 rounded-xl shadow-sm relative">
+                        <div className="bg-card border border-border p-4 rounded-xl shadow-sm relative">
                             <button
                                 onClick={() => setShowUploader(false)}
-                                className="absolute top-2 right-2 p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100"
+                                className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-foreground rounded-full hover:bg-muted"
                             >
                                 <span className="sr-only">Fermer</span>
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
@@ -411,14 +413,14 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
             </AnimatePresence>
 
             {/* Main Content Area */}
-            <div className={`${selectionMode ? 'bg-gray-50 border border-gray-200 rounded-lg' : 'bg-white rounded-xl shadow-sm border border-gray-200'} flex-1 flex flex-col min-h-0 overflow-hidden`}>
+            <div className={`${selectionMode ? 'bg-muted border border-border rounded-lg' : 'bg-card rounded-xl shadow-sm border border-border'} flex-1 flex flex-col min-h-0 overflow-hidden`}>
                 {/* Fil d'Ariane Bar */}
-                <div className="px-6 py-3 border-b border-gray-200 flex items-center justify-between bg-white">
+                <div className="px-6 py-3 border-b border-border flex items-center justify-between bg-card">
                     {generateBreadcrumb()}
                     {currentPath !== '/images/' && (
                         <button
                             onClick={navigateToParent}
-                            className="text-xs font-medium text-gray-500 hover:text-primary-600 flex items-center bg-white px-2 py-1 rounded border border-gray-200 shadow-sm hover:shadow transition-all"
+                            className="text-xs font-medium text-muted-foreground hover:text-primary-600 flex items-center bg-card px-2 py-1 rounded border border-border shadow-sm hover:shadow transition-all"
                         >
                             <ArrowLeftIcon className="h-3 w-3 mr-1" />
                             Retour
@@ -428,7 +430,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
 
                 <div className="flex-1 overflow-y-auto p-6">
                     {isLoading ? (
-                        <div className="h-full flex flex-col items-center justify-center text-gray-400">
+                        <div className="h-full flex flex-col items-center justify-center text-muted-foreground">
                             <PageLoader text="Chargement de vos médias..." />
                         </div>
                     ) : (
@@ -436,11 +438,11 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                             {/* Empty State */}
                             {folders.length === 0 && images.length === 0 && (
                                 <div className="flex-1 flex flex-col items-center justify-center text-center opacity-60">
-                                    <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                                        <FolderIcon className="w-10 h-10 text-gray-300" />
+                                    <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-4">
+                                        <FolderIcon className="w-10 h-10 text-muted-foreground" />
                                     </div>
-                                    <h3 className="text-lg font-medium text-gray-900">Ce dossier est vide</h3>
-                                    <p className="text-gray-500 max-w-sm mx-auto mt-2">Commencez par ajouter des images ou créez un sous-dossier pour organiser vos fichiers.</p>
+                                    <h3 className="text-lg font-medium text-foreground">Ce dossier est vide</h3>
+                                    <p className="text-muted-foreground max-w-sm mx-auto mt-2">Commencez par ajouter des images ou créez un sous-dossier pour organiser vos fichiers.</p>
                                     <button
                                         onClick={handleTriggerUpload}
                                         className="mt-6 text-primary-600 hover:text-primary-700 font-medium hover:underline flex items-center gap-2 mx-auto"
@@ -454,7 +456,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                             {/* Dossiers Grid */}
                             {folders.length > 0 && (
                                 <div>
-                                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center">
+                                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center">
                                         <FolderIcon className="w-4 h-4 mr-2" />
                                         Dossiers ({folders.length})
                                     </h3>
@@ -464,12 +466,12 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                                                 key={folder.Guid}
                                                 whileHover={{ scale: 1.02, backgroundColor: '#F9FAFB' }}
                                                 onClick={() => navigateToFolder(folder)}
-                                                className="cursor-pointer bg-white group hover:shadow-md border border-gray-200 hover:border-primary-200 p-3 rounded-xl flex flex-row items-center transition-all relative overflow-hidden"
+                                                className="cursor-pointer bg-card group hover:shadow-md border border-border hover:border-primary-200 p-3 rounded-xl flex flex-row items-center transition-all relative overflow-hidden"
                                             >
                                                 <div className="flex-shrink-0 mr-3">
                                                     <FolderIcon className="h-10 w-10 text-yellow-400 group-hover:text-yellow-500 transition-colors drop-shadow-sm" />
                                                 </div>
-                                                <span className="flex-1 text-sm font-medium text-gray-700 group-hover:text-gray-900 text-left truncate" title={folder.ObjectName}>
+                                                <span className="flex-1 text-sm font-medium text-foreground group-hover:text-foreground text-left truncate" title={folder.ObjectName}>
                                                     {folder.ObjectName}
                                                 </span>
                                             </motion.div>
@@ -481,7 +483,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                             {/* Images Grid */}
                             {images.length > 0 && (
                                 <div>
-                                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center">
+                                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center">
                                         <PhotoIcon className="w-4 h-4 mr-2" />
                                         Images ({images.length})
                                     </h3>
@@ -493,7 +495,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                                         onDelete={handleDeleteFile}
                                         onImageClick={onSelect}
                                         editable={true}
-                                        className={viewMode === 'list' ? 'bg-white rounded-lg' : ''} // Placeholder for list mode styling if added later
+                                        className={viewMode === 'list' ? 'bg-card rounded-lg' : ''} // Placeholder for list mode styling if added later
                                     />
                                 </div>
                             )}

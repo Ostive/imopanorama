@@ -35,7 +35,7 @@ interface ContactSettings {
 }
 
 function Footer() {
-  const { currentTheme } = useTheme()
+  const currentYear = new Date().getFullYear()
   const [contactSettings, setContactSettings] = useState<ContactSettings>({
     city: 'Antananarivo',
     country: 'Madagascar',
@@ -90,11 +90,7 @@ function Footer() {
 
   return (
     <footer className="relative bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary-500/10 rounded-full filter blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-500/10 rounded-full filter blur-3xl"></div>
-      </div>
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:32px_32px]" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
         <motion.div 
@@ -108,7 +104,7 @@ function Footer() {
           <motion.div variants={itemVariants} className="space-y-6">
             <div>
               <Image
-                src="/images/logo.png"
+                src="/images/brand/logo.png"
                 alt="ImoPanorama Madagascar"
                 width={320}
                 height={96}
@@ -338,7 +334,7 @@ function Footer() {
           className="border-t border-gray-800 mt-12 pt-8"
         >
           <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
-            <p className="mb-4 md:mb-0">&copy; 2024 ImoPanorama Madagascar. Tous droits réservés.</p>
+            <p className="mb-4 md:mb-0">&copy; {currentYear} ImoPanorama Madagascar. Tous droits réservés.</p>
             <div className="flex flex-wrap gap-6 justify-center">
               <Link href="/mentions-legales" className="hover:text-primary-400 transition-colors">
                 Mentions légales

@@ -15,6 +15,7 @@ import { bunnyCdnConfig } from '@/shared/config/bunnycdn';
 import { requireStaff } from '@/infrastructure/auth/auth-guard';
 import { withErrorHandler, apiError } from '@/infrastructure/middleware/api-handler';
 import { logger } from '@/infrastructure/logger/logger';
+import { sanitizeStorageDirectory, sanitizeStoragePath, stripStorageBaseUrl } from '@/shared/utils/storagePath';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -43,7 +44,7 @@ function requireConfig() {
 function buildPath(directory: string, fileName: string): string {
   const ext = (fileName.split('.').pop() || 'jpg').toLowerCase();
   const unique = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
-  const dir = directory.startsWith('/') ? directory : `/${directory}`;
+  const dir = sanitizeStorageDirectory(directory);
   return `${dir}${unique}`.replace(/\/+/g, '/');
 }
 
@@ -82,7 +83,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const config = requireConfig();
   const formData = await request.formData();
   const file = formData.get('file') as File | null;
-  const directory = (formData.get('folder') as string) || '/images/';
+  const directory = sanitizeStorageDirectory((formData.get('folder') as string) || '/images/');
 
   if (!file) return apiError('Aucun fichier fourni');
   if (!ALLOWED_TYPES.includes(file.type as typeof ALLOWED_TYPES[number])) return apiError('Type de fichier non autorisé');
@@ -108,7 +109,7 @@ export const PUT = withErrorHandler(async (request: NextRequest) => {
   const config = requireConfig();
   const formData = await request.formData();
   const files = formData.getAll('files') as File[];
-  const directory = (formData.get('folder') as string) || '/images/';
+  const directory = sanitizeStorageDirectory((formData.get('folder') as string) || '/images/');
 
   if (!files.length) return apiError('Aucun fichier fourni');
 
@@ -138,8 +139,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   if (!authorized) return errorResponse!;
 
   const config = requireConfig();
-  const path = request.nextUrl.searchParams.get('path') || '/images/';
-  const dir = path.startsWith('/') ? path : `/${path}`;
+  const dir = sanitizeStorageDirectory(request.nextUrl.searchParams.get('path') || '/images/');
 
   const apiUrl = `https://${config.hostname}/${config.storageZoneName}${dir}`;
   const res = await fetch(apiUrl, { method: 'GET', headers: { AccessKey: config.apiKey } });
@@ -167,10 +167,7 @@ export const DELETE = withErrorHandler(async (request: NextRequest) => {
 
   if (!input) return apiError('Paramètre path requis');
 
-  // Normalise the path: strip the CDN base URL and ensure a leading slash
-  let relativePath = input;
-  if (relativePath.startsWith(config.pullZoneUrl)) relativePath = relativePath.replace(config.pullZoneUrl, '');
-  if (!relativePath.startsWith('/')) relativePath = `/${relativePath}`;
+  const relativePath = sanitizeStoragePath(stripStorageBaseUrl(input, config.pullZoneUrl));
 
   const apiUrl = `https://${config.hostname}/${config.storageZoneName}${relativePath}`;
   const res = await fetch(apiUrl, { method: 'DELETE', headers: { AccessKey: config.apiKey } });

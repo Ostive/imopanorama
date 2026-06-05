@@ -19,12 +19,12 @@ export function CompareBar() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 120, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-2xl"
+          className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border shadow-2xl"
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <div className="flex items-center gap-4">
               {/* Titre */}
-              <div className="hidden sm:flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 shrink-0">
+              <div className="hidden sm:flex items-center gap-2 text-sm font-semibold text-foreground shrink-0">
                 <ArrowsRightLeftIcon className="w-5 h-5 text-primary-600" />
                 <span>Comparer ({compareList.length}/4)</span>
               </div>
@@ -36,7 +36,7 @@ export function CompareBar() {
                   return (
                     <div
                       key={property.id}
-                      className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 shrink-0"
+                      className="flex items-center gap-2 bg-muted border border-border rounded-xl px-3 py-2 shrink-0"
                     >
                       <div className="relative w-10 h-10 rounded-lg overflow-hidden shrink-0">
                         <Image
@@ -48,7 +48,7 @@ export function CompareBar() {
                         />
                       </div>
                       <div className="min-w-0 max-w-[120px]">
-                        <p className="text-xs font-semibold text-gray-900 dark:text-white truncate">{property.title}</p>
+                        <p className="text-xs font-semibold text-foreground truncate">{property.title}</p>
                         <p className="text-xs text-gray-500 truncate">{property.city}</p>
                       </div>
                       <button

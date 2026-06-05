@@ -103,7 +103,7 @@ else
 fi
 
 # =====================
-# 6. Docker (pour Qdrant, Umami, Grafana, etc.)
+# 6. Docker (pour Postgres, Redis, Umami, Grafana, etc.)
 # =====================
 log "Installation de Docker..."
 if ! command -v docker &> /dev/null; then

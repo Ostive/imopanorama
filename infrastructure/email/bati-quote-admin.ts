@@ -1,4 +1,4 @@
-import { transporter } from './transporter';
+import { emailConfig, getMailFrom, transporter } from './transporter';
 import { BatiQuoteData } from './types';
 
 /**
@@ -6,8 +6,8 @@ import { BatiQuoteData } from './types';
  */
 export async function sendBatiQuoteNotificationToAdmin(data: BatiQuoteData) {
   const mailOptions = {
-    from: '"BatiPanorama Notifications" <noreply@demomailtrap.co>',
-    to: process.env.ADMIN_EMAIL || 'admin@demomailtrap.co',
+    from: getMailFrom('BatiPanorama Notifications'),
+    to: emailConfig.adminEmail,
     subject: `🔔 Nouvelle demande de devis - ${data.projectType}`,
     html: `
       <!DOCTYPE html>

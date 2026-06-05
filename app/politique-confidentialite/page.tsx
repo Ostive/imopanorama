@@ -6,11 +6,11 @@ import { motion } from 'framer-motion';
 
 export default function PolitiqueConfidentialitePage() {
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-gray-950">
       {/* Background Decor */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary-100/40 rounded-full blur-[100px]" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-blue-100/40 rounded-full blur-[100px]" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-primary-100/40 rounded-full blur-[100px]" />
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
@@ -22,9 +22,9 @@ export default function PolitiqueConfidentialitePage() {
         >
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-gray-500 hover:text-primary-600 transition-colors font-medium text-sm group"
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary-600 transition-colors font-medium text-sm group"
           >
-            <div className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center group-hover:border-primary-200 group-hover:bg-primary-50 transition-all">
+            <div className="w-8 h-8 rounded-full bg-card border border-border flex items-center justify-center group-hover:border-primary-200 group-hover:bg-primary-50 dark:group-hover:bg-primary-900/20 transition-all">
               <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
             </div>
             Retour à l'accueil
@@ -38,10 +38,10 @@ export default function PolitiqueConfidentialitePage() {
           transition={{ delay: 0.1 }}
           className="mb-12 text-center"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 tracking-tight mb-6">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground tracking-tight mb-6">
             Politique de <span className="text-primary-600">Confidentialité</span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Votre vie privée est essentielle. Découvrez comment nous protégeons et traitons vos données.
           </p>
         </motion.div>
@@ -51,35 +51,35 @@ export default function PolitiqueConfidentialitePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-xl border border-white/50 p-6 md:p-12 overflow-hidden relative"
+          className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-[2rem] shadow-xl border border-white/50 dark:border-border p-6 md:p-12 overflow-hidden relative"
         >
           {/* Decorative Top Border */}
-          <div className="absolute top-0 left-0 w-full h-2 bg-linear-to-r from-primary-500 via-blue-500 to-primary-500" />
+          <div className="absolute top-0 left-0 w-full h-2 bg-linear-to-r from-primary-500 via-primary-500 to-primary-500" />
 
           {/* Intro Section */}
-          <div className="mb-12 p-6 bg-blue-50/50 rounded-2xl border border-blue-100/50 text-center">
-            <ShieldCheckIcon className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-            <p className="text-gray-600 leading-relaxed max-w-3xl mx-auto">
+          <div className="mb-12 p-6 bg-primary-50/50 dark:bg-primary-900/20 rounded-2xl border border-primary-100/50 dark:border-primary-900/30 text-center">
+            <ShieldCheckIcon className="w-12 h-12 text-primary-600 dark:text-primary-400 mx-auto mb-4" />
+            <p className="text-muted-foreground leading-relaxed max-w-3xl mx-auto">
               ImoPanorama Madagascar s'engage à protéger la vie privée de ses utilisateurs.
               En utilisant notre site, vous acceptez les pratiques décrites dans cette politique.
             </p>
           </div>
 
-          <div className="space-y-12 text-gray-600 leading-relaxed">
+          <div className="space-y-12 text-muted-foreground leading-relaxed">
 
             {/* Données Collectées */}
             <Section title="1. Données collectées" icon={<DocumentTextIcon className="w-6 h-6" />}>
               <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
-                  <h4 className="font-bold text-gray-900 mb-3 text-sm uppercase tracking-wider text-primary-600">Données fournies</h4>
+                <div className="bg-muted/50 rounded-xl p-5 border border-border">
+                  <h4 className="font-bold text-foreground mb-3 text-sm uppercase tracking-wider text-primary-600">Données fournies</h4>
                   <ul className="space-y-2 text-sm">
                     <ListItem text="Compte : Nom, email, téléphone" />
                     <ListItem text="Contact : Messages formulaires" />
                     <ListItem text="Transaction : Favoris, recherches" />
                   </ul>
                 </div>
-                <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
-                  <h4 className="font-bold text-gray-900 mb-3 text-sm uppercase tracking-wider text-blue-600">Données automatiques</h4>
+                <div className="bg-muted/50 rounded-xl p-5 border border-border">
+                  <h4 className="font-bold text-foreground mb-3 text-sm uppercase tracking-wider text-primary-600 dark:text-primary-400">Données automatiques</h4>
                   <ul className="space-y-2 text-sm">
                     <ListItem text="Navigation : Pages, durée, clics" />
                     <ListItem text="Technique : IP, navigateur" />
@@ -108,8 +108,8 @@ export default function PolitiqueConfidentialitePage() {
 
             {/* Partage */}
             <Section title="3. Partage des données" icon={<UserGroupIcon className="w-6 h-6" />}>
-              <div className="bg-yellow-50 p-6 rounded-2xl border border-yellow-100 prose prose-yellow text-gray-700">
-                <p className="font-medium text-yellow-800 mb-2">Notice importante :</p>
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-6 rounded-2xl border border-yellow-100 dark:border-yellow-900/30 prose prose-yellow text-foreground">
+                <p className="font-medium text-yellow-800 dark:text-yellow-300 mb-2">Notice importante :</p>
                 <p className="m-0">
                   Nous ne vendons <strong>jamais</strong> vos données personnelles. Le partage est strictement limité à :
                 </p>
@@ -143,7 +143,7 @@ export default function PolitiqueConfidentialitePage() {
                 <RightCard title="Opposition" desc="Refuser l'usage marketing." />
                 <RightCard title="Portabilité" desc="Récupérer vos données structurées." />
               </div>
-              <p className="mt-6 text-sm text-gray-500">
+              <p className="mt-6 text-sm text-muted-foreground">
                 Pour exercer ces droits : <a href="mailto:contact@imopanorama.mg" className="text-primary-600 font-medium hover:underline">contact@imopanorama.mg</a>
               </p>
             </Section>
@@ -151,14 +151,14 @@ export default function PolitiqueConfidentialitePage() {
           </div>
 
           {/* Footer */}
-          <div className="mt-16 pt-8 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-gray-400 font-medium">
+          <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-muted-foreground font-medium">
               Dernière mise à jour : {new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
             <div className="flex gap-4">
-              <Link href="/mentions-legales" className="text-sm text-gray-500 hover:text-primary-600 transition-colors font-medium">Mentions Légales</Link>
-              <span className="text-gray-300">•</span>
-              <Link href="/cgu" className="text-sm text-gray-500 hover:text-primary-600 transition-colors font-medium">CGU</Link>
+              <Link href="/mentions-legales" className="text-sm text-muted-foreground hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium">Mentions Légales</Link>
+              <span className="text-gray-300 dark:text-gray-600">•</span>
+              <Link href="/cgu" className="text-sm text-muted-foreground hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium">CGU</Link>
             </div>
           </div>
         </motion.div>
@@ -170,8 +170,8 @@ export default function PolitiqueConfidentialitePage() {
 function Section({ title, icon, children }: { title: string, icon: React.ReactNode, children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-primary-600">
+      <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-muted/50 flex items-center justify-center text-primary-600">
           {icon}
         </div>
         {title}
@@ -185,8 +185,8 @@ function Section({ title, icon, children }: { title: string, icon: React.ReactNo
 
 function ListItem({ text }: { text: string }) {
   return (
-    <li className="flex items-start gap-2 text-gray-600">
-      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gray-300 flex-shrink-0" />
+    <li className="flex items-start gap-2 text-muted-foreground">
+      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600 flex-shrink-0" />
       {text}
     </li>
   );
@@ -195,25 +195,25 @@ function ListItem({ text }: { text: string }) {
 function CheckItem({ text }: { text: string }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="mt-1 w-5 h-5 rounded-full bg-green-50 text-green-600 flex items-center justify-center flex-shrink-0">
+      <div className="mt-1 w-5 h-5 rounded-full bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 flex items-center justify-center flex-shrink-0">
         <svg fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3 h-3">
           <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
         </svg>
       </div>
-      <span className="text-gray-600 font-medium">{text}</span>
+      <span className="text-muted-foreground font-medium">{text}</span>
     </div>
   );
 }
 
 function RightCard({ title, desc }: { title: string, desc: string }) {
   return (
-    <div className="bg-white border border-gray-100 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-      <h3 className="font-bold text-gray-900 mb-1">{title}</h3>
-      <p className="text-sm text-gray-500">{desc}</p>
+    <div className="bg-card border border-border p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+      <h3 className="font-bold text-foreground mb-1">{title}</h3>
+      <p className="text-sm text-muted-foreground">{desc}</p>
     </div>
   );
 }
 
 function Divider() {
-  return <div className="w-full h-px bg-gray-100 my-8" />;
+  return <div className="w-full h-px bg-muted my-8" />;
 }
