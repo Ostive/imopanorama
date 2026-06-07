@@ -8,6 +8,7 @@ name: imopanorama
 #   docker compose up -d
 #
 # Services Docker:
+#   - app         : ImoPanorama Next.js (port 3000)
 #   - postgres    : PostgreSQL 16 + pgvector/pg_trgm/unaccent/earthdistance (host port 5433 -> container 5432)
 #   - redis       : Cache / Sessions / Queue (port 6379)
 #   - umami       : Analytics (port 3100)
@@ -15,9 +16,6 @@ name: imopanorama
 #   - loki        : Agregation de logs (port 3101)
 #   - promtail    : Collecteur de logs
 #   - uptime-kuma : Monitoring uptime (port 3300)
-#
-# Services natifs (VPS) :
-#   - Next.js (PM2) -> localhost:3000
 # ============================================
 
 services:
@@ -61,6 +59,55 @@ services:
       driver: "json-file"
       options:
         max-size: "5m"
+        max-file: "3"
+
+  # One-off migration runner — uses the `builder` stage (has the Prisma CLI + engines)
+  # so the production `app` image stays lean. Runs once per deploy, then exits.
+  migrate:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      target: builder
+    container_name: imo-migrate
+    command: ["npx", "prisma", "migrate", "deploy"]
+    restart: "no"
+    env_file:
+      - ./.env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/db_imo?schema=public
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: imo-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./.env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/db_imo?schema=public
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
         max-file: "3"
 
   umami:
