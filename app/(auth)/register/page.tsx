@@ -159,18 +159,6 @@ export default function RegisterNewPage() {
           </svg>
         </Link>
 
-        {/* Mobile Logo */}
-        <div className="lg:hidden absolute top-6 left-1/2 -translate-x-1/2">
-          <Image
-            src="/images/brand/logo.png"
-            alt="ImoPanorama Madagascar"
-            width={140}
-            height={44}
-            className="h-11 w-auto object-contain"
-            priority
-          />
-        </div>
-
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -178,6 +166,18 @@ export default function RegisterNewPage() {
           className="w-full max-w-2xl"
         >
           <div className="p-4">
+            {/* Mobile Logo */}
+            <div className="lg:hidden flex justify-center mb-4">
+              <Image
+                src="/images/brand/logo.png"
+                alt="ImoPanorama Madagascar"
+                width={140}
+                height={44}
+                className="h-11 w-auto object-contain"
+                priority
+              />
+            </div>
+
             {/* Header */}
             <div className="mb-4 text-center">
               <h1 className="text-3xl font-bold text-primary-600 mb-1">Inscription</h1>

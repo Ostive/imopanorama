@@ -64,7 +64,7 @@ export default function AdvantagesSection() {
                 Pourquoi nous choisir
               </span>
             </div>
-            <h2 className="text-5xl md:text-6xl font-black text-foreground leading-[1.05] mb-8">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-foreground leading-[1.05] mb-8 wrap-break-word">
               Un accompagnement{' '}
               <span className="bg-linear-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
                 simple
@@ -74,13 +74,6 @@ export default function AdvantagesSection() {
             <p className="text-muted-foreground text-lg leading-relaxed mb-10 max-w-sm">
               Acheter, louer ou construire à Madagascar soulève beaucoup de questions. Notre rôle est de vous aider à y voir clair, sans jargon.
             </p>
-            <Link
-              href="/proprietes"
-              className="group inline-flex items-center gap-2 px-7 py-3.5 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-all hover:shadow-lg hover:shadow-primary-500/30"
-            >
-              Voir les biens disponibles
-              <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
           </motion.div>
 
           {/* Right — editorial numbered list */}
@@ -97,7 +90,7 @@ export default function AdvantagesSection() {
                   className="group flex gap-5 py-8 border-b border-border/50 last:border-0 hover:translate-x-1 transition-transform duration-300"
                 >
                   {/* Decorative number */}
-                  <span className="shrink-0 text-5xl font-black text-foreground/6 dark:text-white/4 group-hover:text-primary-200/30 dark:group-hover:text-primary-800/30 transition-colors tabular-nums leading-none pt-1 w-14 text-right select-none">
+                  <span className="shrink-0 text-4xl sm:text-5xl font-black text-foreground/15 dark:text-white/12 group-hover:text-primary-300/40 dark:group-hover:text-primary-700/40 transition-colors tabular-nums leading-none pt-1 w-10 sm:w-14 text-right select-none">
                     {String(index + 1).padStart(2, '0')}
                   </span>
 
@@ -115,6 +108,21 @@ export default function AdvantagesSection() {
             })}
           </div>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-14 text-center"
+        >
+          <Link
+            href="/proprietes"
+            className="group inline-flex items-center gap-2 text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest hover:gap-3 transition-all"
+          >
+            Voir les biens disponibles
+            <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </motion.div>
       </div>
     </section>
   )

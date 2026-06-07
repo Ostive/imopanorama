@@ -47,22 +47,13 @@ export default function PropertySection() {
                 Sélection du moment
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
-              <h2 className="text-5xl md:text-6xl font-black text-foreground leading-[1.05] max-w-xl">
-                Des biens choisis{' '}
-                <span className="bg-linear-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
-                  avec soin
-                </span>{' '}
-                à Madagascar
-              </h2>
-              <Link
-                href="/proprietes"
-                className="group inline-flex items-center gap-2 text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest hover:gap-3 transition-all whitespace-nowrap shrink-0"
-              >
-                Tous les biens
-                <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-foreground leading-[1.05] max-w-xl wrap-break-word">
+              Des biens choisis{' '}
+              <span className="bg-linear-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
+                avec soin
+              </span>{' '}
+              à Madagascar
+            </h2>
           </motion.div>
         )}
 
@@ -108,8 +99,8 @@ export default function PropertySection() {
             </div>
           ) : properties.length === 0 ? (
             <div className="col-span-3 text-center py-20">
-              <p className="font-semibold text-foreground mb-1">Aucun bien pour le moment</p>
-              <p className="text-sm text-muted-foreground">De nouvelles opportunités arrivent bientôt.</p>
+              <p className="font-semibold text-foreground mb-1">Aucun contenu pour le moment</p>
+              <p className="text-sm text-muted-foreground">De nouveaux contenus arrivent bientôt.</p>
             </div>
           ) : (
             properties.map((property, index) => (
@@ -132,14 +123,14 @@ export default function PropertySection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center sm:hidden"
+            className="text-center"
           >
             <Link
               href="/proprietes"
-              className="group inline-flex items-center gap-2 px-8 py-4 text-base font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-all hover:shadow-lg hover:shadow-primary-500/30"
+              className="group inline-flex items-center gap-2 text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest hover:gap-3 transition-all"
             >
-              Découvrir tous les biens
-              <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              Tous les biens
+              <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
         )}

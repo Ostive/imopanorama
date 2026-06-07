@@ -95,13 +95,13 @@ export default function BatiPanoramaSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.15 }}
           >
-            <h2 className="text-5xl md:text-6xl font-black text-foreground leading-[1.05] mb-5">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-foreground leading-[1.05] mb-5 wrap-break-word">
               Construire avec un{' '}
               <span className="bg-linear-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
                 vrai suivi
               </span>
             </h2>
-            <p className="text-muted-foreground text-lg leading-relaxed mb-10">
+            <p className="text-muted-foreground text-base sm:text-lg leading-relaxed mb-6 sm:mb-10">
               ImoPanorama et BatiPanorama vous accompagnent du choix du terrain à la construction, avec des échanges clairs et un suivi régulier.
             </p>
 
@@ -133,17 +133,17 @@ export default function BatiPanoramaSection() {
             </ul>
 
             {/* CTAs */}
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/batipanorama"
-                className="group inline-flex items-center gap-2 px-7 py-3.5 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-all hover:shadow-lg hover:shadow-primary-500/30"
+                className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-all hover:shadow-lg hover:shadow-primary-500/30 w-full sm:w-auto"
               >
                 Découvrir l'accompagnement
                 <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href="/contact"
-                className="inline-flex items-center px-7 py-3.5 text-sm font-semibold text-primary-700 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 rounded-xl hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-all"
+                className="inline-flex items-center justify-center px-7 py-3.5 text-sm font-semibold text-primary-700 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 rounded-xl hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-all w-full sm:w-auto"
               >
                 Parler de mon projet
               </Link>

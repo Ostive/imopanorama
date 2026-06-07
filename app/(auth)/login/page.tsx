@@ -151,18 +151,6 @@ export default function LoginNewPage() {
           </svg>
         </Link>
 
-        {/* Mobile Logo */}
-        <div className="lg:hidden absolute top-6 left-1/2 -translate-x-1/2">
-          <Image
-            src="/images/brand/logo.png"
-            alt="ImoPanorama Madagascar"
-            width={140}
-            height={44}
-            className="h-11 w-auto object-contain"
-            priority
-          />
-        </div>
-
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -170,6 +158,18 @@ export default function LoginNewPage() {
           className="w-full max-w-md"
         >
           <div className="p-6">
+            {/* Mobile Logo */}
+            <div className="lg:hidden flex justify-center mb-6">
+              <Image
+                src="/images/brand/logo.png"
+                alt="ImoPanorama Madagascar"
+                width={140}
+                height={44}
+                className="h-11 w-auto object-contain"
+                priority
+              />
+            </div>
+
             {/* Header */}
             <div className="mb-6 text-center">
               <h1 className="text-4xl font-bold text-primary-600 mb-2">Connexion</h1>

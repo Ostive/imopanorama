@@ -434,9 +434,9 @@ function Header() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25, ease: 'easeInOut' }}
-            className="lg:hidden overflow-hidden border-t border-border"
+            className="lg:hidden absolute top-full inset-x-0 overflow-hidden border-t border-border shadow-xl"
           >
-            <div className="px-4 py-4 space-y-1 bg-card">
+            <div className="px-4 py-4 space-y-1 bg-card max-h-[calc(100vh-4rem)] overflow-y-auto">
 
               {/* Nav links */}
               {navigation.map((item, i) => {

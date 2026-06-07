@@ -246,17 +246,6 @@ export default function ResetPasswordPage() {
           <ArrowLeftIcon className="w-5 h-5 text-muted-foreground group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors" />
         </Link>
 
-        <div className="lg:hidden absolute top-6 left-1/2 -translate-x-1/2">
-          <Image
-            src="/images/brand/logo.png"
-            alt="ImoPanorama Madagascar"
-            width={140}
-            height={44}
-            className="h-11 w-auto object-contain"
-            priority
-          />
-        </div>
-
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -264,6 +253,18 @@ export default function ResetPasswordPage() {
           className="w-full max-w-md"
         >
           <div className="p-6">
+            {/* Mobile Logo */}
+            <div className="lg:hidden flex justify-center mb-6">
+              <Image
+                src="/images/brand/logo.png"
+                alt="ImoPanorama Madagascar"
+                width={140}
+                height={44}
+                className="h-11 w-auto object-contain"
+                priority
+              />
+            </div>
+
             <Suspense fallback={<div className="text-center text-muted-foreground">Chargement…</div>}>
               <ResetPasswordContent />
             </Suspense>

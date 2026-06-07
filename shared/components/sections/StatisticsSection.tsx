@@ -25,9 +25,9 @@ export default function StatisticsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="flex flex-col items-center text-center py-14 px-6 gap-2"
+              className="flex flex-col items-center text-center py-10 px-3 sm:py-14 sm:px-6 gap-2"
             >
-              <div className="text-6xl md:text-7xl font-black text-white tabular-nums leading-none">
+              <div className="text-4xl sm:text-5xl md:text-7xl font-black text-white tabular-nums leading-none whitespace-nowrap">
                 <CountUp end={stat.value} duration={2.5} separator=" " delay={0.3} />
                 <span className="text-primary-400">{stat.suffix}</span>
               </div>

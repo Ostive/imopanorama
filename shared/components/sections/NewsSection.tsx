@@ -61,44 +61,28 @@ function NewsSection() {
       <div className="container mx-auto px-4">
 
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-14">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <div className="flex items-center gap-3 mb-5">
-              <div className="h-px w-12 bg-primary-500" />
-              <span className="text-primary-600 dark:text-primary-400 text-xs font-bold tracking-widest uppercase">
-                À lire
-              </span>
-            </div>
-            <h2 className="text-5xl md:text-6xl font-black text-foreground leading-[1.05]">
-              Comprendre le marché{' '}
-              <span className="bg-linear-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
-                sans jargon
-              </span>
-            </h2>
-            <p className="mt-3 text-muted-foreground text-base max-w-md">
-              Conseils pratiques, tendances locales et nouvelles utiles pour avancer avec plus de confiance.
-            </p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="shrink-0"
-          >
-            <Link
-              href="/actualites"
-              className="group inline-flex items-center gap-2 text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest hover:gap-3 transition-all"
-            >
-              Tous les articles
-              <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </motion.div>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-14"
+        >
+          <div className="flex items-center gap-3 mb-5">
+            <div className="h-px w-12 bg-primary-500" />
+            <span className="text-primary-600 dark:text-primary-400 text-xs font-bold tracking-widest uppercase">
+              À lire
+            </span>
+          </div>
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-foreground leading-[1.05] wrap-break-word">
+            Comprendre le marché{' '}
+            <span className="bg-linear-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
+              sans jargon
+            </span>
+          </h2>
+          <p className="mt-3 text-muted-foreground text-base max-w-md">
+            Conseils pratiques, tendances locales et nouvelles utiles pour avancer avec plus de confiance.
+          </p>
+        </motion.div>
 
         {/* Skeleton */}
         {isLoading && (
@@ -120,7 +104,7 @@ function NewsSection() {
         {/* Empty state */}
         {!isLoading && articles.length === 0 && (
           <div className="text-center py-20">
-            <p className="font-semibold text-foreground mb-1">Aucun article pour le moment</p>
+            <p className="font-semibold text-foreground mb-1">Aucun contenu pour le moment</p>
             <p className="text-sm text-muted-foreground">De nouveaux contenus arrivent bientôt.</p>
           </div>
         )}
@@ -184,6 +168,23 @@ function NewsSection() {
               </motion.article>
             ))}
           </div>
+        )}
+
+        {!isLoading && articles.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-10 text-center"
+          >
+            <Link
+              href="/actualites"
+              className="group inline-flex items-center gap-2 text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest hover:gap-3 transition-all"
+            >
+              Tous les articles
+              <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </motion.div>
         )}
       </div>
     </section>

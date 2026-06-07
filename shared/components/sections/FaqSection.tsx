@@ -46,24 +46,6 @@ export default function FaqSection() {
             <p className="text-muted-foreground leading-relaxed mb-10">
               Achat, location, terrain, construction : on répond aux questions qui reviennent vraiment.
             </p>
-
-            {/* Contact prompt */}
-            <div className="p-6 bg-primary-50/70 dark:bg-primary-900/20 rounded-2xl">
-              <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/40 rounded-xl flex items-center justify-center mb-4">
-                <ChatBubbleLeftRightIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-              </div>
-              <p className="font-bold text-foreground mb-1">Une question reste ouverte ?</p>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                Envoyez-nous votre demande, on vous répond avec une réponse claire et utile.
-              </p>
-              <Link
-                href="/contact"
-                className="group inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider hover:gap-2.5 transition-all"
-              >
-                Nous contacter
-                <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-            </div>
           </motion.div>
 
           {/* Right — accordion */}
@@ -164,6 +146,31 @@ export default function FaqSection() {
                 </div>
               </div>
             )}
+
+            {/* Contact prompt — shown after the questions, as a fallback if they weren't enough */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mt-10 p-6 bg-primary-50/70 dark:bg-primary-900/20 rounded-2xl flex flex-col sm:flex-row sm:items-center gap-4"
+            >
+              <div className="w-10 h-10 shrink-0 bg-primary-100 dark:bg-primary-900/40 rounded-xl flex items-center justify-center">
+                <ChatBubbleLeftRightIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+              </div>
+              <div className="flex-1">
+                <p className="font-bold text-foreground">Une question reste ouverte ?</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Envoyez-nous votre demande, on vous répond avec une réponse claire et utile.
+                </p>
+              </div>
+              <Link
+                href="/contact"
+                className="group inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider hover:gap-2.5 transition-all shrink-0"
+              >
+                Nous contacter
+                <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </motion.div>
           </div>
         </div>
       </div>
