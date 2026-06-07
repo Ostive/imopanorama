@@ -20,7 +20,7 @@ export default function FaqSection() {
   }
 
   return (
-    <section className="py-28 bg-background">
+    <section className="py-16 sm:py-20 md:py-28 bg-background">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-3 gap-16 items-start">
 

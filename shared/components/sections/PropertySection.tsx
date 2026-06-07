@@ -28,7 +28,7 @@ export default function PropertySection() {
   }, [])
 
   return (
-    <section id="proprietes" className="py-28 bg-background relative overflow-hidden">
+    <section id="proprietes" className="py-16 sm:py-20 md:py-28 bg-background relative overflow-hidden">
       {/* Subtle dot grid */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgb(14_165_233/0.07)_1px,transparent_0)] bg-size-[28px_28px] pointer-events-none" />
 

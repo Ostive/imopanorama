@@ -57,7 +57,7 @@ function NewsSection() {
   }, [])
 
   return (
-    <section className="py-28 bg-card">
+    <section className="py-16 sm:py-20 md:py-28 bg-card">
       <div className="container mx-auto px-4">
 
         {/* Header */}

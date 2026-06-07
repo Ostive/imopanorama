@@ -35,7 +35,7 @@ const services = [
 
 export default function BatiPanoramaSection() {
   return (
-    <section id="batipanorama" className="py-28 bg-background relative overflow-hidden">
+    <section id="batipanorama" className="py-16 sm:py-20 md:py-28 bg-background relative overflow-hidden">
       <div className="absolute inset-0 bg-[linear-gradient(rgba(15,23,42,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(15,23,42,0.03)_1px,transparent_1px)] bg-size-[40px_40px] dark:opacity-20 pointer-events-none" />
 
       <div className="container mx-auto px-4 relative z-10">
