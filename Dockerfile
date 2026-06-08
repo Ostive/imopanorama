@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 # ─────────────────────────────────────────────
 # Stage 1 — deps
 # ─────────────────────────────────────────────
@@ -6,7 +7,11 @@ RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN --mount=type=cache,target=/root/.npm \
+    npm config set fetch-retries 5 \
+    && npm config set fetch-retry-mintimeout 20000 \
+    && npm config set fetch-retry-maxtimeout 120000 \
+    && npm ci
 
 # ─────────────────────────────────────────────
 # Stage 2 — builder
