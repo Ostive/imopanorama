@@ -175,7 +175,7 @@ export default function BatiProcessPage() {
                           >
                             <PencilIcon className="w-4 h-4" />
                           </Link>
-                          <button
+                          <button type="button"
                             onClick={() => setDeleteModal({ show: true, id: step.id, title: step.title })}
                             className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                             title="Supprimer"

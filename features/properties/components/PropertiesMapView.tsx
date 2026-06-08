@@ -423,7 +423,7 @@ function PropertiesMapViewInner({
                 >
                   <div className="flex items-center justify-between mb-2 px-1">
                     <span className="text-xs font-medium text-muted-foreground">Propriété sélectionnée</span>
-                    <button
+                    <button type="button"
                       onClick={() => setSelectedProperty(null)}
                       className="flex items-center gap-1 text-xs text-muted-foreground hover:text-gray-800 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg px-2 py-1 transition-colors"
                     >

@@ -95,7 +95,7 @@ export default function FaqSection() {
                     transition={{ delay: index * 0.07 }}
                     className="border-b border-border/50 last:border-0"
                   >
-                    <button
+                    <button type="button"
                       onClick={() => toggleItem(item.id)}
                       className="w-full flex items-center justify-between gap-4 py-6 text-left group"
                     >

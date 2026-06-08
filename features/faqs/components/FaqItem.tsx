@@ -17,7 +17,7 @@ export default function FaqItem({ faq }: FaqItemProps) {
         ? 'bg-primary-50 dark:bg-primary-900/20 shadow-lg border-2 border-primary-200 dark:border-primary-700 -translate-y-1'
         : 'bg-card shadow-md border-2 border-transparent hover:shadow-lg'
       }`}>
-      <button
+      <button type="button"
         className={`flex justify-between items-center w-full px-6 py-5 text-left focus:outline-none transition-colors ${isOpen ? 'border-l-4 border-primary-500 dark:border-primary-400' : ''
           }`}
         onClick={(e) => {

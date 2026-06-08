@@ -221,7 +221,7 @@ function PropertiesPageContent() {
                 <p className="text-muted-foreground mb-8">
                   Essayez d'élargir un peu vos critères. Le bon bien se cache parfois à un filtre près.
                 </p>
-                <button
+                <button type="button"
                   onClick={resetFilters}
                   className="px-8 py-3 bg-primary-600 text-white rounded-xl hover:bg-primary-700 font-semibold transition-all shadow-lg hover:shadow-xl"
                 >

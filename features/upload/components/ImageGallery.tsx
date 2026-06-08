@@ -82,7 +82,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
                   onClick={() => onImageClick && onImageClick(imageUrl)}>
                   <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     {!onImageClick && (
-                      <button
+                      <button type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           openFullscreen(imageUrl);
@@ -95,7 +95,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
                     )}
 
                     {onDelete && (
-                      <button
+                      <button type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDelete(imageUrl, index);
@@ -126,7 +126,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
           onClick={closeFullscreen}
         >
           <div className="relative max-w-4xl max-h-full">
-            <button
+            <button type="button"
               className="absolute top-4 right-4 bg-card rounded-full p-1 shadow-lg transition-colors"
               onClick={closeFullscreen}
             >

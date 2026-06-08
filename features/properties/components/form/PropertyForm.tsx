@@ -194,7 +194,6 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
 
   const [isLoading, setIsLoading] = useState(isEdit)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [currentStep, setCurrentStep] = useState(1)
   const totalSteps = 7
   const imageUploaderRef = useRef<MultipleImageUploaderHandle>(null)
 
@@ -304,8 +303,8 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
     }
   }, [formData.price, formData.totalSize])
 
-  // Auto-update step indicator
-  useEffect(() => {
+  // Step indicator derived directly from form completion — no state needed
+  const currentStep = (() => {
     let step = 1
     if (formData.title && formData.propertyType) step = 2
     if (step >= 2 && formData.address && formData.city) step = 3
@@ -314,8 +313,8 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
     if (step >= 4) step = 5
     if (step >= 5 && (formData.features.length > 0 || formData.amenities.length > 0)) step = 6
     if (step >= 6 && formData.images.length > 0) step = 7
-    setCurrentStep(step)
-  }, [formData])
+    return step
+  })()
 
   // ─── Handlers ──────────────────────────────────────────────────────────────
 

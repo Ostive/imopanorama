@@ -238,7 +238,7 @@ export default function EstimationPage() {
           </div>
 
           <textarea name="message" value={formData.message} onChange={handleChange} rows={5} placeholder="Adresse approximative, accès, documents disponibles, prix souhaité, urgence de vente..." className="mt-4 w-full resize-none rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
-          <button disabled={isSubmitting} className="mt-5 w-full rounded-xl bg-primary-600 px-6 py-4 font-bold text-white hover:bg-primary-700 disabled:opacity-50">
+          <button type="submit" disabled={isSubmitting} className="mt-5 w-full rounded-xl bg-primary-600 px-6 py-4 font-bold text-white hover:bg-primary-700 disabled:opacity-50">
             {isSubmitting ? 'Envoi en cours...' : 'Demander mon estimation'}
           </button>
         </form>

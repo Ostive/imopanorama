@@ -27,7 +27,10 @@ COPY . .
 RUN npx prisma generate
 
 # Build Next.js (standalone output)
+# NODE_OPTIONS caps V8's heap so it triggers GC before the host OOM-kills the
+# build (Next.js's TypeScript-checking pass is the most memory-hungry phase).
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_OPTIONS="--max-old-space-size=3072"
 RUN npm run build
 
 # Strip Prisma packages not needed at runtime (~150 MB saved):

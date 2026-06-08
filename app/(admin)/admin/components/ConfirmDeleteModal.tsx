@@ -40,13 +40,13 @@ export function ConfirmDeleteModal({
           <p className="text-muted-foreground mt-2 text-sm px-4">{description}</p>
         </div>
         <div className="p-4 bg-muted/50 flex gap-3 justify-center">
-          <button
+          <button type="button"
             onClick={onCancel}
             className="px-5 py-2.5 bg-card border border-border text-foreground rounded-xl font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           >
             Annuler
           </button>
-          <button
+          <button type="button"
             onClick={onConfirm}
             className="px-5 py-2.5 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition-colors shadow-sm"
           >

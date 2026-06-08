@@ -98,7 +98,7 @@ export default function AdminNotificationsPage() {
         </div>
 
         <div className="mb-6 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between rounded-2xl border border-border bg-card p-4 shadow-sm">
-          <button
+          <button type="button"
             onClick={() => { setUnreadOnly((value) => !value); setPage(1); }}
             className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition ${
               unreadOnly
@@ -109,7 +109,7 @@ export default function AdminNotificationsPage() {
             {unreadOnly ? <XMarkIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
             {unreadOnly ? 'Voir toutes' : 'Voir non lues'}
           </button>
-          <button
+          <button type="button"
             onClick={markAllAsRead}
             disabled={unread === 0}
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
@@ -177,7 +177,7 @@ export default function AdminNotificationsPage() {
                         </Link>
                       )}
                       {!notification.isRead && (
-                        <button
+                        <button type="button"
                           onClick={() => markAsRead(notification.id)}
                           className="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-3 py-2 text-sm font-bold text-white transition hover:bg-primary-700"
                         >
@@ -185,7 +185,7 @@ export default function AdminNotificationsPage() {
                           Lu
                         </button>
                       )}
-                      <button
+                      <button type="button"
                         onClick={() => deleteNotification(notification.id)}
                         className="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-card px-3 py-2 text-sm font-bold text-red-600 transition hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950/20"
                       >

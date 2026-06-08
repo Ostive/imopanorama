@@ -382,7 +382,7 @@ export default function SellPage() {
               </Field>
             </FormSection>
 
-            <button disabled={isSubmitting} className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-primary-600 px-6 py-4 font-bold text-white shadow-lg transition hover:bg-primary-700 disabled:opacity-50">
+            <button type="submit" disabled={isSubmitting} className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-primary-600 px-6 py-4 font-bold text-white shadow-lg transition hover:bg-primary-700 disabled:opacity-50">
               {isSubmitting ? 'Envoi en cours...' : 'Envoyer mon dossier vendeur'}
               {!isSubmitting && <ArrowRightIcon className="h-4 w-4" />}
             </button>

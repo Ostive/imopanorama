@@ -215,7 +215,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
 
         return (
             <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-4 overflow-x-auto scrollbar-hide">
-                <button
+                <button type="button"
                     onClick={() => setCurrentPath('/images/')}
                     className="hover:text-primary-600 dark:hover:text-primary-400 flex items-center transition-colors px-2 py-1 rounded-md hover:bg-muted"
                 >
@@ -230,7 +230,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                     return (
                         <React.Fragment key={path}>
                             <span className="text-muted-foreground">/</span>
-                            <button
+                            <button type="button"
                                 onClick={() => setCurrentPath(path)}
                                 className={`hover:text-primary-600 transistion-colors px-2 py-1 rounded-md hover:bg-muted ${index === pathParts.length - 1 ? 'font-semibold text-foreground bg-muted' : ''}`}
                             >
@@ -286,13 +286,13 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
 
                         {/* View Toggle */}
                         <div className="flex bg-muted rounded-lg p-1 border border-border h-[38px] items-center shrink-0">
-                            <button
+                            <button type="button"
                                 onClick={() => setViewMode('grid')}
                                 className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-card shadow-sm text-primary-600' : 'text-muted-foreground hover:text-foreground'}`}
                             >
                                 <Squares2X2Icon className="h-4 w-4" />
                             </button>
-                            <button
+                            <button type="button"
                                 onClick={() => setViewMode('list')}
                                 className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-card shadow-sm text-primary-600' : 'text-muted-foreground hover:text-foreground'}`}
                             >
@@ -307,7 +307,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                                     <ArrowLeftIcon className="h-5 w-5" />
                                 </Link>
                             )}
-                            <button
+                            <button type="button"
                                 onClick={() => setShowNewFolderInput(!showNewFolderInput)}
                                 className="p-2 text-foreground bg-card border border-border hover:bg-muted rounded-lg shadow-sm transition-all"
                                 title="Nouveau dossier"
@@ -322,7 +322,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                                 className="hidden"
                                 accept="image/*"
                             />
-                            <button
+                            <button type="button"
                                 onClick={handleTriggerUpload}
                                 className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-medium rounded-lg shadow-md transition-all transform hover:scale-[1.02]"
                             >
@@ -364,13 +364,13 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                                 autoFocus
                             />
                             <div className="flex gap-2">
-                                <button
+                                <button type="button"
                                     onClick={handleCreateFolder}
                                     className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium shadow-sm"
                                 >
                                     Créer
                                 </button>
-                                <button
+                                <button type="button"
                                     onClick={() => {
                                         setShowNewFolderInput(false);
                                         setNewFolderName('');
@@ -392,7 +392,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                         className="overflow-hidden mb-6"
                     >
                         <div className="bg-card border border-border p-4 rounded-xl shadow-sm relative">
-                            <button
+                            <button type="button"
                                 onClick={() => setShowUploader(false)}
                                 className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-foreground rounded-full hover:bg-muted"
                             >
@@ -418,7 +418,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                 <div className="px-6 py-3 border-b border-border flex items-center justify-between bg-card">
                     {generateBreadcrumb()}
                     {currentPath !== '/images/' && (
-                        <button
+                        <button type="button"
                             onClick={navigateToParent}
                             className="text-xs font-medium text-muted-foreground hover:text-primary-600 flex items-center bg-card px-2 py-1 rounded border border-border shadow-sm hover:shadow transition-all"
                         >
@@ -443,7 +443,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                                     </div>
                                     <h3 className="text-lg font-medium text-foreground">Ce dossier est vide</h3>
                                     <p className="text-muted-foreground max-w-sm mx-auto mt-2">Commencez par ajouter des images ou créez un sous-dossier pour organiser vos fichiers.</p>
-                                    <button
+                                    <button type="button"
                                         onClick={handleTriggerUpload}
                                         className="mt-6 text-primary-600 hover:text-primary-700 font-medium hover:underline flex items-center gap-2 mx-auto"
                                     >

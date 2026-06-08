@@ -89,7 +89,7 @@ export default function FaqList({
       {showPagination && totalPages > 1 && (
         <div className="flex justify-center mt-10">
           <nav className="inline-flex space-x-2" aria-label="Pagination">
-            <button
+            <button type="button"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -106,7 +106,7 @@ export default function FaqList({
 
             <div className="inline-flex space-x-1">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
+                <button type="button"
                   key={page}
                   onClick={(e) => {
                     e.preventDefault();
@@ -123,7 +123,7 @@ export default function FaqList({
               ))}
             </div>
 
-            <button
+            <button type="button"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();

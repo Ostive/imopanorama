@@ -133,7 +133,7 @@ export function ShareDropdown({ title, text, url: urlProp, className }: ShareMen
             className="absolute left-0 top-full mt-2 z-50 bg-card border border-border rounded-2xl shadow-2xl overflow-hidden min-w-56"
           >
             {ITEMS.map(item => (
-              <button
+              <button type="button"
                 key={item.key}
                 onClick={() => { setOpen(false); item.action() }}
                 className={`flex items-center gap-3 w-full px-4 py-3 ${item.hoverBg} transition-colors text-left${item.separator ? ' border-t border-border' : ''}`}

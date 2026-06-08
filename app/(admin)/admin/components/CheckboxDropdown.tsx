@@ -56,7 +56,7 @@ export function CheckboxDropdown({ label, selected, onChange, options, groups }:
       {open && (
         <div className="absolute z-50 mt-1 w-full min-w-48 bg-card border border-border rounded-xl shadow-xl py-1 max-h-72 overflow-y-auto">
           {count > 0 && (
-            <button onClick={() => onChange([])} className="w-full px-3 py-1.5 text-xs text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 text-left font-medium">
+            <button type="button" onClick={() => onChange([])} className="w-full px-3 py-1.5 text-xs text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 text-left font-medium">
               Tout décocher
             </button>
           )}

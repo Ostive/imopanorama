@@ -478,7 +478,7 @@ export default function ProjectDetailPage() {
           onClick={closeLightbox}
         >
           {/* Close Button */}
-          <button
+          <button type="button"
             onClick={closeLightbox}
             className="absolute top-4 right-4 z-50 p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-sm transition-all"
           >
@@ -489,7 +489,7 @@ export default function ProjectDetailPage() {
 
           {/* Previous Button */}
           {project.images.length > 1 && (
-            <button
+            <button type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 previousImage();
@@ -504,7 +504,7 @@ export default function ProjectDetailPage() {
 
           {/* Next Button */}
           {project.images.length > 1 && (
-            <button
+            <button type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 nextImage();

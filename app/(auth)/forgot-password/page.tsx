@@ -77,7 +77,7 @@ export default function ForgotPasswordPage() {
             </span>
           </label>
 
-          <button disabled={isSubmitting} className="w-full rounded-xl bg-primary-600 px-6 py-3.5 font-bold text-white shadow-lg transition hover:bg-primary-700 disabled:opacity-50">
+          <button type="submit" disabled={isSubmitting} className="w-full rounded-xl bg-primary-600 px-6 py-3.5 font-bold text-white shadow-lg transition hover:bg-primary-700 disabled:opacity-50">
             {isSubmitting ? 'Envoi en cours...' : 'Recevoir le lien'}
           </button>
         </form>

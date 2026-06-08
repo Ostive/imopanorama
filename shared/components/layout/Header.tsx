@@ -112,7 +112,7 @@ function Header() {
 
           {/* Left: Mobile burger + Logo */}
           <div className="flex items-center gap-2">
-            <button
+            <button type="button"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden p-2 rounded-xl text-muted-foreground hover:bg-muted transition-colors"
               aria-label="Menu"
@@ -387,7 +387,7 @@ function Header() {
                         </div>
 
                         <div className="p-1.5 border-t border-border">
-                          <button
+                          <button type="button"
                             onClick={handleLogout}
                             className="flex items-center gap-3 w-full px-3 py-2 rounded-xl text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                           >
@@ -542,7 +542,7 @@ function Header() {
                       <UserIcon className="h-5 w-5" />
                       Mon profil
                     </a>
-                    <button
+                    <button type="button"
                       onClick={handleLogout}
                       className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                     >

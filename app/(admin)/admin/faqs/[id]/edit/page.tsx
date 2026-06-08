@@ -57,7 +57,7 @@ export default function EditFaqPage({ params }: EditFaqPageProps) {
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
           Erreur: Impossible de charger la question. Veuillez réessayer plus tard.
         </div>
-        <button
+        <button type="button"
           onClick={() => router.push('/admin/faqs')}
           className="mt-4 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
         >

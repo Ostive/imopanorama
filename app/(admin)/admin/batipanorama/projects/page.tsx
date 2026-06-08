@@ -347,14 +347,14 @@ export default function BatiProjectsPage() {
             </div>
 
             <div className="flex gap-3">
-              <button
+              <button type="button"
                 onClick={closeDeleteModal}
                 disabled={isDeleting}
                 className="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Annuler
               </button>
-              <button
+              <button type="button"
                 onClick={confirmDelete}
                 disabled={isDeleting}
                 className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -439,7 +439,7 @@ export default function BatiProjectsPage() {
 
             {/* Clear Filters */}
             {hasActiveFilters && (
-              <button
+              <button type="button"
                 onClick={clearFilters}
                 className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
               >
@@ -591,7 +591,7 @@ export default function BatiProjectsPage() {
                           >
                             <PencilIcon className="w-5 h-5" />
                           </Link>
-                          <button
+                          <button type="button"
                             onClick={() => openDeleteModal(project)}
                             className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-colors"
                             title="Supprimer"
@@ -662,7 +662,7 @@ export default function BatiProjectsPage() {
 
               {totalPages > 1 && (
                 <div className="flex items-center gap-1">
-                  <button onClick={() => handlePageChange(Math.max(1, searchParams.page - 1))} disabled={searchParams.page === 1} className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                  <button type="button" onClick={() => handlePageChange(Math.max(1, searchParams.page - 1))} disabled={searchParams.page === 1} className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
                     Précédent
                   </button>
                   
@@ -670,7 +670,7 @@ export default function BatiProjectsPage() {
                     const pageNum = searchParams.page <= 3 ? i + 1 : searchParams.page - 2 + i;
                     if (pageNum > totalPages) return null;
                     return (
-                      <button
+                      <button type="button"
                         key={pageNum}
                         onClick={() => handlePageChange(pageNum)}
                         className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
@@ -684,7 +684,7 @@ export default function BatiProjectsPage() {
                     );
                   })}
                   
-                  <button onClick={() => handlePageChange(Math.min(totalPages, searchParams.page + 1))} disabled={searchParams.page === totalPages} className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                  <button type="button" onClick={() => handlePageChange(Math.min(totalPages, searchParams.page + 1))} disabled={searchParams.page === totalPages} className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
                     Suivant
                   </button>
                   
@@ -700,7 +700,7 @@ export default function BatiProjectsPage() {
                       className="w-16 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                       placeholder={searchParams.page.toString()}
                     />
-                    <button
+                    <button type="button"
                       onClick={() => handleGoToSubmit(goToInput)}
                       className="px-3 py-1 text-sm font-medium text-white bg-primary-600 rounded hover:bg-primary-700 transition-colors"
                     >

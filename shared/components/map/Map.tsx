@@ -147,36 +147,6 @@ const MapInner: React.FC<MapProps> = ({
     }
   }, [isOnline, mapError]);
 
-  const handleRetry = () => {
-    setRetryCount(c => c + 1);
-  };
-
-  // Afficher le fallback offline
-  if (!isOnline && !mapLoaded) {
-    return (
-      <MapFallback
-        height={height}
-        message="Pas de connexion internet"
-        subtitle="La carte nécessite une connexion internet pour charger les tuiles. Reconnectez-vous pour voir la carte."
-        onRetry={handleRetry}
-        icon="offline"
-      />
-    );
-  }
-
-  // Afficher le fallback erreur
-  if (mapError && !mapLoaded) {
-    return (
-      <MapFallback
-        height={height}
-        message={mapError}
-        subtitle="Vérifiez votre connexion internet et réessayez."
-        onRetry={handleRetry}
-        icon="error"
-      />
-    );
-  }
-
   // Mise à jour du centre et du zoom uniquement lors de l'initialisation ou si les props changent significativement
   const initialCenterRef = useRef(center);
   const initialZoomRef = useRef(zoom);
@@ -308,6 +278,36 @@ const MapInner: React.FC<MapProps> = ({
       }
     });
   }, [markers, mapLoaded, defaultMarkerStyle, onMapClick]);
+
+  const handleRetry = () => {
+    setRetryCount(c => c + 1);
+  };
+
+  // Afficher le fallback offline
+  if (!isOnline && !mapLoaded) {
+    return (
+      <MapFallback
+        height={height}
+        message="Pas de connexion internet"
+        subtitle="La carte nécessite une connexion internet pour charger les tuiles. Reconnectez-vous pour voir la carte."
+        onRetry={handleRetry}
+        icon="offline"
+      />
+    );
+  }
+
+  // Afficher le fallback erreur
+  if (mapError && !mapLoaded) {
+    return (
+      <MapFallback
+        height={height}
+        message={mapError}
+        subtitle="Vérifiez votre connexion internet et réessayez."
+        onRetry={handleRetry}
+        icon="error"
+      />
+    );
+  }
 
   return (
     <>

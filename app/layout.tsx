@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/shared/theme/ThemeContext'
 import { FavoritesProvider } from '@/features/favorites/context/FavoritesContext'
 import { ContactsProvider } from '@/features/contacts/context/ContactsContext'
 import { ReactQueryProvider } from '@/shared/providers/react-query'
+import { MotionProvider } from '@/shared/providers/motion'
 import CookieConsentScripts from '@/shared/components/layout/CookieConsentScripts'
 import { Toaster } from 'react-hot-toast'
 
@@ -99,30 +100,32 @@ export default function RootLayout({
         <meta name="theme-color" content="#2563eb" />
       </head>
       <body className={poppins.variable}>
-        <ReactQueryProvider>
-          <AuthProvider>
-            <FavoritesProvider>
-              <ContactsProvider>
-                <ThemeProvider>
-                  {children}
-                  <CookieConsentScripts />
-                  <Toaster
-                    position="top-right"
-                    toastOptions={{
-                      duration: 4000,
-                      style: {
-                        borderRadius: '12px',
-                        background: '#333',
-                        color: '#fff',
-                        fontSize: '14px',
-                      },
-                    }}
-                  />
-                </ThemeProvider>
-              </ContactsProvider>
-            </FavoritesProvider>
-          </AuthProvider>
-        </ReactQueryProvider>
+        <MotionProvider>
+          <ReactQueryProvider>
+            <AuthProvider>
+              <FavoritesProvider>
+                <ContactsProvider>
+                  <ThemeProvider>
+                    {children}
+                    <CookieConsentScripts />
+                    <Toaster
+                      position="top-right"
+                      toastOptions={{
+                        duration: 4000,
+                        style: {
+                          borderRadius: '12px',
+                          background: '#333',
+                          color: '#fff',
+                          fontSize: '14px',
+                        },
+                      }}
+                    />
+                  </ThemeProvider>
+                </ContactsProvider>
+              </FavoritesProvider>
+            </AuthProvider>
+          </ReactQueryProvider>
+        </MotionProvider>
       </body>
     </html>
   )

@@ -96,7 +96,7 @@ function PropertyPagination({
 
       {totalPages > 1 && (
         <div className="flex items-center gap-1">
-          <button onClick={() => onPageChange(Math.max(1, page - 1))} disabled={page === 1} className="px-3 py-2 text-sm font-medium text-foreground bg-card border border-border rounded-lg hover:bg-muted/50 disabled:opacity-50 disabled:cursor-not-allowed">
+          <button type="button" onClick={() => onPageChange(Math.max(1, page - 1))} disabled={page === 1} className="px-3 py-2 text-sm font-medium text-foreground bg-card border border-border rounded-lg hover:bg-muted/50 disabled:opacity-50 disabled:cursor-not-allowed">
             Précédent
           </button>
           <div className="hidden sm:flex items-center gap-1">
@@ -104,7 +104,7 @@ function PropertyPagination({
               p === '...' ? (
                 <span key={`e-${i}`} className="px-2 py-2 text-sm text-muted-foreground">...</span>
               ) : (
-                <button
+                <button type="button"
                   key={p}
                   onClick={() => onPageChange(p)}
                   className={`min-w-9 h-9 text-sm font-medium rounded-lg transition-colors ${
@@ -117,7 +117,7 @@ function PropertyPagination({
             )}
           </div>
           <span className="sm:hidden px-2 py-2 text-sm text-foreground">{page}/{totalPages}</span>
-          <button onClick={() => onPageChange(Math.min(totalPages, page + 1))} disabled={page === totalPages} className="px-3 py-2 text-sm font-medium text-foreground bg-card border border-border rounded-lg hover:bg-muted/50 disabled:opacity-50 disabled:cursor-not-allowed">
+          <button type="button" onClick={() => onPageChange(Math.min(totalPages, page + 1))} disabled={page === totalPages} className="px-3 py-2 text-sm font-medium text-foreground bg-card border border-border rounded-lg hover:bg-muted/50 disabled:opacity-50 disabled:cursor-not-allowed">
             Suivant
           </button>
         </div>
@@ -293,7 +293,7 @@ export default function AdminPropertiesPage() {
                     <CheckCircleIcon className="h-5 w-5 text-green-600 dark:text-green-400 mr-3 shrink-0" />
                     <p className="text-green-800 dark:text-green-300">{successMessage}</p>
                   </div>
-                  <button onClick={() => setSuccessMessage(null)} className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200">
+                  <button type="button" onClick={() => setSuccessMessage(null)} className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200">
                     <XMarkIcon className="h-5 w-5" />
                   </button>
                 </div>
@@ -320,17 +320,17 @@ export default function AdminPropertiesPage() {
             actions={
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
-                  <button onClick={() => setViewMode('table')} className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white text-primary-600 shadow-sm' : 'text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100'}`} title="Vue tableau">
+                  <button type="button" onClick={() => setViewMode('table')} className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white text-primary-600 shadow-sm' : 'text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100'}`} title="Vue tableau">
                     <TableCellsIcon className="h-5 w-5" />
                   </button>
-                  <button onClick={() => setViewMode('grid')} className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white text-primary-600 shadow-sm' : 'text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100'}`} title="Vue grille">
+                  <button type="button" onClick={() => setViewMode('grid')} className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white text-primary-600 shadow-sm' : 'text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100'}`} title="Vue grille">
                     <Squares2X2Icon className="h-5 w-5" />
                   </button>
                 </div>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="inline-flex items-center px-6 py-3 bg-linear-to-r from-primary-600 to-primary-600 text-white rounded-xl hover:from-primary-700 hover:to-primary-700 transition-all shadow-lg hover:shadow-xl font-semibold">
+                    <button type="button" className="inline-flex items-center px-6 py-3 bg-linear-to-r from-primary-600 to-primary-600 text-white rounded-xl hover:from-primary-700 hover:to-primary-700 transition-all shadow-lg hover:shadow-xl font-semibold">
                       <PlusIcon className="h-5 w-5 mr-2" />
                       Créer
                       <ChevronDownIcon className="h-4 w-4 ml-2 opacity-80" />
@@ -384,7 +384,7 @@ export default function AdminPropertiesPage() {
                 <h2 className="text-lg font-semibold text-foreground">Filtres</h2>
               </div>
               {hasActiveFilters && (
-                <button
+                <button type="button"
                   onClick={() => { setSearchQuery(''); setDebouncedSearch(''); setStatusFilter(''); setPropertyTypeFilter(''); setTransactionTypeFilter(''); setPage(1) }}
                   className="text-sm text-primary-600 hover:text-primary-800 font-medium flex items-center gap-1"
                 >
@@ -534,7 +534,7 @@ export default function AdminPropertiesPage() {
                             <div className="hidden md:flex items-center justify-end gap-2">
                               <Link href={`/proprietes/${property.id}`} className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors" title="Voir"><EyeIcon className="h-5 w-5" /></Link>
                               <Link href={`/admin/proprietes/edit/${property.id}`} className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors" title="Modifier"><PencilSquareIcon className="h-5 w-5" /></Link>
-                              <button onClick={() => openDelete(property.id)} className="p-2 text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Supprimer"><TrashIcon className="h-5 w-5" /></button>
+                              <button type="button" onClick={() => openDelete(property.id)} className="p-2 text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Supprimer"><TrashIcon className="h-5 w-5" /></button>
                             </div>
                             <div className="md:hidden flex justify-end">
                               <DropdownMenu>
@@ -602,7 +602,7 @@ export default function AdminPropertiesPage() {
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                           <Link href={`/proprietes/${property.id}`} className="p-2.5 bg-card rounded-xl text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors shadow-lg" title="Voir"><EyeIcon className="h-5 w-5" /></Link>
                           <Link href={`/admin/proprietes/edit/${property.id}`} className="p-2.5 bg-card rounded-xl text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors shadow-lg" title="Modifier"><PencilSquareIcon className="h-5 w-5" /></Link>
-                          <button onClick={() => openDelete(property.id)} className="p-2.5 bg-card rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors shadow-lg" title="Supprimer"><TrashIcon className="h-5 w-5" /></button>
+                          <button type="button" onClick={() => openDelete(property.id)} className="p-2.5 bg-card rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors shadow-lg" title="Supprimer"><TrashIcon className="h-5 w-5" /></button>
                         </div>
                       </div>
                       <div className="p-4">

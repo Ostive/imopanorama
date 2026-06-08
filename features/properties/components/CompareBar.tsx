@@ -51,7 +51,7 @@ export function CompareBar() {
                         <p className="text-xs font-semibold text-foreground truncate">{property.title}</p>
                         <p className="text-xs text-gray-500 truncate">{property.city}</p>
                       </div>
-                      <button
+                      <button type="button"
                         onClick={() => removeFromCompare(property.id)}
                         className="shrink-0 text-gray-400 hover:text-red-500 transition-colors"
                         aria-label="Retirer de la comparaison"
@@ -65,7 +65,7 @@ export function CompareBar() {
 
               {/* Actions */}
               <div className="flex items-center gap-2 shrink-0">
-                <button
+                <button type="button"
                   onClick={clearCompare}
                   className="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors whitespace-nowrap"
                 >

@@ -189,7 +189,7 @@ export default function PartnersAdminPage() {
               <p className="text-gray-600 font-medium mt-1">Gérez les logos des partenaires affichés sur le site</p>
             </div>
           </div>
-          <button
+          <button type="button"
             onClick={() => openModal()}
             className="inline-flex items-center px-6 py-3 bg-linear-to-r from-primary-600 to-primary-600 text-white font-semibold rounded-xl hover:from-primary-700 hover:to-primary-700 transition-all shadow-lg"
           >
@@ -258,13 +258,13 @@ export default function PartnersAdminPage() {
                   </div>
                   
                   <div className="flex gap-2">
-                    <button
+                    <button type="button"
                       onClick={() => openModal(partner)}
                       className="p-2 text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
                     >
                       <PencilIcon className="h-4 w-4" />
                     </button>
-                    <button
+                    <button type="button"
                       onClick={() => handleDelete(partner.id)}
                       className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                     >

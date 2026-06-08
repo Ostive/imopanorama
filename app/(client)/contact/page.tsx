@@ -178,7 +178,7 @@ export default function ContactPage() {
             <textarea name="message" value={formData.message} onChange={handleChange} required minLength={10} rows={6} placeholder="Expliquez-nous ce que vous recherchez ou ce que vous souhaitez vendre..." className="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-border dark:bg-gray-900 dark:text-white" />
           </label>
 
-          <button disabled={isSubmitting} className="mt-6 w-full rounded-xl bg-primary-600 px-6 py-4 font-bold text-white shadow-lg transition hover:bg-primary-700 disabled:opacity-50">
+          <button type="submit" disabled={isSubmitting} className="mt-6 w-full rounded-xl bg-primary-600 px-6 py-4 font-bold text-white shadow-lg transition hover:bg-primary-700 disabled:opacity-50">
             {isSubmitting ? 'Envoi en cours...' : 'Envoyer ma demande'}
           </button>
         </form>

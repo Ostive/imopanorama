@@ -88,7 +88,7 @@ export default function FaqFilter({ onFilterChange, initialFilters = {} }: FaqFi
           </h3>
           <div className="flex flex-wrap gap-2">
             {categories.map((category) => (
-              <button
+              <button type="button"
                 key={category}
                 onClick={(e) => handleCategoryChange(e, category)}
                 className={`px-4 py-2 text-sm rounded-full transition-all duration-200 ${filters.category === category
@@ -105,7 +105,7 @@ export default function FaqFilter({ onFilterChange, initialFilters = {} }: FaqFi
 
       {/* Bouton de réinitialisation */}
       {(filters.category || filters.search) && (
-        <button
+        <button type="button"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();

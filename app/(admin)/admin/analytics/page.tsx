@@ -196,7 +196,7 @@ export default function AnalyticsPage() {
       <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8 flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600 mb-4">{error || 'Erreur de chargement'}</p>
-          <button onClick={fetchAnalytics} className="btn-primary">Réessayer</button>
+          <button type="button" onClick={fetchAnalytics} className="btn-primary">Réessayer</button>
         </div>
       </div>
     );
@@ -235,7 +235,7 @@ export default function AnalyticsPage() {
         <div className="flex items-center justify-between mb-6 mt-2">
           <div className="flex gap-1 bg-white rounded-xl p-1 shadow-sm border border-gray-100">
             {tabs.map((tab) => (
-              <button
+              <button type="button"
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${

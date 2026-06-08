@@ -116,7 +116,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
-                <button
+                <button type="button"
                   onClick={() => openLightbox(image)}
                   className="bg-card text-gray-800 dark:text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 transition-all duration-300"
                   aria-label="Agrandir l'image"
@@ -152,7 +152,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
         >
           <div className="relative w-full h-full flex flex-col items-center justify-center p-4">
             {/* Bouton fermer */}
-            <button
+            <button type="button"
               onClick={closeLightbox}
               className="absolute top-4 right-4 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 transition-all duration-200 z-10"
               aria-label="Fermer"
@@ -161,7 +161,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
             </button>
 
             {/* Navigation */}
-            <button
+            <button type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 navigateGallery('prev');
@@ -172,7 +172,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
               <ArrowLeftIcon className="h-6 w-6" />
             </button>
 
-            <button
+            <button type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 navigateGallery('next');
@@ -215,7 +215,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
             {/* Indicateur de position */}
             <div className="absolute bottom-6 left-0 right-0 flex justify-center space-x-2">
               {images.map((img, index) => (
-                <button
+                <button type="button"
                   key={img.id}
                   onClick={(e) => {
                     e.stopPropagation();

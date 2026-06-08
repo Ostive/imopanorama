@@ -232,7 +232,7 @@ export default function ContactsPage() {
               {(searchTerm || selectedStatuses.length > 0) && <span className="px-2 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-bold rounded-full">Actifs</span>}
             </div>
             {(searchTerm || selectedStatuses.length > 0) && (
-              <button onClick={() => { setSearchTerm(''); setSelectedStatuses([]); setCurrentPage(1); }}
+              <button type="button" onClick={() => { setSearchTerm(''); setSelectedStatuses([]); setCurrentPage(1); }}
                 className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 font-medium flex items-center gap-1">
                 <XMarkIcon className="h-4 w-4" />Réinitialiser
               </button>
@@ -244,7 +244,7 @@ export default function ContactsPage() {
               <input type="text" value={searchTerm} onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }} placeholder="Nom, email, terrain..."
                 className="w-full pl-10 pr-10 h-10 border border-border rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" />
               {searchTerm && (
-                <button onClick={() => { setSearchTerm(''); setCurrentPage(1); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300">
+                <button type="button" onClick={() => { setSearchTerm(''); setCurrentPage(1); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300">
                   <XMarkIcon className="h-5 w-5" />
                 </button>
               )}
@@ -575,14 +575,14 @@ export default function ContactsPage() {
                 {/* Footer */}
                 <div className="border-t border-border px-6 py-5 bg-muted/50 flex-shrink-0">
                   <div className="flex flex-col sm:flex-row gap-3 justify-end">
-                    <button
+                    <button type="button"
                       onClick={() => { setContactToDelete(c.id); setDeleteModalOpen(true); }}
                       className="inline-flex items-center justify-center rounded-xl bg-card border border-red-200 dark:border-red-800 px-4 py-2.5 text-sm font-bold text-red-600 dark:text-red-400 shadow-sm hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-300 dark:hover:border-red-700 transition-all focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                     >
                       <TrashIcon className="w-4 h-4 mr-2" /> Supprimer
                     </button>
                     {!c.isRead && (
-                      <button
+                      <button type="button"
                         onClick={() => markAsRead(c.id)}
                         className="inline-flex items-center justify-center rounded-xl bg-card border border-border px-4 py-2.5 text-sm font-bold text-foreground shadow-sm hover:bg-muted hover:border-gray-400 dark:hover:border-gray-600 transition-all focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                       >

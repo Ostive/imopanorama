@@ -95,16 +95,13 @@ export default function PropertyContactForm({
     }
   }, [submissionAttempts]);
 
-  // Réinitialiser l'erreur quand l'utilisateur modifie le formulaire
-  useEffect(() => {
-    if (error) {
-      setError(null);
-    }
-  }, [formData]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    // Réinitialiser l'erreur quand l'utilisateur modifie le formulaire
+    if (error) {
+      setError(null);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

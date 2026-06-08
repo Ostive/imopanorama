@@ -85,7 +85,7 @@ export function MapFallback({
           </p>
         )}
         {onRetry && (
-          <button
+          <button type="button"
             onClick={onRetry}
             className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-xl transition-colors shadow-sm"
           >

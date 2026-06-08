@@ -72,7 +72,7 @@ export default function PageLoadTimer() {
               {phase === 'loading' ? 'Chargement…' : 'Chargé'}
             </span>
           </div>
-          <button
+          <button type="button"
             onClick={() => setVisible(false)}
             className="text-white/40 hover:text-white/80 transition-colors text-base leading-none"
           >

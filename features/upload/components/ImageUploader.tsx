@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { bunnyCdnService } from '../services/bunnyCdnService';
 import Image from 'next/image';
 import { ButtonLoader } from '@/shared/components/ui/Loader';
@@ -32,7 +32,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleManualFileUpload = async (file: File) => {
+  const handleManualFileUpload = useCallback(async (file: File) => {
     // Vérifier le type de fichier
     if (!file.type.startsWith('image/')) {
       setError('Veuillez sélectionner une image valide.');
@@ -70,7 +70,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
     } finally {
       setIsUploading(false);
     }
-  };
+  }, [maxSizeMB, directory, onImageUploaded]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -115,7 +115,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
     if (initialFile && !previewUrl) {
       handleManualFileUpload(initialFile);
     }
-  }, [initialFile, previewUrl, handleManualFileUpload]); // Added handleManualFileUpload to dependencies
+  }, [initialFile, previewUrl, handleManualFileUpload]);
 
   // Auto-trigger file selection if requested
   useEffect(() => {
@@ -162,7 +162,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
             </div>
 
             {allowRemove && onImageRemoved && (
-              <button
+              <button type="button"
                 onClick={handleRemove}
                 className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 shadow-lg transition-all transform hover:scale-110"
                 title="Supprimer l'image"

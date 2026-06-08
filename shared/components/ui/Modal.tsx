@@ -88,7 +88,7 @@ export const Modal: React.FC<ModalProps> = ({
               >
                 {title}
               </h3>
-              <button 
+              <button type="button" 
                 onClick={onClose}
                 className="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 rounded-full"
                 aria-label="Fermer"

@@ -235,7 +235,7 @@ function ComparerInner() {
                     const imgs = safeImages(property.images || [])
                     return (
                       <div key={property.id} className="relative group border-r border-border last:border-r-0">
-                        <button
+                        <button type="button"
                           onClick={() => removeProperty(property.id)}
                           className="absolute top-2 right-2 p-1 bg-black/50 hover:bg-red-600 text-white rounded-full transition-colors z-10 backdrop-blur-sm"
                           title="Retirer de la comparaison"

@@ -178,7 +178,7 @@ export default function BatiServicesPage() {
                           >
                             <PencilIcon className="w-4 h-4" />
                           </Link>
-                          <button
+                          <button type="button"
                             onClick={() => setDeleteModal({ show: true, id: service.id, title: service.title })}
                             className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                             title="Supprimer"

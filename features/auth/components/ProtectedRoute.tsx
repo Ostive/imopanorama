@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuth } from '../context/AuthContext';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AdminPageSkeleton } from '@/shared/components/admin/AdminPageSkeleton';
 import NotFound from '@/app/not-found';
@@ -23,7 +23,6 @@ export default function ProtectedRoute({
 }: ProtectedRouteProps) {
   const { user, isAuthenticated, hasRole, hasPermission, loading } = useAuth();
   const router = useRouter();
-  const [showNotFound, setShowNotFound] = useState(false);
 
   useEffect(() => {
     if (loading) return; // Attendre la vérification de l'auth
@@ -32,33 +31,8 @@ export default function ProtectedRoute({
     if (requireAuth && !isAuthenticated) {
       const redirectUrl = `${fallbackUrl}?redirect=${encodeURIComponent(window.location.pathname)}`;
       router.push(redirectUrl);
-      return;
     }
-
-    // Vérifier le rôle (peut être une chaîne ou un tableau)
-    if (requiredRole && !hasRole(requiredRole)) {
-      // Show 404 component without changing URL
-      setShowNotFound(true);
-      return;
-    }
-
-    // Vérifier les permissions
-    if (requiredPermission && !hasPermission(requiredPermission)) {
-      // Show 404 component without changing URL
-      setShowNotFound(true);
-      return;
-    }
-  }, [
-    isAuthenticated, 
-    hasRole, 
-    hasPermission, 
-    loading, 
-    requireAuth, 
-    requiredRole, 
-    requiredPermission, 
-    router, 
-    fallbackUrl
-  ]);
+  }, [isAuthenticated, loading, requireAuth, router, fallbackUrl]);
 
   // Afficher un skeleton pendant la vérification
   if (loading) {
@@ -71,7 +45,7 @@ export default function ProtectedRoute({
   }
 
   // Show 404 page if unauthorized (keeps URL intact)
-  if (showNotFound || (requiredRole && !hasRole(requiredRole)) || (requiredPermission && !hasPermission(requiredPermission))) {
+  if ((requiredRole && !hasRole(requiredRole)) || (requiredPermission && !hasPermission(requiredPermission))) {
     return <NotFound />;
   }
 

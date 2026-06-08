@@ -27,7 +27,7 @@ export function ErrorAlert({ title, message, onClose, onRetry, className }: Erro
             <h3 className="text-lg font-bold text-red-800">{title}</h3>
             <p className="text-sm text-red-700 mt-1">{message}</p>
             {onRetry && (
-              <button
+              <button type="button"
                 onClick={onRetry}
                 className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors"
               >
@@ -36,7 +36,7 @@ export function ErrorAlert({ title, message, onClose, onRetry, className }: Erro
             )}
           </div>
         </div>
-        <button
+        <button type="button"
           onClick={onClose}
           className="text-red-600 hover:text-red-800 transition-colors"
           title="Fermer"

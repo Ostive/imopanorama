@@ -117,7 +117,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
           {/* Mobile topbar */}
           <header className="lg:hidden flex items-center h-14 px-4 bg-card border-b border-border shrink-0">
-            <button
+            <button type="button"
               onClick={() => setSidebarOpen(true)}
               className="p-1.5 rounded-lg text-muted-foreground hover:text-gray-700 dark:hover:text-gray-200 hover:bg-muted transition-colors"
             >

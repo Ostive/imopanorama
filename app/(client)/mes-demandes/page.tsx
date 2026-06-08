@@ -367,7 +367,7 @@ export default function MesDemandesPage() {
                           </Link>
                         )}
 
-                        <button
+                        <button type="button"
                           onClick={() => openDeleteModal(contact.id)}
                           className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-xl transition-colors font-medium text-sm"
                         >
@@ -461,7 +461,7 @@ export default function MesDemandesPage() {
                         <p className="text-red-100 text-sm">Cette action est irréversible</p>
                       </div>
                     </div>
-                    <button
+                    <button type="button"
                       onClick={closeDeleteModal}
                       className="text-white/80 hover:text-white hover:bg-white/10 rounded-lg p-2 transition-colors"
                     >
@@ -478,13 +478,13 @@ export default function MesDemandesPage() {
 
                   {/* Actions */}
                   <div className="flex items-center gap-3">
-                    <button
+                    <button type="button"
                       onClick={closeDeleteModal}
                       className="flex-1 px-4 py-3 bg-muted hover:bg-muted-foreground/10 text-foreground rounded-xl transition-colors font-semibold"
                     >
                       Annuler
                     </button>
-                    <button
+                    <button type="button"
                       onClick={confirmDelete}
                       className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl transition-colors font-semibold flex items-center justify-center gap-2"
                     >

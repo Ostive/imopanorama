@@ -96,7 +96,7 @@ export default function PropertyFilterDrawer({
                   Affinez votre recherche
                 </p>
               </div>
-              <button
+              <button type="button"
                 onClick={onClose}
                 className="p-2 rounded-full hover:bg-muted transition-colors"
               >
@@ -184,7 +184,7 @@ export default function PropertyFilterDrawer({
                     className="w-full h-[46px] pl-9 pr-4 rounded-xl border border-border bg-card text-foreground focus:ring-2 focus:ring-primary-500 focus:border-primary-500 shadow-sm transition-all"
                   />
                   {filters.city && (
-                    <button
+                    <button type="button"
                       onClick={() => onChange({ city: '' })}
                       className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-muted transition-colors"
                     >
@@ -442,14 +442,14 @@ export default function PropertyFilterDrawer({
 
             {/* Drawer footer */}
             <div className="flex-shrink-0 px-6 py-4 border-t border-border flex gap-3">
-              <button
+              <button type="button"
                 onClick={onReset}
                 className="px-4 py-3 rounded-xl bg-muted text-muted-foreground hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400 font-medium transition-all flex items-center gap-2 border border-transparent hover:border-red-200 dark:hover:border-red-800 text-sm"
               >
                 <XMarkIcon className="h-4 w-4" />
                 Tout effacer
               </button>
-              <button
+              <button type="button"
                 onClick={onClose}
                 className="flex-1 py-3 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold transition-all shadow-lg hover:shadow-xl text-sm"
               >

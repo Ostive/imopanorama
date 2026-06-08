@@ -9,6 +9,67 @@ import { ArrowLeftIcon, CalendarIcon, ClockIcon, ShareIcon } from '@heroicons/re
 import { NewsItem, NewsAuthor } from '@/features/news/types/news.types';
 import { sanitizeHtml } from '@/shared/utils/sanitizeHtml';
 
+// Composant Skeleton pour le blog
+function BlogSkeleton() {
+  return (
+    <div className="min-h-screen bg-card transition-colors duration-200">
+      {/* Hero Section Skeleton */}
+      <div className="relative h-[50vh]">
+        <div className="absolute inset-0 bg-linear-to-t from-black to-transparent z-10"></div>
+        <div className="absolute inset-0 bg-gray-300 dark:bg-gray-600 animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
+          <div className="container mx-auto">
+            <div className="h-6 w-40 bg-muted rounded animate-pulse mb-4"></div>
+            <div className="h-12 w-3/4 bg-muted rounded animate-pulse mb-4"></div>
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="h-6 w-24 bg-muted rounded-full animate-pulse"></div>
+              <div className="h-6 w-32 bg-muted rounded animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Article Content Skeleton */}
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-6xl mx-auto">
+          {/* Article excerpt skeleton */}
+          <div className="mb-8 h-24 bg-muted rounded animate-pulse"></div>
+
+          {/* Article content skeleton */}
+          <div className="space-y-4 mb-12">
+            <div className="h-6 bg-muted rounded animate-pulse"></div>
+            <div className="h-6 bg-muted rounded animate-pulse w-11/12"></div>
+            <div className="h-6 bg-muted rounded animate-pulse w-10/12"></div>
+            <div className="h-6 bg-muted rounded animate-pulse w-9/12"></div>
+            <div className="h-6 bg-muted rounded animate-pulse"></div>
+            <div className="h-6 bg-muted rounded animate-pulse w-10/12"></div>
+            <div className="h-6 bg-muted rounded animate-pulse w-8/12"></div>
+          </div>
+
+          {/* Tags skeleton */}
+          <div className="mt-8 pt-8 border-t border-border">
+            <div className="h-6 w-20 bg-muted rounded animate-pulse mb-4"></div>
+            <div className="flex flex-wrap gap-2">
+              <div className="h-8 w-16 bg-muted rounded-full animate-pulse"></div>
+              <div className="h-8 w-24 bg-muted rounded-full animate-pulse"></div>
+              <div className="h-8 w-20 bg-muted rounded-full animate-pulse"></div>
+            </div>
+          </div>
+
+          {/* Image Gallery skeleton */}
+          <div className="mt-12">
+            <div className="h-8 w-48 bg-muted rounded animate-pulse mb-6"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[1, 2, 3].map((_, index) => (
+                <div key={index} className="relative h-64 rounded-lg overflow-hidden bg-muted animate-pulse"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function NewsDetailPage() {
   const { slug } = useParams();
@@ -132,67 +193,6 @@ export default function NewsDetailPage() {
     }
   };
 
-  // Composant Skeleton pour le blog
-  const BlogSkeleton = () => {
-    return (
-      <div className="min-h-screen bg-card transition-colors duration-200">
-        {/* Hero Section Skeleton */}
-        <div className="relative h-[50vh]">
-          <div className="absolute inset-0 bg-linear-to-t from-black to-transparent z-10"></div>
-          <div className="absolute inset-0 bg-gray-300 dark:bg-gray-600 animate-pulse"></div>
-          <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
-            <div className="container mx-auto">
-              <div className="h-6 w-40 bg-muted rounded animate-pulse mb-4"></div>
-              <div className="h-12 w-3/4 bg-muted rounded animate-pulse mb-4"></div>
-              <div className="flex flex-wrap items-center gap-4">
-                <div className="h-6 w-24 bg-muted rounded-full animate-pulse"></div>
-                <div className="h-6 w-32 bg-muted rounded animate-pulse"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Article Content Skeleton */}
-        <div className="container mx-auto px-4 py-12">
-          <div className="max-w-6xl mx-auto">
-            {/* Article excerpt skeleton */}
-            <div className="mb-8 h-24 bg-muted rounded animate-pulse"></div>
-
-            {/* Article content skeleton */}
-            <div className="space-y-4 mb-12">
-              <div className="h-6 bg-muted rounded animate-pulse"></div>
-              <div className="h-6 bg-muted rounded animate-pulse w-11/12"></div>
-              <div className="h-6 bg-muted rounded animate-pulse w-10/12"></div>
-              <div className="h-6 bg-muted rounded animate-pulse w-9/12"></div>
-              <div className="h-6 bg-muted rounded animate-pulse"></div>
-              <div className="h-6 bg-muted rounded animate-pulse w-10/12"></div>
-              <div className="h-6 bg-muted rounded animate-pulse w-8/12"></div>
-            </div>
-
-            {/* Tags skeleton */}
-            <div className="mt-8 pt-8 border-t border-border">
-              <div className="h-6 w-20 bg-muted rounded animate-pulse mb-4"></div>
-              <div className="flex flex-wrap gap-2">
-                <div className="h-8 w-16 bg-muted rounded-full animate-pulse"></div>
-                <div className="h-8 w-24 bg-muted rounded-full animate-pulse"></div>
-                <div className="h-8 w-20 bg-muted rounded-full animate-pulse"></div>
-              </div>
-            </div>
-
-            {/* Image Gallery skeleton */}
-            <div className="mt-12">
-              <div className="h-8 w-48 bg-muted rounded animate-pulse mb-6"></div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[1, 2, 3].map((_, index) => (
-                  <div key={index} className="relative h-64 rounded-lg overflow-hidden bg-muted animate-pulse"></div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   if (isLoading) {
     return <BlogSkeleton />;
@@ -209,7 +209,7 @@ export default function NewsDetailPage() {
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-3">Article introuvable</h2>
           <p className="text-muted-foreground mb-8">Cet article n&apos;existe pas ou a été retiré. Revenez à la liste des actualités pour découvrir nos autres contenus.</p>
-          <button
+          <button type="button"
             onClick={() => router.push('/actualites')}
             className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl transition-colors"
           >
@@ -318,7 +318,7 @@ export default function NewsDetailPage() {
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-medium text-foreground">Partager cet article</h3>
               <div className="relative">
-                <button
+                <button type="button"
                   onClick={() => setShowShareMenu(!showShareMenu)}
                   className="inline-flex items-center px-4 py-2 border border-border rounded-md shadow-sm text-sm font-medium text-foreground bg-input hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                 >
@@ -329,7 +329,7 @@ export default function NewsDetailPage() {
                 {showShareMenu && (
                   <div className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-card ring-1 ring-black ring-opacity-5 z-10">
                     <div className="py-1" role="menu">
-                      <button
+                      <button type="button"
                         onClick={() => handleShare('facebook')}
                         className="flex items-center w-full px-4 py-2 text-sm text-foreground hover:bg-muted"
                       >
@@ -338,7 +338,7 @@ export default function NewsDetailPage() {
                         </svg>
                         Facebook
                       </button>
-                      <button
+                      <button type="button"
                         onClick={() => handleShare('twitter')}
                         className="flex items-center w-full px-4 py-2 text-sm text-foreground hover:bg-muted"
                       >
@@ -347,7 +347,7 @@ export default function NewsDetailPage() {
                         </svg>
                         Twitter
                       </button>
-                      <button
+                      <button type="button"
                         onClick={() => handleShare('linkedin')}
                         className="flex items-center w-full px-4 py-2 text-sm text-foreground hover:bg-muted"
                       >
@@ -356,7 +356,7 @@ export default function NewsDetailPage() {
                         </svg>
                         LinkedIn
                       </button>
-                      <button
+                      <button type="button"
                         onClick={() => handleShare('whatsapp')}
                         className="flex items-center w-full px-4 py-2 text-sm text-foreground hover:bg-muted"
                       >
@@ -365,7 +365,7 @@ export default function NewsDetailPage() {
                         </svg>
                         WhatsApp
                       </button>
-                      <button
+                      <button type="button"
                         onClick={() => handleShare('copy')}
                         className="flex items-center w-full px-4 py-2 text-sm text-foreground hover:bg-muted"
                       >
