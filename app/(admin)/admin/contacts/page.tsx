@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense, useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { m } from 'framer-motion';
 import {
@@ -56,7 +56,6 @@ type Contact = {
 };
 
 function ContactsPageContent() {
-  const router = useRouter();
   const urlParams = useSearchParams();
 
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -121,8 +120,8 @@ function ContactsPageContent() {
     if (currentPage > 1) params.set('page', String(currentPage));
     if (limit !== 15) params.set('limit', String(limit));
     const qs = params.toString();
-    router.replace(qs ? `?${qs}` : window.location.pathname, { scroll: false });
-  }, [searchTerm, selectedStatuses, currentPage, limit, router]);
+    window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname);
+  }, [searchTerm, selectedStatuses, currentPage, limit]);
 
   const totalPages = serverTotalPages;
   const paginatedContacts = filteredContacts;

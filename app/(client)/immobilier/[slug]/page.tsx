@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowRightIcon, CheckCircleIcon, MapPinIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
@@ -36,7 +37,7 @@ export default async function MadagascarCityPage({ params }: PageProps) {
     <main className="bg-card">
       <section className="relative overflow-hidden bg-gray-950 text-white">
         <div className="absolute inset-0">
-          <img src={city.image} alt="" className="h-full w-full object-cover opacity-35" />
+          <Image src={city.image} alt="" fill sizes="100vw" priority className="object-cover opacity-35" />
           <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/90 to-gray-950/40" />
         </div>
         <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">

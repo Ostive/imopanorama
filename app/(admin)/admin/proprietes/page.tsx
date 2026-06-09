@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense, useState, useEffect, useCallback, useRef } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import { m, AnimatePresence } from 'framer-motion'
 import { formatPrice, formatDate } from '@/shared/utils'
@@ -155,7 +155,6 @@ const getStatusColor = (status: string) => STATUS_COLORS[status.toUpperCase()] ?
 
 /* ─── Main Page ─── */
 function AdminPropertiesPageContent() {
-  const router = useRouter()
   const searchParams = useSearchParams()
 
   const [properties, setProperties] = useState<any[]>([])
@@ -205,8 +204,8 @@ function AdminPropertiesPageContent() {
     if (viewMode !== 'table') params.set('view', viewMode)
     if (sortBy !== 'date_desc') params.set('sort', sortBy)
     const qs = params.toString()
-    router.replace(qs ? `?${qs}` : window.location.pathname, { scroll: false })
-  }, [debouncedSearch, statusFilter, propertyTypeFilter, transactionTypeFilter, page, limit, viewMode, sortBy, router])
+    window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname)
+  }, [debouncedSearch, statusFilter, propertyTypeFilter, transactionTypeFilter, page, limit, viewMode, sortBy])
 
   const fetchProperties = useCallback(async () => {
     try {

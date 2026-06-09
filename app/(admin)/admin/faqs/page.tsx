@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense, useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { m } from 'framer-motion'
 import { useFaqs } from '@/features/faqs/hooks/useFaqs'
 import { Faq } from '@/features/faqs/types'
@@ -47,7 +47,6 @@ const CATEGORY_OPTIONS = [
 ]
 
 function AdminFaqsPageContent() {
-  const router = useRouter()
   const urlParams = useSearchParams()
 
   const [searchInput, setSearchInput] = useState(() => urlParams.get('search') || '')
@@ -76,8 +75,8 @@ function AdminFaqsPageContent() {
     if (page > 1) params.set('page', String(page))
     if (limit !== 10) params.set('limit', String(limit))
     const qs = params.toString()
-    router.replace(qs ? `?${qs}` : window.location.pathname, { scroll: false })
-  }, [search, selectedCategories, selectedStatuses, page, limit, router])
+    window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname)
+  }, [search, selectedCategories, selectedStatuses, page, limit])
 
   const category = selectedCategories.length === 1 ? selectedCategories[0] : undefined
   const isActive = selectedStatuses.length === 1 ? selectedStatuses[0] === 'true' : undefined

@@ -44,8 +44,10 @@ export const PUT = withErrorHandler(async (
   const { authorized, errorResponse } = await requireAdmin(request);
   if (!authorized) return errorResponse!;
 
-  const id = await extractParam(context, 'id');
-  const data = await request.json();
+  const [id, data] = await Promise.all([
+    extractParam(context, 'id'),
+    request.json(),
+  ]);
 
   const existing = await newsService.getNewsById(id);
   if (!existing) return apiError('Actualité non trouvée', 404);

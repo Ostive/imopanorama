@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense, useState, useEffect, useMemo, useCallback } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { m } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -53,7 +53,6 @@ interface Project {
 }
 
 function BatiProjectsPageContent() {
-  const router = useRouter();
   const urlParams = useSearchParams();
   
   const [projects, setProjects] = useState<Project[]>([]);
@@ -112,9 +111,9 @@ function BatiProjectsPageContent() {
     
     const newUrl = params.toString() ? `?${params.toString()}` : '';
     if (newUrl !== window.location.search) {
-      router.replace(`/admin/batipanorama/projects${newUrl}`, { scroll: false });
+      window.history.replaceState(null, '', `/admin/batipanorama/projects${newUrl}`);
     }
-  }, [searchParams, router]);
+  }, [searchParams]);
 
   useEffect(() => {
     fetchProjects();
@@ -581,6 +580,7 @@ function BatiProjectsPageContent() {
                         <div className="hidden md:flex items-center gap-2">
                           <Link
                             href={`/admin/batipanorama/projects/${project.id}`}
+                            aria-label={`Voir ${project.title}`}
                             className="p-2 text-primary-600 hover:text-primary-900 hover:bg-primary-50 rounded-lg transition-colors"
                             title="Voir"
                           >
@@ -588,6 +588,7 @@ function BatiProjectsPageContent() {
                           </Link>
                           <Link
                             href={`/admin/batipanorama/projects/${project.id}/edit`}
+                            aria-label={`Modifier ${project.title}`}
                             className="p-2 text-primary-600 hover:text-primary-900 hover:bg-primary-50 rounded-lg transition-colors"
                             title="Modifier"
                           >

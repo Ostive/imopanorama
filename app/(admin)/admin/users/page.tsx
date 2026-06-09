@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense, useState, useEffect, useMemo, useCallback } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { m } from 'framer-motion';
 import { useUsers } from '@/features/users/hooks/useUsers';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/shared/components/ui/dropdown-menu';
@@ -39,7 +39,6 @@ const ROLE_CONFIG: Record<string, { bg: string; text: string; label: string }> =
 };
 
 function AdminUsersPageContent() {
-  const router = useRouter();
   const urlParams = useSearchParams();
 
   const [selectedRoles, setSelectedRoles] = useState<string[]>(() => {
@@ -93,8 +92,8 @@ function AdminUsersPageContent() {
     if (searchParams.page > 1) params.set('page', String(searchParams.page));
     if (searchParams.limit !== 10) params.set('limit', String(searchParams.limit));
     const qs = params.toString();
-    router.replace(qs ? `?${qs}` : window.location.pathname, { scroll: false });
-  }, [searchParams, router]);
+    window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname);
+  }, [searchParams]);
 
   const handleToggleStatus = useCallback(async (userId: string, currentStatus: boolean) => {
     setDeleteError(null);

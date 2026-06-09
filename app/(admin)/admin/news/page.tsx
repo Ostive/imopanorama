@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense, useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { m } from 'framer-motion';
 import Link from 'next/link';
 import { Skeleton } from '@/shared/components/ui/skeleton';
@@ -57,7 +57,6 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 function NewsAdminPageContent() {
-  const router = useRouter();
   const urlParams = useSearchParams();
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>(() => {
@@ -109,8 +108,8 @@ function NewsAdminPageContent() {
     if (searchParams.page > 1) params.set('page', String(searchParams.page));
     if (searchParams.limit !== 10) params.set('limit', String(searchParams.limit));
     const qs = params.toString();
-    router.replace(qs ? `?${qs}` : window.location.pathname, { scroll: false });
-  }, [searchParams, router]);
+    window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname);
+  }, [searchParams]);
 
   const { news, loading, isFetching, total, error, refetch } = useNews(searchParams);
 
@@ -165,10 +164,10 @@ function NewsAdminPageContent() {
       cell: ({ row }) => (
         <>
           <div className="hidden md:flex items-center gap-2">
-            <Link href={`/actualites/${row.original.slug}`} target="_blank" className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors" title="Voir">
+            <Link href={`/actualites/${row.original.slug}`} target="_blank" aria-label={`Voir ${row.original.title}`} className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors" title="Voir">
               <EyeIcon className="h-5 w-5" />
             </Link>
-            <Link href={`/admin/news/${row.original.id}/edit`} className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors" title="Modifier">
+            <Link href={`/admin/news/${row.original.id}/edit`} aria-label={`Modifier ${row.original.title}`} className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors" title="Modifier">
               <PencilIcon className="h-5 w-5" />
             </Link>
             <button type="button" onClick={() => handleDelete(row.original.id)} aria-label={`Supprimer ${row.original.title}`} className="p-2 text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Supprimer">

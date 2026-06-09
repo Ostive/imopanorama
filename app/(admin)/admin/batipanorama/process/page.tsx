@@ -170,6 +170,7 @@ export default function BatiProcessPage() {
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/admin/batipanorama/process/${step.id}/edit`}
+                            aria-label={`Modifier ${step.title}`}
                             className="p-2 text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors"
                             title="Modifier"
                           >
@@ -177,6 +178,7 @@ export default function BatiProcessPage() {
                           </Link>
                           <button type="button"
                             onClick={() => setDeleteModal({ show: true, id: step.id, title: step.title })}
+                            aria-label={`Supprimer ${step.title}`}
                             className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                             title="Supprimer"
                           >

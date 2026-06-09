@@ -127,6 +127,7 @@ export function ContactTab({ settings, isLoading, onChange }: ContactTabProps) {
                       type="checkbox"
                       checked={Boolean(settings[social.enabledKey as keyof ContactSettings])}
                       onChange={(e) => onChange('contact', social.enabledKey, e.target.checked)}
+                      aria-label={`Activer ${social.label}`}
                       className="sr-only peer"
                     />
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
@@ -137,6 +138,7 @@ export function ContactTab({ settings, isLoading, onChange }: ContactTabProps) {
                   value={String(settings[social.key as keyof ContactSettings] || '')}
                   onChange={(e) => onChange('contact', social.key, e.target.value)}
                   disabled={!settings[social.enabledKey as keyof ContactSettings]}
+                  aria-label={`${social.label} URL ou identifiant`}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                   placeholder={social.placeholder}
                 />

@@ -248,6 +248,7 @@ export default function FaqForm({ initialData, onSubmit, isSubmitting, colorPale
                 type="text"
                 value={newCategory}
                 onChange={(e) => setNewCategory(e.target.value)}
+                aria-label="Nouvelle categorie"
                 className={`flex-grow px-3 py-2 border border-${currentPalette.secondary}-300 rounded-l-md shadow-sm focus:outline-none focus:ring-${currentPalette.primary}-500 focus:border-${currentPalette.primary}-500`}
                 placeholder="Nouvelle catégorie"
               />
@@ -268,6 +269,7 @@ export default function FaqForm({ initialData, onSubmit, isSubmitting, colorPale
                   aria-expanded={isDropdownOpen}
                   aria-haspopup="listbox"
                   aria-controls="faq-category-listbox"
+                  aria-label="Categorie de la FAQ"
                   className={`w-full px-3 py-2 border border-${currentPalette.secondary}-300 rounded-l-md shadow-sm focus:outline-none focus:ring-${currentPalette.primary}-500 focus:border-${currentPalette.primary}-500 cursor-pointer flex justify-between items-center`}
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setIsDropdownOpen(prev => !prev); } }}
