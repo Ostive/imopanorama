@@ -12,7 +12,6 @@ export * from './dropdown-menu';
 export * from './input';
 export * from './label';
 export * from './Loader';
-export * from './Modal';
 export * from './progress';
 export * from './select';
 export * from './separator';

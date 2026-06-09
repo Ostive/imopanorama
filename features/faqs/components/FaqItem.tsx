@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Faq } from '@/features/faqs/types/faqs.types';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 interface FaqItemProps {
@@ -31,19 +31,19 @@ export default function FaqItem({ faq }: FaqItemProps) {
           }`}>
           {faq.question}
         </h3>
-        <motion.div
+        <m.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.2 }}
           className="flex-shrink-0 ml-2"
         >
           <ChevronDownIcon className={`h-6 w-6 ${isOpen ? 'text-primary-500 dark:text-primary-400' : 'text-muted-foreground'
             }`} />
-        </motion.div>
+        </m.div>
       </button>
 
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+          <m.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -57,7 +57,7 @@ export default function FaqItem({ faq }: FaqItemProps) {
                 </p>
               ))}
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

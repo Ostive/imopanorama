@@ -1,7 +1,7 @@
 import { bunnyCdnConfig } from '@/shared/config/bunnycdn';
 import { sanitizeStorageDirectory, sanitizeStoragePath } from '@/shared/utils/storagePath';
 
-export class BunnyCdnService {
+class BunnyCdnService {
   private storageZoneName: string;
   private apiKey: string;
   private hostname: string;

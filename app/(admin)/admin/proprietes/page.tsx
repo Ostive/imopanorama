@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { formatPrice, formatDate } from '@/shared/utils'
 import Link from 'next/link'
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute'
@@ -133,6 +133,7 @@ function PropertyPagination({
             value={goToInput}
             onChange={(e) => onGoToChange(e.target.value)}
             placeholder={`1-${totalPages}`}
+            aria-label="Aller à la page"
             className="w-20 h-9 text-sm text-center border border-border dark:bg-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           />
         </form>
@@ -287,7 +288,7 @@ export default function AdminPropertiesPage() {
           {/* Success banner */}
           <AnimatePresence>
             {successMessage && (
-              <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+              <m.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <CheckCircleIcon className="h-5 w-5 text-green-600 dark:text-green-400 mr-3 shrink-0" />
@@ -297,7 +298,7 @@ export default function AdminPropertiesPage() {
                     <XMarkIcon className="h-5 w-5" />
                   </button>
                 </div>
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
 
@@ -377,7 +378,7 @@ export default function AdminPropertiesPage() {
           </div>
 
           {/* Filters */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card rounded-2xl shadow-lg p-6 mb-6 border border-border">
+          <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card rounded-2xl shadow-lg p-6 mb-6 border border-border">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <FunnelIcon className="h-5 w-5 text-muted-foreground" />
@@ -395,7 +396,7 @@ export default function AdminPropertiesPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="relative">
                 <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Rechercher..." className="w-full pl-10 pr-4 h-10 border border-border rounded-lg bg-card text-foreground focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
+                <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Rechercher..." aria-label="Rechercher une propriété" className="w-full pl-10 pr-4 h-10 border border-border rounded-lg bg-card text-foreground focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
               </div>
               <CheckboxDropdown
                 label="Statut"
@@ -451,7 +452,7 @@ export default function AdminPropertiesPage() {
                 ]}
               />
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Table View */}
           {viewMode === 'table' && (
@@ -587,7 +588,7 @@ export default function AdminPropertiesPage() {
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {properties.map((property) => (
-                    <motion.div key={property.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -4 }} className="bg-card rounded-2xl shadow-lg overflow-hidden border border-border hover:shadow-xl transition-shadow group">
+                    <m.div key={property.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -4 }} className="bg-card rounded-2xl shadow-lg overflow-hidden border border-border hover:shadow-xl transition-shadow group">
                       <div className="relative h-48 bg-muted">
                         {property.coverImage || property.images?.[0] ? (
                           <img src={property.coverImage || property.images[0]} alt={property.title} className="w-full h-full object-cover" />
@@ -621,7 +622,7 @@ export default function AdminPropertiesPage() {
                           <span className="text-xs text-muted-foreground">{TRANSACTION_TYPE_LABELS[property.transactionType as keyof typeof TRANSACTION_TYPE_LABELS]}</span>
                         </div>
                       </div>
-                    </motion.div>
+                    </m.div>
                   ))}
                 </div>
               )}

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import NewsForm from '@/features/news/components/admin/NewsForm';
 import {
   NewspaperIcon,
@@ -17,7 +17,7 @@ export default function CreateNewsPage() {
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
-        <motion.nav
+        <m.nav
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex mb-6"
@@ -57,10 +57,10 @@ export default function CreateNewsPage() {
               </div>
             </li>
           </ol>
-        </motion.nav>
+        </m.nav>
 
         {/* Header */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -89,16 +89,16 @@ export default function CreateNewsPage() {
               Retour à la liste
             </Link>
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Form */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
           <NewsForm />
-        </motion.div>
+        </m.div>
       </div>
     </div>
   );

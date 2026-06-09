@@ -10,7 +10,7 @@ interface UsePropertiesReturn {
   error: Error | null
 }
 
-export function useFeaturedProperties(limit: number = 6): UsePropertiesReturn {
+function useFeaturedProperties(limit: number = 6): UsePropertiesReturn {
   const { data: properties = [], isLoading: loading, error } = useQuery<Property[]>({
     queryKey: ['featuredProperties', limit],
     queryFn: async () => {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import {
   EnvelopeIcon,
   PhoneIcon,
@@ -224,7 +224,7 @@ export default function ContactsPage() {
         </div>
 
         {/* Filters */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card rounded-2xl shadow-lg p-6 mb-6 border border-border">
+        <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card rounded-2xl shadow-lg p-6 mb-6 border border-border">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <FunnelIcon className="w-5 h-5 text-muted-foreground" />
@@ -241,7 +241,7 @@ export default function ContactsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="relative">
               <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <input type="text" value={searchTerm} onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }} placeholder="Nom, email, terrain..."
+              <input type="text" value={searchTerm} onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }} placeholder="Nom, email, terrain..." aria-label="Rechercher un contact"
                 className="w-full pl-10 pr-10 h-10 border border-border rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" />
               {searchTerm && (
                 <button type="button" onClick={() => { setSearchTerm(''); setCurrentPage(1); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300">
@@ -259,7 +259,7 @@ export default function ContactsPage() {
               ]}
             />
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Contacts List */}
         <div className="bg-card rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-black/30 border border-border overflow-hidden">
@@ -287,7 +287,7 @@ export default function ContactsPage() {
           ) : (
             <div className="divide-y divide-gray-100 dark:divide-gray-800">
               {paginatedContacts.map((contact) => (
-                <motion.div
+                <m.div
                   key={contact.id}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -355,7 +355,7 @@ export default function ContactsPage() {
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               ))}
             </div>
           )}
@@ -375,10 +375,11 @@ export default function ContactsPage() {
           const c = contacts.find((x) => x.id === selectedContact.id) || selectedContact;
           return (
             <div
+              aria-hidden="true"
               className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
               onClick={() => setIsModalOpen(false)}
             >
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -597,7 +598,7 @@ export default function ContactsPage() {
                     </a>
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             </div>
           );
         })()}

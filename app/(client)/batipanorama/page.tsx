@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Project, ProcessStep, Service } from '@/features/batipanorama/types/batipanorama.types';
 import { NewsItem } from '@/features/news/types/news.types';
 
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import LogoMarquee from '@/shared/components/sections/LogoMarquee';
@@ -83,7 +83,7 @@ export default function BatiPanoramaPage() {
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -94,10 +94,10 @@ export default function BatiPanoramaPage() {
               <SparklesIcon className="w-3.5 h-3.5" />
               BatiPanorama depuis 2015
             </span>
-          </motion.div>
+          </m.div>
 
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
+            <m.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
               <h1 className="text-6xl lg:text-7xl font-black text-foreground leading-[1.0] mb-6">
                 Construisez avec une équipe qui{' '}
                 <span className="bg-linear-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
@@ -132,14 +132,14 @@ export default function BatiPanoramaPage() {
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </m.div>
 
-            <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="relative">
+            <m.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="relative">
               <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl">
                 <Image src="/images/social/og-image.png" alt="Construction BatiPanorama" fill className="object-cover" />
                 <div className="absolute inset-0 bg-linear-to-t from-gray-900/40 to-transparent" />
               </div>
-            </motion.div>
+            </m.div>
           </div>
         </div>
       </section>
@@ -148,7 +148,7 @@ export default function BatiPanoramaPage() {
       <section className="py-28 bg-card">
         <div className="container mx-auto px-4">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-14">
-            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <m.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
               <div className="flex items-center gap-3 mb-5">
                 <div className="h-px w-12 bg-primary-500" />
                 <span className="text-primary-600 dark:text-primary-400 text-xs font-bold tracking-widest uppercase">Ce que l'on construit</span>
@@ -157,7 +157,7 @@ export default function BatiPanoramaPage() {
                 Des projets pensés pour{' '}
                 <span className="bg-linear-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">durer</span>
               </h2>
-            </motion.div>
+            </m.div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -173,7 +173,7 @@ export default function BatiPanoramaPage() {
                   </div>
                 ))
               : services.map((service: Service, index: number) => (
-                  <motion.div
+                  <m.div
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -200,7 +200,7 @@ export default function BatiPanoramaPage() {
                       En savoir plus
                       <ArrowRightIcon className="w-3.5 h-3.5" />
                     </Link>
-                  </motion.div>
+                  </m.div>
                 ))}
           </div>
         </div>
@@ -209,7 +209,7 @@ export default function BatiPanoramaPage() {
       {/* ─── Process ───────────────────────────────────────────────── */}
       <section className="py-28 bg-background">
         <div className="container mx-auto px-4">
-          <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16 max-w-2xl mx-auto">
+          <m.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16 max-w-2xl mx-auto">
             <div className="flex items-center justify-center gap-3 mb-5">
               <div className="h-px w-12 bg-primary-500" />
               <span className="text-primary-600 dark:text-primary-400 text-xs font-bold tracking-widest uppercase">Notre façon de travailler</span>
@@ -222,7 +222,7 @@ export default function BatiPanoramaPage() {
             <p className="mt-4 text-muted-foreground text-lg max-w-lg mx-auto">
               Une méthode claire, des échanges réguliers et un suivi qui vous garde maître de votre projet.
             </p>
-          </motion.div>
+          </m.div>
 
           <div className="grid md:grid-cols-5 gap-6 relative">
             {isProcessLoading
@@ -234,7 +234,7 @@ export default function BatiPanoramaPage() {
                   </div>
                 ))
               : processSteps.map((item: ProcessStep, index: number) => (
-                  <motion.div
+                  <m.div
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -252,7 +252,7 @@ export default function BatiPanoramaPage() {
                     )}
                     <h3 className="text-base font-bold text-foreground mb-2">{item.title}</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
-                  </motion.div>
+                  </m.div>
                 ))}
           </div>
         </div>
@@ -262,7 +262,7 @@ export default function BatiPanoramaPage() {
       <section className="py-28 bg-card">
         <div className="container mx-auto px-4">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-14">
-            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <m.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
               <div className="flex items-center gap-3 mb-5">
                 <div className="h-px w-12 bg-primary-500" />
                 <span className="text-primary-600 dark:text-primary-400 text-xs font-bold tracking-widest uppercase">Portfolio</span>
@@ -271,13 +271,13 @@ export default function BatiPanoramaPage() {
                 Des réalisations qui parlent{' '}
                 <span className="bg-linear-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">d'elles-mêmes</span>
               </h2>
-            </motion.div>
-            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="shrink-0">
+            </m.div>
+            <m.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="shrink-0">
               <Link href="/batipanorama/projets" className="group inline-flex items-center gap-2 text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest hover:gap-3 transition-all">
                 Voir tous les projets
                 <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </Link>
-            </motion.div>
+            </m.div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -292,7 +292,7 @@ export default function BatiPanoramaPage() {
                   </div>
                 ))
               : projects.map((project: Project, index: number) => (
-                  <motion.article key={project.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.1 }}>
+                  <m.article key={project.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.1 }}>
                     <Link href={`/batipanorama/projet/${project.id}`} className="group block h-full">
                       <div className="h-full bg-background rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                         <div className="relative h-56 overflow-hidden">
@@ -324,7 +324,7 @@ export default function BatiPanoramaPage() {
                         </div>
                       </div>
                     </Link>
-                  </motion.article>
+                  </m.article>
                 ))}
           </div>
         </div>
@@ -336,7 +336,7 @@ export default function BatiPanoramaPage() {
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+            <m.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
               <div className="flex items-center gap-3 mb-6">
                 <div className="h-px w-12 bg-primary-400" />
                 <span className="text-primary-400 text-xs font-bold tracking-widest uppercase flex items-center gap-2">
@@ -361,9 +361,9 @@ export default function BatiPanoramaPage() {
                   Écrire à l'équipe
                 </Link>
               </div>
-            </motion.div>
+            </m.div>
 
-            <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.15 }} className="space-y-4">
+            <m.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.15 }} className="space-y-4">
               {[
                 { title: 'Premier échange offert', desc: 'On prend le temps de comprendre votre idée', Icon: CheckCircleIcon, color: 'text-secondary-400' },
                 { title: 'Devis clair', desc: 'Une estimation détaillée, sans zone floue', Icon: CheckCircleIcon, color: 'text-primary-400' },
@@ -377,7 +377,7 @@ export default function BatiPanoramaPage() {
                   </div>
                 </div>
               ))}
-            </motion.div>
+            </m.div>
           </div>
         </div>
       </section>
@@ -386,7 +386,7 @@ export default function BatiPanoramaPage() {
       <section className="py-28 bg-background">
         <div className="container mx-auto px-4">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-14">
-            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <m.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
               <div className="flex items-center gap-3 mb-5">
                 <div className="h-px w-12 bg-primary-500" />
                 <span className="text-primary-600 dark:text-primary-400 text-xs font-bold tracking-widest uppercase">Actualités</span>
@@ -395,7 +395,7 @@ export default function BatiPanoramaPage() {
                 Conseils côté{' '}
                 <span className="bg-linear-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">construction</span>
               </h2>
-            </motion.div>
+            </m.div>
             <Link href="/actualites" className="group shrink-0 inline-flex items-center gap-2 text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest hover:gap-3 transition-all">
               Lire les articles
               <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -418,7 +418,7 @@ export default function BatiPanoramaPage() {
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {recentNews.map((news: NewsItem, index: number) => (
-                <motion.article key={news.id} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: index * 0.1 }}>
+                <m.article key={news.id} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: index * 0.1 }}>
                   <Link href={`/actualites/${news.slug}`} className="group block h-full">
                     <div className="h-full flex flex-col bg-card rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                       <div className="relative h-48 overflow-hidden shrink-0">
@@ -441,7 +441,7 @@ export default function BatiPanoramaPage() {
                       </div>
                     </div>
                   </Link>
-                </motion.article>
+                </m.article>
               ))}
             </div>
           )}

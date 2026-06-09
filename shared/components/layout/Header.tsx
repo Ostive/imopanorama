@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
@@ -65,7 +65,7 @@ function Header() {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -97,7 +97,7 @@ function Header() {
   }
 
   return (
-    <motion.header
+    <m.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
@@ -119,7 +119,7 @@ function Header() {
             >
               <AnimatePresence mode="wait" initial={false}>
                 {isMenuOpen ? (
-                  <motion.span
+                  <m.span
                     key="close"
                     initial={{ rotate: -90, opacity: 0 }}
                     animate={{ rotate: 0, opacity: 1 }}
@@ -127,9 +127,9 @@ function Header() {
                     transition={{ duration: 0.15 }}
                   >
                     <XMarkIcon className="h-6 w-6" />
-                  </motion.span>
+                  </m.span>
                 ) : (
-                  <motion.span
+                  <m.span
                     key="open"
                     initial={{ rotate: 90, opacity: 0 }}
                     animate={{ rotate: 0, opacity: 1 }}
@@ -137,13 +137,13 @@ function Header() {
                     transition={{ duration: 0.15 }}
                   >
                     <Bars3Icon className="h-6 w-6" />
-                  </motion.span>
+                  </m.span>
                 )}
               </AnimatePresence>
             </button>
 
             <Link href="/" className="flex items-center shrink-0">
-              <motion.div
+              <m.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -155,7 +155,7 @@ function Header() {
                   className="h-10 sm:h-12 w-auto object-contain"
                   priority
                 />
-              </motion.div>
+              </m.div>
             </Link>
           </div>
 
@@ -174,7 +174,7 @@ function Header() {
                   }`}
                 >
                   {active && (
-                    <motion.span
+                    <m.span
                       layoutId="nav-pill"
                       className="absolute inset-0 bg-primary-50 dark:bg-primary-900/20 rounded-xl"
                       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
@@ -190,7 +190,7 @@ function Header() {
           <div className="hidden xl:flex items-center flex-1 max-w-xs xl:max-w-sm">
             <AnimatePresence mode="wait">
               {!isSearchExpanded ? (
-                <motion.button
+                <m.button
                   key="compact"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -200,9 +200,9 @@ function Header() {
                 >
                   <MagnifyingGlassIcon className="h-4 w-4 shrink-0" />
                   <span>Rechercher...</span>
-                </motion.button>
+                </m.button>
               ) : (
-                <motion.form
+                <m.form
                   key="expanded"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -211,16 +211,16 @@ function Header() {
                   className="relative w-full"
                 >
                   <input
+                    aria-label="Rechercher une propriété"
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onBlur={() => { if (!searchQuery) setIsSearchExpanded(false) }}
-                    autoFocus
                     placeholder="Rechercher une propriété..."
                     className="w-full pl-10 pr-4 py-2.5 text-sm border-2 border-primary-500 rounded-xl bg-card text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
                   />
                   <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary-500" />
-                </motion.form>
+                </m.form>
               )}
             </AnimatePresence>
           </div>
@@ -229,7 +229,7 @@ function Header() {
           <div className="flex items-center gap-1 shrink-0">
 
             {/* Dark mode toggle */}
-            <motion.button
+            <m.button
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.92 }}
               onClick={toggleThemeMode}
@@ -238,7 +238,7 @@ function Header() {
             >
               <AnimatePresence mode="wait" initial={false}>
                 {themeMode === 'dark' ? (
-                  <motion.span
+                  <m.span
                     key="sun"
                     initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
                     animate={{ rotate: 0, opacity: 1, scale: 1 }}
@@ -246,9 +246,9 @@ function Header() {
                     transition={{ duration: 0.2 }}
                   >
                     <SunIcon className="h-5 w-5" />
-                  </motion.span>
+                  </m.span>
                 ) : (
-                  <motion.span
+                  <m.span
                     key="moon"
                     initial={{ rotate: 90, opacity: 0, scale: 0.5 }}
                     animate={{ rotate: 0, opacity: 1, scale: 1 }}
@@ -256,23 +256,23 @@ function Header() {
                     transition={{ duration: 0.2 }}
                   >
                     <MoonIcon className="h-5 w-5" />
-                  </motion.span>
+                  </m.span>
                 )}
               </AnimatePresence>
-            </motion.button>
+            </m.button>
 
             {/* Mobile Search */}
-            <motion.button
+            <m.button
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.92 }}
               onClick={() => router.push('/proprietes')}
               className="lg:hidden p-2 rounded-xl text-muted-foreground hover:bg-muted transition-colors"
             >
               <MagnifyingGlassIcon className="h-5 w-5" />
-            </motion.button>
+            </m.button>
 
             {/* Favorites */}
-            <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} className="relative">
+            <m.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} className="relative">
               <Link
                 href="/favoris"
                 className="relative p-2 rounded-xl text-muted-foreground hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors inline-flex items-center justify-center group"
@@ -285,11 +285,11 @@ function Header() {
                   </span>
                 )}
               </Link>
-            </motion.div>
+            </m.div>
 
             {/* Contacts (authenticated, desktop) */}
             {isAuthenticated && (
-              <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} className="relative hidden lg:block">
+              <m.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} className="relative hidden lg:block">
                 <Link
                   href="/mes-demandes"
                   className="relative p-2 rounded-xl text-muted-foreground hover:text-primary-500 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors inline-flex items-center justify-center group"
@@ -303,24 +303,24 @@ function Header() {
                     </span>
                   )}
                 </Link>
-              </motion.div>
+              </m.div>
             )}
 
             {/* Mobile: User icon */}
-            <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} className="lg:hidden">
+            <m.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} className="lg:hidden">
               <Link
                 href={isAuthenticated ? '/profile' : '/login'}
                 className="p-2 rounded-xl text-muted-foreground hover:bg-muted transition-colors inline-flex"
               >
                 <UserIcon className="h-5 w-5" />
               </Link>
-            </motion.div>
+            </m.div>
 
             {/* Desktop Auth */}
             <div className="hidden lg:flex items-center gap-2 ml-1">
               {isAuthenticated ? (
                 <div className="relative">
-                  <motion.button
+                  <m.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
@@ -332,7 +332,7 @@ function Header() {
                     <span className="text-sm font-semibold text-foreground">
                       {user?.firstName}
                     </span>
-                    <motion.svg
+                    <m.svg
                       animate={{ rotate: isUserMenuOpen ? 180 : 0 }}
                       transition={{ duration: 0.2 }}
                       className="h-4 w-4 text-gray-400"
@@ -341,12 +341,12 @@ function Header() {
                       stroke="currentColor"
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </motion.svg>
-                  </motion.button>
+                    </m.svg>
+                  </m.button>
 
                   <AnimatePresence>
                     {isUserMenuOpen && (
-                      <motion.div
+                      <m.div
                         initial={{ opacity: 0, scale: 0.95, y: -8 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: -8 }}
@@ -397,28 +397,28 @@ function Header() {
                             Se déconnecter
                           </button>
                         </div>
-                      </motion.div>
+                      </m.div>
                     )}
                   </AnimatePresence>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                  <m.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                     <Link
                       href="/login"
                       className="px-4 py-2 text-sm font-semibold text-foreground hover:text-primary-600 dark:hover:text-primary-400 rounded-xl hover:bg-muted transition-colors"
                     >
                       Connexion
                     </Link>
-                  </motion.div>
-                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                  </m.div>
+                  <m.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                     <Link
                       href="/register"
                       className="px-4 py-2 text-sm font-semibold bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all"
                     >
                       S'inscrire
                     </Link>
-                  </motion.div>
+                  </m.div>
                 </div>
               )}
             </div>
@@ -429,7 +429,7 @@ function Header() {
       {/* Mobile Menu */}
       <AnimatePresence>
         {isMenuOpen && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -443,7 +443,7 @@ function Header() {
                 const active = isActive(item.href)
                 const Icon = item.icon
                 return (
-                  <motion.a
+                  <m.a
                     key={item.name}
                     href={item.href}
                     initial={{ opacity: 0, x: -16 }}
@@ -461,12 +461,12 @@ function Header() {
                     {active && (
                       <span className="ml-auto h-1.5 w-1.5 rounded-full bg-primary-500" />
                     )}
-                  </motion.a>
+                  </m.a>
                 )
               })}
 
               {/* Favorites */}
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, x: -16 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: navigation.length * 0.05 }}
@@ -484,11 +484,11 @@ function Header() {
                     </span>
                   )}
                 </Link>
-              </motion.div>
+              </m.div>
 
               {/* Contacts (authenticated) */}
               {isAuthenticated && (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: (navigation.length + 1) * 0.05 }}
@@ -506,7 +506,7 @@ function Header() {
                       </span>
                     )}
                   </Link>
-                </motion.div>
+                </m.div>
               )}
 
               {/* Divider + Auth */}
@@ -571,10 +571,10 @@ function Header() {
                 )}
               </div>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
-    </motion.header>
+    </m.header>
   )
 }
 

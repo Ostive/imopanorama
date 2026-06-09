@@ -27,7 +27,7 @@ export async function updatePropertyEmbedding(
   `
 }
 
-export async function clearPropertyEmbedding(propertyId: string): Promise<void> {
+async function clearPropertyEmbedding(propertyId: string): Promise<void> {
   await prisma.$executeRaw`
     UPDATE "Property"
     SET "embedding" = NULL
@@ -72,7 +72,7 @@ export async function searchPropertyIdsByEmbedding(
 /**
  * Lists property IDs that don't have an embedding yet — used by the backfill script.
  */
-export async function listPropertiesWithoutEmbedding(limit = 500): Promise<string[]> {
+async function listPropertiesWithoutEmbedding(limit = 500): Promise<string[]> {
   const rows = await prisma.$queryRaw<Array<{ id: string }>>`
     SELECT "id"
     FROM "Property"

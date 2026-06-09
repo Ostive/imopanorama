@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { PlusIcon, PencilIcon, TrashIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline'
 import toast from 'react-hot-toast'
@@ -92,7 +92,7 @@ export default function BatiProcessPage() {
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+              <tbody aria-hidden="true" className="divide-y divide-gray-100 dark:divide-gray-800">
                 {[1,2,3,4].map(i => (
                   <tr key={i} className="animate-pulse">
                     <td className="px-6 py-4"><div className="w-10 h-10 bg-muted rounded-xl" /></td>
@@ -106,7 +106,7 @@ export default function BatiProcessPage() {
             </table>
           </div>
         ) : sorted.length === 0 ? (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             className="bg-card rounded-2xl border border-border p-16 text-center shadow-sm"
@@ -119,9 +119,9 @@ export default function BatiProcessPage() {
                 <PlusIcon className="h-5 w-5" /> Créer une étape
               </Button>
             </Link>
-          </motion.div>
+          </m.div>
         ) : (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm"
@@ -139,7 +139,7 @@ export default function BatiProcessPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                   {sorted.map((step, i) => (
-                    <motion.tr
+                    <m.tr
                       key={step.id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -184,7 +184,7 @@ export default function BatiProcessPage() {
                           </button>
                         </div>
                       </td>
-                    </motion.tr>
+                    </m.tr>
                   ))}
                 </tbody>
               </table>
@@ -192,19 +192,19 @@ export default function BatiProcessPage() {
             <div className="px-6 py-3 border-t border-border text-sm text-muted-foreground">
               {steps.length} étape{steps.length > 1 ? 's' : ''}
             </div>
-          </motion.div>
+          </m.div>
         )}
       </div>
 
       {/* Modal suppression */}
       <AnimatePresence>
         {deleteModal.show && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
             onClick={() => setDeleteModal({ show: false, id: null, title: '' })}
           >
-            <motion.div
+            <m.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -235,8 +235,8 @@ export default function BatiProcessPage() {
                   {isDeleting ? 'Suppression...' : 'Supprimer'}
                 </Button>
               </div>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

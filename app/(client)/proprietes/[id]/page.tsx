@@ -7,7 +7,7 @@ import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import dynamicImport from 'next/dynamic';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { Property, PROPERTY_TYPE_LABELS, PROPERTY_STATUS_LABELS, PROPERTY_CONDITION_LABELS, PROPERTY_LEGAL_STATUS_LABELS, PROPERTY_DOCUMENT_STATUS_LABELS } from '@/features/properties/types';
 import { formatPrice, formatDate } from '@/shared/utils';
 import { getMarketConfig } from '@/shared/config/markets';
@@ -118,7 +118,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
       {/* Mobile: Carousel view */}
       <div className="block lg:hidden space-y-4">
         {/* Image principale */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="relative aspect-video rounded-3xl overflow-hidden bg-gray-900 shadow-2xl group"
@@ -143,7 +143,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
 
           {images.length > 1 && (
             <>
-              <motion.div
+              <m.div
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 className="absolute left-4 top-1/2 -translate-y-1/2"
@@ -159,8 +159,8 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                 </Button>
-              </motion.div>
-              <motion.div
+              </m.div>
+              <m.div
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 className="absolute right-4 top-1/2 -translate-y-1/2"
@@ -176,7 +176,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </Button>
-              </motion.div>
+              </m.div>
               <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md text-white px-4 py-2 rounded-full text-sm font-medium">
                 {currentImageIndex + 1} / {images.length}
               </div>
@@ -194,13 +194,13 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
             </svg>
           </Button>
-        </motion.div>
+        </m.div>
 
         {/* Miniatures */}
         {images.length > 1 && (
           <div className="grid grid-cols-4 gap-3">
             {images.map((image, index) => (
-              <motion.button
+              <m.button
                 key={index}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -223,7 +223,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                 {index === currentImageIndex && (
                   <div className="absolute inset-0 bg-primary/20"></div>
                 )}
-              </motion.button>
+              </m.button>
             ))}
           </div>
         )}
@@ -234,7 +234,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
 
         {/* === 1 image : pleine largeur, hauteur fixe 480px === */}
         {images.length === 1 && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             whileHover={{ scale: 1.005 }}
@@ -259,14 +259,14 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         )}
 
         {/* === 2 images : 2 colonnes égales, hauteur fixe 400px === */}
         {images.length === 2 && (
           <div className="grid grid-cols-2 gap-3 h-[400px]">
             {images.map((image, index) => (
-              <motion.div
+              <m.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -295,7 +295,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         )}
@@ -304,7 +304,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
         {images.length === 3 && (
           <div className="grid grid-cols-3 gap-3 h-[480px]">
             {/* Grande image gauche */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               whileHover={{ scale: 1.005 }}
@@ -324,12 +324,12 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
               <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-sm font-medium">
                 {images.length} photos
               </div>
-            </motion.div>
+            </m.div>
 
             {/* 2 images empilées à droite */}
             <div className="flex flex-col gap-3">
               {images.slice(1, 3).map((image, index) => (
-                <motion.div
+                <m.div
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -350,7 +350,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                     onError={handleImageError}
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
-                </motion.div>
+                </m.div>
               ))}
             </div>
           </div>
@@ -360,7 +360,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
         {images.length === 4 && (
           <div className="grid grid-cols-2 gap-3 h-[480px]">
             {/* Grande image gauche */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               whileHover={{ scale: 1.005 }}
@@ -380,11 +380,11 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
               <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-sm font-medium">
                 {images.length} photos
               </div>
-            </motion.div>
+            </m.div>
 
             {/* 3 images à droite : 1 en haut pleine largeur + 2 en bas */}
             <div className="flex flex-col gap-3">
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
@@ -402,11 +402,11 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                   onError={handleImageError}
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
-              </motion.div>
+              </m.div>
 
               <div className="grid grid-cols-2 gap-3 flex-1">
                 {images.slice(2, 4).map((image, index) => (
-                  <motion.div
+                  <m.div
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -426,7 +426,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                       onError={handleImageError}
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
-                  </motion.div>
+                  </m.div>
                 ))}
               </div>
             </div>
@@ -437,7 +437,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
         {images.length >= 5 && (
           <div className="grid grid-cols-2 gap-3 h-[500px]">
             {/* Grande image gauche */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               whileHover={{ scale: 1.005 }}
@@ -457,7 +457,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
               <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-sm font-medium">
                 {images.length} photos
               </div>
-            </motion.div>
+            </m.div>
 
             {/* Grille 2x2 à droite */}
             <div className="grid grid-cols-2 grid-rows-2 gap-3">
@@ -470,7 +470,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                   : 'rounded-br-2xl rounded-tl-lg';
 
                 return (
-                  <motion.div
+                  <m.div
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -499,7 +499,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                         </div>
                       </div>
                     )}
-                  </motion.div>
+                  </m.div>
                 );
               })}
             </div>
@@ -509,7 +509,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
 
       {/* Fullscreen modal */}
       {isFullscreen && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -524,7 +524,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
               </div>
               <div className="flex items-center gap-3">
                 {/* Download button */}
-                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                <m.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                   <Button
                     onClick={() => {
                       const link = document.createElement('a');
@@ -541,10 +541,10 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
                   </Button>
-                </motion.div>
+                </m.div>
 
                 {/* Close button */}
-                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                <m.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                   <Button
                     onClick={() => setIsFullscreen(false)}
                     variant="ghost"
@@ -556,14 +556,14 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </Button>
-                </motion.div>
+                </m.div>
               </div>
             </div>
           </div>
 
           {/* Main image container */}
           <div className="absolute inset-0 flex items-center justify-center p-4 md:p-20">
-            <motion.div
+            <m.div
               key={currentImageIndex}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -579,13 +579,13 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                 quality={100}
                 onError={handleImageError}
               />
-            </motion.div>
+            </m.div>
           </div>
 
           {/* Navigation arrows */}
           {images.length > 1 && (
             <>
-              <motion.div
+              <m.div
                 whileHover={{ scale: 1.1, x: -5 }}
                 whileTap={{ scale: 0.9 }}
                 className="absolute left-6 top-1/2 -translate-y-1/2"
@@ -601,9 +601,9 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                   </svg>
                 </Button>
-              </motion.div>
+              </m.div>
 
-              <motion.div
+              <m.div
                 whileHover={{ scale: 1.1, x: 5 }}
                 whileTap={{ scale: 0.9 }}
                 className="absolute right-6 top-1/2 -translate-y-1/2"
@@ -619,7 +619,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                   </svg>
                 </Button>
-              </motion.div>
+              </m.div>
             </>
           )}
 
@@ -629,7 +629,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
               <div className="max-w-7xl mx-auto">
                 <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
                   {images.map((image, index) => (
-                    <motion.button
+                    <m.button
                       key={index}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -650,7 +650,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                       {index === currentImageIndex && (
                         <div className="absolute inset-0 bg-white/20"></div>
                       )}
-                    </motion.button>
+                    </m.button>
                   ))}
                 </div>
               </div>
@@ -671,7 +671,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
               </span>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       )}
     </>
   );
@@ -870,7 +870,7 @@ export default function PropertyDetailPage() {
       )}
 
       {/* Sticky transparent breadcrumb nav */}
-      <motion.nav
+      <m.nav
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         className="sticky top-0 z-40 bg-white/85 dark:bg-gray-900/85 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50"
@@ -882,12 +882,12 @@ export default function PropertyDetailPage() {
           <ChevronRightIcon className="w-3.5 h-3.5 text-gray-300 shrink-0" />
           <span className="text-gray-800 dark:text-gray-100 font-semibold truncate">{property.title}</span>
         </div>
-      </motion.nav>
+      </m.nav>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
 
         {/* Gallery with floating badge overlay */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, scale: 0.995 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
@@ -916,10 +916,10 @@ export default function PropertyDetailPage() {
               </span>
             )}
           </div>
-        </motion.div>
+        </m.div>
 
         {/* ── Hero info strip ── */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -993,7 +993,7 @@ export default function PropertyDetailPage() {
 
             {/* Actions */}
             <div className="flex items-center gap-2 shrink-0">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <m.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   onClick={handleToggleFavorite}
                   disabled={isTogglingFavorite}
@@ -1007,14 +1007,14 @@ export default function PropertyDetailPage() {
                   }
                   <span className="hidden sm:inline text-xs">{isFavorite ? 'Favori' : 'Sauvegarder'}</span>
                 </Button>
-              </motion.div>
+              </m.div>
               <ShareDropdown
                 title={property.title}
                 text={`${property.title} à ${property.city} — ${formatPrice(property.price, property.currency, property.country)}`}
               />
             </div>
           </div>
-        </motion.div>
+        </m.div>
 
         {/* ── Main grid ── */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -1023,7 +1023,7 @@ export default function PropertyDetailPage() {
           <div className="lg:col-span-2">
 
             {/* Description */}
-            <motion.section
+            <m.section
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -1040,10 +1040,10 @@ export default function PropertyDetailPage() {
                   : `Magnifique propriété de ${property.totalSize || property.landSize} m² située à ${property.city}. Idéal pour votre projet immobilier dans un environnement privilégié. N'hésitez pas à nous contacter pour plus d'informations ou pour organiser une visite.`
                 }
               </p>
-            </motion.section>
+            </m.section>
 
             {/* Caractéristiques */}
-            <motion.section
+            <m.section
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -1056,7 +1056,7 @@ export default function PropertyDetailPage() {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {charItems.map((item, i) => (
-                  <motion.div
+                  <m.div
                     key={item.label}
                     initial={{ opacity: 0, y: 8 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -1069,14 +1069,14 @@ export default function PropertyDetailPage() {
                       <span className="text-xs">{item.label}</span>
                     </div>
                     <div className="font-bold text-gray-900 dark:text-gray-100 text-sm leading-snug">{item.value}</div>
-                  </motion.div>
+                  </m.div>
                 ))}
               </div>
-            </motion.section>
+            </m.section>
 
             {/* Points forts (features) */}
             {property.features && property.features.length > 0 && (
-              <motion.section
+              <m.section
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -1089,7 +1089,7 @@ export default function PropertyDetailPage() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {property.features.map((feature: string, i: number) => (
-                    <motion.span
+                    <m.span
                       key={i}
                       initial={{ opacity: 0, scale: 0.88 }}
                       whileInView={{ opacity: 1, scale: 1 }}
@@ -1099,15 +1099,15 @@ export default function PropertyDetailPage() {
                     >
                       <StarIcon className="w-3.5 h-3.5 shrink-0" />
                       {feature}
-                    </motion.span>
+                    </m.span>
                   ))}
                 </div>
-              </motion.section>
+              </m.section>
             )}
 
             {/* Détails du bien */}
             {hasDetails && (
-              <motion.section
+              <m.section
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -1120,7 +1120,7 @@ export default function PropertyDetailPage() {
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {detailItems.map((item, i) => (
-                    <motion.div
+                    <m.div
                       key={item.label}
                       initial={{ opacity: 0, y: 8 }}
                       whileInView={{ opacity: 1, y: 0 }}
@@ -1133,14 +1133,14 @@ export default function PropertyDetailPage() {
                         <span className="text-xs">{item.label}</span>
                       </div>
                       <div className="font-bold text-gray-900 dark:text-gray-100 text-sm leading-snug">{item.value}</div>
-                    </motion.div>
+                    </m.div>
                   ))}
                 </div>
-              </motion.section>
+              </m.section>
             )}
 
             {/* Confiance juridique */}
-            <motion.section
+            <m.section
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -1153,7 +1153,7 @@ export default function PropertyDetailPage() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                 {legalItems.map((item, i) => (
-                  <motion.div
+                  <m.div
                     key={item.label}
                     initial={{ opacity: 0, x: -8 }}
                     whileInView={{ opacity: 1, x: 0 }}
@@ -1175,17 +1175,17 @@ export default function PropertyDetailPage() {
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{item.value}</p>
                       </div>
                     </div>
-                  </motion.div>
+                  </m.div>
                 ))}
               </div>
               <div className="bg-amber-50 dark:bg-amber-950/30 rounded-xl p-4 text-sm text-amber-800 dark:text-amber-200 leading-relaxed">
                 Cette checklist aide à poser les bonnes questions. La validation finale doit se faire avec les documents originaux et, si nécessaire, un professionnel local du foncier.
               </div>
-            </motion.section>
+            </m.section>
 
             {/* Visite virtuelle */}
             {(property.virtualTour || property.videoUrl) && (
-              <motion.section
+              <m.section
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -1203,6 +1203,7 @@ export default function PropertyDetailPage() {
                         src={property.virtualTour}
                         className="absolute inset-0 w-full h-full"
                         allow="accelerometer; gyroscope; xr-spatial-tracking"
+                        sandbox="allow-scripts allow-popups allow-presentation"
                         allowFullScreen
                         title="Visite virtuelle"
                       />
@@ -1214,17 +1215,18 @@ export default function PropertyDetailPage() {
                         src={property.videoUrl}
                         className="absolute inset-0 w-full h-full"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        sandbox="allow-scripts allow-popups allow-presentation"
                         allowFullScreen
                         title="Vidéo de présentation"
                       />
                     </div>
                   )}
                 </div>
-              </motion.section>
+              </m.section>
             )}
 
             {/* Localisation */}
-            <motion.section
+            <m.section
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -1238,11 +1240,11 @@ export default function PropertyDetailPage() {
               <div className="rounded-2xl overflow-hidden">
                 <PropertyMap property={property} height="400px" />
               </div>
-            </motion.section>
+            </m.section>
 
             {/* Équipements */}
             {property.amenities && property.amenities.length > 0 && (
-              <motion.section
+              <m.section
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -1255,7 +1257,7 @@ export default function PropertyDetailPage() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {property.amenities.map((amenity: string, i: number) => (
-                    <motion.span
+                    <m.span
                       key={i}
                       initial={{ opacity: 0, scale: 0.88 }}
                       whileInView={{ opacity: 1, scale: 1 }}
@@ -1265,10 +1267,10 @@ export default function PropertyDetailPage() {
                     >
                       <CheckCircleIcon className="w-3.5 h-3.5 shrink-0" />
                       {amenity}
-                    </motion.span>
+                    </m.span>
                   ))}
                 </div>
-              </motion.section>
+              </m.section>
             )}
           </div>
 
@@ -1276,7 +1278,7 @@ export default function PropertyDetailPage() {
           <div className="space-y-5 lg:sticky lg:top-16 h-fit" id="contact-section">
 
             {/* Contact form — gradient header + form */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.15 }}
@@ -1300,10 +1302,10 @@ export default function PropertyDetailPage() {
               <div className="bg-white dark:bg-gray-900">
                 <ContactForm propertyId={property.id} propertyTitle={property.title} />
               </div>
-            </motion.div>
+            </m.div>
 
             {/* Quick actions */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.25 }}
@@ -1313,10 +1315,10 @@ export default function PropertyDetailPage() {
                 propertyId={property.id}
                 onScheduleVisit={handleScheduleVisit}
               />
-            </motion.div>
+            </m.div>
 
             {/* Business card contact info */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.35 }}
@@ -1329,7 +1331,7 @@ export default function PropertyDetailPage() {
                 <ContactInfoItem icon={<MapPinIcon className="w-5 h-5" />} label="Adresse" content="Antananarivo, Madagascar" color="green" />
                 <ContactInfoItem icon={<ClockIcon className="w-5 h-5" />} label="Horaires" content="Lun–Ven : 8h–17h" color="primary" />
               </div>
-            </motion.div>
+            </m.div>
           </div>
         </div>
       </div>
@@ -1353,7 +1355,7 @@ export default function PropertyDetailPage() {
             <EnvelopeIcon className="w-4 h-4" />
             Contacter
           </Button>
-          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+          <m.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
             <Button
               onClick={handleToggleFavorite}
               disabled={isTogglingFavorite}
@@ -1367,7 +1369,7 @@ export default function PropertyDetailPage() {
                 : <HeartIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
               }
             </Button>
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </div>

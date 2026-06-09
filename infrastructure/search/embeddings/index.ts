@@ -7,13 +7,10 @@ export {
 export { buildEmbeddingText, type EmbeddingTextSource } from './text-builder'
 export {
   updatePropertyEmbedding,
-  clearPropertyEmbedding,
   searchPropertyIdsByEmbedding,
-  listPropertiesWithoutEmbedding,
   type VectorSearchHit,
 } from './repository'
 export {
-  syncPropertyEmbedding,
   scheduleEmbeddingSync,
   updateAffectsEmbedding,
 } from './sync'

@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import {
   HomeModernIcon,
   UserGroupIcon,
@@ -9,7 +9,7 @@ import {
 
 export function RecentActivity() {
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
@@ -20,7 +20,7 @@ export function RecentActivity() {
         Activité récente
       </h3>
       <div className="space-y-4">
-        <motion.div
+        <m.div
           whileHover={{ x: 5 }}
           className="flex items-start space-x-4 p-4 bg-linear-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-100 dark:border-green-900/40"
         >
@@ -33,9 +33,9 @@ export function RecentActivity() {
             </p>
             <p className="text-xs text-muted-foreground mt-1">Il y a 2 heures</p>
           </div>
-        </motion.div>
+        </m.div>
 
-        <motion.div
+        <m.div
           whileHover={{ x: 5 }}
           className="flex items-start space-x-4 p-4 bg-linear-to-r from-primary-50 to-cyan-50 dark:from-primary-900/20 dark:to-cyan-900/20 rounded-xl border border-primary-100 dark:border-primary-900/40"
         >
@@ -48,9 +48,9 @@ export function RecentActivity() {
             </p>
             <p className="text-xs text-muted-foreground mt-1">Il y a 4 heures</p>
           </div>
-        </motion.div>
+        </m.div>
 
-        <motion.div
+        <m.div
           whileHover={{ x: 5 }}
           className="flex items-start space-x-4 p-4 bg-linear-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl border border-purple-100 dark:border-purple-900/40"
         >
@@ -63,8 +63,8 @@ export function RecentActivity() {
             </p>
             <p className="text-xs text-muted-foreground mt-1">Il y a 6 heures</p>
           </div>
-        </motion.div>
+        </m.div>
       </div>
-    </motion.div>
+    </m.div>
   );
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { ArrowTrendingUpIcon, ArrowTrendingDownIcon } from '@heroicons/react/24/outline';
 
 export interface Trend {
@@ -42,7 +42,7 @@ export function StatsCard({ title, value, subtitle, icon, color, delay = 0, tren
   const c = COLOR_MAP[color] || { border: 'border-primary-500', bg: 'bg-primary-500/10', text: 'text-primary-600' };
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay }}
@@ -78,6 +78,6 @@ export function StatsCard({ title, value, subtitle, icon, color, delay = 0, tren
           <div className={c.text}>{icon}</div>
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 }

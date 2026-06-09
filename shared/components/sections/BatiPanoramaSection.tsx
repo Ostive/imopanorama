@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import {
   BuildingOffice2Icon,
   HomeModernIcon,
@@ -40,7 +40,7 @@ export default function BatiPanoramaSection() {
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Label */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -53,11 +53,11 @@ export default function BatiPanoramaSection() {
           <span className="ml-1 px-2.5 py-0.5 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 text-xs font-black">
             BP
           </span>
-        </motion.div>
+        </m.div>
 
         <div className="grid lg:grid-cols-2 gap-14 items-center">
           {/* Left — image */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -86,10 +86,10 @@ export default function BatiPanoramaSection() {
                 <div className="text-xs text-primary-200 mt-0.5">projets livrés</div>
               </div>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Right — content */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -110,7 +110,7 @@ export default function BatiPanoramaSection() {
               {services.map((service, index) => {
                 const Icon = service.icon
                 return (
-                  <motion.li
+                  <m.li
                     key={index}
                     initial={{ opacity: 0, y: 12 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -127,7 +127,7 @@ export default function BatiPanoramaSection() {
                         {service.description}
                       </p>
                     </div>
-                  </motion.li>
+                  </m.li>
                 )
               })}
             </ul>
@@ -148,7 +148,7 @@ export default function BatiPanoramaSection() {
                 Parler de mon projet
               </Link>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </section>

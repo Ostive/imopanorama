@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuth } from '@/features/auth/context/AuthContext';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import {
   HomeModernIcon,
   UserGroupIcon,
@@ -71,7 +71,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
               color="#8b5cf6"
             />
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Recent Activity */}
         <RecentActivity />

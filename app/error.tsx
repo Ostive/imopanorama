@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { 
   ExclamationTriangleIcon, 
   HomeIcon, 
@@ -23,14 +23,14 @@ export default function Error({
 
   return (
     <div className="min-h-screen bg-linear-to-br from-red-50 via-white to-orange-50 flex items-center justify-center p-4">
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="max-w-2xl w-full"
       >
         <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 border border-gray-100 text-center">
           {/* Illustration */}
-          <motion.div
+          <m.div
             initial={{ scale: 0, rotate: -10 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ delay: 0.2, type: 'spring', stiffness: 150 }}
@@ -48,41 +48,41 @@ export default function Error({
             </div>
             
             {/* Floating Particles */}
-            <motion.div
+            <m.div
               animate={{ y: [-10, 10, -10] }}
               transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
               className="absolute -top-4 -right-4 w-8 h-8 bg-red-400 rounded-full opacity-60"
             />
-            <motion.div
+            <m.div
               animate={{ y: [10, -10, 10] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
               className="absolute -bottom-2 -left-2 w-6 h-6 bg-orange-400 rounded-full opacity-60"
             />
-          </motion.div>
+          </m.div>
 
           {/* Title */}
-          <motion.h1
+          <m.h1
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
             className="text-4xl md:text-5xl font-bold text-gray-900 mb-4"
           >
             Oups, quelque chose a coincé
-          </motion.h1>
+          </m.h1>
 
           {/* Description */}
-          <motion.p
+          <m.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
             className="text-lg text-gray-600 mb-8"
           >
             La page n&apos;a pas réussi à se charger correctement. Vous pouvez réessayer tout de suite, ou revenir à l&apos;accueil.
-          </motion.p>
+          </m.p>
 
           {/* Error Details (Development only) */}
           {process.env.NODE_ENV === 'development' && (
-            <motion.div
+            <m.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
@@ -99,17 +99,17 @@ export default function Error({
                   ID d&apos;erreur : {error.digest}
                 </p>
               )}
-            </motion.div>
+            </m.div>
           )}
 
           {/* Action Buttons */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <motion.button
+            <m.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={reset}
@@ -117,22 +117,22 @@ export default function Error({
             >
               <ArrowPathIcon className="h-5 w-5" />
                 Réessayer maintenant
-            </motion.button>
+            </m.button>
 
             <Link href="/">
-              <motion.button
+              <m.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-semibold rounded-xl transition-all"
               >
                 <HomeIcon className="h-5 w-5" />
                 Revenir à l&apos;accueil
-              </motion.button>
+              </m.button>
             </Link>
-          </motion.div>
+          </m.div>
 
           {/* Help Text */}
-          <motion.p
+          <m.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}
@@ -142,9 +142,9 @@ export default function Error({
             <Link href="/contact" className="text-primary-600 hover:text-primary-700 font-semibold">
               nous contacter
             </Link>
-          </motion.p>
+          </m.p>
         </div>
-      </motion.div>
+      </m.div>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { ImageGallery } from '@/shared/components/gallery';
 import { 
   ArrowLeftIcon, 
@@ -143,7 +143,7 @@ export default function ProjectDetailPage() {
         {/* Content */}
         <div className="absolute inset-0 flex items-end">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
@@ -174,7 +174,7 @@ export default function ProjectDetailPage() {
                    project.status === 'IN_PROGRESS' ? 'En cours' : 'Planifié'}
                 </span>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         </div>
       </div>
@@ -183,7 +183,7 @@ export default function ProjectDetailPage() {
       <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg shadow-lg sticky top-0 z-40 border-b border-border">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex space-x-1 md:space-x-4">
-            <motion.button
+            <m.button
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setActiveTab('overview')}
@@ -204,14 +204,14 @@ export default function ProjectDetailPage() {
               </div>
               <span className="hidden sm:inline">Aperçu</span>
               {activeTab === 'overview' && (
-                <motion.div
+                <m.div
                   layoutId="activeTab"
                   className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-primary-500 to-primary-500 rounded-t-full shadow-lg"
                   transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 />
               )}
-            </motion.button>
-            <motion.button
+            </m.button>
+            <m.button
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setActiveTab('gallery')}
@@ -232,13 +232,13 @@ export default function ProjectDetailPage() {
               </div>
               <span className="hidden sm:inline">Galerie</span>
               {activeTab === 'gallery' && (
-                <motion.div
+                <m.div
                   layoutId="activeTab"
                   className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-primary-500 to-primary-500 rounded-t-full shadow-lg"
                   transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 />
               )}
-            </motion.button>
+            </m.button>
           </nav>
         </div>
       </div>
@@ -246,7 +246,7 @@ export default function ProjectDetailPage() {
       {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'overview' && (
-          <motion.div 
+          <m.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -290,7 +290,7 @@ export default function ProjectDetailPage() {
             </div>
 
             <div className="space-y-5">
-              <motion.div 
+              <m.div 
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
@@ -353,9 +353,9 @@ export default function ProjectDetailPage() {
                     </div>
                   )}
                 </div>
-              </motion.div>
+              </m.div>
 
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 }}
@@ -381,13 +381,13 @@ export default function ProjectDetailPage() {
                     </span>
                   ))}
                 </div>
-              </motion.div>
+              </m.div>
             </div>
-          </motion.div>
+          </m.div>
         )}
 
         {activeTab === 'gallery' && (
-          <motion.div 
+          <m.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -413,7 +413,7 @@ export default function ProjectDetailPage() {
             {/* Gallery Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {project.images.map((image, index) => (
-                <motion.div
+                <m.div
                   key={index}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -443,7 +443,7 @@ export default function ProjectDetailPage() {
                   <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-semibold">
                     {index + 1}/{project.images.length}
                   </div>
-                </motion.div>
+                </m.div>
               ))}
             </div>
 
@@ -463,14 +463,14 @@ export default function ProjectDetailPage() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         )}
 
       </div>
 
       {/* Lightbox */}
       {lightboxOpen && project && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -480,6 +480,7 @@ export default function ProjectDetailPage() {
           {/* Close Button */}
           <button type="button"
             onClick={closeLightbox}
+            aria-label="Fermer"
             className="absolute top-4 right-4 z-50 p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-sm transition-all"
           >
             <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -494,6 +495,7 @@ export default function ProjectDetailPage() {
                 e.stopPropagation();
                 previousImage();
               }}
+              aria-label="Image précédente"
               className="absolute left-4 z-50 p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-sm transition-all"
             >
               <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -509,6 +511,7 @@ export default function ProjectDetailPage() {
                 e.stopPropagation();
                 nextImage();
               }}
+              aria-label="Image suivante"
               className="absolute right-4 z-50 p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-sm transition-all"
             >
               <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -518,7 +521,7 @@ export default function ProjectDetailPage() {
           )}
 
           {/* Image */}
-          <motion.div
+          <m.div
             key={currentImageIndex}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -533,7 +536,7 @@ export default function ProjectDetailPage() {
               className="object-contain"
               priority
             />
-          </motion.div>
+          </m.div>
 
           {/* Image Counter */}
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-semibold">
@@ -545,7 +548,7 @@ export default function ProjectDetailPage() {
             <p className="font-semibold">{project.title}</p>
             <p className="text-sm text-white/80">Photo {currentImageIndex + 1}</p>
           </div>
-        </motion.div>
+        </m.div>
       )}
 
     </div>

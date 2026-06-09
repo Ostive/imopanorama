@@ -17,8 +17,9 @@ export function SecurityTab({ settings, onChange }: SecurityTabProps) {
           <p className="text-sm text-gray-500 mb-4">Les clés CAPTCHA se configurent via les variables d&apos;environnement (.env)</p>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Nombre max de tentatives de connexion</label>
+              <label htmlFor="security-max-attempts" className="block text-sm font-medium text-gray-700 mb-2">Nombre max de tentatives de connexion</label>
               <input
+                id="security-max-attempts"
                 type="number"
                 min="1"
                 max="10"
@@ -29,8 +30,9 @@ export function SecurityTab({ settings, onChange }: SecurityTabProps) {
               <p className="text-xs text-gray-500 mt-1">Nombre de tentatives avant blocage temporaire</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Durée de session (heures)</label>
+              <label htmlFor="security-session-timeout" className="block text-sm font-medium text-gray-700 mb-2">Durée de session (heures)</label>
               <input
+                id="security-session-timeout"
                 type="number"
                 min="1"
                 max="720"
@@ -45,7 +47,7 @@ export function SecurityTab({ settings, onChange }: SecurityTabProps) {
                 <h5 className="font-medium text-gray-900">Authentification à deux facteurs</h5>
                 <p className="text-sm text-gray-500">Activer 2FA pour plus de sécurité</p>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
+              <label aria-label="Activer l'authentification à deux facteurs" className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
                   checked={settings.enableTwoFactor}

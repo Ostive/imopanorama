@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { ExclamationTriangleIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 interface ErrorAlertProps {
@@ -13,7 +13,7 @@ interface ErrorAlertProps {
 
 export function ErrorAlert({ title, message, onClose, onRetry, className }: ErrorAlertProps) {
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       className={`bg-linear-to-r from-red-50 to-rose-50 border-l-4 border-red-500 p-4 rounded-xl shadow-lg ${className ?? ''}`}
@@ -44,6 +44,6 @@ export function ErrorAlert({ title, message, onClose, onRetry, className }: Erro
           <XMarkIcon className="h-5 w-5" />
         </button>
       </div>
-    </motion.div>
+    </m.div>
   )
 }

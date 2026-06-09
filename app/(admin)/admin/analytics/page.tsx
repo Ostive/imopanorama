@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
 import { PageSkeleton } from '@/shared/components/loading';
 import {
@@ -213,7 +213,7 @@ export default function AnalyticsPage() {
           actions={
             <div className="flex items-center gap-2">
               {timeRanges.map((range) => (
-                <motion.button
+                <m.button
                   key={range.value}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -225,7 +225,7 @@ export default function AnalyticsPage() {
                   }`}
                 >
                   {range.label}
-                </motion.button>
+                </m.button>
               ))}
             </div>
           }
@@ -275,7 +275,7 @@ export default function AnalyticsPage() {
 
         {/* Unread alerts banner */}
         {analytics.business.unread.total > 0 && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className="mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-3"
@@ -287,7 +287,7 @@ export default function AnalyticsPage() {
               {analytics.business.unread.contacts > 0 && `, ${analytics.business.unread.contacts} contact(s)`}
               {analytics.business.unread.quotes > 0 && `, ${analytics.business.unread.quotes} devis`}
             </p>
-          </motion.div>
+          </m.div>
         )}
 
         {/* =================== OVERVIEW TAB =================== */}
@@ -329,7 +329,7 @@ export default function AnalyticsPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               {/* Traffic Sources */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
                 className="bg-white rounded-2xl shadow-md p-6">
                 <h3 className="text-base font-bold text-gray-900 mb-4">Sources de trafic</h3>
                 <div className="space-y-3">
@@ -338,10 +338,10 @@ export default function AnalyticsPage() {
                   <ProgressBar label="Réseaux sociaux" value={analytics.traffic.social} color="purple" />
                   <ProgressBar label="Référents" value={analytics.traffic.referral} color="orange" />
                 </div>
-              </motion.div>
+              </m.div>
 
               {/* Top Pages */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
                 className="bg-white rounded-2xl shadow-md p-6">
                 <h3 className="text-base font-bold text-gray-900 mb-4">Pages les plus visitées</h3>
                 <div className="space-y-2">
@@ -359,11 +359,11 @@ export default function AnalyticsPage() {
                     <p className="text-sm text-gray-400 text-center py-4">Aucune donnée</p>
                   )}
                 </div>
-              </motion.div>
+              </m.div>
             </div>
 
             {/* Recent Activity */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+            <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
               className="bg-white rounded-2xl shadow-md">
               <div className="px-6 py-4 border-b border-gray-100">
                 <h3 className="text-base font-bold text-gray-900">Activité récente</h3>
@@ -382,7 +382,7 @@ export default function AnalyticsPage() {
                   )}
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           </>
         )}
 
@@ -390,7 +390,7 @@ export default function AnalyticsPage() {
         {activeTab === 'business' && (
           <>
             {/* Conversions */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               className="bg-white rounded-2xl shadow-md p-6 mb-6">
               <h3 className="text-base font-bold text-gray-900 mb-4">Conversions & Interactions</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -413,11 +413,11 @@ export default function AnalyticsPage() {
                   current={analytics.business.conversions.propertyViews.current}
                   previous={analytics.business.conversions.propertyViews.previous} />
               </div>
-            </motion.div>
+            </m.div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               {/* Top Viewed Properties */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
                 className="bg-white rounded-2xl shadow-md p-6">
                 <h3 className="text-base font-bold text-gray-900 mb-4">Propriétés les plus vues</h3>
                 <div className="space-y-2">
@@ -435,10 +435,10 @@ export default function AnalyticsPage() {
                     <p className="text-sm text-gray-400 text-center py-4">Aucune donnée</p>
                   )}
                 </div>
-              </motion.div>
+              </m.div>
 
               {/* Recent Contacts */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
                 className="bg-white rounded-2xl shadow-md p-6">
                 <h3 className="text-base font-bold text-gray-900 mb-4">Dernières demandes</h3>
                 <div className="space-y-2">
@@ -458,12 +458,12 @@ export default function AnalyticsPage() {
                     <p className="text-sm text-gray-400 text-center py-4">Aucune demande</p>
                   )}
                 </div>
-              </motion.div>
+              </m.div>
             </div>
 
             {/* Umami iframe */}
             {umamiUrl && (
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
                 className="bg-white rounded-2xl shadow-md overflow-hidden">
                 <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                   <h3 className="text-base font-bold text-gray-900">Umami Analytics</h3>
@@ -476,10 +476,11 @@ export default function AnalyticsPage() {
                   <iframe
                     src={`${umamiUrl}/share/overview`}
                     className="w-full h-full border-0"
+                    sandbox="allow-scripts allow-popups allow-presentation"
                     title="Umami Analytics"
                   />
                 </div>
-              </motion.div>
+              </m.div>
             )}
           </>
         )}
@@ -489,7 +490,7 @@ export default function AnalyticsPage() {
           <>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               {/* Devices */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                 className="bg-white rounded-2xl shadow-md p-6">
                 <h3 className="text-base font-bold text-gray-900 mb-4">Appareils</h3>
                 <div className="space-y-4">
@@ -536,10 +537,10 @@ export default function AnalyticsPage() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
 
               {/* Locations */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
                 className="bg-white rounded-2xl shadow-md p-6">
                 <h3 className="text-base font-bold text-gray-900 mb-4">Localisation</h3>
                 <div className="space-y-2">
@@ -562,11 +563,11 @@ export default function AnalyticsPage() {
                     <p className="text-sm text-gray-400 text-center py-4">Aucune donnée</p>
                   )}
                 </div>
-              </motion.div>
+              </m.div>
             </div>
 
             {/* Traffic Sources detailed */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+            <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
               className="bg-white rounded-2xl shadow-md p-6 mb-6">
               <h3 className="text-base font-bold text-gray-900 mb-4">Sources de trafic</h3>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -587,10 +588,10 @@ export default function AnalyticsPage() {
                   <p className="text-sm text-orange-600 mt-1">Référents</p>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
 
             {/* Top Pages */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+            <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
               className="bg-white rounded-2xl shadow-md p-6">
               <h3 className="text-base font-bold text-gray-900 mb-4">Top 10 pages</h3>
               <div className="overflow-x-auto">
@@ -618,7 +619,7 @@ export default function AnalyticsPage() {
                   <p className="text-sm text-gray-400 text-center py-4">Aucune donnée</p>
                 )}
               </div>
-            </motion.div>
+            </m.div>
           </>
         )}
       </div>

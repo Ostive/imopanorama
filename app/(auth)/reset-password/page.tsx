@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -88,7 +88,7 @@ function ResetPasswordContent() {
 
   if (success) {
     return (
-      <motion.div
+      <m.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         className="text-center"
@@ -107,7 +107,7 @@ function ResetPasswordContent() {
           Me connecter maintenant
           <ArrowRightIcon className="h-5 w-5" />
         </Link>
-      </motion.div>
+      </m.div>
     );
   }
 
@@ -119,23 +119,24 @@ function ResetPasswordContent() {
       </div>
 
       {error && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-300 text-sm"
         >
           {error}
-        </motion.div>
+        </m.div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-semibold text-foreground mb-2">
+          <label htmlFor="reset-password" className="block text-sm font-semibold text-foreground mb-2">
             Nouveau mot de passe
           </label>
           <div className="relative group">
             <LockClosedIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 dark:group-focus-within:text-primary-400 transition-colors" />
             <input
+              id="reset-password"
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -156,12 +157,13 @@ function ResetPasswordContent() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-foreground mb-2">
+          <label htmlFor="reset-confirm-password" className="block text-sm font-semibold text-foreground mb-2">
             Confirmer le mot de passe
           </label>
           <div className="relative group">
             <LockClosedIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 dark:group-focus-within:text-primary-400 transition-colors" />
             <input
+              id="reset-confirm-password"
               type={showPassword ? 'text' : 'password'}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -173,7 +175,7 @@ function ResetPasswordContent() {
           </div>
         </div>
 
-        <motion.button
+        <m.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           type="submit"
@@ -188,7 +190,7 @@ function ResetPasswordContent() {
               <ArrowRightIcon className="h-5 w-5" />
             </>
           )}
-        </motion.button>
+        </m.button>
       </form>
 
       <div className="mt-6 text-center text-sm text-muted-foreground">
@@ -216,7 +218,7 @@ export default function ResetPasswordPage() {
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary-300/10 rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
         </div>
         <div className="relative z-10 flex flex-col justify-center items-center w-full p-12">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
@@ -234,7 +236,7 @@ export default function ResetPasswordPage() {
             <p className="text-xl text-white/95 max-w-md leading-relaxed">
               Choisissez un nouveau mot de passe sécurisé pour protéger votre compte.
             </p>
-          </motion.div>
+          </m.div>
         </div>
       </div>
 
@@ -246,7 +248,7 @@ export default function ResetPasswordPage() {
           <ArrowLeftIcon className="w-5 h-5 text-muted-foreground group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors" />
         </Link>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
@@ -269,7 +271,7 @@ export default function ResetPasswordPage() {
               <ResetPasswordContent />
             </Suspense>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </div>
   );

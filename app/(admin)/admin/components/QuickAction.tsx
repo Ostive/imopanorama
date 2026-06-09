@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
@@ -15,7 +15,7 @@ interface QuickActionProps {
 export function QuickAction({ title, description, icon, href, color }: QuickActionProps) {
   return (
     <Link href={href}>
-      <motion.div
+      <m.div
         whileHover={{ scale: 1.02, y: -2 }}
         whileTap={{ scale: 0.98 }}
         className="group block p-6 bg-card rounded-2xl shadow-lg hover:shadow-xl transition-all cursor-pointer border border-border"
@@ -30,7 +30,7 @@ export function QuickAction({ title, description, icon, href, color }: QuickActi
           </div>
           <ArrowRightIcon className="w-5 h-5 text-muted-foreground group-hover:text-primary-600 dark:group-hover:text-primary-400 group-hover:translate-x-1 transition-all" />
         </div>
-      </motion.div>
+      </m.div>
     </Link>
   );
 }

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { FormSkeleton } from '@/shared/components/loading';
 import NewsForm from '@/features/news/components/admin/NewsForm';
 import {
@@ -85,7 +85,7 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
-        <motion.nav
+        <m.nav
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex mb-6"
@@ -125,10 +125,10 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
               </div>
             </li>
           </ol>
-        </motion.nav>
+        </m.nav>
 
         {/* Header */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -157,16 +157,16 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
               Retour à la liste
             </Link>
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Form */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
           <NewsForm initialData={newsData} isEditing={true} />
-        </motion.div>
+        </m.div>
       </div>
     </div>
   );

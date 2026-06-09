@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/features/auth/context/AuthContext';
@@ -175,7 +175,7 @@ export default function BatiPanoramaContactPage() {
       {/* Header */}
       <div className="bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             className="flex items-center justify-between"
@@ -198,7 +198,7 @@ export default function BatiPanoramaContactPage() {
                 Parlons de votre projet de construction
               </p>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
 
@@ -206,7 +206,7 @@ export default function BatiPanoramaContactPage() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Contact Info Cards */}
           <div className="lg:col-span-1 space-y-6">
-            <motion.div
+            <m.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
@@ -216,7 +216,7 @@ export default function BatiPanoramaContactPage() {
                 {contactInfo.map((info, index) => {
                   const Icon = info.icon;
                   return (
-                    <motion.div
+                    <m.div
                       key={index}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -241,14 +241,14 @@ export default function BatiPanoramaContactPage() {
                           )}
                         </div>
                       </div>
-                    </motion.div>
+                    </m.div>
                   );
                 })}
               </div>
-            </motion.div>
+            </m.div>
 
             {/* Why Choose Us */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.7 }}
@@ -269,11 +269,11 @@ export default function BatiPanoramaContactPage() {
                   </li>
                 ))}
               </ul>
-            </motion.div>
+            </m.div>
           </div>
 
           {/* Contact Form */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
@@ -311,7 +311,7 @@ export default function BatiPanoramaContactPage() {
 
               {/* Authentication Warning */}
               {showAuthWarning && (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className="mb-6 bg-linear-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 border-l-4 border-orange-500 p-6 rounded-xl"
@@ -325,11 +325,11 @@ export default function BatiPanoramaContactPage() {
                       </p>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               )}
 
               {submitStatus === 'success' && (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className="mb-6 bg-linear-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-l-4 border-green-500 p-6 rounded-xl"
@@ -343,11 +343,11 @@ export default function BatiPanoramaContactPage() {
                       </p>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               )}
 
               {submitStatus === 'error' && (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className="mb-6 bg-linear-to-r from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 border-l-4 border-red-500 p-6 rounded-xl"
@@ -359,18 +359,19 @@ export default function BatiPanoramaContactPage() {
                       <p className="text-sm text-red-700 dark:text-red-300 mt-1">{errorMessage}</p>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Name Fields */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="flex items-center text-sm font-semibold text-foreground mb-2">
+                    <label htmlFor="bati-first-name" className="flex items-center text-sm font-semibold text-foreground mb-2">
                       <UserIcon className="h-4 w-4 mr-2" />
                       Prénom *
                     </label>
                     <input
+                      id="bati-first-name"
                       type="text"
                       name="firstName"
                       value={formData.firstName}
@@ -381,11 +382,12 @@ export default function BatiPanoramaContactPage() {
                     />
                   </div>
                   <div>
-                    <label className="flex items-center text-sm font-semibold text-foreground mb-2">
+                    <label htmlFor="bati-last-name" className="flex items-center text-sm font-semibold text-foreground mb-2">
                       <UserIcon className="h-4 w-4 mr-2" />
                       Nom *
                     </label>
                     <input
+                      id="bati-last-name"
                       type="text"
                       name="lastName"
                       value={formData.lastName}
@@ -400,11 +402,12 @@ export default function BatiPanoramaContactPage() {
                 {/* Contact Fields */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="flex items-center text-sm font-semibold text-foreground mb-2">
+                    <label htmlFor="bati-email" className="flex items-center text-sm font-semibold text-foreground mb-2">
                       <EnvelopeIcon className="h-4 w-4 mr-2" />
                       Email *
                     </label>
                     <input
+                      id="bati-email"
                       type="email"
                       name="email"
                       value={formData.email}
@@ -415,11 +418,12 @@ export default function BatiPanoramaContactPage() {
                     />
                   </div>
                   <div>
-                    <label className="flex items-center text-sm font-semibold text-foreground mb-2">
+                    <label htmlFor="bati-phone" className="flex items-center text-sm font-semibold text-foreground mb-2">
                       <PhoneIcon className="h-4 w-4 mr-2" />
                       Téléphone *
                     </label>
                     <input
+                      id="bati-phone"
                       type="tel"
                       name="phone"
                       value={formData.phone}
@@ -434,10 +438,10 @@ export default function BatiPanoramaContactPage() {
                 {/* Project Details */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="flex items-center text-sm font-semibold text-foreground mb-2">
+                    <p className="flex items-center text-sm font-semibold text-foreground mb-2">
                       <HomeModernIcon className="h-4 w-4 mr-2" />
                       Type de projet *
-                    </label>
+                    </p>
                     <Select
                       value={formData.projectType}
                       onValueChange={(value) => setFormData(prev => ({ ...prev, projectType: value }))}
@@ -458,10 +462,10 @@ export default function BatiPanoramaContactPage() {
                     </Select>
                   </div>
                   <div>
-                    <label className="flex items-center text-sm font-semibold text-foreground mb-2">
+                    <p className="flex items-center text-sm font-semibold text-foreground mb-2">
                       <CurrencyDollarIcon className="h-4 w-4 mr-2" />
                       Budget estimé *
-                    </label>
+                    </p>
                     <Select
                       value={formData.budget}
                       onValueChange={(value) => setFormData(prev => ({ ...prev, budget: value }))}
@@ -485,11 +489,12 @@ export default function BatiPanoramaContactPage() {
 
                 {/* Location */}
                 <div>
-                  <label className="flex items-center text-sm font-semibold text-foreground mb-2">
+                  <label htmlFor="bati-location" className="flex items-center text-sm font-semibold text-foreground mb-2">
                     <MapPinIcon className="h-4 w-4 mr-2" />
                     Localisation du projet *
                   </label>
                   <input
+                    id="bati-location"
                     type="text"
                     name="location"
                     value={formData.location}
@@ -502,11 +507,12 @@ export default function BatiPanoramaContactPage() {
 
                 {/* Message */}
                 <div>
-                  <label className="flex items-center text-sm font-semibold text-foreground mb-2">
+                  <label htmlFor="bati-message" className="flex items-center text-sm font-semibold text-foreground mb-2">
                     <ChatBubbleLeftRightIcon className="h-4 w-4 mr-2" />
                     Décrivez votre projet *
                   </label>
                   <textarea
+                    id="bati-message"
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
@@ -518,7 +524,7 @@ export default function BatiPanoramaContactPage() {
                 </div>
 
                 {/* Submit Button */}
-                <motion.button
+                <m.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   type="submit"
@@ -536,14 +542,14 @@ export default function BatiPanoramaContactPage() {
                       Envoyer ma demande
                     </>
                   )}
-                </motion.button>
+                </m.button>
 
                 <p className="text-sm text-gray-500 text-center">
                   * Champs obligatoires. Vos données sont protégées et ne seront pas partagées.
                 </p>
               </form>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </div>

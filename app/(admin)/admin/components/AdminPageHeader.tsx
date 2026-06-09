@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { Skeleton } from '@/shared/components/ui/skeleton';
 import Link from 'next/link';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
@@ -24,7 +24,7 @@ export function AdminPageHeader({
   loading = false,
 }: AdminPageHeaderProps) {
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       className="mb-8"
@@ -62,6 +62,6 @@ export function AdminPageHeader({
           </div>
         )}
       </div>
-    </motion.div>
+    </m.div>
   );
 }

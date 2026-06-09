@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { ShareIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/shared/components/ui/button'
 import { toast } from 'react-hot-toast'
@@ -112,7 +112,7 @@ export function ShareDropdown({ title, text, url: urlProp, className }: ShareMen
 
   return (
     <div className={`relative${className ? ` ${className}` : ''}`} ref={ref}>
-      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+      <m.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
         <Button
           onClick={() => setOpen(v => !v)}
           variant="secondary"
@@ -121,11 +121,11 @@ export function ShareDropdown({ title, text, url: urlProp, className }: ShareMen
           <ShareIcon className="w-5 h-5" />
           <span>Partager</span>
         </Button>
-      </motion.div>
+      </m.div>
 
       <AnimatePresence>
         {open && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.95, y: -8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -8 }}
@@ -147,7 +147,7 @@ export function ShareDropdown({ title, text, url: urlProp, className }: ShareMen
                 </div>
               </button>
             ))}
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

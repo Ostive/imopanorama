@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { 
   MagnifyingGlassIcon, 
   HomeIcon, 
@@ -11,14 +11,14 @@ import {
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-linear-to-br from-purple-50 via-white to-primary-50 flex items-center justify-center p-4">
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="max-w-2xl w-full"
       >
         <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 border border-gray-100 text-center">
           {/* Illustration with 404 */}
-          <motion.div
+          <m.div
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, type: 'spring', stiffness: 150 }}
@@ -37,7 +37,7 @@ export default function NotFound() {
               {/* Main House Container */}
               <div className="relative w-full h-full">
                 {/* House Base */}
-                <motion.div
+                <m.div
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.4 }}
@@ -48,10 +48,10 @@ export default function NotFound() {
                   {/* Windows */}
                   <div className="absolute top-3 left-3 w-5 h-5 bg-white/40 rounded" />
                   <div className="absolute top-3 right-3 w-5 h-5 bg-white/40 rounded" />
-                </motion.div>
+                </m.div>
                 
                 {/* House Roof */}
-                <motion.div
+                <m.div
                   initial={{ y: -20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.5 }}
@@ -59,66 +59,66 @@ export default function NotFound() {
                 />
                 
                 {/* Magnifying Glass */}
-                <motion.div
+                <m.div
                   initial={{ scale: 0, rotate: -45 }}
                   animate={{ scale: 1, rotate: 0 }}
                   transition={{ delay: 0.6, type: 'spring' }}
                   className="absolute -right-2 top-4 w-16 h-16 bg-linear-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-xl"
                 >
                   <MagnifyingGlassIcon className="h-10 w-10 text-white" strokeWidth={2.5} />
-                </motion.div>
+                </m.div>
                 
                 {/* Floating Question Mark */}
-                <motion.div
+                <m.div
                   animate={{ y: [-5, 5, -5], rotate: [-5, 5, -5] }}
                   transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                   className="absolute -left-4 top-0 w-10 h-10 bg-linear-to-br from-yellow-400 to-orange-400 rounded-full flex items-center justify-center shadow-lg text-white font-bold text-xl"
                 >
                   ?
-                </motion.div>
+                </m.div>
               </div>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Title */}
-          <motion.h2
+          <m.h2
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
             className="text-3xl md:text-4xl font-bold text-gray-900 mb-4"
           >
             On dirait que cette page a déménagé
-          </motion.h2>
+          </m.h2>
 
           {/* Description */}
-          <motion.p
+          <m.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
             className="text-lg text-gray-600 mb-8"
           >
             Le lien n&apos;est peut-être plus à jour. Vous pouvez revenir à l&apos;accueil ou retourner à la page précédente.
-          </motion.p>
+          </m.p>
 
           {/* Action Buttons */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
             <Link href="/">
-              <motion.button
+              <m.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold rounded-xl shadow-lg transition-all"
               >
                 <HomeIcon className="h-5 w-5" />
                 Revenir à l&apos;accueil
-              </motion.button>
+              </m.button>
             </Link>
 
-            <motion.button
+            <m.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => window.history.back()}
@@ -126,11 +126,11 @@ export default function NotFound() {
             >
               <ArrowLeftIcon className="h-5 w-5" />
               Retourner en arrière
-            </motion.button>
-          </motion.div>
+            </m.button>
+          </m.div>
 
           {/* Help Text */}
-          <motion.p
+          <m.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}
@@ -140,9 +140,9 @@ export default function NotFound() {
             <Link href="/contact" className="text-primary-600 hover:text-primary-700 font-semibold">
               Contactez-nous
             </Link>
-          </motion.p>
+          </m.p>
         </div>
-      </motion.div>
+      </m.div>
     </div>
   );
 }

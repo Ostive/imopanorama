@@ -5,7 +5,7 @@ import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { Property } from '@/features/properties/types/properties.types'
 import PropertyCard from './PropertyCard'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { useNetworkStatus } from '@/shared/hooks/useNetworkStatus'
 import MapErrorBoundary, { MapFallback } from '@/shared/components/map/MapErrorBoundary'
@@ -414,7 +414,7 @@ function PropertiesMapViewInner({
           <div className="flex-1 overflow-y-auto p-4">
             <AnimatePresence mode="wait">
               {selectedProperty ? (
-                <motion.div
+                <m.div
                   key={selectedProperty.id}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -432,11 +432,11 @@ function PropertiesMapViewInner({
                     </button>
                   </div>
                   <PropertyCard property={selectedProperty} variant="compact" />
-                </motion.div>
+                </m.div>
               ) : (
-                <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-3">
+                <m.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-3">
                   {validProperties.map((property) => (
-                    <motion.div
+                    <m.div
                       key={property.id}
                       whileHover={{ scale: 1.02 }}
                       onMouseEnter={() => setHoveredPropertyId(property.id)}
@@ -451,9 +451,9 @@ function PropertiesMapViewInner({
                       className={`cursor-pointer transition-all duration-200 ${hoveredPropertyId === property.id ? 'ring-2 ring-primary-500 rounded-2xl' : ''}`}
                     >
                       <PropertyCard property={property} variant="compact" />
-                    </motion.div>
+                    </m.div>
                   ))}
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
           </div>

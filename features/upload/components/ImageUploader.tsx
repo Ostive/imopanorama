@@ -137,10 +137,15 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
         ref={fileInputRef}
         className="hidden"
         disabled={isUploading}
+        aria-label="Sélectionner une image"
+        tabIndex={-1}
       />
 
       <div
+        role="button"
+        tabIndex={0}
         onClick={handleClick}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } }}
         className="cursor-pointer border-2 border-dashed border-primary-300 bg-primary-50 rounded-xl p-8 flex flex-col items-center justify-center hover:border-primary-500 hover:bg-primary-100 transition-all duration-300 group"
         style={{ minHeight: '200px' }}
       >

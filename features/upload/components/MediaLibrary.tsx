@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { ImageGallery } from '@/features/upload/components/ImageGallery';
 import { ImageUploader } from '@/features/upload/components/ImageUploader';
@@ -279,6 +279,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                                 type="text"
                                 className="block w-full pl-10 pr-3 py-2 border border-border rounded-lg leading-5 bg-card placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-shadow shadow-sm"
                                 placeholder="Rechercher un fichier..."
+                                aria-label="Rechercher un fichier"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
@@ -321,6 +322,8 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                                 onChange={handleHiddenFileChange}
                                 className="hidden"
                                 accept="image/*"
+                                aria-label="Uploader une image"
+                                tabIndex={-1}
                             />
                             <button type="button"
                                 onClick={handleTriggerUpload}
@@ -335,19 +338,19 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
             </div>
 
             {error && (
-                <motion.div
+                <m.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg mb-4 text-sm flex items-center gap-2"
                 >
                     <ExclamationTriangleIcon className="w-5 h-5 shrink-0" />
                     <span>{error}</span>
-                </motion.div>
+                </m.div>
             )}
 
             <AnimatePresence>
                 {showNewFolderInput && (
-                    <motion.div
+                    <m.div
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
@@ -360,6 +363,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                                 value={newFolderName}
                                 onChange={(e) => setNewFolderName(e.target.value)}
                                 placeholder="Nom du nouveau dossier"
+                                aria-label="Nom du nouveau dossier"
                                 className="flex-1 px-3 py-2 text-sm border border-border rounded-lg focus:ring-primary-500 focus:border-primary-500"
                                 autoFocus
                             />
@@ -381,11 +385,11 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                                 </button>
                             </div>
                         </div>
-                    </motion.div>
+                    </m.div>
                 )}
 
                 {showUploader && (
-                    <motion.div
+                    <m.div
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
@@ -408,7 +412,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                                 />
                             </div>
                         </div>
-                    </motion.div>
+                    </m.div>
                 )}
             </AnimatePresence>
 
@@ -462,7 +466,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                                     </h3>
                                     <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4">
                                         {folders.map((folder) => (
-                                            <motion.div
+                                            <m.div
                                                 key={folder.Guid}
                                                 whileHover={{ scale: 1.02, backgroundColor: '#F9FAFB' }}
                                                 onClick={() => navigateToFolder(folder)}
@@ -474,7 +478,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                                                 <span className="flex-1 text-sm font-medium text-foreground group-hover:text-foreground text-left truncate" title={folder.ObjectName}>
                                                     {folder.ObjectName}
                                                 </span>
-                                            </motion.div>
+                                            </m.div>
                                         ))}
                                     </div>
                                 </div>

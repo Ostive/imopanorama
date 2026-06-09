@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 
 interface PropertyInfoItemProps {
   /** Icon component or emoji string */
@@ -30,7 +30,7 @@ export function PropertyInfoItem({ icon, label, value, color = 'primary', delay 
   const iconBg = COLOR_MAP[color] ?? COLOR_MAP.primary
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, x: -20 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
@@ -46,6 +46,6 @@ export function PropertyInfoItem({ icon, label, value, color = 'primary', delay 
         <div className="text-sm text-muted-foreground mb-0.5">{label}</div>
         <div className="text-lg font-bold text-foreground">{value}</div>
       </div>
-    </motion.div>
+    </m.div>
   )
 }

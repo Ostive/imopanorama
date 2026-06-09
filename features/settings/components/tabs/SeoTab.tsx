@@ -16,8 +16,9 @@ export function SeoTab({ settings, onChange }: SeoTabProps) {
           <h4 className="font-semibold text-gray-900 mb-4">Meta Tags</h4>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Titre Meta</label>
+              <label htmlFor="seo-meta-title" className="block text-sm font-medium text-gray-700 mb-2">Titre Meta</label>
               <input
+                id="seo-meta-title"
                 type="text"
                 value={settings.metaTitle}
                 onChange={(e) => onChange('seo', 'metaTitle', e.target.value)}
@@ -27,8 +28,9 @@ export function SeoTab({ settings, onChange }: SeoTabProps) {
               <p className="text-xs text-gray-500 mt-1">Idéal: 50-60 caractères</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description Meta</label>
+              <label htmlFor="seo-meta-description" className="block text-sm font-medium text-gray-700 mb-2">Description Meta</label>
               <textarea
+                id="seo-meta-description"
                 rows={3}
                 value={settings.metaDescription}
                 onChange={(e) => onChange('seo', 'metaDescription', e.target.value)}
@@ -38,8 +40,9 @@ export function SeoTab({ settings, onChange }: SeoTabProps) {
               <p className="text-xs text-gray-500 mt-1">Idéal: 150-160 caractères</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Mots-clés</label>
+              <label htmlFor="seo-keywords" className="block text-sm font-medium text-gray-700 mb-2">Mots-clés</label>
               <input
+                id="seo-keywords"
                 type="text"
                 value={settings.keywords}
                 onChange={(e) => onChange('seo', 'keywords', e.target.value)}
@@ -63,7 +66,7 @@ export function SeoTab({ settings, onChange }: SeoTabProps) {
                   <h5 className="font-medium text-gray-900">{toggle.label}</h5>
                   <p className="text-sm text-gray-500">{toggle.description}</p>
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer">
+                <label aria-label={toggle.label} className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
                     checked={Boolean(settings[toggle.key as keyof SeoSettings])}

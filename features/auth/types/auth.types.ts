@@ -76,14 +76,14 @@ export interface Role {
     permissions: Permission[];
 }
 
-export const USER_ROLES = {
+const USER_ROLES = {
     ADMIN: 'admin',
     AGENT: 'agent',
     SUPER_ADMIN: 'super_admin',
     CLIENT: 'client'
 } as const;
 
-export const PERMISSIONS = {
+const PERMISSIONS = {
     TERRAIN_CREATE: 'terrain:create',
     TERRAIN_READ: 'terrain:read',
     TERRAIN_UPDATE: 'terrain:update',

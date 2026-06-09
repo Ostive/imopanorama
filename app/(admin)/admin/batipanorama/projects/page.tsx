@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -288,7 +288,7 @@ export default function BatiProjectsPage() {
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
       {/* Notification Toast */}
       {notification && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -50 }}
@@ -308,19 +308,19 @@ export default function BatiProjectsPage() {
             </svg>
           )}
           <span className="font-semibold">{notification.message}</span>
-        </motion.div>
+        </m.div>
       )}
 
       {/* Delete Confirmation Modal */}
       {deleteModal.show && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={closeDeleteModal}
         >
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -375,8 +375,8 @@ export default function BatiProjectsPage() {
                 )}
               </button>
             </div>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       )}
 
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -397,7 +397,7 @@ export default function BatiProjectsPage() {
         />
 
         {/* Filters */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -417,6 +417,7 @@ export default function BatiProjectsPage() {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Rechercher un projet..."
+                aria-label="Rechercher un projet"
                 className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
               />
             </div>
@@ -453,12 +454,12 @@ export default function BatiProjectsPage() {
           <div className="mt-4 text-sm text-gray-600">
             {totalProjects} projet{totalProjects !== 1 ? 's' : ''} trouvé{totalProjects !== 1 ? 's' : ''}
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Data Table */}
         {isLoading ? (
           <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-            <table className="w-full">
+            <table className="w-full" aria-hidden="true">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
                   {[1, 2, 3, 4, 5].map((i) => (
@@ -497,7 +498,7 @@ export default function BatiProjectsPage() {
             </table>
           </div>
         ) : projects.length === 0 ? (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center"
@@ -511,9 +512,9 @@ export default function BatiProjectsPage() {
             >
               <PlusIcon className="h-5 w-5 mr-2" /> Créer un projet
             </Link>
-          </motion.div>
+          </m.div>
         ) : (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -699,6 +700,7 @@ export default function BatiProjectsPage() {
                       onKeyDown={(e) => e.key === 'Enter' && handleGoToSubmit(goToInput)}
                       className="w-16 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                       placeholder={searchParams.page.toString()}
+                      aria-label="Aller à la page"
                     />
                     <button type="button"
                       onClick={() => handleGoToSubmit(goToInput)}
@@ -710,7 +712,7 @@ export default function BatiProjectsPage() {
                 </div>
               )}
             </div>
-          </motion.div>
+          </m.div>
         )}
       </div>
     </div>

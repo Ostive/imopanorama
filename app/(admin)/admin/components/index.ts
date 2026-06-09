@@ -5,7 +5,6 @@ export { ErrorAlert } from './ErrorAlert';
 export { AdminTablePagination } from './AdminTablePagination';
 export { ConfirmDeleteModal } from './ConfirmDeleteModal';
 export { QuickAction } from './QuickAction';
-export { RecentProperties } from './RecentProperties';
 export { RecentActivity } from './RecentActivity';
 export { AdminDashboardSkeleton } from './AdminDashboardSkeleton';
 export { AdminLayoutSkeleton } from './AdminLayoutSkeleton';

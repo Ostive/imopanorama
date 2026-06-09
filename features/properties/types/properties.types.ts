@@ -181,7 +181,7 @@ export const PROPERTY_DOCUMENT_STATUS_LABELS: Record<PropertyDocumentStatus, str
     VERIFIED: 'Documents vÃ©rifiÃ©s',
 };
 
-export const isResidentialType = (type: PropertyType): boolean => {
+const isResidentialType = (type: PropertyType): boolean => {
     return ['VILLA', 'HOUSE', 'TOWNHOUSE', 'COUNTRY_HOUSE', 'APARTMENT', 'STUDIO', 'PENTHOUSE', 'DUPLEX', 'LOFT'].includes(type);
 };
 

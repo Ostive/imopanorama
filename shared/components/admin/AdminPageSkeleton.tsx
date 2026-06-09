@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 
 export function AdminPageSkeleton() {
   return (
@@ -22,7 +22,7 @@ export function AdminPageSkeleton() {
         {/* Stats Cards Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {[1, 2, 3].map((i) => (
-            <motion.div
+            <m.div
               key={i}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -37,7 +37,7 @@ export function AdminPageSkeleton() {
                 </div>
                 <div className="w-14 h-14 rounded-xl bg-gray-200 animate-pulse" />
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </div>
 
@@ -64,7 +64,7 @@ export function AdminPageSkeleton() {
   );
 }
 
-export function StatsCardSkeleton() {
+function StatsCardSkeleton() {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-gray-200">
       <div className="flex items-center justify-between">
@@ -79,7 +79,7 @@ export function StatsCardSkeleton() {
   );
 }
 
-export function TableSkeleton({ rows = 5 }: { rows?: number }) {
+function TableSkeleton({ rows = 5 }: { rows?: number }) {
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-200">

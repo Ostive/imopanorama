@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { ArrowLeftIcon, CheckCircleIcon, EnvelopeIcon } from '@heroicons/react/24/outline'
 import { useAuth } from '@/features/auth/context/AuthContext'
 
@@ -40,7 +40,7 @@ export default function ForgotPasswordPage() {
         Connexion
       </Link>
 
-      <motion.section initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="relative w-full max-w-md rounded-2xl bg-card p-8 shadow-2xl">
+      <m.section initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="relative w-full max-w-md rounded-2xl bg-card p-8 shadow-2xl">
         <div className="mb-7 text-center">
           <Image src="/images/brand/logo.png" alt="ImoPanorama Madagascar" width={180} height={54} className="mx-auto mb-5 h-14 w-auto object-contain" priority />
           <h1 className="text-3xl font-black text-foreground">Mot de passe oublié ?</h1>
@@ -81,7 +81,7 @@ export default function ForgotPasswordPage() {
             {isSubmitting ? 'Envoi en cours...' : 'Recevoir le lien'}
           </button>
         </form>
-      </motion.section>
+      </m.section>
     </main>
   )
 }

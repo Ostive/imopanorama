@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/features/auth/context/AuthContext';
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
 import { UpdateProfileData, ChangePasswordData, User } from './types';
@@ -67,7 +67,7 @@ function ProfileForm() {
   };
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-card rounded-2xl shadow-lg p-8 border border-border"
@@ -83,7 +83,7 @@ function ProfileForm() {
 
       <AnimatePresence>
         {success && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
@@ -93,11 +93,11 @@ function ProfileForm() {
               <CheckCircleIcon className="h-6 w-6 text-green-600 dark:text-green-400" />
               <span className="font-semibold text-green-700 dark:text-green-300">Profil mis à jour avec succès !</span>
             </div>
-          </motion.div>
+          </m.div>
         )}
 
         {error && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
@@ -107,18 +107,19 @@ function ProfileForm() {
               <ExclamationCircleIcon className="h-6 w-6 text-red-600 dark:text-red-400" />
               <span className="font-semibold text-red-700 dark:text-red-300">{error}</span>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="flex items-center text-sm font-semibold text-foreground mb-2">
+            <label htmlFor="profile-first-name" className="flex items-center text-sm font-semibold text-foreground mb-2">
               <UserIcon className="h-4 w-4 mr-2" />
               Prénom
             </label>
             <input
+              id="profile-first-name"
               type="text"
               name="firstName"
               value={formData.firstName}
@@ -128,11 +129,12 @@ function ProfileForm() {
           </div>
 
           <div>
-            <label className="flex items-center text-sm font-semibold text-foreground mb-2">
+            <label htmlFor="profile-last-name" className="flex items-center text-sm font-semibold text-foreground mb-2">
               <UserIcon className="h-4 w-4 mr-2" />
               Nom
             </label>
             <input
+              id="profile-last-name"
               type="text"
               name="lastName"
               value={formData.lastName}
@@ -143,11 +145,12 @@ function ProfileForm() {
         </div>
 
         <div>
-          <label className="flex items-center text-sm font-semibold text-foreground mb-2">
+          <label htmlFor="profile-phone" className="flex items-center text-sm font-semibold text-foreground mb-2">
             <PhoneIcon className="h-4 w-4 mr-2" />
             Téléphone
           </label>
           <input
+            id="profile-phone"
             type="tel"
             name="phone"
             value={formData.phone}
@@ -158,11 +161,12 @@ function ProfileForm() {
         </div>
 
         <div>
-          <label className="flex items-center text-sm font-semibold text-foreground mb-2">
+          <label htmlFor="profile-company" className="flex items-center text-sm font-semibold text-foreground mb-2">
             <BuildingOfficeIcon className="h-4 w-4 mr-2" />
             Entreprise
           </label>
           <input
+            id="profile-company"
             type="text"
             name="company"
             value={formData.company}
@@ -172,7 +176,7 @@ function ProfileForm() {
           />
         </div>
 
-        <motion.button
+        <m.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           type="submit"
@@ -190,9 +194,9 @@ function ProfileForm() {
               Mettre à jour
             </>
           )}
-        </motion.button>
+        </m.button>
       </form>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -242,7 +246,7 @@ function PasswordForm() {
   };
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-card rounded-2xl shadow-lg p-8 border border-border"
@@ -258,7 +262,7 @@ function PasswordForm() {
 
       <AnimatePresence>
         {success && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
@@ -268,11 +272,11 @@ function PasswordForm() {
               <CheckCircleIcon className="h-6 w-6 text-green-600 dark:text-green-400" />
               <span className="font-semibold text-green-700 dark:text-green-300">Mot de passe modifié avec succès !</span>
             </div>
-          </motion.div>
+          </m.div>
         )}
 
         {error && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
@@ -282,18 +286,19 @@ function PasswordForm() {
               <ExclamationCircleIcon className="h-6 w-6 text-red-600 dark:text-red-400" />
               <span className="font-semibold text-red-700 dark:text-red-300">{error}</span>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="flex items-center text-sm font-semibold text-foreground mb-2">
+          <label htmlFor="profile-current-password" className="flex items-center text-sm font-semibold text-foreground mb-2">
             <KeyIcon className="h-4 w-4 mr-2" />
             Mot de passe actuel
           </label>
           <div className="relative">
             <input
+              id="profile-current-password"
               type={showCurrentPassword ? "text" : "password"}
               name="currentPassword"
               value={formData.currentPassword}
@@ -316,12 +321,13 @@ function PasswordForm() {
         </div>
 
         <div>
-          <label className="flex items-center text-sm font-semibold text-foreground mb-2">
+          <label htmlFor="profile-new-password" className="flex items-center text-sm font-semibold text-foreground mb-2">
             <KeyIcon className="h-4 w-4 mr-2" />
             Nouveau mot de passe
           </label>
           <div className="relative">
             <input
+              id="profile-new-password"
               type={showNewPassword ? "text" : "password"}
               name="newPassword"
               value={formData.newPassword}
@@ -344,12 +350,13 @@ function PasswordForm() {
         </div>
 
         <div>
-          <label className="flex items-center text-sm font-semibold text-foreground mb-2">
+          <label htmlFor="profile-confirm-password" className="flex items-center text-sm font-semibold text-foreground mb-2">
             <KeyIcon className="h-4 w-4 mr-2" />
             Confirmer le nouveau mot de passe
           </label>
           <div className="relative">
             <input
+              id="profile-confirm-password"
               type={showConfirmPassword ? "text" : "password"}
               name="confirmPassword"
               value={formData.confirmPassword}
@@ -371,7 +378,7 @@ function PasswordForm() {
           </div>
         </div>
 
-        <motion.button
+        <m.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           type="submit"
@@ -389,9 +396,9 @@ function PasswordForm() {
               Changer le mot de passe
             </>
           )}
-        </motion.button>
+        </m.button>
       </form>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -404,7 +411,7 @@ function UserStats({ user }: { user: any }) {
   });
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-card rounded-2xl shadow-lg p-8 border border-border"
@@ -472,7 +479,7 @@ function UserStats({ user }: { user: any }) {
           </span>
         </a>
       </div>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -501,7 +508,7 @@ export default function ProfilePage() {
       <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:bg-gray-900 py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             className="bg-card rounded-2xl shadow-lg p-8 mb-8 border border-border"
@@ -538,7 +545,7 @@ export default function ProfilePage() {
 
               <div className="flex flex-col sm:flex-row gap-3">
                 {(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'super_admin') && (
-                  <motion.a
+                  <m.a
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     href="/admin"
@@ -550,10 +557,10 @@ export default function ProfilePage() {
                   >
                     <ShieldCheckIcon className="-ml-1 mr-2 h-5 w-5" />
                     Administration
-                  </motion.a>
+                  </m.a>
                 )}
 
-                <motion.button
+                <m.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleLogout}
@@ -561,7 +568,7 @@ export default function ProfilePage() {
                 >
                   <ArrowRightOnRectangleIcon className="h-5 w-5 mr-2" />
                   Se déconnecter
-                </motion.button>
+                </m.button>
               </div>
             </div>
 
@@ -572,7 +579,7 @@ export default function ProfilePage() {
                   {tabs.map((tab) => {
                     const Icon = tab.icon;
                     return (
-                      <motion.button
+                      <m.button
                         key={tab.id}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
@@ -584,13 +591,13 @@ export default function ProfilePage() {
                       >
                         <Icon className="h-5 w-5" />
                         {tab.name}
-                      </motion.button>
+                      </m.button>
                     );
                   })}
                 </div>
               </div>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Content based on active tab */}
           <AnimatePresence mode="wait">

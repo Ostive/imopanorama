@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import toast from 'react-hot-toast'
@@ -274,7 +274,7 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Header */}
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+          <m.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
             <Link
               href="/admin/batipanorama/projects"
               className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors mb-4 group"
@@ -303,7 +303,7 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
                 {isSubmitting ? 'Enregistrement…' : isEdit ? 'Mode édition' : 'Mode création'}
               </div>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Form — 12-col grid */}
           <form onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-8 items-start">
@@ -312,7 +312,7 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
             <div className="lg:col-span-9 space-y-8">
 
               {/* Informations de base */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
                 <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
                   <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-border pb-4">
                     <div className="flex items-center gap-3">
@@ -427,10 +427,10 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </m.div>
 
               {/* Images */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
                 <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
                   <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-border pb-4">
                     <div className="flex items-center justify-between">
@@ -458,7 +458,10 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
                         {formData.images.map((img, index) => (
                           <div
                             key={index}
+                            role="button"
+                            tabIndex={0}
                             onClick={() => setFormData(prev => ({ ...prev, coverImage: img }))}
+                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFormData(prev => ({ ...prev, coverImage: img })); } }}
                             className={`relative group cursor-pointer rounded-xl overflow-hidden border-2 transition-all ${
                               formData.coverImage === img
                                 ? 'border-primary-500 ring-2 ring-primary-300'
@@ -483,7 +486,10 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
                       </div>
                     ) : (
                       <div
+                        role="button"
+                        tabIndex={0}
                         onClick={addImageUrl}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); addImageUrl(); } }}
                         className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all ${
                           fieldErrors.images
                             ? 'border-red-300 dark:border-red-700 bg-red-50/30 dark:bg-red-900/10'
@@ -496,10 +502,10 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
                     )}
                   </CardContent>
                 </Card>
-              </motion.div>
+              </m.div>
 
               {/* Tags & Features */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
                 <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
                   <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-border pb-4">
                     <div className="flex items-center gap-3">
@@ -558,7 +564,7 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </m.div>
 
             </div>
 
@@ -567,7 +573,7 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
               <div className="sticky top-8 space-y-6">
 
                 {/* Progression */}
-                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
+                <m.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
                   <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
                     <div className="p-5 border-b border-border bg-gray-50/50 dark:bg-gray-800/50">
                       <h3 className="font-bold text-foreground flex items-center justify-between">
@@ -602,10 +608,10 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
                       </ul>
                     </div>
                   </Card>
-                </motion.div>
+                </m.div>
 
                 {/* Actions */}
-                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}>
+                <m.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}>
                   <Card className="border-none shadow-lg rounded-2xl bg-card">
                     <CardContent className="pt-6 space-y-3">
                       <Button
@@ -625,10 +631,10 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
                       </Button>
                     </CardContent>
                   </Card>
-                </motion.div>
+                </m.div>
 
                 {/* Statut & Publication */}
-                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
+                <m.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
                   <Card className="border-none shadow-lg rounded-2xl bg-card">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-base">Statut & Publication</CardTitle>
@@ -670,10 +676,10 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
                       </div>
                     </CardContent>
                   </Card>
-                </motion.div>
+                </m.div>
 
                 {/* Conseil */}
-                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}>
+                <m.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}>
                   <div className="bg-primary-50 dark:bg-primary-900/20 rounded-xl p-5 border border-primary-100 dark:border-primary-800">
                     <div className="flex gap-3">
                       <SparklesIcon className="w-5 h-5 text-primary-600 dark:text-primary-400 flex-shrink-0 mt-0.5" />
@@ -685,7 +691,7 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
 
               </div>
             </div>

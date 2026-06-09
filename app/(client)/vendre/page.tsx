@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import {
   ArrowRightIcon,
   BanknotesIcon,
@@ -186,7 +186,7 @@ export default function SellPage() {
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col justify-center">
+          <m.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col justify-center">
             <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-semibold backdrop-blur">
               <SparklesIcon className="h-4 w-4" />
               Vendre avec ImoPanorama
@@ -205,7 +205,7 @@ export default function SellPage() {
                 Demander une estimation
               </Link>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </section>
 

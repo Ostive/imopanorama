@@ -7,7 +7,7 @@ interface LoaderProps {
   fullScreen?: boolean;
 }
 
-export const Loader: React.FC<LoaderProps> = ({
+const Loader: React.FC<LoaderProps> = ({
   size = 'md',
   color = 'primary',
   text,

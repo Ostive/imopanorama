@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { Button } from '@/shared/components/ui/button'
 import {
   PhoneIcon,
@@ -51,7 +51,7 @@ export function AgencyActionButtons({
 
   return (
     <div className={`space-y-3${className ? ` ${className}` : ''}`}>
-      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+      <m.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
         <Button
           onClick={handleCall}
           className="w-full justify-start px-6 bg-primary-600 hover:bg-primary-700 text-white py-6 gap-3 shadow-xl shadow-primary-500/30 rounded-xl"
@@ -60,9 +60,9 @@ export function AgencyActionButtons({
           <PhoneIcon className="w-5 h-5" />
           <span>Appeler directement</span>
         </Button>
-      </motion.div>
+      </m.div>
 
-      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+      <m.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
         <Button
           onClick={handleWhatsApp}
           className="w-full justify-start px-6 bg-green-600 hover:bg-green-700 text-white py-6 gap-3 shadow-xl shadow-green-500/30 rounded-xl"
@@ -71,9 +71,9 @@ export function AgencyActionButtons({
           <ChatBubbleLeftRightIcon className="w-5 h-5" />
           <span>WhatsApp</span>
         </Button>
-      </motion.div>
+      </m.div>
 
-      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+      <m.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
         <Button
           onClick={handleEmail}
           variant="outline"
@@ -83,10 +83,10 @@ export function AgencyActionButtons({
           <EnvelopeIcon className="w-5 h-5" />
           <span>Envoyer par email</span>
         </Button>
-      </motion.div>
+      </m.div>
 
       {onScheduleVisit && (
-        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+        <m.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
           <Button
             onClick={onScheduleVisit}
             variant="outline"
@@ -96,7 +96,7 @@ export function AgencyActionButtons({
             <CalendarIcon className="w-5 h-5" />
             <span>Programmer une visite</span>
           </Button>
-        </motion.div>
+        </m.div>
       )}
     </div>
   )

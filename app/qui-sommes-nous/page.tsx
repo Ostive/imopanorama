@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { 
@@ -91,7 +91,7 @@ export default function QuiSommesNousPage() {
             Retour à l'accueil
           </Link>
           
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
@@ -107,7 +107,7 @@ export default function QuiSommesNousPage() {
             <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto">
               ImoPanorama, votre expert immobilier à Madagascar depuis plus de 10 ans
             </p>
-          </motion.div>
+          </m.div>
         </div>
       </div>
 
@@ -115,7 +115,7 @@ export default function QuiSommesNousPage() {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div
+            <m.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -129,9 +129,9 @@ export default function QuiSommesNousPage() {
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent"></div>
               </div>
-            </motion.div>
+            </m.div>
 
-            <motion.div
+            <m.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -179,7 +179,7 @@ export default function QuiSommesNousPage() {
                   <span className="font-semibold">Prix transparents</span>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         </div>
       </section>
@@ -189,7 +189,7 @@ export default function QuiSommesNousPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
-              <motion.div
+              <m.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -199,7 +199,7 @@ export default function QuiSommesNousPage() {
               >
                 <div className="text-5xl font-bold mb-2">{stat.value}</div>
                 <div className="text-white/80 font-medium">{stat.label}</div>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </div>
@@ -208,7 +208,7 @@ export default function QuiSommesNousPage() {
       {/* Nos Valeurs */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -224,11 +224,11 @@ export default function QuiSommesNousPage() {
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Des principes forts qui définissent notre approche et notre engagement envers vous
             </p>
-          </motion.div>
+          </m.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => (
-              <motion.div
+              <m.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -241,7 +241,7 @@ export default function QuiSommesNousPage() {
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-3">{value.title}</h3>
                 <p className="text-muted-foreground leading-relaxed">{value.description}</p>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </div>
@@ -250,7 +250,7 @@ export default function QuiSommesNousPage() {
       {/* Notre Équipe */}
       <section className="py-20 bg-background/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -266,11 +266,11 @@ export default function QuiSommesNousPage() {
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Une équipe pluridisciplinaire dédiée à la réussite de votre projet
             </p>
-          </motion.div>
+          </m.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {team.map((member, index) => (
-              <motion.div
+              <m.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -284,7 +284,7 @@ export default function QuiSommesNousPage() {
                 <h3 className="text-xl font-bold text-foreground mb-2 text-center">{member.name}</h3>
                 <p className="text-primary-600 dark:text-primary-400 font-semibold text-sm mb-3 text-center">{member.role}</p>
                 <p className="text-muted-foreground text-sm text-center leading-relaxed">{member.description}</p>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </div>
@@ -299,7 +299,7 @@ export default function QuiSommesNousPage() {
             </div>
             
             <div className="relative z-10 grid lg:grid-cols-2 gap-12 items-center">
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -325,9 +325,9 @@ export default function QuiSommesNousPage() {
                   Découvrir BatiPanorama
                   <ArrowLeftIcon className="h-5 w-5 rotate-180" />
                 </Link>
-              </motion.div>
+              </m.div>
 
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -348,7 +348,7 @@ export default function QuiSommesNousPage() {
                   <h3 className="text-xl font-bold mb-2">Suivi de chantier</h3>
                   <p className="text-white/80">Accompagnement et transparence à chaque étape</p>
                 </div>
-              </motion.div>
+              </m.div>
             </div>
           </div>
         </div>
@@ -357,7 +357,7 @@ export default function QuiSommesNousPage() {
       {/* CTA Final */}
       <section className="py-20 bg-background/50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -382,7 +382,7 @@ export default function QuiSommesNousPage() {
                 Nous contacter
               </Link>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </section>
     </div>

@@ -101,6 +101,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Mobile overlay */}
         {sidebarOpen && (
           <div
+            aria-hidden="true"
             className="fixed inset-0 z-20 bg-black/50 lg:hidden"
             onClick={() => setSidebarOpen(false)}
           />

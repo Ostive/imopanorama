@@ -143,7 +143,8 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
 
       {/* Lightbox */}
       {lightboxOpen && selectedImage && (
-        <div 
+        <div
+          aria-hidden="true"
           className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center"
           onClick={closeLightbox}
           onTouchStart={handleTouchStart}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { fetchWithTimeout } from '@/shared/utils/fetchWithTimeout';
 
 type Partner = {
@@ -110,14 +110,14 @@ export default function LogoMarquee() {
       <div className="absolute inset-0 bg-grid-gray-100/50 mask-[radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
           className="text-center mb-20"
         >
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -128,7 +128,7 @@ export default function LogoMarquee() {
               <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
             </svg>
             Nos Partenaires
-          </motion.div>
+          </m.div>
           
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
             Ils nous font{' '}
@@ -140,7 +140,7 @@ export default function LogoMarquee() {
           <p className="text-gray-600 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
             Des leaders mondiaux de la construction et de l'ingénierie nous font confiance pour leurs projets à Madagascar
           </p>
-        </motion.div>
+        </m.div>
 
         {/* Marquee Container */}
         <div className="relative">
@@ -150,7 +150,7 @@ export default function LogoMarquee() {
 
           {/* Marquee with enhanced styling */}
           <div className="flex overflow-hidden py-8">
-            <motion.div
+            <m.div
               className="flex gap-20 items-center"
               animate={{
                 x: [0, -1920],
@@ -165,7 +165,7 @@ export default function LogoMarquee() {
               }}
             >
               {duplicatedPartners.map((partner, index) => (
-                <motion.div
+                <m.div
                   key={`${partner.id}-${index}`}
                   whileHover={{ scale: 1.15, y: -5 }}
                   className="shrink-0 w-65 h-37.5 bg-white/80 backdrop-blur-sm border border-gray-200/60 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 p-10 flex items-center justify-center group cursor-pointer"
@@ -179,14 +179,14 @@ export default function LogoMarquee() {
                       className="object-contain filter grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
                     />
                   </div>
-                </motion.div>
+                </m.div>
               ))}
-            </motion.div>
+            </m.div>
           </div>
         </div>
 
         {/* Trust indicators */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -210,7 +210,7 @@ export default function LogoMarquee() {
               </span>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

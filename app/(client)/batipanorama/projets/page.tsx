@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -60,31 +60,31 @@ export default function ProjectsPage() {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <motion.div
+            <m.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
               className="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium mb-6"
             >
               🏝️ Portfolio BatiPanorama
-            </motion.div>
+            </m.div>
             <h1 className="text-5xl md:text-6xl font-bold mb-6">Nos Réalisations</h1>
             <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto">
               Découvrez nos projets réalisés à Madagascar et dans l&apos;Océan Indien,
               témoignant de notre expertise et de notre engagement pour la qualité.
             </p>
-          </motion.div>
+          </m.div>
         </div>
       </div>
 
       {/* Category Filter */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -96,7 +96,7 @@ export default function ProjectsPage() {
           </div>
           <div className="flex flex-wrap gap-3">
             {categories.map((category, index) => (
-              <motion.button
+              <m.button
                 key={category.id}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -110,13 +110,13 @@ export default function ProjectsPage() {
                   }`}
               >
                 {category.label}
-              </motion.button>
+              </m.button>
             ))}
           </div>
           <div className="mt-4 text-sm text-muted-foreground">
             <span className="font-semibold text-primary-600 dark:text-primary-400">{filteredProjects.length}</span> projet{filteredProjects.length > 1 ? 's' : ''} trouvé{filteredProjects.length > 1 ? 's' : ''}
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Projects Grid */}
         {isLoading ? (
@@ -139,18 +139,18 @@ export default function ProjectsPage() {
         ) : filteredProjects.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProjects.map((project: Project, index: number) => (
-              <motion.div
+              <m.div
                 key={project.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 * index, duration: 0.5 }}
               >
                 <ProjectCard project={project} />
-              </motion.div>
+              </m.div>
             ))}
           </div>
         ) : (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="bg-card rounded-3xl shadow-xl p-12 text-center"
@@ -164,7 +164,7 @@ export default function ProjectsPage() {
                 Aucun projet ne correspond à cette catégorie.
               </p>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </div>
     </div>
@@ -194,7 +194,7 @@ function ProjectCard({ project }: { project: Project }) {
       href={`/batipanorama/projet/${project.id}`}
       className="group block"
     >
-      <motion.div
+      <m.div
         whileHover={{ y: -8 }}
         className="bg-card rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all h-full"
       >
@@ -252,15 +252,15 @@ function ProjectCard({ project }: { project: Project }) {
                 </span>
               )}
             </div>
-            <motion.div
+            <m.div
               className="flex items-center gap-1 text-primary-600 dark:text-primary-400 font-semibold text-sm group-hover:gap-2 transition-all"
             >
               Voir
               <ArrowRightIcon className="w-4 h-4" />
-            </motion.div>
+            </m.div>
           </div>
         </div>
-      </motion.div>
+      </m.div>
     </Link>
   );
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import {
   Squares2X2Icon,
   HomeIcon,
@@ -69,7 +69,7 @@ export default function PropertyFilterDrawer({
     <AnimatePresence>
       {open && (
         <>
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -78,7 +78,7 @@ export default function PropertyFilterDrawer({
             className="fixed inset-0 bg-black/50 z-[2500]"
           />
 
-          <motion.div
+          <m.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
@@ -108,10 +108,10 @@ export default function PropertyFilterDrawer({
             <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
               {/* 1. Transaction Type */}
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
                   <ShoppingBagIcon className="h-4 w-4 text-primary-500" />
                   Type de transaction
-                </label>
+                </p>
                 <Select
                   value={filters.transactionType || 'all'}
                   onValueChange={value =>
@@ -133,10 +133,10 @@ export default function PropertyFilterDrawer({
               {/* 2. Market */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
                     <MapPinIcon className="h-4 w-4 text-primary-500" />
                     Pays / marche
-                  </label>
+                  </p>
                   <Select
                     value={filters.country || 'all'}
                     onValueChange={value => onChange({ country: value === 'all' ? '' : value })}
@@ -154,11 +154,12 @@ export default function PropertyFilterDrawer({
                 </div>
 
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <label htmlFor="filter-region" className="flex items-center gap-2 text-sm font-semibold text-foreground">
                     <MapPinIcon className="h-4 w-4 text-primary-500" />
                     Region
                   </label>
                   <input
+                    id="filter-region"
                     type="text"
                     value={filters.region}
                     onChange={e => onChange({ region: e.target.value })}
@@ -170,13 +171,14 @@ export default function PropertyFilterDrawer({
 
               {/* 3. City */}
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                <label htmlFor="filter-city" className="flex items-center gap-2 text-sm font-semibold text-foreground">
                   <MapPinIcon className="h-4 w-4 text-primary-500" />
                   Ville ou quartier
                 </label>
                 <div className="relative">
                   <MapPinIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
                   <input
+                    id="filter-city"
                     type="text"
                     value={filters.city}
                     onChange={e => onChange({ city: e.target.value })}
@@ -196,13 +198,14 @@ export default function PropertyFilterDrawer({
 
               {/* 3. Price Range */}
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
                   <BanknotesIcon className="h-4 w-4 text-primary-500" />
                   Budget souhaite ({activeMarket.currency})
-                </label>
+                </p>
                 <div className="flex gap-2">
                   <div className="relative flex-1">
                     <input
+                      aria-label="Prix minimum"
                       type="number"
                       value={filters.minPrice}
                       onChange={e => onChange({ minPrice: e.target.value })}
@@ -215,6 +218,7 @@ export default function PropertyFilterDrawer({
                   </div>
                   <div className="relative flex-1">
                     <input
+                      aria-label="Prix maximum"
                       type="number"
                       value={filters.maxPrice}
                       onChange={e => onChange({ maxPrice: e.target.value })}
@@ -230,13 +234,14 @@ export default function PropertyFilterDrawer({
 
               {/* 4. Size Range */}
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
                   <MapIcon className="h-4 w-4 text-primary-500" />
                   Surface recherchée
-                </label>
+                </p>
                 <div className="flex gap-2">
                   <div className="relative flex-1">
                     <input
+                      aria-label="Surface minimum"
                       type="number"
                       value={filters.minSize}
                       onChange={e => onChange({ minSize: e.target.value })}
@@ -249,6 +254,7 @@ export default function PropertyFilterDrawer({
                   </div>
                   <div className="relative flex-1">
                     <input
+                      aria-label="Surface maximum"
                       type="number"
                       value={filters.maxSize}
                       onChange={e => onChange({ maxSize: e.target.value })}
@@ -265,12 +271,13 @@ export default function PropertyFilterDrawer({
               {/* 5. Bedrooms */}
               {applicability.bedrooms && (
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
                     <HomeIcon className="h-4 w-4 text-primary-500" />
                     Chambres (Min - Max)
-                  </label>
+                  </p>
                   <div className="flex gap-2">
                     <input
+                      aria-label="Chambres minimum"
                       type="number"
                       value={filters.minBedrooms}
                       onChange={e => onChange({ minBedrooms: e.target.value })}
@@ -279,6 +286,7 @@ export default function PropertyFilterDrawer({
                       className={FIELD_BASE}
                     />
                     <input
+                      aria-label="Chambres maximum"
                       type="number"
                       value={filters.maxBedrooms}
                       onChange={e => onChange({ maxBedrooms: e.target.value })}
@@ -293,11 +301,12 @@ export default function PropertyFilterDrawer({
               {/* 6. Bathrooms */}
               {applicability.bathrooms && (
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <label htmlFor="filter-min-bathrooms" className="flex items-center gap-2 text-sm font-semibold text-foreground">
                     <SparklesIcon className="h-4 w-4 text-primary-500" />
                     Salles de bain minimum
                   </label>
                   <input
+                    id="filter-min-bathrooms"
                     type="number"
                     value={filters.minBathrooms}
                     onChange={e => onChange({ minBathrooms: e.target.value })}
@@ -311,11 +320,12 @@ export default function PropertyFilterDrawer({
               {/* 7. Rooms */}
               {applicability.rooms && (
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <label htmlFor="filter-min-rooms" className="flex items-center gap-2 text-sm font-semibold text-foreground">
                     <Squares2X2Icon className="h-4 w-4 text-primary-500" />
                     Nombre de pièces minimum
                   </label>
                   <input
+                    id="filter-min-rooms"
                     type="number"
                     value={filters.minRooms}
                     onChange={e => onChange({ minRooms: e.target.value })}
@@ -329,12 +339,13 @@ export default function PropertyFilterDrawer({
               {/* 8. Floor */}
               {applicability.floor && (
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
                     <BuildingLibraryIcon className="h-4 w-4 text-primary-500" />
                     Étage (Min - Max)
-                  </label>
+                  </p>
                   <div className="flex gap-2">
                     <input
+                      aria-label="Étage minimum"
                       type="number"
                       value={filters.minFloor}
                       onChange={e => onChange({ minFloor: e.target.value })}
@@ -343,6 +354,7 @@ export default function PropertyFilterDrawer({
                       className={FIELD_BASE}
                     />
                     <input
+                      aria-label="Étage maximum"
                       type="number"
                       value={filters.maxFloor}
                       onChange={e => onChange({ maxFloor: e.target.value })}
@@ -357,12 +369,13 @@ export default function PropertyFilterDrawer({
               {/* 9. Year Built */}
               {applicability.yearBuilt && (
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
                     <CalendarIcon className="h-4 w-4 text-primary-500" />
                     Année de construction
-                  </label>
+                  </p>
                   <div className="flex gap-2">
                     <input
+                      aria-label="Année de construction depuis"
                       type="number"
                       value={filters.minYearBuilt}
                       onChange={e => onChange({ minYearBuilt: e.target.value })}
@@ -372,6 +385,7 @@ export default function PropertyFilterDrawer({
                       className={FIELD_BASE}
                     />
                     <input
+                      aria-label="Année de construction jusqu'à"
                       type="number"
                       value={filters.maxYearBuilt}
                       onChange={e => onChange({ maxYearBuilt: e.target.value })}
@@ -387,10 +401,10 @@ export default function PropertyFilterDrawer({
               {/* 10. Condition */}
               {applicability.condition && (
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
                     <WrenchScrewdriverIcon className="h-4 w-4 text-primary-500" />
                     État souhaité
-                  </label>
+                  </p>
                   <Select
                     value={filters.condition || 'all'}
                     onValueChange={value => onChange({ condition: value === 'all' ? '' : value })}
@@ -413,10 +427,10 @@ export default function PropertyFilterDrawer({
               {/* 11. Amenities */}
               {applicability.amenities && (
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
                     <SparklesIcon className="h-4 w-4 text-primary-500" />
                     Équipements souhaités
-                  </label>
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     {COMMON_AMENITIES.map(amenity => {
                       const selected = filters.selectedAmenities.includes(amenity.value)
@@ -456,7 +470,7 @@ export default function PropertyFilterDrawer({
                 Voir les biens {total > 0 && `(${total})`}
               </button>
             </div>
-          </motion.div>
+          </m.div>
         </>
       )}
     </AnimatePresence>

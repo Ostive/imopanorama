@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useUsers } from '@/features/users/hooks/useUsers';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/shared/components/ui/dropdown-menu';
 import { useReactTable, getCoreRowModel, getSortedRowModel, createColumnHelper, flexRender, SortingState } from '@tanstack/react-table';
@@ -159,7 +159,7 @@ export default function AdminUsersPage() {
         <button type="button"
           onClick={() => handleToggleStatus(row.original.id, row.original.isActive)}
           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${row.original.isActive ? 'bg-green-600 focus:ring-green-500' : 'bg-gray-300 dark:bg-gray-600 focus:ring-gray-400'}`}
-          title={row.original.isActive ? 'Cliquez pour désactiver' : 'Cliquez pour activer'}
+          aria-label={row.original.isActive ? 'Cliquez pour désactiver' : 'Cliquez pour activer'}
         >
           <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${row.original.isActive ? 'translate-x-6' : 'translate-x-1'}`} />
         </button>
@@ -259,9 +259,9 @@ export default function AdminUsersPage() {
             loading={isFetching}
             actions={
               <Link href="/admin/users/new">
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="inline-flex items-center px-6 py-2 bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold rounded-xl transition-all shadow-lg">
+                <m.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="inline-flex items-center px-6 py-2 bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold rounded-xl transition-all shadow-lg">
                   <PlusIcon className="h-5 w-5 mr-2" /> Nouvel utilisateur
-                </motion.div>
+                </m.div>
               </Link>
             }
           />
@@ -281,7 +281,7 @@ export default function AdminUsersPage() {
           </div>
 
           {/* Filters */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card rounded-2xl shadow-lg p-6 mb-6 border border-border">
+          <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card rounded-2xl shadow-lg p-6 mb-6 border border-border">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <FunnelIcon className="w-5 h-5 text-muted-foreground" />
@@ -298,7 +298,7 @@ export default function AdminUsersPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="relative">
                 <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <input type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="Nom, email, entreprise..."
+                <input aria-label="Rechercher un utilisateur" type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="Nom, email, entreprise..."
                   className="w-full pl-10 pr-10 h-10 border border-border rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" />
                 {searchInput && (
                   <button type="button" onClick={() => setSearchInput('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300">
@@ -327,10 +327,10 @@ export default function AdminUsersPage() {
                 ]}
               />
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Table */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-2xl shadow-lg overflow-hidden">
+          <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-2xl shadow-lg overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-muted/50">
@@ -369,7 +369,7 @@ export default function AdminUsersPage() {
               onPageChange={(page) => setSearchParams(prev => ({ ...prev, page }))}
               onLimitChange={(limit) => setSearchParams(prev => ({ ...prev, limit, page: 1 }))}
             />
-          </motion.div>
+          </m.div>
 
         </div>
       </div>

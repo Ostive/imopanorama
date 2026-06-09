@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { DocumentTextIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import 'swagger-ui-react/swagger-ui.css';
@@ -35,7 +35,7 @@ export default function ApiDocsPage() {
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 gap-4"
@@ -61,17 +61,17 @@ export default function ApiDocsPage() {
             <ArrowLeftIcon className="h-5 w-5 mr-2" />
             Retour au dashboard
           </Link>
-        </motion.div>
+        </m.div>
 
         {/* Swagger UI */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
         >
           <SwaggerUI url="/swagger.json" />
-        </motion.div>
+        </m.div>
       </div>
     </div>
   );

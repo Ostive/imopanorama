@@ -263,9 +263,15 @@ export default function FaqForm({ initialData, onSubmit, isSubmitting, colorPale
           ) : (
             <div className="flex w-full">
               <div className="relative" style={{ minWidth: '200px', maxWidth: '300px' }} ref={dropdownRef}>
-                <div 
+                <div
+                  role="combobox"
+                  tabIndex={0}
+                  aria-expanded={isDropdownOpen}
+                  aria-haspopup="listbox"
+                  aria-controls="faq-category-listbox"
                   className={`w-full px-3 py-2 border border-${currentPalette.secondary}-300 rounded-l-md shadow-sm focus:outline-none focus:ring-${currentPalette.primary}-500 focus:border-${currentPalette.primary}-500 cursor-pointer flex justify-between items-center`}
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setIsDropdownOpen(prev => !prev); } }}
                 >
                   <span>{formData.category.charAt(0).toUpperCase() + formData.category.slice(1)}</span>
                   <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -273,26 +279,30 @@ export default function FaqForm({ initialData, onSubmit, isSubmitting, colorPale
                   </svg>
                 </div>
                 {isDropdownOpen && (
-                  <div 
+                  <div
+                    id="faq-category-listbox"
+                    role="listbox"
                     className={`absolute z-10 mt-1 w-full bg-${currentPalette.background} border border-${currentPalette.secondary}-300 rounded-md shadow-lg max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-${currentPalette.secondary}-300`}
                   >
-                    <div 
+                    <div
+                      role="option"
+                      tabIndex={0}
+                      aria-selected={formData.category === 'general'}
                       className={`px-3 py-2 hover:bg-${currentPalette.primary}-50 cursor-pointer`}
-                      onClick={() => {
-                        handleCategorySelect('general');
-                        setIsDropdownOpen(false);
-                      }}
+                      onClick={() => { handleCategorySelect('general'); setIsDropdownOpen(false); }}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCategorySelect('general'); setIsDropdownOpen(false); } }}
                     >
                       Général
                     </div>
                     {categories.filter((cat: string) => cat !== 'general').map((category: string) => (
-                      <div 
-                        key={category} 
+                      <div
+                        key={category}
+                        role="option"
+                        tabIndex={0}
+                        aria-selected={formData.category === category}
                         className={`px-3 py-2 hover:bg-${currentPalette.primary}-50 cursor-pointer`}
-                        onClick={() => {
-                          handleCategorySelect(category);
-                          setIsDropdownOpen(false);
-                        }}
+                        onClick={() => { handleCategorySelect(category); setIsDropdownOpen(false); }}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCategorySelect(category); setIsDropdownOpen(false); } }}
                       >
                         {category.charAt(0).toUpperCase() + category.slice(1)}
                       </div>
@@ -316,10 +326,13 @@ export default function FaqForm({ initialData, onSubmit, isSubmitting, colorPale
             <p className={`text-xs font-medium text-${currentPalette.text}-500 mb-1`}>Catégories disponibles:</p>
             <div className="flex flex-wrap gap-1">
               {categories.map((category) => (
-                <span 
-                  key={category} 
+                <span
+                  key={category}
+                  role="button"
+                  tabIndex={0}
                   className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-${currentPalette.secondary}-100 text-${currentPalette.text}-800 cursor-pointer hover:bg-${currentPalette.primary}-100`}
                   onClick={() => setFormData(prev => ({ ...prev, category }))}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFormData(prev => ({ ...prev, category })); } }}
                 >
                   {category.charAt(0).toUpperCase() + category.slice(1)}
                 </span>

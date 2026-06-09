@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import Link from 'next/link';
 import {
   Cog6ToothIcon,
@@ -248,7 +248,7 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-4"
@@ -268,11 +268,11 @@ export default function SettingsPage() {
           >
             <ArrowLeftIcon className="h-5 w-5 mr-2" /> Retour
           </Link>
-        </motion.div>
+        </m.div>
 
         <div className="flex gap-8">
           {/* Sidebar */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="w-64 shrink-0"
@@ -282,7 +282,7 @@ export default function SettingsPage() {
                 {TABS.map((tab) => {
                   const Icon = tab.icon;
                   return (
-                    <motion.button
+                    <m.button
                       key={tab.id}
                       whileHover={{ x: 4 }}
                       onClick={() => setActiveTab(tab.id)}
@@ -294,15 +294,15 @@ export default function SettingsPage() {
                     >
                       <Icon className="h-5 w-5" />
                       {tab.name}
-                    </motion.button>
+                    </m.button>
                   );
                 })}
               </nav>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Content */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -315,14 +315,14 @@ export default function SettingsPage() {
                 {/* Save Button */}
                 <div className="mt-8 pt-6 border-t border-border">
                   <div className="flex justify-end gap-3">
-                    <motion.button
+                    <m.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       className="px-6 py-2 text-foreground bg-muted hover:bg-gray-200 dark:hover:bg-gray-700 font-semibold rounded-xl transition-all"
                     >
                       Annuler
-                    </motion.button>
-                    <motion.button
+                    </m.button>
+                    <m.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={handleSave}
@@ -340,12 +340,12 @@ export default function SettingsPage() {
                       ) : (
                         'Sauvegarder dans la base de données'
                       )}
-                    </motion.button>
+                    </m.button>
                   </div>
                 </div>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </div>

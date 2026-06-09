@@ -24,8 +24,9 @@ export function HomepageTab({ settings, onChange }: HomepageTabProps) {
           <h4 className="font-semibold text-gray-900 mb-4">Section Héro</h4>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Titre principal</label>
+              <label htmlFor="homepage-hero-title" className="block text-sm font-medium text-gray-700 mb-2">Titre principal</label>
               <input
+                id="homepage-hero-title"
                 type="text"
                 value={settings.heroTitle}
                 onChange={(e) => onChange('homepage', 'heroTitle', e.target.value)}
@@ -34,8 +35,9 @@ export function HomepageTab({ settings, onChange }: HomepageTabProps) {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Sous-titre</label>
+              <label htmlFor="homepage-hero-subtitle" className="block text-sm font-medium text-gray-700 mb-2">Sous-titre</label>
               <input
+                id="homepage-hero-subtitle"
                 type="text"
                 value={settings.heroSubtitle}
                 onChange={(e) => onChange('homepage', 'heroSubtitle', e.target.value)}
@@ -52,7 +54,7 @@ export function HomepageTab({ settings, onChange }: HomepageTabProps) {
                 <h4 className="font-medium text-gray-900">{toggle.label}</h4>
                 <p className="text-sm text-gray-500">{toggle.description}</p>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
+              <label aria-label={toggle.label} className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
                   checked={Boolean(settings[toggle.key as keyof HomepageSettings])}
@@ -64,8 +66,9 @@ export function HomepageTab({ settings, onChange }: HomepageTabProps) {
             </div>
           ))}
           <div className="p-4 bg-gray-50 rounded-lg">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Nombre de propriétés en vedette</label>
+            <label htmlFor="homepage-featured-count" className="block text-sm font-medium text-gray-700 mb-2">Nombre de propriétés en vedette</label>
             <input
+              id="homepage-featured-count"
               type="number"
               min="3"
               max="12"

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import Link from 'next/link'
 import { PageSkeleton } from '@/shared/components/loading';
 import Image from 'next/image';
@@ -175,7 +175,7 @@ export default function PartnersAdminPage() {
       <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
         <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <motion.div 
+        <m.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-4"
@@ -196,7 +196,7 @@ export default function PartnersAdminPage() {
             <PlusIcon className="h-5 w-5 mr-2" />
             Ajouter un partenaire
           </button>
-        </motion.div>
+        </m.div>
 
         {/* Liste des partenaires */}
         {isLoading ? (
@@ -208,7 +208,7 @@ export default function PartnersAdminPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {partners.map((partner) => (
-              <motion.div
+              <m.div
                 key={partner.id}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -272,7 +272,7 @@ export default function PartnersAdminPage() {
                     </button>
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         )}
@@ -280,7 +280,7 @@ export default function PartnersAdminPage() {
         {/* Modal */}
         {showModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <motion.div
+            <m.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
@@ -293,10 +293,11 @@ export default function PartnersAdminPage() {
               
               <form onSubmit={handleSubmit} className="p-6 space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="partner-name" className="block text-sm font-medium text-gray-700 mb-2">
                     Nom du partenaire <span className="text-red-500">*</span>
                   </label>
                   <input
+                    id="partner-name"
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -306,9 +307,9 @@ export default function PartnersAdminPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <p className="block text-sm font-medium text-gray-700 mb-2">
                     Logo <span className="text-red-500">*</span>
-                  </label>
+                  </p>
                   <ImageUploader
                     onImageUploaded={(url) => setFormData({ ...formData, logo: url })}
                     initialImage={formData.logo}
@@ -318,10 +319,11 @@ export default function PartnersAdminPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="partner-website" className="block text-sm font-medium text-gray-700 mb-2">
                     Site web
                   </label>
                   <input
+                    id="partner-website"
                     type="url"
                     value={formData.website}
                     onChange={(e) => setFormData({ ...formData, website: e.target.value })}
@@ -331,10 +333,11 @@ export default function PartnersAdminPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="partner-description" className="block text-sm font-medium text-gray-700 mb-2">
                     Description
                   </label>
                   <textarea
+                    id="partner-description"
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     rows={3}
@@ -345,10 +348,11 @@ export default function PartnersAdminPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="partner-order" className="block text-sm font-medium text-gray-700 mb-2">
                       Ordre d&apos;affichage
                     </label>
                     <input
+                      id="partner-order"
                       type="number"
                       value={formData.order}
                       onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })}
@@ -358,9 +362,9 @@ export default function PartnersAdminPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <p className="block text-sm font-medium text-gray-700 mb-2">
                       Statut
-                    </label>
+                    </p>
                     <Select
                       value={formData.isActive ? 'active' : 'inactive'}
                       onValueChange={(value) => setFormData({ ...formData, isActive: value === 'active' })}
@@ -394,7 +398,7 @@ export default function PartnersAdminPage() {
                   </button>
                 </div>
               </form>
-            </motion.div>
+            </m.div>
           </div>
         )}
         </div>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from '@/infrastructure/auth/auth-client';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -96,7 +96,7 @@ export default function LoginNewPage() {
 
         {/* Content */}
         <div className="relative z-10 flex flex-col justify-center items-center w-full p-12">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
@@ -130,7 +130,7 @@ export default function LoginNewPage() {
                 <div className="text-sm text-white/80 uppercase tracking-wider">Années</div>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
 
@@ -151,7 +151,7 @@ export default function LoginNewPage() {
           </svg>
         </Link>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
@@ -178,24 +178,25 @@ export default function LoginNewPage() {
 
             {/* Error Message */}
             {error && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-400 text-sm"
               >
                 {error}
-              </motion.div>
+              </m.div>
             )}
 
             {/* Email/Password Form */}
             <form onSubmit={handleEmailSignIn} className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">
+                <label htmlFor="login-email" className="block text-sm font-semibold text-foreground mb-2">
                   Email
                 </label>
                 <div className="relative group">
                   <EnvelopeIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 transition-colors" />
                   <input
+                    id="login-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -207,12 +208,13 @@ export default function LoginNewPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-foreground mb-2">
+                <label htmlFor="login-password" className="block text-sm font-semibold text-foreground mb-2">
                   Mot de passe
                 </label>
                 <div className="relative group">
                   <LockClosedIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 transition-colors" />
                   <input
+                    id="login-password"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -242,7 +244,7 @@ export default function LoginNewPage() {
                 </div>
               </div>
 
-              <motion.button
+              <m.button
                 whileHover={{ scale: 1.02, boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)" }}
                 whileTap={{ scale: 0.98 }}
                 type="submit"
@@ -257,7 +259,7 @@ export default function LoginNewPage() {
                     <ArrowRightIcon className="h-5 w-5" />
                   </>
                 )}
-              </motion.button>
+              </m.button>
             </form>
 
             {/* Divider */}
@@ -274,7 +276,7 @@ export default function LoginNewPage() {
 
             {/* OAuth Buttons */}
             <div className="space-y-3">
-              <motion.button
+              <m.button
                 whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)" }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleGoogleSignIn}
@@ -300,7 +302,7 @@ export default function LoginNewPage() {
                   />
                 </svg>
                 Continuer avec Google
-              </motion.button>
+              </m.button>
 
               {/* OAuth Info */}
               <p className="text-xs text-center text-muted-foreground px-4">
@@ -310,7 +312,7 @@ export default function LoginNewPage() {
 
             {/* Test Users - Development Only */}
             {process.env.NODE_ENV === 'development' && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
@@ -388,7 +390,7 @@ export default function LoginNewPage() {
                     Utilisateur
                   </button>
                 </div>
-              </motion.div>
+              </m.div>
             )}
 
             {/* Footer */}
@@ -402,7 +404,7 @@ export default function LoginNewPage() {
               </Link>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </div>
   );

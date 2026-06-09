@@ -69,6 +69,7 @@ export default function FaqFilter({ onFilterChange, initialFilters = {} }: FaqFi
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Rechercher..."
+            aria-label="Rechercher une question"
             className="flex-grow px-4 py-3 rounded-l-lg bg-gray-50 dark:bg-gray-700 border border-border text-foreground placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
           />
           <button

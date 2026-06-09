@@ -8,7 +8,7 @@ import { updatePropertyEmbedding } from './repository'
  * Property fields that contribute to the embedding text.
  * If a property update doesn't touch any of these, we skip re-embedding.
  */
-export const EMBEDDABLE_FIELDS = new Set([
+const EMBEDDABLE_FIELDS = new Set([
   'title', 'description',
   'propertyType', 'transactionType',
   'city', 'location', 'address',
@@ -23,7 +23,7 @@ export const EMBEDDABLE_FIELDS = new Set([
  * Swallows errors (logs them) — the property write itself must not fail
  * because semantic search is degraded.
  */
-export async function syncPropertyEmbedding(propertyId: string): Promise<void> {
+async function syncPropertyEmbedding(propertyId: string): Promise<void> {
   try {
     const property = await prisma.property.findUnique({ where: { id: propertyId } })
     if (!property) return

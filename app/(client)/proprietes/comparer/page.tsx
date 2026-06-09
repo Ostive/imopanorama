@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { Property, PROPERTY_TYPE_LABELS, PROPERTY_CONDITION_LABELS } from '@/features/properties/types'
 import { formatPrice } from '@/shared/utils'
 import { useImageFallback } from '@/shared/hooks/useImageFallback'
@@ -193,7 +193,7 @@ function ComparerInner() {
         </nav>
 
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+        <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-primary-100 dark:bg-primary-900/30 rounded-xl">
               <ArrowsRightLeftIcon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
@@ -201,7 +201,7 @@ function ComparerInner() {
             <h1 className="text-3xl font-black text-foreground">Comparateur de propriétés</h1>
           </div>
           <p className="text-muted-foreground">Comparez jusqu'à 4 propriétés côte à côte</p>
-        </motion.div>
+        </m.div>
 
         {loading && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -221,7 +221,7 @@ function ComparerInner() {
         )}
 
         {!loading && properties.length > 0 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
+          <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
             {/* Comparison grid */}
             <div className="overflow-x-auto rounded-2xl border border-border shadow-xl bg-card">
               <div className="min-w-120">
@@ -324,7 +324,7 @@ function ComparerInner() {
                 <Link href="/proprietes">Ajouter une propriété</Link>
               </Button>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </div>
     </div>

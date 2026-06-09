@@ -164,11 +164,14 @@ export const MultipleImageUploader = forwardRef<MultipleImageUploaderHandle, Mul
     <div className={className}>
       {/* Drop Zone */}
       <div
+        role="button"
+        tabIndex={0}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
         onClick={handleAddClick}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleAddClick(); } }}
         className={`
           relative mb-4 border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all
           ${isDragging
@@ -185,6 +188,8 @@ export const MultipleImageUploader = forwardRef<MultipleImageUploaderHandle, Mul
           onChange={handleFileChange}
           ref={fileInputRef}
           className="hidden"
+          aria-label="Sélectionner des images"
+          tabIndex={-1}
         />
 
         <div className="flex flex-col items-center gap-2 py-2">

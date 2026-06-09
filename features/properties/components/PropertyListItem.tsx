@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Property } from '../types'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import {
   MapPinIcon,
   ArrowsPointingOutIcon,
@@ -72,7 +72,7 @@ export default function PropertyListItem({
   }
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className="group bg-card rounded-2xl shadow-sm hover:shadow-lg transition-all duration-200 border border-border overflow-hidden"
@@ -131,7 +131,7 @@ export default function PropertyListItem({
                 </span>
               )}
             </div>
-            <motion.button
+            <m.button
               onClick={handleFavorite}
               whileTap={{ scale: 0.85 }}
               className="shrink-0 p-1.5 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
@@ -141,7 +141,7 @@ export default function PropertyListItem({
                 ? <HeartSolidIcon className="w-4 h-4 text-red-500" />
                 : <HeartIcon className="w-4 h-4 text-gray-500" />
               }
-            </motion.button>
+            </m.button>
           </div>
 
           {/* Title */}
@@ -204,17 +204,17 @@ export default function PropertyListItem({
                 </span>
               )}
             </div>
-            <motion.div
+            <m.div
               whileHover={{ x: 4 }}
               className="shrink-0 bg-primary-600 hover:bg-primary-700 text-white p-2 sm:px-4 sm:py-2.5 rounded-xl flex items-center gap-1.5 transition-colors shadow-sm"
             >
               <span className="hidden sm:inline text-sm font-semibold">Voir</span>
               <ChevronRightIcon className="w-4 h-4" />
-            </motion.div>
+            </m.div>
           </div>
         </div>
 
       </Link>
-    </motion.div>
+    </m.div>
   )
 }

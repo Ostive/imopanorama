@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/features/auth/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import PropertyCard from '@/features/properties/components/PropertyCard';
 import { HeartIcon, ExclamationTriangleIcon, ArrowPathIcon, SparklesIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
@@ -131,20 +131,20 @@ export default function FavorisPage() {
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-red-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-red-950/20 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* En-tête amélioré */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-12"
         >
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
-              <motion.div
+              <m.div
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
                 className="bg-linear-to-br from-red-500 to-pink-600 rounded-2xl p-4 mr-4 shadow-lg"
               >
                 <HeartSolidIcon className="h-8 w-8 text-white" />
-              </motion.div>
+              </m.div>
               <div>
                 <h1 className="text-4xl font-bold bg-linear-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
                   Mes Favoris
@@ -156,7 +156,7 @@ export default function FavorisPage() {
             </div>
 
             {favorites.length > 0 && (
-              <motion.div
+              <m.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 className="bg-card rounded-2xl shadow-lg px-6 py-3 border-2 border-red-200 dark:border-red-800"
@@ -167,13 +167,13 @@ export default function FavorisPage() {
                     {favorites.length === 1 ? 'Favori' : 'Favoris'}
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             )}
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Carte d'accueil utilisateur */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -207,12 +207,12 @@ export default function FavorisPage() {
               </Link>
             )}
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Liste des favoris */}
         {favorites.length > 0 ? (
           <>
-            <motion.div
+            <m.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
@@ -222,7 +222,7 @@ export default function FavorisPage() {
                 <h2 className="text-2xl font-bold text-foreground">Vos Terrains Favoris</h2>
                 <p className="text-muted-foreground mt-1">{favorites.length} terrain{favorites.length !== 1 ? 's' : ''} sauvegardé{favorites.length !== 1 ? 's' : ''}</p>
               </div>
-              <motion.button
+              <m.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => {
@@ -235,12 +235,12 @@ export default function FavorisPage() {
               >
                 <TrashIcon className="h-5 w-5" />
                 <span className="hidden sm:inline">Vider tout</span>
-              </motion.button>
-            </motion.div>
+              </m.button>
+            </m.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {favorites.map((favorite: any, index: number) => (
-                <motion.div
+                <m.div
                   key={favorite.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -249,7 +249,7 @@ export default function FavorisPage() {
                 >
                   <PropertyCard property={favorite.property} variant="featured" />
                   {/* Bouton pour retirer des favoris */}
-                  <motion.button
+                  <m.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => removeFavorite(favorite.propertyId)}
@@ -257,20 +257,20 @@ export default function FavorisPage() {
                     title="Retirer des favoris"
                   >
                     <HeartSolidIcon className="h-5 w-5 text-red-500" />
-                  </motion.button>
-                </motion.div>
+                  </m.button>
+                </m.div>
               ))}
             </div>
           </>
 
         ) : (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
             className="bg-card rounded-3xl shadow-xl p-16 text-center"
           >
-            <motion.div
+            <m.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
               className="mb-8"
@@ -278,7 +278,7 @@ export default function FavorisPage() {
               <div className="bg-linear-to-br from-red-100 to-pink-100 dark:from-red-900/30 dark:to-pink-900/30 rounded-full p-8 inline-block mb-6">
                 <HeartIcon className="h-20 w-20 text-red-400 dark:text-red-300" />
               </div>
-            </motion.div>
+            </m.div>
 
             <h3 className="text-3xl font-bold text-foreground mb-4">
               Aucun favori pour le moment
@@ -310,12 +310,12 @@ export default function FavorisPage() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         )}
 
         {/* Actions en bas de page */}
         {favorites.length > 0 && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
@@ -328,7 +328,7 @@ export default function FavorisPage() {
               <SparklesIcon className="h-5 w-5" />
               Découvrir nos propriétés
             </Link>
-          </motion.div>
+          </m.div>
         )}
       </div>
     </div>

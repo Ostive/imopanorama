@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { SparklesIcon, MapPinIcon, ShieldCheckIcon, MagnifyingGlassIcon, CurrencyDollarIcon, KeyIcon, HomeIcon, BanknotesIcon, ChevronDownIcon, CheckIcon } from '@heroicons/react/24/outline'
 import { Checkbox } from "@/shared/components/ui/checkbox"
 import { Label } from "@/shared/components/ui/label"
@@ -65,7 +65,7 @@ export default function Hero() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-8 relative z-10 w-full">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 relative">
           {/* Content */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
@@ -76,7 +76,7 @@ export default function Hero() {
               {/* Mobile Header Layout (Side-by-Side) */}
               <div className="flex flex-row items-end justify-between gap-2 lg:block relative z-10 w-full">
                 <div className="w-[60%] lg:w-full flex flex-col gap-4 pb-20 lg:pb-0">
-                  <motion.h1
+                  <m.h1
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3, duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
@@ -92,29 +92,29 @@ export default function Hero() {
                       </svg>
                     </span>
                     {' '}à Madagascar
-                  </motion.h1>
+                  </m.h1>
 
                   {/* Tablet Description (In-flow with title) */}
-                  <motion.p
+                  <m.p
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.45, duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
                     className="hidden md:block lg:hidden text-sm sm:text-base text-muted-foreground leading-relaxed font-medium"
                   >
                     Achat, location ou investissement : on vous aide à avancer sereinement, avec des biens sélectionnés et des conseils clairs à chaque étape.
-                  </motion.p>
-                  <motion.p
+                  </m.p>
+                  <m.p
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5, duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
                     className="hidden lg:block text-lg text-muted-foreground leading-relaxed max-w-2xl"
                   >
                     Achat, location ou investissement : on vous aide à avancer sereinement, avec des biens sélectionnés et des conseils clairs à chaque étape.
-                  </motion.p>
+                  </m.p>
                 </div>
 
                 {/* Mobile Agent Image (Side, overlapping right) */}
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, scale: 0.95, x: 15 }}
                   animate={{ opacity: 1, scale: 1, x: 0 }}
                   transition={{ duration: 1, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
@@ -132,14 +132,14 @@ export default function Hero() {
                       sizes="(max-width: 768px) 200px, 400px"
                     />
                   </div>
-                </motion.div>
+                </m.div>
               </div>
 
 
             </div>
 
             {/* Search Form - Left aligned below text but full width */}
-            <motion.form
+            <m.form
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
@@ -191,6 +191,7 @@ export default function Hero() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Où souhaitez-vous chercher ?"
+                        aria-label="Où souhaitez-vous chercher ?"
                         className="block w-full pl-11 pr-4 py-4 h-full bg-card border border-border rounded-[1.2rem] text-foreground placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium"
                       />
                     </div>
@@ -217,7 +218,7 @@ export default function Hero() {
 
                       <AnimatePresence>
                         {isPropertyTypeOpen && (
-                          <motion.div
+                          <m.div
                             initial={{ opacity: 0, y: 8, scale: 0.97 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 8, scale: 0.97 }}
@@ -228,12 +229,16 @@ export default function Hero() {
                               {PROPERTY_TYPES.map((type) => (
                                 <div
                                   key={type.id}
+                                  role="checkbox"
+                                  tabIndex={0}
+                                  aria-checked={propertyTypes.includes(type.id)}
                                   className="flex items-center space-x-3 p-3 hover:bg-muted/50 rounded-xl cursor-pointer transition-colors"
                                   onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     togglePropertyType(type.id);
                                   }}
+                                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); togglePropertyType(type.id); } }}
                                 >
                                   {/* Custom Checkbox Visual */}
                                   <div className={`
@@ -253,7 +258,7 @@ export default function Hero() {
                                 </div>
                               ))}
                             </div>
-                          </motion.div>
+                          </m.div>
                         )}
                       </AnimatePresence>
                     </div>
@@ -270,6 +275,7 @@ export default function Hero() {
                         value={budget}
                         onChange={(e) => setBudget(e.target.value)}
                         placeholder="Votre budget max"
+                        aria-label="Budget maximum"
                         className="block w-full pl-11 pr-4 py-4 h-full bg-card border border-border rounded-[1.2rem] text-foreground placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium"
                       />
                     </div>
@@ -288,7 +294,7 @@ export default function Hero() {
                   </div>
                 </div>
               </div>
-            </motion.form>
+            </m.form>
 
 
 
@@ -296,10 +302,10 @@ export default function Hero() {
 
             {/* Spacer for search form on mobile */}
             <div className="lg:hidden h-70"></div>
-          </motion.div>
+          </m.div>
 
           {/* Image (Desktop Only) */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
@@ -321,7 +327,7 @@ export default function Hero() {
             </div>
 
             {/* Floating Badge - Expert Local */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, x: -20, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{ delay: 0.9, duration: 0.7, type: "spring", stiffness: 80, damping: 15 }}
@@ -336,10 +342,10 @@ export default function Hero() {
                   <p className="text-xs text-muted-foreground font-medium leading-tight">À votre écoute</p>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
 
             {/* Floating Badge - Rating */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, x: 20, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{ delay: 1.1, duration: 0.7, type: "spring", stiffness: 80, damping: 15 }}
@@ -354,12 +360,12 @@ export default function Hero() {
                   <p className="text-xs text-muted-foreground font-medium leading-tight">Clients accompagnés</p>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
 
 
 
             {/* Floating Stats Card - Properties */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: -15, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ delay: 1.35, duration: 0.7, type: "spring", stiffness: 80, damping: 15 }}
@@ -369,8 +375,8 @@ export default function Hero() {
                 <div className="text-3xl font-black bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">500+</div>
                 <p className="text-sm text-muted-foreground font-semibold mt-1">Biens à découvrir</p>
               </div>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         </div>
 
 

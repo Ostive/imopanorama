@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { ArrowLeftIcon, DocumentCheckIcon, ExclamationTriangleIcon, ScaleIcon, ShieldCheckIcon, UserIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
+
+const LAST_UPDATED_LABEL = '9 juin 2026';
 
 export default function CGUPage() {
   return (
@@ -15,7 +17,7 @@ export default function CGUPage() {
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
         {/* Navigation */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
@@ -29,10 +31,10 @@ export default function CGUPage() {
             </div>
             Retour à l'accueil
           </Link>
-        </motion.div>
+        </m.div>
 
         {/* Header */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -44,10 +46,10 @@ export default function CGUPage() {
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Règles d'utilisation du site ImoPanorama. Veuillez les lire attentivement.
           </p>
-        </motion.div>
+        </m.div>
 
         {/* Content Card */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -135,11 +137,11 @@ export default function CGUPage() {
           {/* Footer */}
           <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground font-medium">
-              Dernière mise à jour : {new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}
+              Dernière mise à jour : {LAST_UPDATED_LABEL}
             </p>
             <Link href="/mentions-legales" className="text-sm text-muted-foreground hover:text-primary-600 transition-colors font-medium">Mentions Légales</Link>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </div>
   );

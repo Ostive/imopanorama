@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import {
   ChevronDownIcon,
   QuestionMarkCircleIcon,
@@ -25,7 +25,7 @@ export default function FaqSection() {
         <div className="grid lg:grid-cols-3 gap-16 items-start">
 
           {/* Left sidebar */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -46,7 +46,7 @@ export default function FaqSection() {
             <p className="text-muted-foreground leading-relaxed mb-10">
               Achat, location, terrain, construction : on répond aux questions qui reviennent vraiment.
             </p>
-          </motion.div>
+          </m.div>
 
           {/* Right — accordion */}
           <div className="lg:col-span-2">
@@ -68,7 +68,7 @@ export default function FaqSection() {
 
             {/* Empty state */}
             {!loading && !error && faqItems.length === 0 && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center py-16"
@@ -80,14 +80,14 @@ export default function FaqSection() {
                 <p className="text-sm text-muted-foreground">
                   En attendant, écrivez-nous et nous vous répondrons directement.
                 </p>
-              </motion.div>
+              </m.div>
             )}
 
             {/* FAQ items — clean divider accordion */}
             {!loading && !error && faqItems.length > 0 && (
               <div>
                 {faqItems.map((item, index) => (
-                  <motion.div
+                  <m.div
                     key={item.id}
                     initial={{ opacity: 0, y: 12 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -119,7 +119,7 @@ export default function FaqSection() {
 
                     <AnimatePresence>
                       {openItem === item.id && (
-                        <motion.div
+                        <m.div
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
@@ -129,10 +129,10 @@ export default function FaqSection() {
                           <p className="pb-6 text-muted-foreground text-sm leading-relaxed pr-12">
                             {item.answer}
                           </p>
-                        </motion.div>
+                        </m.div>
                       )}
                     </AnimatePresence>
-                  </motion.div>
+                  </m.div>
                 ))}
 
                 <div className="pt-8 text-center">
@@ -148,7 +148,7 @@ export default function FaqSection() {
             )}
 
             {/* Contact prompt — shown after the questions, as a fallback if they weren't enough */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -170,7 +170,7 @@ export default function FaqSection() {
                 Nous contacter
                 <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
               </Link>
-            </motion.div>
+            </m.div>
           </div>
         </div>
       </div>

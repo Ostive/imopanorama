@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { toast } from 'react-hot-toast'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { MapPinIcon, ArrowsPointingOutIcon, HeartIcon, ChevronLeftIcon, ChevronRightIcon, HomeIcon, ArrowsRightLeftIcon } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
 import { PROPERTY_TYPE_LABELS, PROPERTY_STATUS_LABELS } from '@/features/properties/types/properties.types'
@@ -83,7 +83,7 @@ function PropertyCard({
     : property.features || [];
 
   return (
-    <motion.div
+    <m.div
       className="group relative w-full h-full rounded-3xl bg-card shadow-xl hover:shadow-2xl transition-all duration-300 border border-border"
       whileHover={{ y: -6, scale: 1.02 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
@@ -93,7 +93,7 @@ function PropertyCard({
           {/* Image Section - Top Half */}
           <div className="relative w-full h-64 p-4">
             <div className="relative w-full h-full rounded-2xl overflow-hidden">
-              <motion.div
+              <m.div
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.4 }}
                 className="w-full h-full"
@@ -106,7 +106,7 @@ function PropertyCard({
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   onError={handleImageError}
                 />
-              </motion.div>
+              </m.div>
 
               {/* Gradient overlay for better contrast */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
@@ -114,7 +114,7 @@ function PropertyCard({
               {/* Slider controls - only show if multiple images */}
               {images.length > 1 && (
                 <>
-                  <motion.button
+                  <m.button
                     onClick={previousImage}
                     whileHover={{ scale: 1.1, x: -2 }}
                     whileTap={{ scale: 0.95 }}
@@ -122,8 +122,8 @@ function PropertyCard({
                     aria-label="Image précédente"
                   >
                     <ChevronLeftIcon className="w-5 h-5 text-gray-800" />
-                  </motion.button>
-                  <motion.button
+                  </m.button>
+                  <m.button
                     onClick={nextImage}
                     whileHover={{ scale: 1.1, x: 2 }}
                     whileTap={{ scale: 0.95 }}
@@ -131,7 +131,7 @@ function PropertyCard({
                     aria-label="Image suivante"
                   >
                     <ChevronRightIcon className="w-5 h-5 text-gray-800" />
-                  </motion.button>
+                  </m.button>
 
                   {/* Image count indicator */}
                   <div className="absolute bottom-4 right-4 z-20 bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-full shadow-lg">
@@ -144,31 +144,31 @@ function PropertyCard({
 
               {/* Badges */}
               <div className="absolute top-4 left-4 z-10 flex flex-wrap gap-2">
-                <motion.span
+                <m.span
                   whileHover={{ scale: 1.05 }}
                   className="bg-sky-500 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm"
                 >
                   {PROPERTY_TYPE_LABELS[property.propertyType] || 'Bien immobilier'}
-                </motion.span>
-                <motion.span
+                </m.span>
+                <m.span
                   whileHover={{ scale: 1.05 }}
                   className={`px-4 py-2 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm ${getStatusBadgeClass(property.status)}`}
                 >
                   {PROPERTY_STATUS_LABELS[property.status] || 'Disponible'}
-                </motion.span>
+                </m.span>
                 {property.isVerified && (
-                  <motion.span
+                  <m.span
                     whileHover={{ scale: 1.05 }}
                     className="bg-emerald-600 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm"
                   >
                     Vérifié
-                  </motion.span>
+                  </m.span>
                 )}
               </div>
 
               {/* Favorite + Compare buttons */}
               <div className="absolute top-4 right-4 z-20 flex flex-row gap-2">
-                <motion.button
+                <m.button
                   onClick={async (e) => {
                     e.preventDefault()
                     e.stopPropagation()
@@ -205,10 +205,10 @@ function PropertyCard({
                   ) : (
                     <HeartIcon className="w-6 h-6 text-gray-700" />
                   )}
-                </motion.button>
+                </m.button>
 
                 {/* Compare button */}
-                <motion.button
+                <m.button
                   onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
@@ -231,7 +231,7 @@ function PropertyCard({
                   title={inCompare ? 'Retirer de la comparaison' : 'Comparer'}
                 >
                   <ArrowsRightLeftIcon className="w-5 h-5" />
-                </motion.button>
+                </m.button>
               </div>
             </div>
           </div>
@@ -310,28 +310,28 @@ function PropertyCard({
             {displayFeatures && displayFeatures.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {displayFeatures.slice(0, 3).map((feature, index) => (
-                  <motion.span
+                  <m.span
                     key={index}
                     whileHover={{ scale: 1.05 }}
                     className="text-xs font-semibold text-foreground bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-lg border border-border"
                   >
                     {feature}
-                  </motion.span>
+                  </m.span>
                 ))}
                 {displayFeatures.length > 3 && (
-                  <motion.span
+                  <m.span
                     whileHover={{ scale: 1.05 }}
                     className="text-xs font-semibold text-primary-700 dark:text-primary-300 bg-primary-100 dark:bg-primary-900/40 px-3 py-1.5 rounded-lg border border-primary-200 dark:border-primary-800"
                   >
                     +{displayFeatures.length - 3} autres
-                  </motion.span>
+                  </m.span>
                 )}
               </div>
             )}
           </div>
         </div>
       </Link>
-    </motion.div>
+    </m.div>
   )
 }
 

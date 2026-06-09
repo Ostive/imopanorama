@@ -1,6 +1,6 @@
 export const COOKIE_CONSENT_NAME = 'imopanorama_cookie_consent'
-export const COOKIE_CONSENT_STORAGE_KEY = 'imopanorama.cookieConsent'
-export const COOKIE_CONSENT_MAX_AGE = 60 * 60 * 24 * 365
+const COOKIE_CONSENT_STORAGE_KEY = 'imopanorama.cookieConsent'
+const COOKIE_CONSENT_MAX_AGE = 60 * 60 * 24 * 365
 export const COOKIE_CONSENT_EVENT = 'imopanorama:cookie-consent'
 
 export type CookieConsentValue = 'accepted' | 'refused'

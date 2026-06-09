@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import {
   UserCircleIcon,
   ArrowLeftIcon,
@@ -143,7 +143,7 @@ export default function EditUserPage({ params }: EditUserPageProps) {
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 gap-4"
@@ -169,10 +169,10 @@ export default function EditUserPage({ params }: EditUserPageProps) {
             <ArrowLeftIcon className="h-5 w-5 mr-2" />
             Retour à la liste
           </Link>
-        </motion.div>
+        </m.div>
 
         {/* Form */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -187,10 +187,11 @@ export default function EditUserPage({ params }: EditUserPageProps) {
 
             {/* Name */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="edit-user-name" className="block text-sm font-semibold text-gray-700 mb-2">
                 Nom complet <span className="text-red-500">*</span>
               </label>
               <input
+                id="edit-user-name"
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -202,11 +203,12 @@ export default function EditUserPage({ params }: EditUserPageProps) {
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="edit-user-email" className="block text-sm font-semibold text-gray-700 mb-2">
                 <EnvelopeIcon className="w-4 h-4 inline mr-1" />
                 Email <span className="text-red-500">*</span>
               </label>
               <input
+                id="edit-user-email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -218,11 +220,12 @@ export default function EditUserPage({ params }: EditUserPageProps) {
 
             {/* Phone */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="edit-user-phone" className="block text-sm font-semibold text-gray-700 mb-2">
                 <PhoneIcon className="w-4 h-4 inline mr-1" />
                 Téléphone
               </label>
               <input
+                id="edit-user-phone"
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -233,10 +236,10 @@ export default function EditUserPage({ params }: EditUserPageProps) {
 
             {/* Role */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <p className="block text-sm font-semibold text-gray-700 mb-2">
                 <ShieldCheckIcon className="w-4 h-4 inline mr-1" />
                 Rôle <span className="text-red-500">*</span>
-              </label>
+              </p>
               <Select
                 value={formData.role}
                 onValueChange={(value) => setFormData({ ...formData, role: value })}
@@ -285,7 +288,7 @@ export default function EditUserPage({ params }: EditUserPageProps) {
               </button>
             </div>
           </form>
-        </motion.div>
+        </m.div>
       </div>
     </div>
   );

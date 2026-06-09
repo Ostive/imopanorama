@@ -90,8 +90,9 @@ export default function ContactForm({ propertyId, propertyTitle, onSubmit }: Con
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Prénom *</label>
+            <label htmlFor="contact-first-name" className="block text-sm font-medium text-gray-700 mb-1">Prénom *</label>
             <input
+              id="contact-first-name"
               type="text"
               name="firstName"
               required
@@ -101,8 +102,9 @@ export default function ContactForm({ propertyId, propertyTitle, onSubmit }: Con
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
+            <label htmlFor="contact-last-name" className="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
             <input
+              id="contact-last-name"
               type="text"
               name="lastName"
               required
@@ -114,8 +116,9 @@ export default function ContactForm({ propertyId, propertyTitle, onSubmit }: Con
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+          <label htmlFor="contact-email" className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
           <input
+            id="contact-email"
             type="email"
             name="email"
             required
@@ -126,8 +129,9 @@ export default function ContactForm({ propertyId, propertyTitle, onSubmit }: Con
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+          <label htmlFor="contact-phone" className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
           <input
+            id="contact-phone"
             type="tel"
             name="phone"
             value={formData.phone || ''}
@@ -138,8 +142,9 @@ export default function ContactForm({ propertyId, propertyTitle, onSubmit }: Con
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Message *</label>
+          <label htmlFor="contact-message" className="block text-sm font-medium text-gray-700 mb-1">Message *</label>
           <textarea
+            id="contact-message"
             name="message"
             required
             value={formData.message}

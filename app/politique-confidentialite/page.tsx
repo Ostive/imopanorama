@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { ArrowLeftIcon, ShieldCheckIcon, EyeIcon, LockClosedIcon, UserGroupIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
+
+const LAST_UPDATED_LABEL = '9 juin 2026';
 
 export default function PolitiqueConfidentialitePage() {
   return (
@@ -15,7 +17,7 @@ export default function PolitiqueConfidentialitePage() {
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
         {/* Navigation */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
@@ -29,10 +31,10 @@ export default function PolitiqueConfidentialitePage() {
             </div>
             Retour à l'accueil
           </Link>
-        </motion.div>
+        </m.div>
 
         {/* Header */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -44,10 +46,10 @@ export default function PolitiqueConfidentialitePage() {
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Votre vie privée est essentielle. Découvrez comment nous protégeons et traitons vos données.
           </p>
-        </motion.div>
+        </m.div>
 
         {/* Content Card */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -153,7 +155,7 @@ export default function PolitiqueConfidentialitePage() {
           {/* Footer */}
           <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground font-medium">
-              Dernière mise à jour : {new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}
+              Dernière mise à jour : {LAST_UPDATED_LABEL}
             </p>
             <div className="flex gap-4">
               <Link href="/mentions-legales" className="text-sm text-muted-foreground hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium">Mentions Légales</Link>
@@ -161,7 +163,7 @@ export default function PolitiqueConfidentialitePage() {
               <Link href="/cgu" className="text-sm text-muted-foreground hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium">CGU</Link>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { TrashIcon } from '@heroicons/react/24/outline'
 
 interface ConfirmDeleteModalProps {
@@ -22,10 +22,11 @@ export function ConfirmDeleteModal({
 
   return (
     <div
+      aria-hidden="true"
       className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
       onClick={onCancel}
     >
-      <motion.div
+      <m.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
@@ -53,7 +54,7 @@ export function ConfirmDeleteModal({
             Confirmer la suppression
           </button>
         </div>
-      </motion.div>
+      </m.div>
     </div>
   )
 }

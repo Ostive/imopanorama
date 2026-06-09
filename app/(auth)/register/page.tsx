@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn, signUp } from '@/infrastructure/auth/auth-client';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -104,7 +104,7 @@ export default function RegisterNewPage() {
 
         {/* Content */}
         <div className="relative z-10 flex flex-col justify-center items-center w-full p-12">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
@@ -138,7 +138,7 @@ export default function RegisterNewPage() {
                 <div className="text-sm text-white/80 uppercase tracking-wider">Années</div>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
 
@@ -159,7 +159,7 @@ export default function RegisterNewPage() {
           </svg>
         </Link>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
@@ -186,13 +186,13 @@ export default function RegisterNewPage() {
 
             {/* Error Message */}
             {error && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-400 text-sm"
               >
                 {error}
-              </motion.div>
+              </m.div>
             )}
 
             {/* Registration Form */}
@@ -200,12 +200,13 @@ export default function RegisterNewPage() {
               {/* Name Fields */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">
+                  <label htmlFor="register-first-name" className="block text-xs font-semibold text-foreground mb-1">
                     Prénom
                   </label>
                   <div className="relative group">
                     <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 transition-colors" />
                     <input
+                      id="register-first-name"
                       type="text"
                       name="firstName"
                       value={formData.firstName}
@@ -218,12 +219,13 @@ export default function RegisterNewPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">
+                  <label htmlFor="register-last-name" className="block text-xs font-semibold text-foreground mb-1">
                     Nom
                   </label>
                   <div className="relative group">
                     <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 transition-colors" />
                     <input
+                      id="register-last-name"
                       type="text"
                       name="lastName"
                       value={formData.lastName}
@@ -238,12 +240,13 @@ export default function RegisterNewPage() {
 
               {/* Email */}
               <div>
-                <label className="block text-xs font-semibold text-foreground mb-1">
+                <label htmlFor="register-email" className="block text-xs font-semibold text-foreground mb-1">
                   Email
                 </label>
                 <div className="relative group">
                   <EnvelopeIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 transition-colors" />
                   <input
+                    id="register-email"
                     type="email"
                     name="email"
                     value={formData.email}
@@ -257,12 +260,13 @@ export default function RegisterNewPage() {
 
               {/* Phone */}
               <div>
-                <label className="block text-xs font-semibold text-foreground mb-1">
+                <label htmlFor="register-phone" className="block text-xs font-semibold text-foreground mb-1">
                   Téléphone (optionnel)
                 </label>
                 <div className="relative group">
                   <PhoneIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 transition-colors" />
                   <input
+                    id="register-phone"
                     type="tel"
                     name="phone"
                     value={formData.phone}
@@ -276,12 +280,13 @@ export default function RegisterNewPage() {
               {/* Password Fields */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">
+                  <label htmlFor="register-password" className="block text-xs font-semibold text-foreground mb-1">
                     Mot de passe
                   </label>
                   <div className="relative group">
                     <LockClosedIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 transition-colors" />
                     <input
+                      id="register-password"
                       type={showPassword ? 'text' : 'password'}
                       name="password"
                       value={formData.password}
@@ -305,12 +310,13 @@ export default function RegisterNewPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">
+                  <label htmlFor="register-confirm-password" className="block text-xs font-semibold text-foreground mb-1">
                     Confirmer le mot de passe
                   </label>
                   <div className="relative group">
                     <LockClosedIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary-600 transition-colors" />
                     <input
+                      id="register-confirm-password"
                       type={showConfirmPassword ? 'text' : 'password'}
                       name="confirmPassword"
                       value={formData.confirmPassword}
@@ -336,7 +342,7 @@ export default function RegisterNewPage() {
 
 
               {/* Submit Button */}
-              <motion.button
+              <m.button
                 whileHover={{ scale: 1.02, boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)" }}
                 whileTap={{ scale: 0.98 }}
                 type="submit"
@@ -351,7 +357,7 @@ export default function RegisterNewPage() {
                     <ArrowRightIcon className="h-5 w-5" />
                   </>
                 )}
-              </motion.button>
+              </m.button>
             </form>
 
             {/* Divider */}
@@ -367,7 +373,7 @@ export default function RegisterNewPage() {
             </div>
 
             {/* Google Button */}
-            <motion.button
+            <m.button
               whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)" }}
               whileTap={{ scale: 0.98 }}
               onClick={async () => {
@@ -399,7 +405,7 @@ export default function RegisterNewPage() {
                 />
               </svg>
               Continuer avec Google
-            </motion.button>
+            </m.button>
 
             {/* Footer */}
             <div className="mt-3 text-center text-xs text-muted-foreground">
@@ -412,7 +418,7 @@ export default function RegisterNewPage() {
               </Link>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </div>
   );

@@ -69,17 +69,6 @@ export const truncateText = (text: string, maxLength: number): string => {
   return text.substring(0, maxLength).trim() + '...';
 };
 
-export const debounce = <T extends (...args: unknown[]) => void>(
-  func: T,
-  delay: number
-): ((...args: Parameters<T>) => void) => {
-  let timeoutId: NodeJS.Timeout;
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => func(...args), delay);
-  };
-};
-
 export const validateEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
@@ -91,36 +80,3 @@ export const validatePhone = (phone: string): boolean => {
   return phoneRegex.test(phone.replace(/\s/g, ''));
 };
 
-// Classes utilitaires
-export const LocalStorage = {
-  set<T>(key: string, value: T): void {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(key, JSON.stringify(value));
-    }
-  },
-
-  get<T>(key: string): T | null {
-    if (typeof window === 'undefined') {
-      return null;
-    }
-    const item = localStorage.getItem(key);
-    if (!item) return null;
-    try {
-      return JSON.parse(item) as T;
-    } catch (e) {
-      return null;
-    }
-  },
-
-  remove(key: string): void {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(key);
-    }
-  },
-
-  clear(): void {
-    if (typeof window !== 'undefined') {
-      localStorage.clear();
-    }
-  }
-}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import {
@@ -194,7 +194,7 @@ export default function ProcessStepForm({ mode, stepId }: ProcessStepFormProps) 
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Header */}
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+          <m.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
             <Link
               href="/admin/batipanorama/process"
               className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors mb-4 group"
@@ -223,7 +223,7 @@ export default function ProcessStepForm({ mode, stepId }: ProcessStepFormProps) 
                 {isSubmitting ? 'Enregistrement…' : isEdit ? 'Mode édition' : 'Mode création'}
               </div>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Form — 12-col grid */}
           <form onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-8 items-start">
@@ -232,7 +232,7 @@ export default function ProcessStepForm({ mode, stepId }: ProcessStepFormProps) 
             <div className="lg:col-span-9 space-y-8">
 
               {/* Informations de l'étape */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
                 <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
                   <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-border pb-4">
                     <div className="flex items-center gap-3">
@@ -328,7 +328,7 @@ export default function ProcessStepForm({ mode, stepId }: ProcessStepFormProps) 
 
                   </CardContent>
                 </Card>
-              </motion.div>
+              </m.div>
 
             </div>
 
@@ -337,7 +337,7 @@ export default function ProcessStepForm({ mode, stepId }: ProcessStepFormProps) 
               <div className="sticky top-8 space-y-6">
 
                 {/* Progression */}
-                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
+                <m.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
                   <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
                     <div className="p-5 border-b border-border bg-gray-50/50 dark:bg-gray-800/50">
                       <h3 className="font-bold text-foreground flex items-center justify-between">
@@ -369,10 +369,10 @@ export default function ProcessStepForm({ mode, stepId }: ProcessStepFormProps) 
                       </ul>
                     </div>
                   </Card>
-                </motion.div>
+                </m.div>
 
                 {/* Actions */}
-                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}>
+                <m.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}>
                   <Card className="border-none shadow-lg rounded-2xl bg-card">
                     <CardContent className="pt-6 space-y-3">
                       <Button
@@ -392,10 +392,10 @@ export default function ProcessStepForm({ mode, stepId }: ProcessStepFormProps) 
                       </Button>
                     </CardContent>
                   </Card>
-                </motion.div>
+                </m.div>
 
                 {/* Conseil */}
-                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
+                <m.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
                   <div className="bg-primary-50 dark:bg-primary-900/20 rounded-xl p-5 border border-primary-100 dark:border-primary-800">
                     <div className="flex gap-3">
                       <SparklesIcon className="w-5 h-5 text-primary-600 dark:text-primary-400 flex-shrink-0 mt-0.5" />
@@ -407,7 +407,7 @@ export default function ProcessStepForm({ mode, stepId }: ProcessStepFormProps) 
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
 
               </div>
             </div>

@@ -31,7 +31,7 @@ export function FeaturesTab({ settings, onChange }: FeaturesTabProps) {
               <h4 className="font-medium text-gray-900">{feature.label}</h4>
               <p className="text-sm text-gray-500">{feature.description}</p>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
+            <label aria-label={feature.label} className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
                 checked={Boolean(settings[feature.key as keyof FeaturesSettings])}
@@ -43,10 +43,11 @@ export function FeaturesTab({ settings, onChange }: FeaturesTabProps) {
           </div>
         ))}
         <div className="p-4 bg-gray-50 rounded-lg">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="features-max-images" className="block text-sm font-medium text-gray-700 mb-2">
             Nombre maximum d&apos;images par propriété
           </label>
           <input
+            id="features-max-images"
             type="number"
             min="1"
             max="50"

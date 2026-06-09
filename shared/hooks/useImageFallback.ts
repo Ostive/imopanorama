@@ -20,7 +20,7 @@ export function getSafeImageSrc(src: string): string {
   return src
 }
 
-export function markImageFailed(src: string) {
+function markImageFailed(src: string) {
   if (src && src !== PLACEHOLDER) {
     failedImages.add(src)
   }

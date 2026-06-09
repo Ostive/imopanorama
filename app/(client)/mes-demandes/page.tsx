@@ -444,7 +444,7 @@ export default function MesDemandesPage() {
         {/* Delete Confirmation Modal */}
         
           {deleteModalOpen && (
-            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={closeDeleteModal}>
+            <div aria-hidden="true" className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={closeDeleteModal}>
               <div
                 className="bg-card rounded-2xl shadow-2xl border border-border overflow-hidden max-w-md w-full"
                 onClick={(e) => e.stopPropagation()}

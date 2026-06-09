@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 import {
@@ -449,7 +449,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* ── Header ── */}
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+          <m.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
             <Link
               href="/admin/proprietes"
               className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors mb-4 group"
@@ -479,7 +479,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                 {isSubmitting ? 'Enregistrement...' : isEdit ? 'Mode édition' : 'Mode création'}
               </div>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* ── Form ── */}
           <form onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-8 items-start">
@@ -488,7 +488,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
             <div className="lg:col-span-9 space-y-8">
 
               {/* BLOCK A — Informations de base */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
                 <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
                   <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-border pb-4">
                     <div className="flex items-center gap-3">
@@ -583,10 +583,10 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </m.div>
 
               {/* BLOCK A2 — Statut & Visibilité */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}>
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}>
                 <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card border-l-4 border-l-indigo-500">
                   <CardHeader className="bg-indigo-50/50 dark:bg-indigo-900/10 border-b border-border pb-4">
                     <div className="flex items-center gap-3">
@@ -631,10 +631,10 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </m.div>
 
               {/* BLOCK A3 - Confiance & documents */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }}>
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }}>
                 <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
                   <CardHeader className="bg-emerald-50/50 dark:bg-emerald-900/10 border-b border-border pb-4">
                     <div className="flex items-center gap-3">
@@ -687,10 +687,10 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </m.div>
 
               {/* BLOCK B — Localisation */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
                 <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
                   <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-border pb-4">
                     <div className="flex items-center gap-3">
@@ -787,10 +787,10 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </m.div>
 
               {/* BLOCK C — Prix */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
                 <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
                   <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-border pb-4">
                     <div className="flex items-center gap-3">
@@ -831,10 +831,10 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </m.div>
 
               {/* BLOCK D — Dimensions */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
                 <Card className="border-none shadow-lg rounded-2xl overflow-hidden bg-card">
                   <CardHeader className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-border pb-4">
                     <div className="flex items-center gap-3">
@@ -865,10 +865,10 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </m.div>
 
               {/* BLOCK E — Détails de la propriété */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="bg-card rounded-xl shadow-lg p-6 border border-border">
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="bg-card rounded-xl shadow-lg p-6 border border-border">
                 <h2 className="text-xl font-bold text-foreground mb-6">Détails de la propriété</h2>
                 {isTerrain ? (
                   <div className="text-center py-8">
@@ -939,10 +939,10 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                     </div>
                   </>
                 )}
-              </motion.div>
+              </m.div>
 
               {/* BLOCK F — Caractéristiques */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }} className="bg-card rounded-xl shadow-lg p-6 border border-border">
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }} className="bg-card rounded-xl shadow-lg p-6 border border-border">
                 <h2 className="text-xl font-bold text-foreground mb-6">Caractéristiques</h2>
                 {formData.features.length > 0 && (
                   <div className="mb-4">
@@ -979,10 +979,10 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                   <Input type="text" value={newFeature} onChange={(e) => setNewFeature(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())} placeholder="Ajouter une caractéristique personnalisée..." className="flex-1" />
                   <Button type="button" onClick={addFeature} variant="outline" size="sm">Ajouter</Button>
                 </div>
-              </motion.div>
+              </m.div>
 
               {/* BLOCK G — Commodités */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="bg-card rounded-xl shadow-lg p-6 border border-border">
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="bg-card rounded-xl shadow-lg p-6 border border-border">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
                     <SparklesIcon className="h-5 w-5 text-purple-600 dark:text-purple-400" />
@@ -1024,10 +1024,10 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                   <Input type="text" value={newAmenity} onChange={(e) => setNewAmenity(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addAmenity())} placeholder="Ajouter une commodité personnalisée..." className="flex-1" />
                   <Button type="button" onClick={addAmenity} variant="outline" size="sm">Ajouter</Button>
                 </div>
-              </motion.div>
+              </m.div>
 
               {/* BLOCK H — Images */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="bg-card rounded-xl shadow-lg p-6 border border-border">
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="bg-card rounded-xl shadow-lg p-6 border border-border">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-2 bg-pink-100 dark:bg-pink-900/30 rounded-lg">
                     <PhotoIcon className="h-5 w-5 text-pink-600 dark:text-pink-400" />
@@ -1042,10 +1042,10 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                   </Button>
                 </div>
                 <MultipleImageUploader ref={imageUploaderRef} onImagesChange={handleImagesChange} initialImages={formData.images} maxImages={15} />
-              </motion.div>
+              </m.div>
 
               {/* BLOCK I — Visite virtuelle & Vidéo */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.75 }} className="bg-card rounded-xl shadow-lg p-6 border border-border">
+              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.75 }} className="bg-card rounded-xl shadow-lg p-6 border border-border">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
                     <CubeTransparentIcon className="h-5 w-5 text-purple-600 dark:text-purple-400" />
@@ -1080,7 +1080,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                     </div>
                   )}
                 </div>
-              </motion.div>
+              </m.div>
 
             </div>
             {/* END LEFT COLUMN */}

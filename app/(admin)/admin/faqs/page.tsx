@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useFaqs } from '@/features/faqs/hooks/useFaqs'
 import { Faq } from '@/features/faqs/types'
 import Link from 'next/link'
@@ -114,13 +114,13 @@ export default function AdminFaqsPage() {
           loading={loading}
           actions={
             <Link href="/admin/faqs/new">
-              <motion.div
+              <m.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="inline-flex items-center px-6 py-2 bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold rounded-xl transition-all shadow-lg"
               >
                 <PlusIcon className="h-5 w-5 mr-2" /> Ajouter une question
-              </motion.div>
+              </m.div>
             </Link>
           }
         />
@@ -133,7 +133,7 @@ export default function AdminFaqsPage() {
         </div>
 
         {/* Filters */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card rounded-2xl shadow-lg p-6 mb-6 border border-border">
+        <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card rounded-2xl shadow-lg p-6 mb-6 border border-border">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <FunnelIcon className="w-5 h-5 text-muted-foreground" />
@@ -157,6 +157,7 @@ export default function AdminFaqsPage() {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Rechercher une question..."
+                aria-label="Rechercher une question"
                 className="w-full pl-10 pr-10 h-10 border border-border rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
               />
               {searchInput && (
@@ -181,10 +182,10 @@ export default function AdminFaqsPage() {
               ]}
             />
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Table */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-card rounded-2xl shadow-lg overflow-hidden">
+        <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-card rounded-2xl shadow-lg overflow-hidden">
           {loading ? (
             <div className="divide-y divide-gray-200 dark:divide-gray-700 animate-pulse">
               {[1, 2, 3, 4, 5].map((i) => (
@@ -295,7 +296,7 @@ export default function AdminFaqsPage() {
             onPageChange={setPage}
             onLimitChange={(l) => { setLimit(l); setPage(1) }}
           />
-        </motion.div>
+        </m.div>
 
       </div>
     </div>

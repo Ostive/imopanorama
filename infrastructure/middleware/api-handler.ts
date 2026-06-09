@@ -30,11 +30,11 @@ export function apiError(message: string, status = 400): NextResponse {
   return NextResponse.json({ success: false, error: message }, { status });
 }
 
-export function apiSuccess<T>(data: T, status = 200): NextResponse {
+function apiSuccess<T>(data: T, status = 200): NextResponse {
   return NextResponse.json({ success: true, ...data as object }, { status });
 }
 
-export function fieldErrorsFromIssues(issues: ZodIssue[]): Record<string, string> {
+function fieldErrorsFromIssues(issues: ZodIssue[]): Record<string, string> {
   const fieldErrors: Record<string, string> = {};
 
   for (const issue of issues) {

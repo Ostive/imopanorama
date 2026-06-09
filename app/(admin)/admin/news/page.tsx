@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import Link from 'next/link';
 import { Skeleton } from '@/shared/components/ui/skeleton';
 import { useNews } from '@/features/news/hooks/useNews';
@@ -221,7 +221,7 @@ export default function NewsAdminPage() {
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-4">
+        <m.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-4">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-linear-to-br from-primary-600 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
               <NewspaperIcon className="w-6 h-6 text-white" />
@@ -241,12 +241,12 @@ export default function NewsAdminPage() {
               <ArrowLeftIcon className="h-5 w-5 mr-2" /> Retour
             </Link>
             <Link href="/admin/news/new">
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="inline-flex items-center px-6 py-2 bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold rounded-xl transition-all shadow-lg">
+              <m.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="inline-flex items-center px-6 py-2 bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold rounded-xl transition-all shadow-lg">
                 <PlusIcon className="h-5 w-5 mr-2" /> Nouvelle actualité
-              </motion.div>
+              </m.div>
             </Link>
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Error Banners */}
         {(error || deleteError) && (
@@ -264,7 +264,7 @@ export default function NewsAdminPage() {
         </div>
 
         {/* Filters */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card rounded-2xl shadow-lg p-6 mb-6 border border-border">
+        <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card rounded-2xl shadow-lg p-6 mb-6 border border-border">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <FunnelIcon className="w-5 h-5 text-muted-foreground" />
@@ -281,7 +281,7 @@ export default function NewsAdminPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="relative">
               <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <input type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="Titre, slug..."
+              <input type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="Titre, slug..." aria-label="Rechercher une actualité"
                 className="w-full pl-10 pr-10 h-10 border border-border rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" />
               {searchInput && (
                 <button type="button" onClick={() => setSearchInput('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300">
@@ -310,10 +310,10 @@ export default function NewsAdminPage() {
               ]}
             />
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Table */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-2xl shadow-lg overflow-hidden">
+        <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-2xl shadow-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-muted/50">
@@ -327,9 +327,9 @@ export default function NewsAdminPage() {
                   </tr>
                 ))}
               </thead>
-              <tbody className="bg-card divide-y divide-gray-200 dark:divide-gray-700">
-                {loading ? (
-                  [1, 2, 3, 4, 5].map(i => (
+              {loading ? (
+                <tbody aria-hidden="true" className="bg-card divide-y divide-gray-200 dark:divide-gray-700">
+                  {[1, 2, 3, 4, 5].map(i => (
                     <tr key={i} className="animate-pulse">
                       <td className="px-6 py-4"><div className="h-4 bg-muted rounded w-48 mb-2"></div><div className="h-3 bg-muted rounded w-32"></div></td>
                       <td className="px-6 py-4"><div className="h-6 bg-muted rounded-full w-24"></div></td>
@@ -337,21 +337,25 @@ export default function NewsAdminPage() {
                       <td className="px-6 py-4"><div className="h-3 bg-muted rounded w-28"></div></td>
                       <td className="px-6 py-4"><div className="flex items-center space-x-2"><div className="h-8 w-8 bg-muted rounded"></div><div className="h-8 w-8 bg-muted rounded"></div><div className="h-8 w-8 bg-muted rounded"></div></div></td>
                     </tr>
-                  ))
-                ) : table.getRowModel().rows.length === 0 ? (
-                  <tr><td colSpan={columns.length} className="px-6 py-12 text-center text-muted-foreground">Aucune actualité trouvée</td></tr>
-                ) : (
-                  table.getRowModel().rows.map(row => (
-                    <tr key={row.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                      {row.getVisibleCells().map(cell => (
-                        <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </td>
-                      ))}
-                    </tr>
-                  ))
-                )}
-              </tbody>
+                  ))}
+                </tbody>
+              ) : (
+                <tbody className="bg-card divide-y divide-gray-200 dark:divide-gray-700">
+                  {table.getRowModel().rows.length === 0 ? (
+                    <tr><td colSpan={columns.length} className="px-6 py-12 text-center text-muted-foreground">Aucune actualité trouvée</td></tr>
+                  ) : (
+                    table.getRowModel().rows.map(row => (
+                      <tr key={row.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                        {row.getVisibleCells().map(cell => (
+                          <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </td>
+                        ))}
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              )}
             </table>
           </div>
           <AdminTablePagination
@@ -362,7 +366,7 @@ export default function NewsAdminPage() {
             onPageChange={(page) => setSearchParams(prev => ({ ...prev, page }))}
             onLimitChange={(limit) => setSearchParams(prev => ({ ...prev, limit, page: 1 }))}
           />
-        </motion.div>
+        </m.div>
 
       </div>
     </div>

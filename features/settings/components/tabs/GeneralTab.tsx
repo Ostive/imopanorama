@@ -21,8 +21,9 @@ export function GeneralTab({ settings, onChange }: GeneralTabProps) {
       <h3 className="text-lg font-semibold text-gray-900 mb-4">Paramètres généraux</h3>
       <div className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Nom du site</label>
+          <label htmlFor="general-site-name" className="block text-sm font-medium text-gray-700 mb-2">Nom du site</label>
           <input
+            id="general-site-name"
             type="text"
             value={settings.siteName}
             onChange={(e) => onChange('general', 'siteName', e.target.value)}
@@ -30,8 +31,9 @@ export function GeneralTab({ settings, onChange }: GeneralTabProps) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Description du site</label>
+          <label htmlFor="general-site-description" className="block text-sm font-medium text-gray-700 mb-2">Description du site</label>
           <textarea
+            id="general-site-description"
             rows={3}
             value={settings.siteDescription}
             onChange={(e) => onChange('general', 'siteDescription', e.target.value)}
@@ -40,8 +42,9 @@ export function GeneralTab({ settings, onChange }: GeneralTabProps) {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Email de contact</label>
+            <label htmlFor="general-contact-email" className="block text-sm font-medium text-gray-700 mb-2">Email de contact</label>
             <input
+              id="general-contact-email"
               type="email"
               value={settings.contactEmail}
               onChange={(e) => onChange('general', 'contactEmail', e.target.value)}
@@ -49,8 +52,9 @@ export function GeneralTab({ settings, onChange }: GeneralTabProps) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Téléphone</label>
+            <label htmlFor="general-contact-phone" className="block text-sm font-medium text-gray-700 mb-2">Téléphone</label>
             <input
+              id="general-contact-phone"
               type="tel"
               value={settings.contactPhone}
               onChange={(e) => onChange('general', 'contactPhone', e.target.value)}
@@ -59,8 +63,9 @@ export function GeneralTab({ settings, onChange }: GeneralTabProps) {
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Adresse</label>
+          <label htmlFor="general-address" className="block text-sm font-medium text-gray-700 mb-2">Adresse</label>
           <input
+            id="general-address"
             type="text"
             value={settings.address}
             onChange={(e) => onChange('general', 'address', e.target.value)}
@@ -69,8 +74,9 @@ export function GeneralTab({ settings, onChange }: GeneralTabProps) {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Logo URL</label>
+            <label htmlFor="general-logo" className="block text-sm font-medium text-gray-700 mb-2">Logo URL</label>
             <input
+              id="general-logo"
               type="text"
               value={settings.logo}
               onChange={(e) => onChange('general', 'logo', e.target.value)}
@@ -79,8 +85,9 @@ export function GeneralTab({ settings, onChange }: GeneralTabProps) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Favicon URL</label>
+            <label htmlFor="general-favicon" className="block text-sm font-medium text-gray-700 mb-2">Favicon URL</label>
             <input
+              id="general-favicon"
               type="text"
               value={settings.favicon}
               onChange={(e) => onChange('general', 'favicon', e.target.value)}
@@ -91,7 +98,7 @@ export function GeneralTab({ settings, onChange }: GeneralTabProps) {
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Fuseau horaire</label>
+            <p className="block text-sm font-medium text-gray-700 mb-2">Fuseau horaire</p>
             <Select value={settings.timezone} onValueChange={(v) => onChange('general', 'timezone', v)}>
               <SelectTrigger className="w-full"><SelectValue placeholder="Fuseau horaire" /></SelectTrigger>
               <SelectContent>
@@ -104,7 +111,7 @@ export function GeneralTab({ settings, onChange }: GeneralTabProps) {
             </Select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Langue</label>
+            <p className="block text-sm font-medium text-gray-700 mb-2">Langue</p>
             <Select value={settings.language} onValueChange={(v) => onChange('general', 'language', v)}>
               <SelectTrigger className="w-full"><SelectValue placeholder="Langue" /></SelectTrigger>
               <SelectContent>
@@ -117,7 +124,7 @@ export function GeneralTab({ settings, onChange }: GeneralTabProps) {
             </Select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Devise</label>
+            <p className="block text-sm font-medium text-gray-700 mb-2">Devise</p>
             <Select value={settings.currency} onValueChange={(v) => onChange('general', 'currency', v)}>
               <SelectTrigger className="w-full"><SelectValue placeholder="Devise" /></SelectTrigger>
               <SelectContent>

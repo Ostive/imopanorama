@@ -29,7 +29,7 @@ export function EmailTab({ settings, onChange }: EmailTabProps) {
                   <h5 className="font-medium text-gray-900">{toggle.label}</h5>
                   <p className="text-sm text-gray-500">{toggle.description}</p>
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer">
+                <label aria-label={toggle.label} className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
                     checked={Boolean(settings[toggle.key as keyof EmailSettings])}

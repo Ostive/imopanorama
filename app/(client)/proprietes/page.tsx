@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import React, { Suspense } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import {
   Squares2X2Icon,
   HomeIcon,
@@ -157,7 +157,7 @@ function PropertiesPageContent() {
                     { mode: 'list' as const, Icon: ListBulletIcon, title: 'Liste' },
                     { mode: 'map' as const, Icon: MapPinIcon, title: 'Carte' },
                   ].map(({ mode, Icon, title }) => (
-                    <motion.button
+                    <m.button
                       key={mode}
                       whileTap={{ scale: 0.92 }}
                       onClick={() => updateViewMode(mode)}
@@ -169,7 +169,7 @@ function PropertiesPageContent() {
                       }`}
                     >
                       <Icon className="h-4 w-4" />
-                    </motion.button>
+                    </m.button>
                   ))}
                 </div>
               </div>
@@ -206,7 +206,7 @@ function PropertiesPageContent() {
               ))}
             </div>
           ) : !properties || properties.length === 0 ? (
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-center py-20 bg-card rounded-3xl shadow-xl"
@@ -228,7 +228,7 @@ function PropertiesPageContent() {
                   Repartir de zéro
                 </button>
               </div>
-            </motion.div>
+            </m.div>
           ) : filters.viewMode === 'map' ? (
             <div className="-mx-4 sm:-mx-6 lg:-mx-8 isolate">
               <PropertiesMapViewDynamic
@@ -254,12 +254,12 @@ function PropertiesPageContent() {
 
           {/* Pagination */}
           {total > 12 && filters.viewMode !== 'map' && (
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="mt-12 flex justify-center items-center gap-2"
             >
-              <motion.button
+              <m.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => updatePage(Math.max(1, filters.page - 1))}
@@ -267,7 +267,7 @@ function PropertiesPageContent() {
                 className="px-5 py-2.5 rounded-xl bg-card border-2 border-border text-foreground font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-muted transition-all shadow-sm hover:shadow-md disabled:hover:bg-white dark:disabled:hover:bg-gray-800"
               >
                 Page précédente
-              </motion.button>
+              </m.button>
 
               <div className="flex gap-1">
                 {Array.from({ length: totalPages }, (_, i) => i + 1)
@@ -285,7 +285,7 @@ function PropertiesPageContent() {
                           ...
                         </span>
                       )}
-                      <motion.button
+                      <m.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => updatePage(pageNum)}
@@ -296,12 +296,12 @@ function PropertiesPageContent() {
                         }`}
                       >
                         {pageNum}
-                      </motion.button>
+                      </m.button>
                     </React.Fragment>
                   ))}
               </div>
 
-              <motion.button
+              <m.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => updatePage(filters.page + 1)}
@@ -309,8 +309,8 @@ function PropertiesPageContent() {
                 className="px-5 py-2.5 rounded-xl bg-card border-2 border-border text-foreground font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-muted transition-all shadow-sm hover:shadow-md disabled:hover:bg-white dark:disabled:hover:bg-gray-800"
               >
                 Page suivante
-              </motion.button>
-            </motion.div>
+              </m.button>
+            </m.div>
           )}
         </div>
 
@@ -322,7 +322,7 @@ function PropertiesPageContent() {
               { mode: 'list' as const, Icon: ListBulletIcon, label: 'Liste' },
               { mode: 'map' as const, Icon: MapPinIcon, label: 'Carte' },
             ].map(({ mode, Icon, label }) => (
-              <motion.button
+              <m.button
                 key={mode}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => updateViewMode(mode)}
@@ -334,7 +334,7 @@ function PropertiesPageContent() {
               >
                 <Icon className="h-5 w-5" />
                 <span className="text-[10px] font-semibold">{label}</span>
-              </motion.button>
+              </m.button>
             ))}
           </div>
         </div>

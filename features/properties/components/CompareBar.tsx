@@ -1,7 +1,7 @@
 'use client'
 
 import { useCompare } from '@/features/properties/context/CompareContext'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { XMarkIcon, ArrowsRightLeftIcon } from '@heroicons/react/24/outline'
@@ -14,7 +14,7 @@ export function CompareBar() {
   return (
     <AnimatePresence>
       {compareList.length > 0 && (
-        <motion.div
+        <m.div
           initial={{ y: 120, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 120, opacity: 0 }}
@@ -81,7 +81,7 @@ export function CompareBar() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   )

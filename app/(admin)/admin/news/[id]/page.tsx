@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { FormSkeleton } from '@/shared/components/loading';
 import {
   NewspaperIcon,
@@ -87,7 +87,7 @@ export default function ViewNewsPage({ params }: ViewNewsPageProps) {
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 gap-4"
@@ -122,10 +122,10 @@ export default function ViewNewsPage({ params }: ViewNewsPageProps) {
               Modifier
             </Link>
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Content */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -218,7 +218,7 @@ export default function ViewNewsPage({ params }: ViewNewsPageProps) {
               </div>
             )}
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import {
   ChatBubbleLeftRightIcon,
   CheckCircleIcon,
@@ -81,7 +81,7 @@ export default function ContactPage() {
           <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/85 to-gray-950/30" />
         </div>
         <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
+          <m.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
             <span className="inline-flex rounded-full bg-white/10 px-4 py-1.5 text-sm font-semibold backdrop-blur">
               Contact ImoPanorama
             </span>
@@ -91,7 +91,7 @@ export default function ContactPage() {
             <p className="mt-5 text-lg leading-relaxed text-gray-200">
               Achat, location, vente, construction ou simple question : dites-nous où vous en êtes, on vous répond avec des informations utiles et concrètes.
             </p>
-          </motion.div>
+          </m.div>
         </div>
       </section>
 

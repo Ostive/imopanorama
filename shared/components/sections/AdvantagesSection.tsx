@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import {
   GlobeAltIcon,
   ShieldCheckIcon,
@@ -51,7 +51,7 @@ export default function AdvantagesSection() {
         <div className="grid lg:grid-cols-[1fr_1.3fr] gap-20 items-start">
 
           {/* Left — sticky editorial header */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -74,14 +74,14 @@ export default function AdvantagesSection() {
             <p className="text-muted-foreground text-lg leading-relaxed mb-10 max-w-sm">
               Acheter, louer ou construire à Madagascar soulève beaucoup de questions. Notre rôle est de vous aider à y voir clair, sans jargon.
             </p>
-          </motion.div>
+          </m.div>
 
           {/* Right — editorial numbered list */}
           <div>
             {features.map((feature, index) => {
               const Icon = feature.icon
               return (
-                <motion.div
+                <m.div
                   key={index}
                   initial={{ opacity: 0, x: 30 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -103,13 +103,13 @@ export default function AdvantagesSection() {
                       {feature.description}
                     </p>
                   </div>
-                </motion.div>
+                </m.div>
               )
             })}
           </div>
         </div>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -122,7 +122,7 @@ export default function AdvantagesSection() {
             Voir les biens disponibles
             <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
           </Link>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

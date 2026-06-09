@@ -478,6 +478,7 @@ L'article doit être structuré avec des balises HTML sémantiques propres, prê
               <textarea
                 ref={contentTextareaRef}
                 id="html-editor"
+                aria-label="Éditeur HTML"
                 value={rawHtmlContent || formData.content}
                 onChange={(e) => handleEditorChange(e.target.value)}
                 onDrop={handleEditorDrop}
@@ -581,11 +582,14 @@ L'article doit être structuré avec des balises HTML sémantiques propres, prê
                 {formData.images.map((image, index) => (
                   <div
                     key={index}
+                    role="button"
+                    tabIndex={0}
                     draggable
                     onDragStart={(e) => handleImageDragStart(e, image)}
                     onDragEnd={handleImageDragEnd}
                     className="relative aspect-square bg-gray-100 rounded-xl overflow-hidden shadow-sm border border-gray-200 group cursor-grab active:cursor-grabbing"
                     onClick={() => setFormData(prev => ({ ...prev, coverImage: image }))}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFormData(prev => ({ ...prev, coverImage: image })); } }}
                   >
                     <Image
                       src={image}

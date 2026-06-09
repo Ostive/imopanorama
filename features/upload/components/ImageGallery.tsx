@@ -73,12 +73,15 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
               <img
                 src={imageUrl}
                 alt={`Image ${index + 1}`}
+                role="button"
+                tabIndex={0}
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                 onClick={() => onImageClick ? onImageClick(imageUrl) : openFullscreen(imageUrl)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onImageClick ? onImageClick(imageUrl) : openFullscreen(imageUrl); } }}
               />
 
               {editable && (
-                <div className={`absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center ${onImageClick ? 'cursor-pointer' : ''}`}
+                <div aria-hidden="true" className={`absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center ${onImageClick ? 'cursor-pointer' : ''}`}
                   onClick={() => onImageClick && onImageClick(imageUrl)}>
                   <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     {!onImageClick && (
@@ -122,6 +125,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
       {/* Modal plein écran */}
       {selectedImage && (
         <div
+          aria-hidden="true"
           className="fixed inset-0 bg-black bg-opacity-90 dark:bg-opacity-95 z-50 flex items-center justify-center p-4"
           onClick={closeFullscreen}
         >

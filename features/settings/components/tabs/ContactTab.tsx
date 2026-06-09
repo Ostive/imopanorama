@@ -84,28 +84,28 @@ export function ContactTab({ settings, isLoading, onChange }: ContactTabProps) {
           </h4>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Ville</label>
-              <input type="text" value={settings.city} onChange={(e) => onChange('contact', 'city', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500" placeholder="Antananarivo" />
+              <label htmlFor="contact-city" className="block text-sm font-medium text-gray-700 mb-2">Ville</label>
+              <input id="contact-city" type="text" value={settings.city} onChange={(e) => onChange('contact', 'city', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500" placeholder="Antananarivo" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Pays</label>
-              <input type="text" value={settings.country} onChange={(e) => onChange('contact', 'country', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500" placeholder="Madagascar" />
+              <label htmlFor="contact-country" className="block text-sm font-medium text-gray-700 mb-2">Pays</label>
+              <input id="contact-country" type="text" value={settings.country} onChange={(e) => onChange('contact', 'country', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500" placeholder="Madagascar" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2"><PhoneIcon className="h-4 w-4 inline mr-1" />Téléphone</label>
-              <input type="tel" value={settings.phone} onChange={(e) => onChange('contact', 'phone', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500" placeholder="+261 34 XX XX XX XX" />
+              <label htmlFor="contact-phone" className="block text-sm font-medium text-gray-700 mb-2"><PhoneIcon className="h-4 w-4 inline mr-1" />Téléphone</label>
+              <input id="contact-phone" type="tel" value={settings.phone} onChange={(e) => onChange('contact', 'phone', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500" placeholder="+261 34 XX XX XX XX" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2"><EnvelopeIcon className="h-4 w-4 inline mr-1" />Email</label>
-              <input type="email" value={settings.email} onChange={(e) => onChange('contact', 'email', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500" placeholder="contact@imopanorama.mg" />
+              <label htmlFor="contact-email" className="block text-sm font-medium text-gray-700 mb-2"><EnvelopeIcon className="h-4 w-4 inline mr-1" />Email</label>
+              <input id="contact-email" type="email" value={settings.email} onChange={(e) => onChange('contact', 'email', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500" placeholder="contact@imopanorama.mg" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2"><ClockIcon className="h-4 w-4 inline mr-1" />Horaires</label>
-              <input type="text" value={settings.workingHours} onChange={(e) => onChange('contact', 'workingHours', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500" placeholder="Lun-Ven: 8h-17h" />
+              <label htmlFor="contact-working-hours" className="block text-sm font-medium text-gray-700 mb-2"><ClockIcon className="h-4 w-4 inline mr-1" />Horaires</label>
+              <input id="contact-working-hours" type="text" value={settings.workingHours} onChange={(e) => onChange('contact', 'workingHours', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500" placeholder="Lun-Ven: 8h-17h" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Temps de réponse</label>
-              <input type="text" value={settings.responseTime} onChange={(e) => onChange('contact', 'responseTime', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500" placeholder="Réponse sous 24h" />
+              <label htmlFor="contact-response-time" className="block text-sm font-medium text-gray-700 mb-2">Temps de réponse</label>
+              <input id="contact-response-time" type="text" value={settings.responseTime} onChange={(e) => onChange('contact', 'responseTime', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500" placeholder="Réponse sous 24h" />
             </div>
           </div>
         </div>
@@ -122,7 +122,7 @@ export function ContactTab({ settings, isLoading, onChange }: ContactTabProps) {
                     {social.icon}
                     {social.label}
                   </label>
-                  <label className="relative inline-flex items-center cursor-pointer">
+                  <label aria-label={`Activer ${social.label}`} className="relative inline-flex items-center cursor-pointer">
                     <input
                       type="checkbox"
                       checked={Boolean(settings[social.enabledKey as keyof ContactSettings])}

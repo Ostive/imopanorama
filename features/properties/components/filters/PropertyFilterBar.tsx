@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import {
   HomeIcon,
   BuildingOfficeIcon,
@@ -58,7 +58,7 @@ export default function PropertyFilterBar({
         <div className="flex items-center gap-2 py-2.5 sm:py-3">
           <div className="flex-1 min-w-0 overflow-x-auto scrollbar-none">
             <div className="flex items-center gap-2">
-              <motion.button
+              <m.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => onTransactionTypeChange(transactionType === 'SALE' ? '' : 'SALE')}
                 className={`shrink-0 h-9 w-9 sm:w-auto sm:px-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-1.5 text-sm ${
@@ -70,9 +70,9 @@ export default function PropertyFilterBar({
               >
                 <ShoppingBagIcon className="h-4 w-4 shrink-0" />
                 <span className="hidden sm:inline">Acheter</span>
-              </motion.button>
+              </m.button>
 
-              <motion.button
+              <m.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => onTransactionTypeChange(transactionType === 'RENT' ? '' : 'RENT')}
                 className={`shrink-0 h-9 w-9 sm:w-auto sm:px-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-1.5 text-sm ${
@@ -84,12 +84,12 @@ export default function PropertyFilterBar({
               >
                 <KeyIcon className="h-4 w-4 shrink-0" />
                 <span className="hidden sm:inline">Louer</span>
-              </motion.button>
+              </m.button>
 
               <div className="shrink-0 h-6 w-px bg-gray-300 dark:bg-gray-600" />
 
               {CATEGORY_META.map(({ key, Icon, label }) => (
-                <motion.button
+                <m.button
                   key={key}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => selectCategory(key)}
@@ -102,13 +102,13 @@ export default function PropertyFilterBar({
                 >
                   <Icon className="h-4 w-4 shrink-0" />
                   <span className="hidden sm:inline">{label}</span>
-                </motion.button>
+                </m.button>
               ))}
             </div>
           </div>
 
           <div className="shrink-0 ml-auto flex items-center gap-2">
-            <motion.button
+            <m.button
               whileTap={{ scale: 0.95 }}
               onClick={onOpenDrawer}
               className={`h-9 px-3 rounded-xl font-semibold transition-all flex items-center gap-1.5 text-sm border ${
@@ -124,7 +124,7 @@ export default function PropertyFilterBar({
                   {activeFilterCount}
                 </span>
               )}
-            </motion.button>
+            </m.button>
           </div>
         </div>
       </div>

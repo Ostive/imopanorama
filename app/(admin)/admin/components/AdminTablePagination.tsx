@@ -112,6 +112,7 @@ export function AdminTablePagination({
             value={goToInput}
             onChange={(e) => setGoToInput(e.target.value)}
             placeholder={`1-${totalPages}`}
+            aria-label="Aller à la page"
             className="w-20 h-9 text-sm text-center border border-border bg-card text-foreground rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           />
         </form>

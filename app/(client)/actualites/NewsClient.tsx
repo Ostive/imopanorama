@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -79,7 +79,7 @@ export default function NewsClient() {
         <div className="min-h-screen bg-linear-to-br from-primary-50/40 via-white to-primary-50/30">
             {/* Category Filter */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <motion.div
+                <m.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
@@ -91,7 +91,7 @@ export default function NewsClient() {
                     </div>
                     <div className="flex flex-wrap gap-3">
                         {categories.map((category, index) => (
-                            <motion.button
+                            <m.button
                                 key={category.id}
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
@@ -105,13 +105,13 @@ export default function NewsClient() {
                                     }`}
                             >
                                 {category.label}
-                            </motion.button>
+                            </m.button>
                         ))}
                     </div>
                     <div className="mt-4 text-sm text-muted-foreground">
                         <span className="font-semibold text-primary-600 dark:text-primary-400">{newsItems.length}</span> article{newsItems.length > 1 ? 's' : ''} à lire
                     </div>
-                </motion.div>
+                </m.div>
 
                 {isLoading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -132,7 +132,7 @@ export default function NewsClient() {
                         ))}
                     </div>
                 ) : error ? (
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         className="bg-card rounded-3xl shadow-xl p-12 text-center transition-colors duration-200"
@@ -144,9 +144,9 @@ export default function NewsClient() {
                             <h3 className="text-2xl font-bold text-foreground mb-3">Impossible de charger les articles</h3>
                             <p className="text-muted-foreground mb-6 text-lg">Une erreur est survenue lors du chargement. Veuillez réessayer dans quelques instants.</p>
                         </div>
-                    </motion.div>
+                    </m.div>
                 ) : newsItems.length === 0 ? (
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         className="bg-card rounded-3xl shadow-xl p-12 text-center transition-colors duration-200"
@@ -160,11 +160,11 @@ export default function NewsClient() {
                                 Essayez un autre sujet ou revenez bientôt, nous ajoutons régulièrement de nouveaux contenus.
                             </p>
                         </div>
-                    </motion.div>
+                    </m.div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {newsItems.map((item, index) => (
-                            <motion.div
+                            <m.div
                                 key={item.id}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -218,17 +218,17 @@ export default function NewsClient() {
                                             <p className="text-muted-foreground mb-4 line-clamp-2 leading-relaxed">{item.excerpt}</p>
 
                                             <div className="flex items-center justify-end pt-4 border-t border-border">
-                                                <motion.div
+                                                <m.div
                                                     className="flex items-center gap-1 text-primary-600 dark:text-primary-400 font-semibold text-sm group-hover:gap-2 transition-all"
                                                 >
                                                     Lire l'article
                                                     <ArrowRightIcon className="w-4 h-4" />
-                                                </motion.div>
+                                                </m.div>
                                             </div>
                                         </div>
                                     </div>
                                 </Link>
-                            </motion.div>
+                            </m.div>
                         ))}
                     </div>
                 )}

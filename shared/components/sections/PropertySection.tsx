@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { ArrowRightIcon, WifiIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
 import { useProperties } from '@/features/properties/hooks/useProperties'
 import PropertyCard from '@/features/properties/components/PropertyCard'
@@ -34,7 +34,7 @@ export default function PropertySection() {
 
       <div className="container mx-auto px-4 relative z-10">
         {showTitle && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -54,13 +54,13 @@ export default function PropertySection() {
               </span>{' '}
               à Madagascar
             </h2>
-          </motion.div>
+          </m.div>
         )}
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {loading ? (
             Array.from({ length: 3 }).map((_, index) => (
-              <motion.div
+              <m.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -72,7 +72,7 @@ export default function PropertySection() {
                   <div className="h-5 bg-muted rounded w-3/4" />
                   <div className="h-4 bg-muted rounded w-1/2" />
                 </div>
-              </motion.div>
+              </m.div>
             ))
           ) : error ? (
             <div className="col-span-3 flex justify-center py-10">
@@ -104,7 +104,7 @@ export default function PropertySection() {
             </div>
           ) : (
             properties.map((property, index) => (
-              <motion.div
+              <m.div
                 key={property.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -113,13 +113,13 @@ export default function PropertySection() {
                 className="h-full"
               >
                 <PropertyCard property={property} variant="featured" />
-              </motion.div>
+              </m.div>
             ))
           )}
         </div>
 
         {!loading && !error && properties.length > 0 && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -132,7 +132,7 @@ export default function PropertySection() {
               Tous les biens
               <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </Link>
-          </motion.div>
+          </m.div>
         )}
       </div>
     </section>

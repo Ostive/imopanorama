@@ -28,7 +28,7 @@ export function MapTab({ settings, onChange }: MapTabProps) {
                 <h5 className="font-medium text-gray-900">Afficher la carte</h5>
                 <p className="text-sm text-gray-500">Activer l&apos;affichage des cartes sur le site</p>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
+              <label aria-label="Afficher la carte" className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
                   checked={settings.showMap}
@@ -39,7 +39,7 @@ export function MapTab({ settings, onChange }: MapTabProps) {
               </label>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Fournisseur de carte</label>
+              <p className="block text-sm font-medium text-gray-700 mb-2">Fournisseur de carte</p>
               <Select value={settings.provider} onValueChange={(v) => onChange('map', 'provider', v)}>
                 <SelectTrigger className="w-full"><SelectValue placeholder="Fournisseur de carte" /></SelectTrigger>
                 <SelectContent>
@@ -58,8 +58,9 @@ export function MapTab({ settings, onChange }: MapTabProps) {
             )}
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Latitude par défaut</label>
+                <label htmlFor="map-default-lat" className="block text-sm font-medium text-gray-700 mb-2">Latitude par défaut</label>
                 <input
+                  id="map-default-lat"
                   type="number"
                   step="0.0001"
                   value={settings.defaultLat}
@@ -68,8 +69,9 @@ export function MapTab({ settings, onChange }: MapTabProps) {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Longitude par défaut</label>
+                <label htmlFor="map-default-lng" className="block text-sm font-medium text-gray-700 mb-2">Longitude par défaut</label>
                 <input
+                  id="map-default-lng"
                   type="number"
                   step="0.0001"
                   value={settings.defaultLng}
@@ -78,8 +80,9 @@ export function MapTab({ settings, onChange }: MapTabProps) {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Zoom par défaut</label>
+                <label htmlFor="map-default-zoom" className="block text-sm font-medium text-gray-700 mb-2">Zoom par défaut</label>
                 <input
+                  id="map-default-zoom"
                   type="number"
                   min="1"
                   max="20"

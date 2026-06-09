@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { CalendarIcon, ClockIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
 import { fetchWithTimeout } from '@/shared/utils/fetchWithTimeout'
 
@@ -61,7 +61,7 @@ function NewsSection() {
       <div className="container mx-auto px-4">
 
         {/* Header */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -82,7 +82,7 @@ function NewsSection() {
           <p className="mt-3 text-muted-foreground text-base max-w-md">
             Conseils pratiques, tendances locales et nouvelles utiles pour avancer avec plus de confiance.
           </p>
-        </motion.div>
+        </m.div>
 
         {/* Skeleton */}
         {isLoading && (
@@ -113,7 +113,7 @@ function NewsSection() {
         {!isLoading && articles.length > 0 && (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {articles.map((article, index) => (
-              <motion.article
+              <m.article
                 key={article.id}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -165,13 +165,13 @@ function NewsSection() {
                     </div>
                   </div>
                 </Link>
-              </motion.article>
+              </m.article>
             ))}
           </div>
         )}
 
         {!isLoading && articles.length > 0 && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -184,7 +184,7 @@ function NewsSection() {
               Tous les articles
               <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </Link>
-          </motion.div>
+          </m.div>
         )}
       </div>
     </section>

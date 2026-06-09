@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import {
   CalculatorIcon,
   CheckCircleIcon,
@@ -120,7 +120,7 @@ export default function EstimationPage() {
     <main className="bg-background">
       <section className="relative overflow-hidden bg-card">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col justify-center">
+          <m.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col justify-center">
             <span className="inline-flex w-fit rounded-full bg-primary-50 px-4 py-1.5 text-sm font-bold text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
               Estimation immobilière
             </span>
@@ -130,8 +130,8 @@ export default function EstimationPage() {
             <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
               Donnez-nous quelques informations. Nous vous recontactons pour affiner l'estimation selon l'emplacement, l'état du bien et le marché local.
             </p>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="relative min-h-[360px] overflow-hidden rounded-2xl shadow-2xl">
+          </m.div>
+          <m.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="relative min-h-[360px] overflow-hidden rounded-2xl shadow-2xl">
             <img
               src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?q=80&w=1400&auto=format&fit=crop"
               alt=""
@@ -142,7 +142,7 @@ export default function EstimationPage() {
               <p className="text-sm font-bold text-primary-600 dark:text-primary-400">Premier échange offert</p>
               <p className="mt-1 text-xl font-black text-foreground">Une estimation plus utile qu'un simple chiffre automatique.</p>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </section>
 
@@ -189,19 +189,19 @@ export default function EstimationPage() {
 
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Prénom *" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
+              <input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Prénom *" aria-label="Prénom" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
               {fieldErrors.firstName && <p className="mt-1 text-xs font-semibold text-red-600">{fieldErrors.firstName}</p>}
             </div>
             <div>
-              <input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Nom *" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
+              <input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Nom *" aria-label="Nom" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
               {fieldErrors.lastName && <p className="mt-1 text-xs font-semibold text-red-600">{fieldErrors.lastName}</p>}
             </div>
             <div>
-              <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email *" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
+              <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email *" aria-label="Adresse email" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
               {fieldErrors.email && <p className="mt-1 text-xs font-semibold text-red-600">{fieldErrors.email}</p>}
             </div>
             <div>
-              <input name="phone" value={formData.phone} onChange={handleChange} placeholder="Téléphone" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
+              <input name="phone" value={formData.phone} onChange={handleChange} placeholder="Téléphone" aria-label="Téléphone" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
               {fieldErrors.phone && <p className="mt-1 text-xs font-semibold text-red-600">{fieldErrors.phone}</p>}
             </div>
           </div>
@@ -225,7 +225,7 @@ export default function EstimationPage() {
               {fieldErrors.city && <p className="mt-1 text-xs font-semibold text-red-600">{fieldErrors.city}</p>}
             </div>
             <div>
-              <input type="number" name="surface" value={formData.surface} onChange={handleChange} min="1" placeholder="Surface en m² *" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
+              <input type="number" name="surface" value={formData.surface} onChange={handleChange} min="1" placeholder="Surface en m² *" aria-label="Surface en m²" className="w-full rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
               {fieldErrors.surface && <p className="mt-1 text-xs font-semibold text-red-600">{fieldErrors.surface}</p>}
             </div>
             <div>
@@ -237,7 +237,7 @@ export default function EstimationPage() {
             </div>
           </div>
 
-          <textarea name="message" value={formData.message} onChange={handleChange} rows={5} placeholder="Adresse approximative, accès, documents disponibles, prix souhaité, urgence de vente..." className="mt-4 w-full resize-none rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
+          <textarea name="message" value={formData.message} onChange={handleChange} rows={5} placeholder="Adresse approximative, accès, documents disponibles, prix souhaité, urgence de vente..." aria-label="Message" className="mt-4 w-full resize-none rounded-xl border border-gray-200 px-4 py-3 dark:border-border dark:bg-gray-900 dark:text-white" />
           <button type="submit" disabled={isSubmitting} className="mt-5 w-full rounded-xl bg-primary-600 px-6 py-4 font-bold text-white hover:bg-primary-700 disabled:opacity-50">
             {isSubmitting ? 'Envoi en cours...' : 'Demander mon estimation'}
           </button>

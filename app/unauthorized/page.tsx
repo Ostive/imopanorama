@@ -13,7 +13,7 @@ export default function UnauthorizedPage() {
   useEffect(() => {
     // Redirection automatique après 10 secondes
     if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      const timer = setTimeout(() => setCountdown((current) => current - 1), 1000);
       return () => clearTimeout(timer);
     } else {
       router.push('/');

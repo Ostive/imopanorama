@@ -277,6 +277,11 @@ const MapInner: React.FC<MapProps> = ({
         console.error(`Erreur lors de la création du marqueur ${id}:`, error);
       }
     });
+
+    return () => {
+      Object.values(markerRefs.current).forEach(marker => marker.remove());
+      markerRefs.current = {};
+    };
   }, [markers, mapLoaded, defaultMarkerStyle, onMapClick]);
 
   const handleRetry = () => {
@@ -311,7 +316,7 @@ const MapInner: React.FC<MapProps> = ({
 
   return (
     <>
-      <style jsx global>{`
+      <style>{`
         .marker {
           background-size: contain;
           background-repeat: no-repeat;
