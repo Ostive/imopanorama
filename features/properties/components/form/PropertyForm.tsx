@@ -221,6 +221,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [featureSearch, setFeatureSearch] = useState('')
   const [amenitySearch, setAmenitySearch] = useState('')
+  const [currentYear, setCurrentYear] = useState<number>()
 
   // ─── Derived flags ─────────────────────────────────────────────────────────
 
@@ -234,6 +235,10 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
   // ─── Effects ───────────────────────────────────────────────────────────────
 
   // Load existing property data (edit mode only)
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear())
+  }, [])
+
   useEffect(() => {
     const data = loadedProperty
     if (!data) return
@@ -292,12 +297,11 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
 
   // Auto-generate reference number on create
   useEffect(() => {
-    if (!isEdit && !formData.reference) {
-      const year = new Date().getFullYear()
+    if (isEdit || formData.reference) return
+      const year = currentYear || new Date().getFullYear()
       const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
       setFormData(prev => ({ ...prev, reference: `PROP-${year}-${random}` }))
-    }
-  }, [])
+  }, [currentYear, formData.reference, isEdit])
 
   // Auto-calculate price per m²
   useEffect(() => {
@@ -908,7 +912,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="yearBuilt">Année de construction</Label>
-                        <Input id="yearBuilt" type="number" name="yearBuilt" value={formData.yearBuilt} onChange={handleChange} min="1800" max={new Date().getFullYear()} />
+                        <Input id="yearBuilt" type="number" name="yearBuilt" value={formData.yearBuilt} onChange={handleChange} min="1800" max={currentYear} />
                       </div>
                       <div className="md:col-span-3 space-y-2">
                         <Label htmlFor="condition">État</Label>

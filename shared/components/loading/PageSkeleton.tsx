@@ -11,7 +11,7 @@ export function PageSkeleton() {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="space-y-3">
+            <div key={`page-skeleton-${i}`} className="space-y-3">
               <Skeleton className="h-32 w-full rounded-lg" />
               <Skeleton className="h-6 w-3/4" />
               <Skeleton className="h-4 w-full" />

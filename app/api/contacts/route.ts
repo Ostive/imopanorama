@@ -25,9 +25,10 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const limited = await rateLimit(request, { scope: 'contacts:post', limit: 5, windowMs: 60_000 });
   if (limited) return limited;
 
-  const body = await request.json();
-
-  const { ContactFormDataSchema } = await import('@/features/contacts/schemas/contacts.schema');
+  const [body, { ContactFormDataSchema }] = await Promise.all([
+    request.json(),
+    import('@/features/contacts/schemas/contacts.schema'),
+  ]);
   const validation = ContactFormDataSchema.safeParse(body);
 
   if (!validation.success) {

@@ -50,8 +50,10 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const { authorized, session, errorResponse } = await requireAdmin(request);
   if (!authorized || !session) return errorResponse!;
 
-  const body = await request.json();
-  const { NewsFormDataSchema } = await import('@/features/news/schemas/news.schema');
+  const [body, { NewsFormDataSchema }] = await Promise.all([
+    request.json(),
+    import('@/features/news/schemas/news.schema'),
+  ]);
   const validation = NewsFormDataSchema.safeParse(body);
 
   if (!validation.success) {

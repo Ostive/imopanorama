@@ -273,6 +273,7 @@ export default function MesDemandesPage() {
                           src={contact.property.images[0] || 'https://via.placeholder.com/400x300'}
                           alt={contact.property.title}
                           fill
+                          sizes="(min-width: 1024px) 256px, 100vw"
                           className="object-cover group-hover:scale-110 transition-transform duration-300"
                         />
                         <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">

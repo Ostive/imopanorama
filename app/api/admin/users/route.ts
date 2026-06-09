@@ -49,14 +49,16 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     ];
   }
 
-  const total = await userRepository.count(where);
-  const users = await userRepository.findMany({
-    where,
-    select: USER_SELECT,
-    orderBy: { createdAt: 'desc' },
-    skip: (page - 1) * limit,
-    take: limit,
-  });
+  const [total, users] = await Promise.all([
+    userRepository.count(where),
+    userRepository.findMany({
+      where,
+      select: USER_SELECT,
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+  ]);
 
   logger.info(`${users.length} utilisateurs récupérés sur ${total} total`);
 

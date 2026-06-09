@@ -6,18 +6,21 @@ interface TableSkeletonProps {
 }
 
 export function TableSkeleton({ rows = 5, columns = 6 }: TableSkeletonProps) {
+  const columnIds = Array.from({ length: columns }, (_, i) => `column-${i}`)
+  const rowIds = Array.from({ length: rows }, (_, i) => `row-${i}`)
+
   return (
     <div className="space-y-3">
       <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
-        {[...Array(columns)].map((_, i) => (
-          <Skeleton key={`header-${i}`} className="h-10 w-full" />
+        {columnIds.map((columnId) => (
+          <Skeleton key={`header-${columnId}`} className="h-10 w-full" />
         ))}
       </div>
       
-      {[...Array(rows)].map((_, rowIndex) => (
-        <div key={`row-${rowIndex}`} className="grid gap-4" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
-          {[...Array(columns)].map((_, colIndex) => (
-            <Skeleton key={`cell-${rowIndex}-${colIndex}`} className="h-16 w-full" />
+      {rowIds.map((rowId) => (
+        <div key={rowId} className="grid gap-4" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
+          {columnIds.map((columnId) => (
+            <Skeleton key={`cell-${rowId}-${columnId}`} className="h-16 w-full" />
           ))}
         </div>
       ))}

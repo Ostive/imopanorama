@@ -24,8 +24,10 @@ export const PUT = withErrorHandler(async (
   const { authorized, errorResponse } = await requireAdmin(request);
   if (!authorized) return errorResponse!;
 
-  const id = await extractParam(context, 'id');
-  const body = await request.json();
+  const [id, body] = await Promise.all([
+    extractParam(context, 'id'),
+    request.json(),
+  ]);
 
   const partner = await partnerRepository.update(id, {
     name: body.name,

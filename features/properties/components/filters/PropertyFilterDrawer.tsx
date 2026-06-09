@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { m, AnimatePresence } from 'framer-motion'
 import {
   Squares2X2Icon,
@@ -48,6 +48,12 @@ export default function PropertyFilterDrawer({
   onReset,
   total,
 }: Props) {
+  const [currentYear, setCurrentYear] = useState<number>()
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear())
+  }, [])
+
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
     return () => {
@@ -381,7 +387,7 @@ export default function PropertyFilterDrawer({
                       onChange={e => onChange({ minYearBuilt: e.target.value })}
                       placeholder="Depuis"
                       min="1900"
-                      max={new Date().getFullYear()}
+                      max={currentYear}
                       className={FIELD_BASE}
                     />
                     <input
@@ -391,7 +397,7 @@ export default function PropertyFilterDrawer({
                       onChange={e => onChange({ maxYearBuilt: e.target.value })}
                       placeholder="Jusqu'à"
                       min="1900"
-                      max={new Date().getFullYear()}
+                      max={currentYear}
                       className={FIELD_BASE}
                     />
                   </div>

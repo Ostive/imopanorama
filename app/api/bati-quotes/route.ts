@@ -44,9 +44,10 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const limited = await rateLimit(request, { scope: 'bati-quotes:post', limit: 3, windowMs: 60_000 });
   if (limited) return limited;
 
-  const body = await request.json();
-
-  const { BatipanoramaContactFormDataSchema } = await import('@/features/batipanorama/schemas/batipanorama.schema');
+  const [body, { BatipanoramaContactFormDataSchema }] = await Promise.all([
+    request.json(),
+    import('@/features/batipanorama/schemas/batipanorama.schema'),
+  ]);
   const validation = BatipanoramaContactFormDataSchema.safeParse(body);
 
   if (!validation.success) {

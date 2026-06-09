@@ -52,7 +52,7 @@ export default function FaqItem({ faq }: FaqItemProps) {
           >
             <div className="px-6 pb-6 pt-2 prose max-w-none text-foreground leading-relaxed">
               {faq.answer.split('\n').map((line, index) => (
-                <p key={index} className="mb-2 last:mb-0">
+                <p key={`${index}-${line}`} className="mb-2 last:mb-0">
                   {line}
                 </p>
               ))}

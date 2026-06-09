@@ -116,6 +116,7 @@ export default function RegisterNewPage() {
                 src="/images/auth/auth-illustration.png"
                 alt="ImoPanorama Logo"
                 fill
+                sizes="320px"
                 className="object-contain drop-shadow-2xl"
               />
             </div>

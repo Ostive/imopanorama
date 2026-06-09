@@ -6,6 +6,8 @@ interface FormSkeletonProps {
 }
 
 export function FormSkeleton({ fields = 6 }: FormSkeletonProps) {
+  const fieldIds = Array.from({ length: fields }, (_, i) => `form-field-${i}`)
+
   return (
     <Card>
       <CardHeader>
@@ -13,8 +15,8 @@ export function FormSkeleton({ fields = 6 }: FormSkeletonProps) {
         <Skeleton className="h-4 w-64 mt-2" />
       </CardHeader>
       <CardContent className="space-y-6">
-        {[...Array(fields)].map((_, i) => (
-          <div key={i} className="space-y-2">
+        {fieldIds.map((fieldId) => (
+          <div key={fieldId} className="space-y-2">
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-10 w-full" />
           </div>

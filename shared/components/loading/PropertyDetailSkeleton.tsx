@@ -37,7 +37,7 @@ export function PropertyDetailSkeleton() {
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">
                   {[...Array(6)].map((_, i) => (
-                    <div key={i} className="space-y-2">
+                    <div key={`property-detail-line-${i}`} className="space-y-2">
                       <Skeleton className="h-4 w-24" />
                       <Skeleton className="h-5 w-32" />
                     </div>

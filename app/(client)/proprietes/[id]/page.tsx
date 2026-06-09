@@ -201,7 +201,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
           <div className="grid grid-cols-4 gap-3">
             {images.map((image, index) => (
               <m.button
-                key={index}
+                key={image}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.05 }}
@@ -267,7 +267,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
           <div className="grid grid-cols-2 gap-3 h-[400px]">
             {images.map((image, index) => (
               <m.div
-                key={index}
+                key={image}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -330,7 +330,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
             <div className="flex flex-col gap-3">
               {images.slice(1, 3).map((image, index) => (
                 <m.div
-                  key={index}
+                  key={image}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: (index + 1) * 0.1 }}
@@ -407,7 +407,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
               <div className="grid grid-cols-2 gap-3 flex-1">
                 {images.slice(2, 4).map((image, index) => (
                   <m.div
-                    key={index}
+                    key={image}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: (index + 2) * 0.1 }}
@@ -471,7 +471,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
 
                 return (
                   <m.div
-                    key={index}
+                    key={image}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: (index + 1) * 0.08 }}
@@ -630,7 +630,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                 <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
                   {images.map((image, index) => (
                     <m.button
-                      key={index}
+                      key={image}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setCurrentImageIndex(index)}
@@ -767,7 +767,7 @@ export default function PropertyDetailPage() {
           <div className="h-28 bg-gray-200 dark:bg-gray-800 rounded-2xl" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-5">
-              {[1, 2, 3].map(i => <div key={i} className="h-36 bg-gray-200 dark:bg-gray-800 rounded-2xl" />)}
+              {[1, 2, 3].map(i => <div key={`property-detail-skeleton-${i}`} className="h-36 bg-gray-200 dark:bg-gray-800 rounded-2xl" />)}
             </div>
             <div className="h-[520px] bg-gray-200 dark:bg-gray-800 rounded-2xl" />
           </div>
@@ -1090,7 +1090,7 @@ export default function PropertyDetailPage() {
                 <div className="flex flex-wrap gap-2">
                   {property.features.map((feature: string, i: number) => (
                     <m.span
-                      key={i}
+                      key={feature}
                       initial={{ opacity: 0, scale: 0.88 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
@@ -1258,7 +1258,7 @@ export default function PropertyDetailPage() {
                 <div className="flex flex-wrap gap-2">
                   {property.amenities.map((amenity: string, i: number) => (
                     <m.span
-                      key={i}
+                      key={amenity}
                       initial={{ opacity: 0, scale: 0.88 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}

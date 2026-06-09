@@ -12,8 +12,10 @@ export const PATCH = withErrorHandler(async (request: NextRequest, context: Rout
   const { authorized, errorResponse } = await requireAdmin(request);
   if (!authorized) return errorResponse!;
 
-  const { id } = await context.params;
-  const body = await request.json();
+  const [{ id }, body] = await Promise.all([
+    context.params,
+    request.json(),
+  ]);
   const validation = ContactCrmUpdateSchema.safeParse(body);
 
   if (!validation.success) {

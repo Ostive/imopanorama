@@ -219,6 +219,7 @@ export default function PartnersAdminPage() {
                     src={partner.logo}
                     alt={partner.name}
                     fill
+                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                     className="object-contain p-4"
                   />
                 </div>

@@ -37,8 +37,10 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const { authorized, errorResponse } = await requireAdmin(request);
   if (!authorized) return errorResponse!;
 
-  const body = await request.json();
-  const { BatiProjectFormDataSchema } = await import('@/features/batipanorama/schemas/batipanorama.schema');
+  const [body, { BatiProjectFormDataSchema }] = await Promise.all([
+    request.json(),
+    import('@/features/batipanorama/schemas/batipanorama.schema'),
+  ]);
   const validation = BatiProjectFormDataSchema.safeParse(body);
 
   if (!validation.success) {

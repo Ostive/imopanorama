@@ -160,6 +160,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
               src={previewUrl}
               alt="Aperçu de l&apos;image"
               fill
+              sizes="(min-width: 768px) 50vw, 100vw"
               className="object-contain rounded-lg shadow-sm"
             />
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all rounded-lg backdrop-blur-[2px]">

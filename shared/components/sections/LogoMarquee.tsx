@@ -176,6 +176,7 @@ export default function LogoMarquee() {
                       src={partner.logo}
                       alt={partner.name}
                       fill
+                      sizes="260px"
                       className="object-contain filter grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
                     />
                   </div>

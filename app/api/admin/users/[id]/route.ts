@@ -51,8 +51,10 @@ export const PUT = withErrorHandler(async (
   const { authorized, errorResponse } = await requireAdmin(request);
   if (!authorized) return errorResponse!;
 
-  const id = await extractParam(context, 'id');
-  const body = await request.json();
+  const [id, body] = await Promise.all([
+    extractParam(context, 'id'),
+    request.json(),
+  ]);
 
   // Build a partial update from the request body
   const updateData: Record<string, unknown> = {};

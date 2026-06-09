@@ -71,6 +71,7 @@ export default function NewsForm({ initialData, isEditing = false }: NewsFormPro
   const [showPreviewModal, setShowPreviewModal] = useState(false); // Modal d'aperçu
   const [rawHtmlContent, setRawHtmlContent] = useState(''); // Contenu HTML brut
   const [copiedImage, setCopiedImage] = useState<string | null>(null); // Pour le feedback de copie
+  const [todayPreviewLabel, setTodayPreviewLabel] = useState('');
   const contentTextareaRef = useRef<HTMLTextAreaElement>(null); // Référence pour le textarea HTML
   const [showMediaLibrary, setShowMediaLibrary] = useState(false);
   const [isDraggingImage, setIsDraggingImage] = useState(false);
@@ -105,6 +106,10 @@ export default function NewsForm({ initialData, isEditing = false }: NewsFormPro
   });
 
   // Initialiser le formulaire avec les données existantes si disponibles
+  useEffect(() => {
+    setTodayPreviewLabel(new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }));
+  }, []);
+
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
@@ -823,7 +828,7 @@ L'article doit être structuré avec des balises HTML sémantiques propres, prê
                 <div className="flex flex-wrap items-center gap-3 md:gap-5 text-sm text-gray-600 mb-6 pb-4 border-b border-gray-200">
                   <div className="flex items-center">
                     <CalendarIcon className="h-5 w-5 mr-1 text-primary-600" />
-                    <span>{formData.publishedAt ? new Date(formData.publishedAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}</span>
+                    <span>{formData.publishedAt ? new Date(formData.publishedAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : todayPreviewLabel}</span>
                   </div>
                   <div className="flex items-center">
                     <TagIcon className="h-5 w-5 mr-1 text-primary-600" />

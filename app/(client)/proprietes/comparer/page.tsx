@@ -118,8 +118,8 @@ function Cell({ row, property, properties, propIdx }: { row: RowDef; property: P
     if (!items.length) return <span className="text-gray-400 text-sm">—</span>
     return (
       <div className="flex flex-wrap gap-1">
-        {items.slice(0, 6).map((item, i) => (
-          <span key={i} className="text-xs bg-gray-100 dark:bg-gray-700 text-foreground px-2 py-0.5 rounded-full">{item}</span>
+        {items.slice(0, 6).map((item) => (
+          <span key={item} className="text-xs bg-gray-100 dark:bg-gray-700 text-foreground px-2 py-0.5 rounded-full">{item}</span>
         ))}
         {items.length > 6 && <span className="text-xs text-primary-600 font-medium">+{items.length - 6}</span>}
       </div>
@@ -188,7 +188,7 @@ function ComparerInner() {
 
         {loading && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[1, 2].map(i => <Skeleton key={i} className="h-64 rounded-2xl" />)}
+            {[1, 2].map(i => <Skeleton key={`compare-loading-${i}`} className="h-64 rounded-2xl" />)}
           </div>
         )}
 
@@ -324,7 +324,7 @@ export default function ComparerPage() {
           <div className="animate-pulse space-y-6">
             <div className="h-10 bg-muted rounded-xl w-64" />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[1, 2].map(i => <div key={i} className="h-64 bg-muted rounded-2xl" />)}
+              {[1, 2].map(i => <div key={`compare-empty-${i}`} className="h-64 bg-muted rounded-2xl" />)}
             </div>
           </div>
         </div>

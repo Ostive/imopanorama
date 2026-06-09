@@ -84,10 +84,12 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const { authorized, session, errorResponse } = await requireStaff(request);
   if (!authorized || !session) return errorResponse!;
 
-  const body = await request.json();
+  const [body, { PropertyFormDataSchema }] = await Promise.all([
+    request.json(),
+    import('@/features/properties/schemas/properties.schema'),
+  ]);
 
   // Validate with Zod schema
-  const { PropertyFormDataSchema } = await import('@/features/properties/schemas/properties.schema');
   const validation = PropertyFormDataSchema.safeParse(body);
 
   if (!validation.success) {
