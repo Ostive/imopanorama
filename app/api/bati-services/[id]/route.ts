@@ -41,10 +41,11 @@ export const PUT = withErrorHandler(async (
   const { authorized, errorResponse } = await requireAdmin(request);
   if (!authorized) return errorResponse!;
 
-  const id = await extractParam(context, 'id');
-  const body = await request.json();
-
-  const { BatiServiceFormDataSchema } = await import('@/features/batipanorama/schemas/batipanorama.schema');
+  const [id, body, { BatiServiceFormDataSchema }] = await Promise.all([
+    extractParam(context, 'id'),
+    request.json(),
+    import('@/features/batipanorama/schemas/batipanorama.schema'),
+  ]);
   const validation = BatiServiceFormDataSchema.partial().safeParse(body);
   if (!validation.success) {
     return validationError(validation.error.issues, 'La mise a jour du service contient des champs invalides');

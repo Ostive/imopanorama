@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Suspense, useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { m } from 'framer-motion';
 import Link from 'next/link';
@@ -52,7 +52,7 @@ interface Project {
   createdAt: string;
 }
 
-export default function BatiProjectsPage() {
+function BatiProjectsPageContent() {
   const router = useRouter();
   const urlParams = useSearchParams();
   
@@ -544,6 +544,7 @@ export default function BatiProjectsPage() {
                                 src={project.coverImage}
                                 alt={project.title}
                                 fill
+                                sizes="48px"
                                 className="object-cover"
                               />
                             ) : (
@@ -594,6 +595,7 @@ export default function BatiProjectsPage() {
                           </Link>
                           <button type="button"
                             onClick={() => openDeleteModal(project)}
+                            aria-label={`Supprimer ${project.title}`}
                             className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-colors"
                             title="Supprimer"
                           >
@@ -604,7 +606,7 @@ export default function BatiProjectsPage() {
                         {/* Mobile - show dropdown menu */}
                         <div className="md:hidden flex justify-end">
                           <DropdownMenu>
-                            <DropdownMenuTrigger className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+                            <DropdownMenuTrigger aria-label={`Actions pour ${project.title}`} className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
                               <EllipsisVerticalIcon className="w-5 h-5" />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
@@ -716,5 +718,13 @@ export default function BatiProjectsPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function BatiProjectsPage() {
+  return (
+    <Suspense fallback={null}>
+      <BatiProjectsPageContent />
+    </Suspense>
   );
 }

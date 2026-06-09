@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { Suspense, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { m } from 'framer-motion';
 import Link from 'next/link';
@@ -56,7 +56,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   ENTREPRISE: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300',
 };
 
-export default function NewsAdminPage() {
+function NewsAdminPageContent() {
   const router = useRouter();
   const urlParams = useSearchParams();
 
@@ -171,13 +171,13 @@ export default function NewsAdminPage() {
             <Link href={`/admin/news/${row.original.id}/edit`} className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors" title="Modifier">
               <PencilIcon className="h-5 w-5" />
             </Link>
-            <button type="button" onClick={() => handleDelete(row.original.id)} className="p-2 text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Supprimer">
+            <button type="button" onClick={() => handleDelete(row.original.id)} aria-label={`Supprimer ${row.original.title}`} className="p-2 text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Supprimer">
               <TrashIcon className="h-5 w-5" />
             </button>
           </div>
           <div className="md:hidden flex justify-end">
             <DropdownMenu>
-              <DropdownMenuTrigger className="p-2 text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+              <DropdownMenuTrigger aria-label={`Actions pour ${row.original.title}`} className="p-2 text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
                 <EllipsisVerticalIcon className="h-5 w-5" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -284,7 +284,7 @@ export default function NewsAdminPage() {
               <input type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="Titre, slug..." aria-label="Rechercher une actualité"
                 className="w-full pl-10 pr-10 h-10 border border-border rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" />
               {searchInput && (
-                <button type="button" onClick={() => setSearchInput('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300">
+                <button type="button" onClick={() => setSearchInput('')} aria-label="Effacer la recherche" className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300">
                   <XMarkIcon className="h-5 w-5" />
                 </button>
               )}
@@ -370,5 +370,13 @@ export default function NewsAdminPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function NewsAdminPage() {
+  return (
+    <Suspense fallback={null}>
+      <NewsAdminPageContent />
+    </Suspense>
   );
 }

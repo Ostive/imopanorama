@@ -41,10 +41,11 @@ export const PUT = withErrorHandler(async (
   const { authorized, errorResponse } = await requireAdmin(request);
   if (!authorized) return errorResponse!;
 
-  const id = await extractParam(context, 'id');
-  const body = await request.json();
-
-  const { BatiProcessStepFormDataSchema } = await import('@/features/batipanorama/schemas/batipanorama.schema');
+  const [id, body, { BatiProcessStepFormDataSchema }] = await Promise.all([
+    extractParam(context, 'id'),
+    request.json(),
+    import('@/features/batipanorama/schemas/batipanorama.schema'),
+  ]);
   const validation = BatiProcessStepFormDataSchema.partial().safeParse(body);
   if (!validation.success) {
     return validationError(validation.error.issues, 'La mise a jour de l etape contient des champs invalides');

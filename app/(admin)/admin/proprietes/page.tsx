@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { Suspense, useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { m, AnimatePresence } from 'framer-motion'
 import { formatPrice, formatDate } from '@/shared/utils'
@@ -153,7 +153,7 @@ const STATUS_COLORS: Record<string, string> = {
 const getStatusColor = (status: string) => STATUS_COLORS[status.toUpperCase()] ?? 'bg-muted text-foreground border border-border'
 
 /* ─── Main Page ─── */
-export default function AdminPropertiesPage() {
+function AdminPropertiesPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -642,5 +642,13 @@ export default function AdminPropertiesPage() {
         </div>
       </div>
     </ProtectedRoute>
+  )
+}
+
+export default function AdminPropertiesPage() {
+  return (
+    <Suspense fallback={null}>
+      <AdminPropertiesPageContent />
+    </Suspense>
   )
 }

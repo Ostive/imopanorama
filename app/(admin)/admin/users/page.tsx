@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Suspense, useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { m } from 'framer-motion';
 import { useUsers } from '@/features/users/hooks/useUsers';
@@ -38,7 +38,7 @@ const ROLE_CONFIG: Record<string, { bg: string; text: string; label: string }> =
   CLIENT: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-800 dark:text-green-300', label: 'Client' },
 };
 
-export default function AdminUsersPage() {
+function AdminUsersPageContent() {
   const router = useRouter();
   const urlParams = useSearchParams();
 
@@ -374,5 +374,13 @@ export default function AdminUsersPage() {
         </div>
       </div>
     </ProtectedRoute>
+  );
+}
+
+export default function AdminUsersPage() {
+  return (
+    <Suspense fallback={null}>
+      <AdminUsersPageContent />
+    </Suspense>
   );
 }

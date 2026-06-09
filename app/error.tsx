@@ -31,7 +31,7 @@ export default function Error({
         <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 border border-gray-100 text-center">
           {/* Illustration */}
           <m.div
-            initial={{ scale: 0, rotate: -10 }}
+            initial={{ scale: 0.95, opacity: 0, rotate: -10 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ delay: 0.2, type: 'spring', stiffness: 150 }}
             className="relative w-48 h-48 mx-auto mb-8"

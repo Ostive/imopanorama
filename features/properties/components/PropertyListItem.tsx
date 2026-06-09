@@ -175,7 +175,7 @@ export default function PropertyListItem({
           {displayFeatures.length > 0 && (
             <div className="hidden sm:flex flex-wrap gap-1.5 mb-3">
               {displayFeatures.slice(0, 4).map((f, i) => (
-                <span key={i} className="text-xs text-muted-foreground bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-md border border-border">
+                <span key={f} className="text-xs text-muted-foreground bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-md border border-border">
                   {f}
                 </span>
               ))}

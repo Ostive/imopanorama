@@ -365,7 +365,6 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                                 placeholder="Nom du nouveau dossier"
                                 aria-label="Nom du nouveau dossier"
                                 className="flex-1 px-3 py-2 text-sm border border-border rounded-lg focus:ring-primary-500 focus:border-primary-500"
-                                autoFocus
                             />
                             <div className="flex gap-2">
                                 <button type="button"

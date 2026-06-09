@@ -68,11 +68,11 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
       {/* Grille d'images */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {images.map((imageUrl, index) => (
-          <div key={`image-${index}`} className="relative group aspect-square">
+          <div key={imageUrl} className="relative group aspect-square">
             <div className="relative w-full h-full overflow-hidden rounded-lg bg-muted">
               <img
                 src={imageUrl}
-                alt={`Image ${index + 1}`}
+                alt={`Galerie ${index + 1}`}
                 role="button"
                 tabIndex={0}
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
@@ -139,7 +139,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
             <div className="relative w-full h-full">
               <img
                 src={selectedImage}
-                alt="Image en plein écran"
+                alt="Aperçu en plein écran"
                 className="w-full h-full object-contain max-h-[80vh]"
               />
             </div>

@@ -41,9 +41,11 @@ export const PUT = withErrorHandler(async (
   const { authorized, errorResponse } = await requireAdmin(request);
   if (!authorized) return errorResponse!;
 
-  const id = await extractParam(context, 'id');
-  const body = await request.json();
-  const { FaqFormDataSchema } = await import('@/features/faqs/schemas/faqs.schema');
+  const [id, body, { FaqFormDataSchema }] = await Promise.all([
+    extractParam(context, 'id'),
+    request.json(),
+    import('@/features/faqs/schemas/faqs.schema'),
+  ]);
   const validation = FaqFormDataSchema.partial().safeParse(body);
   if (!validation.success) {
     return validationError(validation.error.issues, 'La mise a jour de la FAQ contient des champs invalides');

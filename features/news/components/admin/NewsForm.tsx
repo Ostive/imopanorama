@@ -581,7 +581,7 @@ L'article doit être structuré avec des balises HTML sémantiques propres, prê
               <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 {formData.images.map((image, index) => (
                   <div
-                    key={index}
+                    key={image}
                     role="button"
                     tabIndex={0}
                     draggable
@@ -798,6 +798,7 @@ L'article doit être structuré avec des balises HTML sémantiques propres, prê
                   src={formData.coverImage}
                   alt={formData.title || 'Cover'}
                   fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
                 />
               ) : (

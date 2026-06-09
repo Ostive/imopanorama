@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState, useCallback } from 'react'
+import React, { createContext, useContext, useState, useCallback, useMemo } from 'react'
 import { Property } from '@/features/properties/types/properties.types'
 import { toast } from 'react-hot-toast'
 
@@ -44,15 +44,17 @@ export function CompareProvider({ children }: { children: React.ReactNode }) {
 
   const clearCompare = useCallback(() => setCompareList([]), [])
 
+  const value = useMemo(() => ({
+    compareList,
+    addToCompare,
+    removeFromCompare,
+    isInCompare,
+    clearCompare,
+    canAdd: compareList.length < MAX_COMPARE,
+  }), [compareList, addToCompare, removeFromCompare, isInCompare, clearCompare])
+
   return (
-    <CompareContext.Provider value={{
-      compareList,
-      addToCompare,
-      removeFromCompare,
-      isInCompare,
-      clearCompare,
-      canAdd: compareList.length < MAX_COMPARE,
-    }}>
+    <CompareContext.Provider value={value}>
       {children}
     </CompareContext.Provider>
   )

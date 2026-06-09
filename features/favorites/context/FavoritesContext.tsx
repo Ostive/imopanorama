@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext } from 'react'
+import React, { createContext, useCallback, useContext, useMemo } from 'react'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Favorite } from '@/features/favorites/types/favorites.types'
@@ -54,7 +54,7 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
 
   // Derived state
   const favoritesCount = favorites.length
-  const favoriteIds = new Set(favorites.map(f => f.propertyId))
+  const favoriteIds = useMemo(() => new Set(favorites.map(f => f.propertyId)), [favorites])
 
   // 2. Add Mutation
   const addMutation = useMutation({
@@ -91,34 +91,36 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
     }
   });
 
-  const addToFavorites = async (propertyId: string) => {
+  const addToFavorites = useCallback(async (propertyId: string) => {
     await addMutation.mutateAsync(propertyId);
-  }
+  }, [addMutation])
 
-  const removeFromFavorites = async (propertyId: string) => {
+  const removeFromFavorites = useCallback(async (propertyId: string) => {
     await removeMutation.mutateAsync(propertyId);
-  }
+  }, [removeMutation])
 
-  const isFavorite = (propertyId: string): boolean => {
+  const isFavorite = useCallback((propertyId: string): boolean => {
     if (!isAuthenticated) return false
     return favoriteIds.has(propertyId)
-  }
+  }, [favoriteIds, isAuthenticated])
 
-  const refreshFavorites = async () => {
+  const refreshFavorites = useCallback(async () => {
     await refetch();
-  }
+  }, [refetch])
+
+  const value = useMemo(() => ({
+    favoritesCount,
+    favoriteIds,
+    refreshFavorites,
+    addToFavorites,
+    removeFromFavorites,
+    isFavorite,
+    loading: isLoading
+  }), [favoritesCount, favoriteIds, refreshFavorites, addToFavorites, removeFromFavorites, isFavorite, isLoading])
 
   return (
     <FavoritesContext.Provider
-      value={{
-        favoritesCount,
-        favoriteIds,
-        refreshFavorites,
-        addToFavorites,
-        removeFromFavorites,
-        isFavorite,
-        loading: isLoading
-      }}
+      value={value}
     >
       {children}
     </FavoritesContext.Provider>

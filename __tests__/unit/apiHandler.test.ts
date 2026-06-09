@@ -17,7 +17,7 @@ vi.mock('@/infrastructure/logger/logger', () => ({
 
 describe('api-handler helpers', () => {
   it('returns structured validation errors with fieldErrors', async () => {
-    const schema = z.object({ email: z.string().email('Email invalide') });
+    const schema = z.object({ email: z.email('Email invalide') });
     const result = schema.safeParse({ email: 'bad-email' });
     expect(result.success).toBe(false);
     if (result.success) return;

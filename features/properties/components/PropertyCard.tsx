@@ -311,7 +311,7 @@ function PropertyCard({
               <div className="flex flex-wrap gap-2">
                 {displayFeatures.slice(0, 3).map((feature, index) => (
                   <m.span
-                    key={index}
+                    key={feature}
                     whileHover={{ scale: 1.05 }}
                     className="text-xs font-semibold text-foreground bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-lg border border-border"
                   >

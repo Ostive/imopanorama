@@ -217,7 +217,7 @@ export default function BatiPanoramaContactPage() {
                   const Icon = info.icon;
                   return (
                     <m.div
-                      key={index}
+                      key={info.title}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 + index * 0.1 }}
@@ -263,7 +263,7 @@ export default function BatiPanoramaContactPage() {
                   'Garantie décennale',
                   'Suivi personnalisé'
                 ].map((item, index) => (
-                  <li key={index} className="flex items-center gap-2 text-foreground">
+                  <li key={item} className="flex items-center gap-2 text-foreground">
                     <CheckCircleIcon className="h-5 w-5 text-primary-600 dark:text-primary-400 flex-shrink-0" />
                     <span>{item}</span>
                   </li>

@@ -235,6 +235,7 @@ export default function NewsDetailPage() {
             src={newsItem.coverImage}
             alt={newsItem.title}
             fill
+            sizes="100vw"
             className="object-cover"
             priority
           />
@@ -388,7 +389,7 @@ export default function NewsDetailPage() {
               <div className="flex flex-wrap gap-2">
                 {newsItem.tags.map((tag, index) => (
                   <span
-                    key={index}
+                    key={tag}
                     className="bg-gray-100 dark:bg-gray-700 text-foreground px-3 py-1 rounded-full text-sm"
                   >
                     {tag}
@@ -404,11 +405,12 @@ export default function NewsDetailPage() {
               <h3 className="text-xl font-semibold text-foreground mb-6">Galerie d&apos;images</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {newsItem.images.map((image, index) => (
-                  <div key={index} className="relative h-64 rounded-lg overflow-hidden">
+                  <div key={image} className="relative h-64 rounded-lg overflow-hidden">
                     <Image
                       src={image}
                       alt={`Image ${index + 1} pour ${newsItem.title}`}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       className="object-cover hover:scale-105 transition-transform duration-300"
                     />
                   </div>

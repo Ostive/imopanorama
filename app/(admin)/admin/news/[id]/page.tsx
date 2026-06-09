@@ -138,6 +138,7 @@ export default function ViewNewsPage({ params }: ViewNewsPageProps) {
                 src={newsData.coverImage}
                 alt={newsData.title}
                 fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
               />
             </div>
@@ -189,7 +190,7 @@ export default function ViewNewsPage({ params }: ViewNewsPageProps) {
                 <div className="flex flex-wrap gap-2">
                   {newsData.tags.map((tag: string, index: number) => (
                     <span
-                      key={index}
+                      key={tag}
                       className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
                     >
                       {tag}
@@ -205,11 +206,12 @@ export default function ViewNewsPage({ params }: ViewNewsPageProps) {
                 <h3 className="text-sm font-semibold text-gray-700 mb-3">Images supplémentaires:</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {newsData.images.map((image: string, index: number) => (
-                    <div key={index} className="relative h-48 rounded-lg overflow-hidden">
+                    <div key={image} className="relative h-48 rounded-lg overflow-hidden">
                       <Image
                         src={image}
                         alt={`Image ${index + 1}`}
                         fill
+                        sizes="(max-width: 768px) 50vw, 33vw"
                         className="object-cover"
                       />
                     </div>

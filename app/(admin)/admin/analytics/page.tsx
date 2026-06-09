@@ -371,7 +371,7 @@ export default function AnalyticsPage() {
               <div className="p-4">
                 <div className="space-y-2">
                   {analytics.recentActivity.map((activity, index) => (
-                    <div key={index} className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <div key={`${activity.time}-${activity.action}-${activity.location}`} className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                       <span className="text-xs font-mono text-gray-400 shrink-0">{activity.time}</span>
                       <span className="text-sm text-gray-700 flex-1 truncate">{activity.action}</span>
                       <span className="text-xs text-gray-400 shrink-0">{activity.location}</span>
@@ -422,7 +422,7 @@ export default function AnalyticsPage() {
                 <h3 className="text-base font-bold text-gray-900 mb-4">Propriétés les plus vues</h3>
                 <div className="space-y-2">
                   {analytics.business.topViewedProperties.map((prop, i) => (
-                    <div key={i} className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50">
+                    <div key={prop.title} className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50">
                       <span className="text-xs font-bold text-gray-400 w-5 text-center">{i + 1}</span>
                       <span className="text-sm text-gray-800 flex-1 truncate">{prop.title}</span>
                       <div className="flex items-center gap-1">
@@ -443,7 +443,7 @@ export default function AnalyticsPage() {
                 <h3 className="text-base font-bold text-gray-900 mb-4">Dernières demandes</h3>
                 <div className="space-y-2">
                   {analytics.business.recentContacts.map((contact, i) => (
-                    <div key={i} className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50">
+                    <div key={`${contact.email}-${contact.date}`} className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50">
                       <div className={`w-2 h-2 rounded-full shrink-0 ${contact.isRead ? 'bg-gray-300' : 'bg-red-500'}`} />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">{contact.name}</p>

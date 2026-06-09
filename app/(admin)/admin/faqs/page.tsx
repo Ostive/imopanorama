@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { m } from 'framer-motion'
 import { useFaqs } from '@/features/faqs/hooks/useFaqs'
@@ -46,7 +46,7 @@ const CATEGORY_OPTIONS = [
   { value: 'visite',        label: 'Visite' },
 ]
 
-export default function AdminFaqsPage() {
+function AdminFaqsPageContent() {
   const router = useRouter()
   const urlParams = useSearchParams()
 
@@ -300,5 +300,13 @@ export default function AdminFaqsPage() {
 
       </div>
     </div>
+  )
+}
+
+export default function AdminFaqsPage() {
+  return (
+    <Suspense fallback={null}>
+      <AdminFaqsPageContent />
+    </Suspense>
   )
 }

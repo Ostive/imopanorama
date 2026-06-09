@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { m } from 'framer-motion';
 import {
@@ -54,7 +54,7 @@ type Contact = {
   } | null;
 };
 
-export default function ContactsPage() {
+function ContactsPageContent() {
   const router = useRouter();
   const urlParams = useSearchParams();
 
@@ -612,5 +612,13 @@ export default function ContactsPage() {
         />
       </div>
     </div>
+  );
+}
+
+export default function ContactsPage() {
+  return (
+    <Suspense fallback={null}>
+      <ContactsPageContent />
+    </Suspense>
   );
 }

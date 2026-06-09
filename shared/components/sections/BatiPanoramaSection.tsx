@@ -111,7 +111,7 @@ export default function BatiPanoramaSection() {
                 const Icon = service.icon
                 return (
                   <m.li
-                    key={index}
+                    key={service.title}
                     initial={{ opacity: 0, y: 12 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}

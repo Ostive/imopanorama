@@ -44,11 +44,13 @@ export const PUT = withErrorHandler(async (
   const { authorized, errorResponse } = await requireStaff(request);
   if (!authorized) return errorResponse!;
 
-  const id = await extractParam(context, 'id');
-  const body = await request.json();
+  const [id, body, { PropertyFormDataSchema }] = await Promise.all([
+    extractParam(context, 'id'),
+    request.json(),
+    import('@/features/properties/schemas/properties.schema'),
+  ]);
 
   // Partial validation with Zod
-  const { PropertyFormDataSchema } = await import('@/features/properties/schemas/properties.schema');
   const validation = PropertyFormDataSchema.partial().safeParse(body);
 
   if (!validation.success) {

@@ -142,7 +142,6 @@ function ResetPasswordContent() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={8}
-              autoFocus
               className="w-full pl-12 pr-12 py-3 bg-muted border-2 border-border text-foreground rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white dark:focus:bg-gray-900 transition-all outline-none"
               placeholder="••••••••"
             />
@@ -219,7 +218,7 @@ export default function ResetPasswordPage() {
         </div>
         <div className="relative z-10 flex flex-col justify-center items-center w-full p-12">
           <m.div
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
             className="text-center"
@@ -229,6 +228,7 @@ export default function ResetPasswordPage() {
                 src="/images/auth/auth-illustration.png"
                 alt="ImoPanorama Logo"
                 fill
+                sizes="(max-width: 1024px) 0px, 320px"
                 className="object-contain drop-shadow-2xl"
               />
             </div>

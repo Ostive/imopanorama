@@ -136,7 +136,7 @@ export default function BatiPanoramaPage() {
 
             <m.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="relative">
               <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl">
-                <Image src="/images/social/og-image.png" alt="Construction BatiPanorama" fill className="object-cover" />
+                <Image src="/images/social/og-image.png" alt="Construction BatiPanorama" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
                 <div className="absolute inset-0 bg-linear-to-t from-gray-900/40 to-transparent" />
               </div>
             </m.div>
@@ -174,7 +174,7 @@ export default function BatiPanoramaPage() {
                 ))
               : services.map((service: Service, index: number) => (
                   <m.div
-                    key={index}
+                    key={service.id}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -235,7 +235,7 @@ export default function BatiPanoramaPage() {
                 ))
               : processSteps.map((item: ProcessStep, index: number) => (
                   <m.div
-                    key={index}
+                    key={item.id}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -300,6 +300,7 @@ export default function BatiPanoramaPage() {
                             src={project.coverImage || project.images[0] || '/images/batipanorama/project-placeholder.jpg'}
                             alt={project.title}
                             fill
+                            sizes="(max-width: 1024px) 100vw, 33vw"
                             className="object-cover group-hover:scale-105 transition-transform duration-500"
                           />
                           <div className="absolute inset-0 bg-linear-to-t from-gray-900/70 to-transparent" />

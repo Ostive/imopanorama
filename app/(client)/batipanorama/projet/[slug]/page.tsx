@@ -128,6 +128,7 @@ export default function ProjectDetailPage() {
           src={project.coverImage || project.images[0] || '/images/batipanorama/project-placeholder.jpg'}
           alt={project.title}
           fill
+          sizes="100vw"
           className="object-cover"
           priority
         />
@@ -279,7 +280,7 @@ export default function ProjectDetailPage() {
                   </div>
                   <ul className="grid md:grid-cols-2 gap-3">
                     {project.features.map((feature, index) => (
-                      <li key={index} className="flex items-start gap-2">
+                      <li key={feature} className="flex items-start gap-2">
                         <CheckCircleIcon className="h-5 w-5 text-primary-500 mt-0.5 flex-shrink-0" />
                         <span className="text-foreground">{feature}</span>
                       </li>
@@ -374,7 +375,7 @@ export default function ProjectDetailPage() {
                 <div className="flex flex-wrap gap-2">
                   {project.tags.map((tag, index) => (
                     <span 
-                      key={index}
+                      key={tag}
                       className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-linear-to-r from-primary-100 to-primary-100 text-primary-700 border border-primary-200 hover:scale-105 transition-transform"
                     >
                       {tag}
@@ -414,7 +415,7 @@ export default function ProjectDetailPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {project.images.map((image, index) => (
                 <m.div
-                  key={index}
+                  key={image}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.1 }}
@@ -426,6 +427,7 @@ export default function ProjectDetailPage() {
                     src={image}
                     alt={`${project.title} - Image ${index + 1}`}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   {/* Overlay */}
@@ -533,6 +535,7 @@ export default function ProjectDetailPage() {
               src={project.images[currentImageIndex]}
               alt={`${project.title} - Image ${currentImageIndex + 1}`}
               fill
+              sizes="100vw"
               className="object-contain"
               priority
             />

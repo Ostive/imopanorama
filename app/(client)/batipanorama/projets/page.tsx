@@ -203,6 +203,7 @@ function ProjectCard({ project }: { project: Project }) {
             src={project.coverImage || project.images[0] || '/images/batipanorama/project-placeholder.jpg'}
             alt={project.title}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover group-hover:scale-110 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent"></div>
@@ -240,7 +241,7 @@ function ProjectCard({ project }: { project: Project }) {
             <div className="flex flex-wrap gap-2">
               {project.tags && project.tags.slice(0, 2).map((tag: string, index: number) => (
                 <span
-                  key={index}
+                  key={tag}
                   className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300"
                 >
                   {tag}

@@ -41,10 +41,11 @@ export const PUT = withErrorHandler(async (
   const { authorized, errorResponse } = await requireAdmin(request);
   if (!authorized) return errorResponse!;
 
-  const id = await extractParam(context, 'id');
-  const body = await request.json();
-
-  const { NewsFormDataSchema } = await import('@/features/news/schemas/news.schema');
+  const [id, body, { NewsFormDataSchema }] = await Promise.all([
+    extractParam(context, 'id'),
+    request.json(),
+    import('@/features/news/schemas/news.schema'),
+  ]);
   const validation = NewsFormDataSchema.partial().safeParse(body);
 
   if (!validation.success) {

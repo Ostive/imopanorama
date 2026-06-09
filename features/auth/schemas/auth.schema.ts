@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 // Schéma pour la validation du formulaire de connexion
 export const loginSchema = z.object({
-  email: z.string().email({ message: 'Adresse email invalide' }),
+  email: z.email({ message: 'Adresse email invalide' }),
   password: z.string().min(6, { message: 'Le mot de passe doit contenir au moins 6 caractères' }),
   rememberMe: z.boolean().optional(),
 });
@@ -11,7 +11,7 @@ export const loginSchema = z.object({
 export const registerSchema = z.object({
   firstName: z.string().min(2, { message: 'Le prénom doit contenir au moins 2 caractères' }),
   lastName: z.string().min(2, { message: 'Le nom doit contenir au moins 2 caractères' }),
-  email: z.string().email({ message: 'Adresse email invalide' }),
+  email: z.email({ message: 'Adresse email invalide' }),
   password: z.string().min(6, { message: 'Le mot de passe doit contenir au moins 6 caractères' }),
   confirmPassword: z.string().min(6, { message: 'La confirmation du mot de passe doit contenir au moins 6 caractères' }),
   phone: z.string().optional(),

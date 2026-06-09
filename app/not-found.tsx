@@ -19,7 +19,7 @@ export default function NotFound() {
         <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 border border-gray-100 text-center">
           {/* Illustration with 404 */}
           <m.div
-            initial={{ scale: 0, opacity: 0 }}
+            initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, type: 'spring', stiffness: 150 }}
             className="relative mb-8"
@@ -60,7 +60,7 @@ export default function NotFound() {
                 
                 {/* Magnifying Glass */}
                 <m.div
-                  initial={{ scale: 0, rotate: -45 }}
+                  initial={{ scale: 0.95, opacity: 0, rotate: -45 }}
                   animate={{ scale: 1, rotate: 0 }}
                   transition={{ delay: 0.6, type: 'spring' }}
                   className="absolute -right-2 top-4 w-16 h-16 bg-linear-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-xl"

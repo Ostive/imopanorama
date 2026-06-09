@@ -250,7 +250,6 @@ export default function FaqForm({ initialData, onSubmit, isSubmitting, colorPale
                 onChange={(e) => setNewCategory(e.target.value)}
                 className={`flex-grow px-3 py-2 border border-${currentPalette.secondary}-300 rounded-l-md shadow-sm focus:outline-none focus:ring-${currentPalette.primary}-500 focus:border-${currentPalette.primary}-500`}
                 placeholder="Nouvelle catégorie"
-                autoFocus
               />
               <button
                 type="button"

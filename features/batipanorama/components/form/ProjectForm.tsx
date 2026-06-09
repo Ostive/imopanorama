@@ -457,7 +457,7 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
                       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {formData.images.map((img, index) => (
                           <div
-                            key={index}
+                            key={img}
                             role="button"
                             tabIndex={0}
                             onClick={() => setFormData(prev => ({ ...prev, coverImage: img }))}
@@ -527,7 +527,7 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
                       </Label>
                       <div className="flex flex-wrap gap-2 min-h-[36px]">
                         {formData.tags.map((tag, i) => (
-                          <span key={i} className="inline-flex items-center gap-1 px-3 py-1 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium">
+                          <span key={tag} className="inline-flex items-center gap-1 px-3 py-1 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium">
                             {tag}
                             <button type="button" onClick={() => setFormData(prev => ({ ...prev, tags: prev.tags.filter((_, j) => j !== i) }))} className="text-primary-400 hover:text-primary-700 ml-0.5">
                               <XMarkIcon className="w-3.5 h-3.5" />
@@ -548,7 +548,7 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
                       </Label>
                       <div className="space-y-2">
                         {formData.features.map((f, i) => (
-                          <div key={i} className="flex items-center gap-2 text-sm text-foreground">
+                          <div key={f} className="flex items-center gap-2 text-sm text-foreground">
                             <CheckCircleIcon className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                             <span className="flex-1">{f}</span>
                             <button type="button" onClick={() => setFormData(prev => ({ ...prev, features: prev.features.filter((_, j) => j !== i) }))} className="text-gray-300 hover:text-red-500 transition-colors">

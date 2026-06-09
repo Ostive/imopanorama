@@ -308,7 +308,7 @@ export default function ServiceForm({ mode, serviceId }: ServiceFormProps) {
                       </Label>
                       <div className="space-y-2">
                         {formData.features.map((f, i) => (
-                          <div key={i} className="flex items-center gap-2 text-sm text-foreground">
+                          <div key={f} className="flex items-center gap-2 text-sm text-foreground">
                             <CheckCircleIcon className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                             <span className="flex-1">{f}</span>
                             <button

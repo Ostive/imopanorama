@@ -157,8 +157,8 @@ export default function FavorisPage() {
 
             {favorites.length > 0 && (
               <m.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
                 className="bg-card rounded-2xl shadow-lg px-6 py-3 border-2 border-red-200 dark:border-red-800"
               >
                 <div className="text-center">

@@ -949,7 +949,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                     <p className="text-xs font-medium text-muted-foreground mb-2">{formData.features.length} sélectionnée(s) :</p>
                     <div className="flex flex-wrap gap-2">
                       {formData.features.map((feature, index) => (
-                        <span key={index} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-200 rounded-lg text-sm font-medium">
+                        <span key={feature} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-200 rounded-lg text-sm font-medium">
                           {feature}
                           <button type="button" onClick={() => removeFeature(index)} className="text-primary-600 hover:text-primary-800 ml-0.5">
                             <XMarkIcon className="h-3.5 w-3.5" />
@@ -994,7 +994,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                     <p className="text-xs font-medium text-muted-foreground mb-2">{formData.amenities.length} sélectionnée(s) :</p>
                     <div className="flex flex-wrap gap-2">
                       {formData.amenities.map((amenity, index) => (
-                        <span key={index} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-200 rounded-lg text-sm font-medium">
+                        <span key={amenity} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-200 rounded-lg text-sm font-medium">
                           {amenity}
                           <button type="button" onClick={() => removeAmenity(index)} className="text-primary-600 hover:text-primary-800 ml-0.5">
                             <XMarkIcon className="h-3.5 w-3.5" />
