@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { m } from 'framer-motion'
 import toast from 'react-hot-toast'
@@ -192,7 +193,19 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
   const router = useRouter()
   const isEdit = mode === 'edit'
 
-  const [isLoading, setIsLoading] = useState(isEdit)
+  const {
+    data: loadedProperty,
+    isLoading,
+    error: propertyLoadError,
+  } = useQuery({
+    queryKey: ['property-form', propertyId],
+    enabled: isEdit && !!propertyId,
+    queryFn: async () => {
+      const response = await fetch(`/api/properties/${propertyId}`)
+      const result = await response.json()
+      return result.data
+    },
+  })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const totalSteps = 7
   const imageUploaderRef = useRef<MultipleImageUploaderHandle>(null)
@@ -222,13 +235,8 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
 
   // Load existing property data (edit mode only)
   useEffect(() => {
-    if (!isEdit || !propertyId) return
-    const fetchProperty = async () => {
-      try {
-        const response = await fetch(`/api/properties/${propertyId}`)
-        if (!response.ok) throw new Error('Propriété non trouvée')
-        const result = await response.json()
-        const data = result.data
+    const data = loadedProperty
+    if (!data) return
         setFormData({
           title: data.title || '',
           description: data.description || '',
@@ -274,14 +282,13 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
           isFeatured: data.isFeatured || false,
           isPublished: data.isPublished ?? true,
         })
-      } catch (err: any) {
-        toast.error(err.message || 'Impossible de charger la propriété')
-      } finally {
-        setIsLoading(false)
-      }
+  }, [loadedProperty])
+
+  useEffect(() => {
+    if (propertyLoadError instanceof Error) {
+      toast.error(propertyLoadError.message || 'Impossible de charger la propriété')
     }
-    fetchProperty()
-  }, [isEdit, propertyId])
+  }, [propertyLoadError])
 
   // Auto-generate reference number on create
   useEffect(() => {

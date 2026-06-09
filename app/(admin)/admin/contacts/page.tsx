@@ -2,6 +2,7 @@
 
 import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { m } from 'framer-motion';
 import {
   EnvelopeIcon,
@@ -68,7 +69,6 @@ function ContactsPageContent() {
     const s = urlParams.get('status'); return s ? [s] : [];
   });
   const [limit, setLimit] = useState(() => parseInt(urlParams.get('limit') || '15'));
-  const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(() => parseInt(urlParams.get('page') || '1'));
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -87,7 +87,9 @@ function ContactsPageContent() {
     return () => window.removeEventListener('keydown', handleEscape);
   }, [isModalOpen]);
 
-  useEffect(() => {
+  const { data: contactsData, isLoading } = useQuery({
+    queryKey: ['admin-contacts', currentPage, limit, selectedStatuses, searchTerm],
+    queryFn: async () => {
     const params = new URLSearchParams({
       page: String(currentPage),
       limit: String(limit),
@@ -95,18 +97,21 @@ function ContactsPageContent() {
     if (searchTerm) params.set('search', searchTerm);
     if (selectedStatuses.length === 1) params.set('status', selectedStatuses[0]);
 
-    setIsLoading(true);
-    fetch(`/api/contacts?${params.toString()}`)
-      .then((r) => r.json())
-      .then((data) => {
-        setContacts(data.contacts || []);
-        setFilteredContacts(data.contacts || []);
-        setTotalContacts(data.total || 0);
-        setServerTotalPages(data.totalPages || 1);
-      })
-      .catch(console.error)
-      .finally(() => setIsLoading(false));
-  }, [currentPage, limit, selectedStatuses, searchTerm]);
+      const response = await fetch(`/api/contacts?${params.toString()}`);
+      if (!response.ok) throw new Error('Erreur lors du chargement des contacts');
+      return response.json();
+    },
+    staleTime: 30_000,
+  });
+
+  useEffect(() => {
+    const data = contactsData;
+    if (!data) return;
+    setContacts(data.contacts || []);
+    setFilteredContacts(data.contacts || []);
+    setTotalContacts(data.total || 0);
+    setServerTotalPages(data.totalPages || 1);
+  }, [contactsData]);
 
   // Sync state → URL
   useEffect(() => {

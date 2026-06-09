@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute'
 import { Bars3Icon } from '@heroicons/react/24/outline'
@@ -48,11 +49,24 @@ const MENU_ITEMS: MenuItem[] = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [unreadCount, setUnreadCount] = useState(0)
-  const [unreadNotifications, setUnreadNotifications] = useState(0)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
   const { user, logout } = useAuth()
   const pathname = usePathname()
+
+  const { data: counts } = useQuery({
+    queryKey: ['admin-layout-counts'],
+    queryFn: async () => {
+      const [contacts, notifications] = await Promise.all([
+        fetch('/api/contacts/count').then((r) => r.ok ? r.json() : null).catch(() => null),
+        fetch('/api/notifications/count').then((r) => r.ok ? r.json() : null).catch(() => null),
+      ])
+      return {
+        unreadCount: contacts?.unread || 0,
+        unreadNotifications: notifications?.unread || 0,
+      }
+    },
+    staleTime: 30_000,
+  })
 
   useEffect(() => {
     const t = setTimeout(() => setIsInitialLoad(false), 100)
@@ -61,15 +75,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => { setSidebarOpen(false) }, [pathname])
 
-  useEffect(() => {
-    Promise.all([
-      fetch('/api/contacts/count').then((r) => r.ok ? r.json() : null).catch(() => null),
-      fetch('/api/notifications/count').then((r) => r.ok ? r.json() : null).catch(() => null),
-    ]).then(([contacts, notifications]) => {
-      if (contacts) setUnreadCount(contacts.unread || 0)
-      if (notifications) setUnreadNotifications(notifications.unread || 0)
-    })
-  }, [])
+  const unreadCount = counts?.unreadCount || 0
+  const unreadNotifications = counts?.unreadNotifications || 0
 
   const menuItems: MenuItem[] = MENU_ITEMS.map((item) =>
     item.href === '/admin/contacts' && unreadCount > 0

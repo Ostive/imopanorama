@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { m } from 'framer-motion';
 import { FormSkeleton } from '@/shared/components/loading';
 import NewsForm from '@/features/news/components/admin/NewsForm';
@@ -19,38 +19,20 @@ interface EditNewsPageProps {
 
 export default function EditNewsPage({ params }: EditNewsPageProps) {
   const [id, setId] = useState<string>('');
-  const [newsData, setNewsData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     params.then((p) => setId(p.id));
   }, [params]);
 
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchNews = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`/api/admin/news/${id}`);
-
-        if (!response.ok) {
-          throw new Error('Article introuvable');
-        }
-
-        const data = await response.json();
-        setNewsData(data);
-      } catch (err) {
-        console.error('Error fetching news:', err);
-        setError(err instanceof Error ? err.message : 'Une erreur est survenue');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNews();
-  }, [id]);
+  const { data: newsData, isLoading: loading, error } = useQuery({
+    queryKey: ['admin-news', id],
+    enabled: !!id,
+    queryFn: async () => {
+      const response = await fetch(`/api/admin/news/${id}`);
+      if (!response.ok) throw new Error('Article introuvable');
+      return response.json();
+    },
+  });
 
   if (loading) {
     return (
@@ -67,7 +49,7 @@ export default function EditNewsPage({ params }: EditNewsPageProps) {
       <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
-            Erreur: {error || 'Article introuvable'}
+            Erreur: {error instanceof Error ? error.message : 'Article introuvable'}
           </div>
           <Link
             href="/admin/news"

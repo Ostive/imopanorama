@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { m } from 'framer-motion';
 import Link from 'next/link';
 import {
@@ -139,11 +140,87 @@ const TABS = [
   { id: 'search', name: 'Recherche', icon: MagnifyingGlassIcon },
 ] as const;
 
+type SettingsTabId = typeof TABS[number]['id'];
+type SettingsChangeHandler = (section: string, field: string, value: string | boolean | number) => void;
+
+function mergeSettings(settings?: Partial<AllSettings>): AllSettings {
+  if (!settings) return DEFAULT_SETTINGS;
+  return {
+    ...DEFAULT_SETTINGS,
+    ...settings,
+    contact: {
+      ...DEFAULT_SETTINGS.contact,
+      ...settings.contact,
+      whatsappEnabled: settings.contact?.whatsappEnabled ?? false,
+      facebookEnabled: settings.contact?.facebookEnabled ?? false,
+      instagramEnabled: settings.contact?.instagramEnabled ?? false,
+      linkedinEnabled: settings.contact?.linkedinEnabled ?? false,
+      twitterEnabled: settings.contact?.twitterEnabled ?? false,
+      youtubeEnabled: settings.contact?.youtubeEnabled ?? false,
+      telegramEnabled: settings.contact?.telegramEnabled ?? false,
+    },
+  };
+}
+
+function ActiveSettingsTab({
+  activeTab,
+  settings,
+  isLoading,
+  onChange,
+}: {
+  activeTab: SettingsTabId;
+  settings: AllSettings;
+  isLoading: boolean;
+  onChange: SettingsChangeHandler;
+}) {
+  switch (activeTab) {
+    case 'general':
+      return <GeneralTab settings={settings.general} onChange={onChange} />;
+    case 'contact':
+      return <ContactTab settings={settings.contact} isLoading={isLoading} onChange={onChange} />;
+    case 'homepage':
+      return <HomepageTab settings={settings.homepage} onChange={onChange} />;
+    case 'features':
+      return <FeaturesTab settings={settings.features} onChange={onChange} />;
+    case 'appearance':
+      return (
+        <div>
+          <h3 className="text-lg font-semibold text-foreground mb-4">Apparence</h3>
+          <ThemeSettings />
+        </div>
+      );
+    case 'email':
+      return <EmailTab settings={settings.email} onChange={onChange} />;
+    case 'seo':
+      return <SeoTab settings={settings.seo} onChange={onChange} />;
+    case 'pricing':
+      return <PricingTab settings={settings.pricing} onChange={onChange} />;
+    case 'security':
+      return <SecurityTab settings={settings.security} onChange={onChange} />;
+    case 'map':
+      return <MapTab settings={settings.map} onChange={onChange} />;
+    case 'search':
+      return <SearchTab />;
+    default:
+      return null;
+  }
+}
+
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState('general');
+  const [activeTab, setActiveTab] = useState<SettingsTabId>('general');
   const [settings, setSettings] = useState<AllSettings>(DEFAULT_SETTINGS);
   const [isSaving, setIsSaving] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+
+  const { data: loadedSettings, isLoading } = useQuery({
+    queryKey: ['settings'],
+    queryFn: async () => {
+      const response = await fetch('/api/settings');
+      if (!response.ok) throw new Error('Failed to load settings');
+      const data = await response.json();
+      return data.success && data.settings ? mergeSettings(data.settings) : DEFAULT_SETTINGS;
+    },
+    staleTime: 60_000,
+  });
 
   const handleInputChange = (section: string, field: string, value: string | boolean | number) => {
     setSettings(prev => ({
@@ -156,37 +233,8 @@ export default function SettingsPage() {
   };
 
   useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        const response = await fetch('/api/settings');
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success && data.settings) {
-            setSettings(prevSettings => ({
-              ...prevSettings,
-              ...data.settings,
-              contact: {
-                ...prevSettings.contact,
-                ...data.settings.contact,
-                whatsappEnabled: data.settings.contact?.whatsappEnabled ?? false,
-                facebookEnabled: data.settings.contact?.facebookEnabled ?? false,
-                instagramEnabled: data.settings.contact?.instagramEnabled ?? false,
-                linkedinEnabled: data.settings.contact?.linkedinEnabled ?? false,
-                twitterEnabled: data.settings.contact?.twitterEnabled ?? false,
-                youtubeEnabled: data.settings.contact?.youtubeEnabled ?? false,
-                telegramEnabled: data.settings.contact?.telegramEnabled ?? false,
-              },
-            }));
-          }
-        }
-      } catch (error) {
-        console.error('Error loading settings:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    loadSettings();
-  }, []);
+    if (loadedSettings) setSettings(loadedSettings);
+  }, [loadedSettings]);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -207,40 +255,6 @@ export default function SettingsPage() {
       alert('❌ Erreur lors de la sauvegarde des paramètres');
     } finally {
       setIsSaving(false);
-    }
-  };
-
-  const renderActiveTab = () => {
-    switch (activeTab) {
-      case 'general':
-        return <GeneralTab settings={settings.general} onChange={handleInputChange} />;
-      case 'contact':
-        return <ContactTab settings={settings.contact} isLoading={isLoading} onChange={handleInputChange} />;
-      case 'homepage':
-        return <HomepageTab settings={settings.homepage} onChange={handleInputChange} />;
-      case 'features':
-        return <FeaturesTab settings={settings.features} onChange={handleInputChange} />;
-      case 'appearance':
-        return (
-          <div>
-            <h3 className="text-lg font-semibold text-foreground mb-4">Apparence</h3>
-            <ThemeSettings />
-          </div>
-        );
-      case 'email':
-        return <EmailTab settings={settings.email} onChange={handleInputChange} />;
-      case 'seo':
-        return <SeoTab settings={settings.seo} onChange={handleInputChange} />;
-      case 'pricing':
-        return <PricingTab settings={settings.pricing} onChange={handleInputChange} />;
-      case 'security':
-        return <SecurityTab settings={settings.security} onChange={handleInputChange} />;
-      case 'map':
-        return <MapTab settings={settings.map} onChange={handleInputChange} />;
-      case 'search':
-        return <SearchTab />;
-      default:
-        return null;
     }
   };
 
@@ -310,7 +324,12 @@ export default function SettingsPage() {
           >
             <div className="bg-card rounded-2xl shadow-lg border border-border">
               <div className="p-8">
-                {renderActiveTab()}
+                <ActiveSettingsTab
+                  activeTab={activeTab}
+                  settings={settings}
+                  isLoading={isLoading}
+                  onChange={handleInputChange}
+                />
 
                 {/* Save Button */}
                 <div className="mt-8 pt-6 border-t border-border">

@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { Suspense } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -134,9 +135,21 @@ function ComparerInner() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const ids = (searchParams.get('ids') || '').split(',').map(id => id.trim()).filter(Boolean).slice(0, 4)
-  const [properties, setProperties] = useState<Property[]>([])
-  const [loading, setLoading] = useState(true)
+  const idsKey = ids.join(',')
   const { safeImages } = useImageFallback()
+
+  const { data: properties = [], isLoading: loading } = useQuery<Property[]>({
+    queryKey: ['compare-properties', idsKey],
+    enabled: ids.length > 0,
+    queryFn: async () => {
+      const response = await fetch(
+        `/api/properties?ids=${encodeURIComponent(idsKey)}&limit=${ids.length}`
+      )
+      const result = await response.json()
+      return result.success ? result.data as Property[] : []
+    },
+    staleTime: 30_000,
+  })
 
   const removeProperty = (propertyId: string) => {
     const newIds = properties.filter(p => p.id !== propertyId).map(p => p.id)
@@ -146,36 +159,6 @@ function ComparerInner() {
       router.push(`/proprietes/comparer?ids=${newIds.join(',')}`)
     }
   }
-
-  useEffect(() => {
-    const controller = new AbortController()
-
-    async function fetchComparedProperties() {
-      if (!ids.length) {
-        setProperties([])
-        setLoading(false)
-        return
-      }
-
-      setLoading(true)
-      try {
-        const response = await fetch(
-          `/api/properties?ids=${encodeURIComponent(ids.join(','))}&limit=${ids.length}`,
-          { signal: controller.signal }
-        )
-        const result = await response.json()
-        setProperties(result.success ? result.data as Property[] : [])
-      } catch (error) {
-        if (!controller.signal.aborted) setProperties([])
-      } finally {
-        if (!controller.signal.aborted) setLoading(false)
-      }
-    }
-
-    fetchComparedProperties()
-    return () => controller.abort()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams])
 
   const colWidth = properties.length <= 2 ? 'w-1/2' : properties.length === 3 ? 'w-1/3' : 'w-1/4'
 

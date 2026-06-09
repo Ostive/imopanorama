@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/features/auth/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { m } from 'framer-motion';
@@ -15,31 +16,21 @@ export default function FavorisPage() {
   const { isAuthenticated, user, loading: authLoading } = useAuth();
   const { refreshFavorites, removeFromFavorites } = useFavoritesContext();
   const [favorites, setFavorites] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // Fetch favorites
+  const { data: favoritesData, isLoading: loading } = useQuery({
+    queryKey: ['favorites-page'],
+    enabled: isAuthenticated,
+    queryFn: async () => {
+      const response = await fetch('/api/favorites');
+      if (!response.ok) throw new Error('Erreur lors du chargement des favoris');
+      return response.json();
+    },
+  });
+
   useEffect(() => {
-    const fetchFavorites = async () => {
-      if (!isAuthenticated) return;
-
-      setLoading(true);
-      try {
-        const response = await fetch('/api/favorites');
-        if (response.ok) {
-          const data = await response.json();
-          setFavorites(data.favorites || []);
-        }
-      } catch (error) {
-        console.error('Error fetching favorites:', error);
-        toast.error('Erreur lors du chargement des favoris');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFavorites();
-  }, [isAuthenticated]);
+    if (favoritesData) setFavorites(favoritesData.favorites || []);
+  }, [favoritesData]);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {

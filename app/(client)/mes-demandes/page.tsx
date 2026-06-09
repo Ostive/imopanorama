@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/features/auth/context/AuthContext';
 import { useContacts } from '@/features/contacts/context/ContactsContext';
 import { useRouter } from 'next/navigation';
@@ -45,7 +46,6 @@ export default function MesDemandesPage() {
   const { refreshContactsCount } = useContacts();
   const router = useRouter();
   const [contacts, setContacts] = useState<Contact[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [contactToDelete, setContactToDelete] = useState<string | null>(null);
@@ -57,28 +57,20 @@ export default function MesDemandesPage() {
     }
   }, [isAuthenticated, authLoading, router]);
 
-  useEffect(() => {
-    const fetchContacts = async () => {
-      if (!isAuthenticated) return;
-      
-      try {
-        const response = await fetch('/api/contacts/user');
-        if (response.ok) {
-          const data = await response.json();
-          setContacts(data.contacts || []);
-        } else {
-          setError('Erreur lors du chargement des demandes');
-        }
-      } catch (error) {
-        console.error('Error fetching contacts:', error);
-        setError('Erreur lors du chargement des demandes');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data: contactsData, isLoading: loading, error: contactsError } = useQuery({
+    queryKey: ['user-contacts'],
+    enabled: isAuthenticated,
+    queryFn: async () => {
+      const response = await fetch('/api/contacts/user');
+      if (!response.ok) throw new Error('Erreur lors du chargement des demandes');
+      return response.json();
+    },
+  });
 
-    fetchContacts();
-  }, [isAuthenticated]);
+  useEffect(() => {
+    if (contactsData) setContacts(contactsData.contacts || []);
+    if (contactsError) setError('Erreur lors du chargement des demandes');
+  }, [contactsData, contactsError]);
 
   const openDeleteModal = (contactId: string) => {
     setContactToDelete(contactId);

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { m } from 'framer-motion';
 import {
@@ -31,7 +32,6 @@ interface EditUserPageProps {
 export default function EditUserPage({ params }: EditUserPageProps) {
   const router = useRouter();
   const [id, setId] = useState<string>('');
-  const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -47,37 +47,27 @@ export default function EditUserPage({ params }: EditUserPageProps) {
     params.then((p) => setId(p.id));
   }, [params]);
 
+  const { data: userData, isLoading: loading, error: loadError } = useQuery({
+    queryKey: ['admin-user', id],
+    enabled: !!id,
+    queryFn: async () => {
+      const response = await fetch(`/api/admin/users/${id}`);
+      if (!response.ok) throw new Error('Utilisateur introuvable');
+      return response.json();
+    },
+  });
+
   useEffect(() => {
-    if (!id) return;
-
-    const fetchUser = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`/api/admin/users/${id}`);
-
-        if (!response.ok) {
-          throw new Error('Utilisateur introuvable');
-        }
-
-        const data = await response.json();
-        const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim();
-        setFormData({
-          name: fullName || data.email || '',
-          email: data.email || '',
-          phone: data.phone || '',
-          role: (data.role || 'USER').toLowerCase(),
-          isActive: data.isActive !== undefined ? data.isActive : true,
-        });
-      } catch (err) {
-        console.error('Error fetching user:', err);
-        setError(err instanceof Error ? err.message : 'Une erreur est survenue');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, [id]);
+    if (!userData) return;
+    const fullName = `${userData.firstName || ''} ${userData.lastName || ''}`.trim();
+    setFormData({
+      name: fullName || userData.email || '',
+      email: userData.email || '',
+      phone: userData.phone || '',
+      role: (userData.role || 'USER').toLowerCase(),
+      isActive: userData.isActive !== undefined ? userData.isActive : true,
+    });
+  }, [userData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,12 +110,14 @@ export default function EditUserPage({ params }: EditUserPageProps) {
     );
   }
 
-  if (error && !formData.email) {
+  const pageError = error || (loadError instanceof Error ? loadError.message : null);
+
+  if (pageError && !formData.email) {
     return (
       <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
-            Erreur: {error}
+            Erreur: {pageError}
           </div>
           <Link
             href="/admin/users"
