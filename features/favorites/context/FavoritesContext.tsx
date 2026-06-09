@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useCallback, useContext, useMemo } from 'react'
+import React, { createContext, use, useCallback, useMemo } from 'react'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Favorite } from '@/features/favorites/types/favorites.types'
@@ -16,17 +16,15 @@ interface FavoritesContextType {
 }
 
 const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined)
+const FAVORITES_KEY = ['favorites']
 
 export function FavoritesProvider({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, token } = useAuth()
   const queryClient = useQueryClient()
 
-  // Define Query Key
-  const favoritesKey = ['favorites'];
-
   // 1. Check Favorites (Fetch)
   const { data: favorites = [], isLoading, refetch } = useQuery<Favorite[]>({
-    queryKey: favoritesKey,
+    queryKey: FAVORITES_KEY,
     queryFn: async () => {
       const controller = new AbortController()
       const timer = setTimeout(() => controller.abort(), 5000)
@@ -70,7 +68,7 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
       return propertyId;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: favoritesKey });
+      queryClient.invalidateQueries({ queryKey: FAVORITES_KEY });
     }
   });
 
@@ -87,7 +85,7 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
       return propertyId;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: favoritesKey });
+      queryClient.invalidateQueries({ queryKey: FAVORITES_KEY });
     }
   });
 
@@ -128,7 +126,7 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useFavorites() {
-  const context = useContext(FavoritesContext)
+  const context = use(FavoritesContext)
   if (context === undefined) {
     throw new Error('useFavorites must be used within a FavoritesProvider')
   }

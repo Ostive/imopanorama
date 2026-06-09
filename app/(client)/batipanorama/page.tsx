@@ -188,8 +188,8 @@ export default function BatiPanoramaPage() {
                     <p className="text-muted-foreground leading-relaxed mb-5 text-sm">{service.description}</p>
 
                     <ul className="space-y-2 mb-6">
-                      {service.features.map((feature: string, idx: number) => (
-                        <li key={idx} className="flex items-center gap-3 text-sm text-foreground">
+                      {service.features.map((feature: string) => (
+                        <li key={feature} className="flex items-center gap-3 text-sm text-foreground">
                           <CheckCircleIcon className="w-4 h-4 text-secondary-500 shrink-0" />
                           {feature}
                         </li>

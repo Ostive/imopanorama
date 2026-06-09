@@ -2,6 +2,7 @@
 
 import { Suspense, useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Image from 'next/image'
 import { m, AnimatePresence } from 'framer-motion'
 import { formatPrice, formatDate } from '@/shared/utils'
 import Link from 'next/link'
@@ -505,7 +506,9 @@ function AdminPropertiesPageContent() {
                           <td className="px-6 py-4">
                             <div className="flex items-center">
                               {property.coverImage || property.images?.[0] ? (
-                                <img src={property.coverImage || property.images[0]} alt={property.title} className="h-12 w-12 rounded-lg object-cover shrink-0" />
+                                <div className="relative h-12 w-12 rounded-lg overflow-hidden shrink-0">
+                                  <Image src={property.coverImage || property.images[0]} alt={property.title} fill sizes="48px" className="object-cover" />
+                                </div>
                               ) : (
                                 <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center shrink-0"><HomeModernIcon className="h-6 w-6 text-muted-foreground" /></div>
                               )}
@@ -591,7 +594,7 @@ function AdminPropertiesPageContent() {
                     <m.div key={property.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -4 }} className="bg-card rounded-2xl shadow-lg overflow-hidden border border-border hover:shadow-xl transition-shadow group">
                       <div className="relative h-48 bg-muted">
                         {property.coverImage || property.images?.[0] ? (
-                          <img src={property.coverImage || property.images[0]} alt={property.title} className="w-full h-full object-cover" />
+                          <Image src={property.coverImage || property.images[0]} alt={property.title} fill sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center"><HomeModernIcon className="h-16 w-16 text-muted-foreground" /></div>
                         )}

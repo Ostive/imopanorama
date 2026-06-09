@@ -70,15 +70,19 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
         {images.map((imageUrl, index) => (
           <div key={imageUrl} className="relative group aspect-square">
             <div className="relative w-full h-full overflow-hidden rounded-lg bg-muted">
-              <img
-                src={imageUrl}
-                alt={`Galerie ${index + 1}`}
-                role="button"
-                tabIndex={0}
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              <button
+                type="button"
+                className="relative block w-full h-full"
                 onClick={() => onImageClick ? onImageClick(imageUrl) : openFullscreen(imageUrl)}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onImageClick ? onImageClick(imageUrl) : openFullscreen(imageUrl); } }}
-              />
+              >
+                <Image
+                  src={imageUrl}
+                  alt={`Image de galerie ${index + 1}`}
+                  fill
+                  sizes="(min-width: 768px) 25vw, (min-width: 640px) 33vw, 50vw"
+                  className="object-cover hover:scale-105 transition-transform duration-300"
+                />
+              </button>
 
               {editable && (
                 <div aria-hidden="true" className={`absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center ${onImageClick ? 'cursor-pointer' : ''}`}
@@ -129,18 +133,21 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
           className="fixed inset-0 bg-black bg-opacity-90 dark:bg-opacity-95 z-50 flex items-center justify-center p-4"
           onClick={closeFullscreen}
         >
-          <div className="relative max-w-4xl max-h-full">
+          <div className="relative w-[90vw] h-[80vh] max-w-4xl">
             <button type="button"
               className="absolute top-4 right-4 bg-card rounded-full p-1 shadow-lg transition-colors"
               onClick={closeFullscreen}
+              aria-label="Fermer l'aperçu"
             >
               <XCircleIcon className="h-6 w-6 text-foreground" />
             </button>
             <div className="relative w-full h-full">
-              <img
+              <Image
                 src={selectedImage}
                 alt="Aperçu en plein écran"
-                className="w-full h-full object-contain max-h-[80vh]"
+                fill
+                sizes="90vw"
+                className="object-contain"
               />
             </div>
           </div>

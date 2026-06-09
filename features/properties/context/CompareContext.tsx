@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState, useCallback, useMemo } from 'react'
+import React, { createContext, use, useState, useCallback, useMemo } from 'react'
 import { Property } from '@/features/properties/types/properties.types'
 import { toast } from 'react-hot-toast'
 
@@ -61,7 +61,7 @@ export function CompareProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useCompare() {
-  const ctx = useContext(CompareContext)
+  const ctx = use(CompareContext)
   if (!ctx) throw new Error('useCompare must be used within CompareProvider')
   return ctx
 }
