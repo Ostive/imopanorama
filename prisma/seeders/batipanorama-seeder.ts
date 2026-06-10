@@ -8,9 +8,11 @@ export async function seedBatiPanorama(prisma: PrismaClient) {
   console.log('\n🏗️  Seeding BatiPanorama data...');
 
   // Clear existing data
-  await prisma.batiProcess.deleteMany({});
-  await prisma.batiService.deleteMany({});
-  await prisma.batiProject.deleteMany({});
+  await Promise.all([
+    prisma.batiProcess.deleteMany({}),
+    prisma.batiService.deleteMany({}),
+    prisma.batiProject.deleteMany({}),
+  ]);
 
   // Seed Projects
   const projects = await prisma.batiProject.createMany({

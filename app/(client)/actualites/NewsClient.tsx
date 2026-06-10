@@ -12,18 +12,47 @@ import {
 } from '@heroicons/react/24/outline';
 import { NewsItem } from '@/features/news/types/news.types';
 
+const NEWS_CATEGORIES = [
+    { id: 'all', label: 'Tout voir' },
+    { id: 'GENERAL', label: 'General' },
+    { id: 'IMMOBILIER', label: 'Immobilier' },
+    { id: 'CONSTRUCTION', label: 'Construction' },
+    { id: 'EVENEMENT', label: 'Evenements' },
+    { id: 'ENTREPRISE', label: 'Entreprise' },
+];
+
+const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+};
+
+const getCategoryBadgeClass = (category: string) => {
+    switch (category) {
+        case 'IMMOBILIER':
+            return 'bg-linear-to-r from-primary-500 to-cyan-500 text-white';
+        case 'CONSTRUCTION':
+            return 'bg-linear-to-r from-yellow-500 to-orange-500 text-white';
+        case 'EVENEMENT':
+            return 'bg-linear-to-r from-purple-500 to-pink-500 text-white';
+        case 'ENTREPRISE':
+            return 'bg-linear-to-r from-green-500 to-emerald-500 text-white';
+        default:
+            return 'bg-linear-to-r from-gray-500 to-gray-600 text-white';
+    }
+};
+
+const getCategoryEmoji = (category: string) => {
+    switch (category) {
+        case 'IMMOBILIER': return 'ðŸ ';
+        case 'CONSTRUCTION': return 'ðŸ­';
+        case 'EVENEMENT': return 'ðŸ“…';
+        case 'ENTREPRISE': return 'ðŸ’¼';
+        default: return 'ðŸ“°';
+    }
+};
+
 export default function NewsClient() {
     const [activeCategory, setActiveCategory] = useState<string>('all');
 
-    // Catégories d'actualités
-    const categories = [
-        { id: 'all', label: 'Tout voir' },
-        { id: 'GENERAL', label: 'Général' },
-        { id: 'IMMOBILIER', label: 'Immobilier' },
-        { id: 'CONSTRUCTION', label: 'Construction' },
-        { id: 'EVENEMENT', label: 'Événements' },
-        { id: 'ENTREPRISE', label: 'Entreprise' },
-    ];
 
     const { data: newsItems = [], isLoading, error } = useQuery<NewsItem[]>({
         queryKey: ['news', activeCategory],
@@ -42,39 +71,6 @@ export default function NewsClient() {
 
     // ... (rest of the component)
 
-
-
-    // Fonction pour formater la date
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-    };
-
-    // Fonction pour obtenir la classe de badge selon la catégorie
-    const getCategoryBadgeClass = (category: string) => {
-        switch (category) {
-            case 'IMMOBILIER':
-                return 'bg-linear-to-r from-primary-500 to-cyan-500 text-white';
-            case 'CONSTRUCTION':
-                return 'bg-linear-to-r from-yellow-500 to-orange-500 text-white';
-            case 'EVENEMENT':
-                return 'bg-linear-to-r from-purple-500 to-pink-500 text-white';
-            case 'ENTREPRISE':
-                return 'bg-linear-to-r from-green-500 to-emerald-500 text-white';
-            default:
-                return 'bg-linear-to-r from-gray-500 to-gray-600 text-white';
-        }
-    };
-
-    const getCategoryEmoji = (category: string) => {
-        switch (category) {
-            case 'IMMOBILIER': return '🏠';
-            case 'CONSTRUCTION': return '🏭';
-            case 'EVENEMENT': return '📅';
-            case 'ENTREPRISE': return '💼';
-            default: return '📰';
-        }
-    };
-
     return (
         <div className="min-h-screen bg-linear-to-br from-primary-50/40 via-white to-primary-50/30">
             {/* Category Filter */}
@@ -90,7 +86,7 @@ export default function NewsClient() {
                         <h2 className="text-xl font-bold text-foreground">Choisir un sujet</h2>
                     </div>
                     <div className="flex flex-wrap gap-3">
-                        {categories.map((category, index) => (
+                        {NEWS_CATEGORIES.map((category, index) => (
                             <m.button
                                 key={category.id}
                                 initial={{ opacity: 0, scale: 0.9 }}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 import Script from 'next/script'
 import {
   COOKIE_CONSENT_EVENT,
@@ -9,18 +9,18 @@ import {
 } from '@/shared/utils/cookieConsent'
 
 export default function CookieConsentScripts() {
-  const [consent, setConsent] = useState<CookieConsentValue | null>(null)
-
-  useEffect(() => {
-    setConsent(readCookieConsent())
-
-    const handleConsent = (event: Event) => {
-      setConsent((event as CustomEvent<CookieConsentValue>).detail)
-    }
-
-    window.addEventListener(COOKIE_CONSENT_EVENT, handleConsent)
-    return () => window.removeEventListener(COOKIE_CONSENT_EVENT, handleConsent)
-  }, [])
+  const consent = useSyncExternalStore(
+    (onStoreChange) => {
+      window.addEventListener(COOKIE_CONSENT_EVENT, onStoreChange)
+      window.addEventListener('storage', onStoreChange)
+      return () => {
+        window.removeEventListener(COOKIE_CONSENT_EVENT, onStoreChange)
+        window.removeEventListener('storage', onStoreChange)
+      }
+    },
+    readCookieConsent,
+    () => null
+  )
 
   if (
     consent !== 'accepted' ||

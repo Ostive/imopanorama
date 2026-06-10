@@ -43,7 +43,10 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     sort: sp.get('sort') || undefined,
     view: (sp.get('view') || 'list') as 'list' | 'full',
     filter: {
-      ids: sp.get('ids')?.split(',').map(id => id.trim()).filter(Boolean).slice(0, 20) || undefined,
+      ids: sp.get('ids')?.split(',').flatMap(id => {
+        const trimmedId = id.trim();
+        return trimmedId ? [trimmedId] : [];
+      }).slice(0, 20) || undefined,
       propertyType: sp.get('propertyType') || undefined,
       transactionType: sp.get('transactionType') || undefined,
       country: sp.get('country') || undefined,

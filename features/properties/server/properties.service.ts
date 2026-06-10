@@ -316,7 +316,7 @@ export const propertiesServerService = {
     ]);
 
     const data = filter.ids && filter.ids.length > 0
-      ? [...properties].sort((a, b) => filter.ids!.indexOf(a.id) - filter.ids!.indexOf(b.id))
+      ? properties.toSorted((a, b) => filter.ids!.indexOf(a.id) - filter.ids!.indexOf(b.id))
       : properties;
 
     return {

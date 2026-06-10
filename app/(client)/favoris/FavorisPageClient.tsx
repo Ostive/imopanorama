@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/features/auth/context/AuthContext';
-import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { m } from 'framer-motion';
 import PropertyCard from '@/features/properties/components/PropertyCard';
 import { HeartIcon, ExclamationTriangleIcon, ArrowPathIcon, SparklesIcon, TrashIcon } from '@heroicons/react/24/outline';
@@ -16,7 +16,6 @@ export default function FavorisPage() {
   const { isAuthenticated, user, loading: authLoading } = useAuth();
   const { refreshFavorites, removeFromFavorites } = useFavoritesContext();
   const [favorites, setFavorites] = useState<any[]>([]);
-  const router = useRouter();
 
   const { data: favoritesData, isLoading: loading } = useQuery({
     queryKey: ['favorites-page'],
@@ -32,12 +31,7 @@ export default function FavorisPage() {
     if (favoritesData) setFavorites(favoritesData.favorites || []);
   }, [favoritesData]);
 
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push('/login');
-      return;
-    }
-  }, [isAuthenticated, authLoading, router]);
+  if (!authLoading && !isAuthenticated) redirect('/login');
 
   // Remove single favorite
   const removeFavorite = async (propertyId: string) => {

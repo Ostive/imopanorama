@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { m, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { PlusIcon, PencilIcon, TrashIcon, WrenchScrewdriverIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
 import toast from 'react-hot-toast'
-import { AdminPageHeader } from '../../components'
+import { AdminPageHeader } from '../../components/AdminPageHeader'
 import { Badge } from '@/shared/components/ui/badge'
 import { Button } from '@/shared/components/ui/button'
 
@@ -20,26 +21,21 @@ interface Service {
 }
 
 export default function BatiServicesPage() {
-  const [services, setServices]     = useState<Service[]>([])
-  const [isLoading, setIsLoading]   = useState(true)
+  const queryClient = useQueryClient()
   const [deleteModal, setDeleteModal] = useState<{ show: boolean; id: string | null; title: string }>({
     show: false, id: null, title: '',
   })
   const [isDeleting, setIsDeleting] = useState(false)
 
-  const fetchServices = useCallback(async () => {
-    try {
+  const { data: services = [], isLoading } = useQuery<Service[]>({
+    queryKey: ['bati-services'],
+    queryFn: async () => {
       const res = await fetch('/api/bati-services')
       const data = await res.json()
-      if (data.success) setServices(data.services)
-    } catch {
-      toast.error('Erreur lors du chargement des services')
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
-
-  useEffect(() => { fetchServices() }, [fetchServices])
+      if (!data.success) throw new Error('Erreur lors du chargement des services')
+      return data.services
+    },
+  })
 
   const confirmDelete = async () => {
     if (!deleteModal.id) return
@@ -49,7 +45,9 @@ export default function BatiServicesPage() {
       const data = await res.json()
       if (res.ok) {
         toast.success('Service supprimé avec succès')
-        setServices(prev => prev.filter(s => s.id !== deleteModal.id))
+        queryClient.setQueryData<Service[]>(['bati-services'], (prev = []) =>
+          prev.filter(s => s.id !== deleteModal.id)
+        )
         setDeleteModal({ show: false, id: null, title: '' })
       } else {
         toast.error(data.error || 'Erreur lors de la suppression')
@@ -93,12 +91,12 @@ export default function BatiServicesPage() {
               </thead>
               <tbody aria-hidden="true" className="divide-y divide-gray-100 dark:divide-gray-800">
                 {[1,2,3,4].map(i => (
-                  <tr key={i} className="animate-pulse">
-                    <td className="px-6 py-4"><div className="w-10 h-10 bg-muted rounded-xl" /></td>
-                    <td className="px-6 py-4"><div className="h-4 bg-muted rounded w-40 mb-1" /><div className="h-3 bg-muted rounded w-56" /></td>
-                    <td className="px-6 py-4"><div className="h-3 bg-muted rounded w-32" /></td>
-                    <td className="px-6 py-4"><div className="h-5 bg-muted rounded-full w-16" /></td>
-                    <td className="px-6 py-4"><div className="flex gap-2"><div className="h-8 w-8 bg-muted rounded" /><div className="h-8 w-8 bg-muted rounded" /></div></td>
+                  <tr key={i} className="animate-pulse" aria-label="Chargement">
+                    <td className="px-6 py-4"><div className="w-10 h-10 bg-muted rounded-xl" aria-label="Chargement" /></td>
+                    <td className="px-6 py-4"><div className="h-4 bg-muted rounded w-40 mb-1" aria-label="Chargement" /><div className="h-3 bg-muted rounded w-56" aria-label="Chargement" /></td>
+                    <td className="px-6 py-4"><div className="h-3 bg-muted rounded w-32" aria-label="Chargement" /></td>
+                    <td className="px-6 py-4"><div className="h-5 bg-muted rounded-full w-16" aria-label="Chargement" /></td>
+                    <td className="px-6 py-4"><div className="flex gap-2" aria-label="Chargement"><div className="h-8 w-8 bg-muted rounded" aria-label="Chargement" /><div className="h-8 w-8 bg-muted rounded" aria-label="Chargement" /></div></td>
                   </tr>
                 ))}
               </tbody>

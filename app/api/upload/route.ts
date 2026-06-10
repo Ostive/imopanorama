@@ -113,19 +113,21 @@ export const PUT = withErrorHandler(async (request: NextRequest) => {
 
   if (!files.length) return apiError('Aucun fichier fourni');
 
-  const uploadedUrls: string[] = [];
+  const uploadedResults = await Promise.all(
+    files.map(async (file) => {
+      if (!isValidFile(file)) return null;
 
-  for (const file of files) {
-    if (!isValidFile(file)) continue;
-
-    const fullPath = buildPath(directory, file.name);
-    try {
-      await uploadToStorage(await file.arrayBuffer(), fullPath, config);
-      uploadedUrls.push(`${config.pullZoneUrl}${fullPath}`);
-    } catch (err) {
-      logger.error(`Error uploading file ${file.name}`, err);
-    }
-  }
+        const fullPath = buildPath(directory, file.name);
+        try {
+          await uploadToStorage(await file.arrayBuffer(), fullPath, config);
+          return `${config.pullZoneUrl}${fullPath}`;
+        } catch (err) {
+          logger.error(`Error uploading file ${file.name}`, err);
+          return null;
+        }
+      })
+  );
+  const uploadedUrls = uploadedResults.filter(Boolean) as string[];
 
   return NextResponse.json({ success: true, urls: uploadedUrls }, { status: 201 });
 });

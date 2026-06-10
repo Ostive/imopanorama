@@ -5,6 +5,8 @@ interface UseMultipleImagesOptions {
   initialImages?: string[];
 }
 
+const EMPTY_INITIAL_IMAGES: string[] = [];
+
 export interface ImageItem {
   /** Display URL — either a CDN URL (existing) or a blob: URL (pending) */
   url: string;
@@ -21,10 +23,10 @@ const generateId = () =>
 export function useMultipleImages(options: UseMultipleImagesOptions = {}) {
   const {
     maxImages = 10,
-    initialImages = [],
+    initialImages = EMPTY_INITIAL_IMAGES,
   } = options;
 
-  const [images, setImages] = useState<ImageItem[]>(
+  const [images, setImages] = useState<ImageItem[]>(() =>
     initialImages.map(url => ({ url, id: generateId(), isExisting: true }))
   );
   const [error, setError] = useState<string | null>(null);
@@ -65,14 +67,14 @@ export function useMultipleImages(options: UseMultipleImagesOptions = {}) {
    * Get all pending (not yet uploaded) File objects
    */
   const getPendingFiles = useCallback((): File[] => {
-    return images.filter(img => !img.isExisting && img.file).map(img => img.file!);
+    return images.flatMap(img => (!img.isExisting && img.file ? [img.file] : []));
   }, [images]);
 
   /**
    * Get all existing CDN URLs (already uploaded)
    */
   const getExistingUrls = useCallback((): string[] => {
-    return images.filter(img => img.isExisting).map(img => img.url);
+    return images.flatMap(img => (img.isExisting ? [img.url] : []));
   }, [images]);
 
   /**

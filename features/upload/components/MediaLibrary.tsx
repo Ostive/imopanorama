@@ -195,19 +195,17 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
 
     const folders = filteredFiles.filter(file => file.IsDirectory);
 
-    const images = filteredFiles
-        .filter(file => !file.IsDirectory)
-        .map(file => {
+    const images = filteredFiles.flatMap(file => {
+            if (file.IsDirectory) return [];
             const baseUrl = process.env.NEXT_PUBLIC_BUNNYCDN_PULL_ZONE_URL;
             if (!baseUrl) {
                 console.warn("NEXT_PUBLIC_BUNNYCDN_PULL_ZONE_URL is not defined");
-                return '';
+                return [];
             }
             const path = currentPath.startsWith('/') ? currentPath : `/${currentPath}`;
             const normalizedPath = path.endsWith('/') ? path : `${path}/`;
-            return `${baseUrl}${normalizedPath}${file.ObjectName}`;
+            return [`${baseUrl}${normalizedPath}${file.ObjectName}`];
         })
-        .filter(url => url !== '');
 
     // Générer le fil d'Ariane
     const generateBreadcrumb = () => {

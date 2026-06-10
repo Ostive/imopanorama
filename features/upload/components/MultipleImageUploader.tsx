@@ -1,10 +1,12 @@
-import React, { useEffect, useRef, useState, useCallback, useImperativeHandle, forwardRef } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useImperativeHandle } from 'react';
 import { useMultipleImages } from '../hooks/useMultipleImages';
 import { ImageGallery } from './ImageGallery';
 import { PhotoIcon } from '@heroicons/react/24/outline';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
+const ACCEPTED_TYPE_SET = new Set(ACCEPTED_TYPES);
+const EMPTY_INITIAL_IMAGES: string[] = [];
 
 export interface MultipleImageUploaderHandle {
   /** Get files that haven't been uploaded yet */
@@ -20,14 +22,16 @@ interface MultipleImageUploaderProps {
   initialImages?: string[];
   maxImages?: number;
   className?: string;
+  ref?: React.Ref<MultipleImageUploaderHandle>;
 }
 
-export const MultipleImageUploader = forwardRef<MultipleImageUploaderHandle, MultipleImageUploaderProps>(({
+export function MultipleImageUploader({
   onImagesChange,
-  initialImages = [],
+  initialImages = EMPTY_INITIAL_IMAGES,
   maxImages = 10,
   className = '',
-}, ref) => {
+  ref,
+}: MultipleImageUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previousPreviewUrlsRef = useRef<string[]>([]);
   const onImagesChangeRef = useRef(onImagesChange);
@@ -80,7 +84,7 @@ export const MultipleImageUploader = forwardRef<MultipleImageUploaderHandle, Mul
     const errors: string[] = [];
 
     for (const file of fileArray) {
-      if (!ACCEPTED_TYPES.includes(file.type)) {
+      if (!ACCEPTED_TYPE_SET.has(file.type)) {
         errors.push(`"${file.name}" : format non supporté (JPG, PNG, WebP, AVIF uniquement)`);
         continue;
       }
@@ -163,16 +167,15 @@ export const MultipleImageUploader = forwardRef<MultipleImageUploaderHandle, Mul
   return (
     <div className={className}>
       {/* Drop Zone */}
-      <div
-        role="button"
-        tabIndex={0}
+      <button
+        type="button"
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
         onClick={handleAddClick}
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleAddClick(); } }}
         className={`
+          w-full
           relative mb-4 border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all
           ${isDragging
             ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 scale-[1.01]'
@@ -207,7 +210,7 @@ export const MultipleImageUploader = forwardRef<MultipleImageUploaderHandle, Mul
         <div className="mt-2 text-xs text-muted-foreground">
           {images.length} / {maxImages} images
         </div>
-      </div>
+      </button>
 
       {/* Errors */}
       {(error || validationError) && (
@@ -225,6 +228,4 @@ export const MultipleImageUploader = forwardRef<MultipleImageUploaderHandle, Mul
       />
     </div>
   );
-});
-
-MultipleImageUploader.displayName = 'MultipleImageUploader';
+}

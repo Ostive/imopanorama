@@ -41,14 +41,12 @@ export const settingsServerService = {
    * Sauvegarde des paramètres par catégorie (upsert)
    */
   async save(settings: Record<string, unknown>) {
-    const saved = [];
-    for (const [category, value] of Object.entries(settings)) {
-      const setting = await settingsRepository.upsert(category, {
+    const saved = await Promise.all(Object.entries(settings).map(([category, value]) =>
+      settingsRepository.upsert(category, {
         value: value as Prisma.InputJsonValue,
         category,
-      });
-      saved.push(setting);
-    }
+      })
+    ));
     return saved;
   },
 

@@ -13,15 +13,15 @@ function applyMode(mode: ThemeMode): void {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [themeMode, setThemeModeState] = useState<ThemeMode>('light')
+  const [themeMode, setThemeModeState] = useState<ThemeMode>(() => {
+    if (typeof localStorage === 'undefined') return 'light'
+    const saved = localStorage.getItem(THEME_MODE_STORAGE_KEY) as ThemeMode | null
+    return saved === 'light' || saved === 'dark' ? saved : 'light'
+  })
 
   useEffect(() => {
-    const saved = localStorage.getItem(THEME_MODE_STORAGE_KEY) as ThemeMode | null
-    if (saved === 'light' || saved === 'dark') {
-      setThemeModeState(saved)
-      applyMode(saved)
-    }
-  }, [])
+    applyMode(themeMode)
+  }, [themeMode])
 
   const setThemeMode = useCallback((mode: ThemeMode) => {
     setThemeModeState(mode)

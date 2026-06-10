@@ -134,7 +134,10 @@ function Cell({ row, property, properties, propIdx }: { row: RowDef; property: P
 function ComparerInner() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const ids = (searchParams.get('ids') || '').split(',').map(id => id.trim()).filter(Boolean).slice(0, 4)
+  const ids = (searchParams.get('ids') || '').split(',').flatMap(id => {
+    const trimmedId = id.trim()
+    return trimmedId ? [trimmedId] : []
+  }).slice(0, 4)
   const idsKey = ids.join(',')
   const { safeImages } = useImageFallback()
 
@@ -152,7 +155,7 @@ function ComparerInner() {
   })
 
   const removeProperty = (propertyId: string) => {
-    const newIds = properties.filter(p => p.id !== propertyId).map(p => p.id)
+    const newIds = properties.flatMap(p => (p.id !== propertyId ? [p.id] : []))
     if (newIds.length === 0) {
       router.push('/proprietes')
     } else {

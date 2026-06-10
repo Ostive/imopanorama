@@ -2,6 +2,7 @@
 
 import { Suspense, useState, useEffect, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { m } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -19,7 +20,8 @@ import {
   EllipsisVerticalIcon,
   XMarkIcon
 } from '@heroicons/react/24/outline';
-import { AdminPageHeader, CheckboxDropdown } from '../../components';
+import { AdminPageHeader } from '../../components/AdminPageHeader';
+import { CheckboxDropdown } from '../../components/CheckboxDropdown';
 import {
   Select,
   SelectContent,
@@ -54,9 +56,8 @@ interface Project {
 
 function BatiProjectsPageContent() {
   const urlParams = useSearchParams();
+  const queryClient = useQueryClient();
   
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>(() => {
     const s = urlParams.get('status');
     return s ? [s] : [];
@@ -115,12 +116,10 @@ function BatiProjectsPageContent() {
     }
   }, [searchParams]);
 
-  useEffect(() => {
-    fetchProjects();
-  }, [searchParams]);
-
-  const fetchProjects = async () => {
-    try {
+  const projectsQueryKey = ['bati-projects', searchParams] as const;
+  const { data: projects = [], isLoading } = useQuery<Project[]>({
+    queryKey: projectsQueryKey,
+    queryFn: async () => {
       const params = new URLSearchParams();
       params.set('page', searchParams.page.toString());
       params.set('limit', searchParams.limit.toString());
@@ -130,15 +129,10 @@ function BatiProjectsPageContent() {
       
       const response = await fetch(`/api/bati-projects?${params.toString()}`);
       const data = await response.json();
-      if (data.success) {
-        setProjects(data.projects);
-      }
-    } catch (error) {
-      console.error('Error fetching projects:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      if (!data.success) throw new Error('Erreur lors du chargement des projets');
+      return data.projects;
+    },
+  });
 
   // Pagination handlers
   const handlePageChange = useCallback((page: number) => {
@@ -181,7 +175,9 @@ function BatiProjectsPageContent() {
       const data = await response.json();
 
       if (response.ok) {
-        setProjects(projects.filter(p => p.id !== deleteModal.projectId));
+        queryClient.setQueryData<Project[]>(projectsQueryKey, (prev = []) =>
+          prev.filter(p => p.id !== deleteModal.projectId)
+        );
         showNotification('success', 'Projet supprimé avec succès');
         closeDeleteModal();
       } else {
@@ -462,33 +458,33 @@ function BatiProjectsPageContent() {
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
                   {[1, 2, 3, 4, 5].map((i) => (
-                    <th key={i} className="px-6 py-3">
-                      <div className="h-4 bg-gray-200 rounded w-20 animate-pulse"></div>
+                    <th key={i} className="px-6 py-3" aria-label="Chargement">
+                      <div className="h-4 bg-gray-200 rounded w-20 animate-pulse" aria-label="Chargement"></div>
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <tr key={i} className="animate-pulse">
+                  <tr key={i} className="animate-pulse" aria-label="Chargement">
                     <td className="px-6 py-4">
-                      <div className="h-12 w-12 bg-gray-200 rounded-lg"></div>
+                      <div className="h-12 w-12 bg-gray-200 rounded-lg" aria-label="Chargement"></div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="h-4 bg-gray-200 rounded w-32 mb-2"></div>
-                      <div className="h-3 bg-gray-200 rounded w-48"></div>
+                      <div className="h-4 bg-gray-200 rounded w-32 mb-2" aria-label="Chargement"></div>
+                      <div className="h-3 bg-gray-200 rounded w-48" aria-label="Chargement"></div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="h-6 bg-gray-200 rounded-full w-20"></div>
+                      <div className="h-6 bg-gray-200 rounded-full w-20" aria-label="Chargement"></div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="h-3 bg-gray-200 rounded w-24"></div>
+                      <div className="h-3 bg-gray-200 rounded w-24" aria-label="Chargement"></div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex gap-2">
-                        <div className="h-8 w-8 bg-gray-200 rounded"></div>
-                        <div className="h-8 w-8 bg-gray-200 rounded"></div>
-                        <div className="h-8 w-8 bg-gray-200 rounded"></div>
+                      <div className="flex gap-2" aria-label="Chargement">
+                        <div className="h-8 w-8 bg-gray-200 rounded" aria-label="Chargement"></div>
+                        <div className="h-8 w-8 bg-gray-200 rounded" aria-label="Chargement"></div>
+                        <div className="h-8 w-8 bg-gray-200 rounded" aria-label="Chargement"></div>
                       </div>
                     </td>
                   </tr>

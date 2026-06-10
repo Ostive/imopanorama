@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { m } from 'framer-motion'
 import { ArrowRightIcon, WifiIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
@@ -13,19 +13,19 @@ export default function PropertySection() {
     transactionType: 'SALE',
     sort: 'date_desc',
   })
-  const [showTitle, setShowTitle] = useState(true)
-
-  useEffect(() => {
+  const [showTitle] = useState(() => {
+    if (typeof localStorage === 'undefined') return true
     const savedSettings = localStorage.getItem('admin-settings')
     if (savedSettings) {
       try {
         const settings = JSON.parse(savedSettings)
-        setShowTitle(settings.homepage?.showPropertySectionTitle ?? true)
+        return settings.homepage?.showPropertySectionTitle ?? true
       } catch (e) {
         console.error('Error loading settings:', e)
       }
     }
-  }, [])
+    return true
+  })
 
   return (
     <section id="proprietes" className="py-16 sm:py-20 md:py-28 bg-background relative overflow-hidden">

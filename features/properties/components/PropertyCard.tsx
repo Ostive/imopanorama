@@ -26,6 +26,22 @@ interface PropertyCardProps {
   variant?: 'default' | 'compact' | 'featured'
 }
 
+const getStatusBadgeClass = (status: string) => {
+  switch (status) {
+    case 'AVAILABLE':
+      return 'bg-emerald-500 text-white'
+    case 'RESERVED':
+      return 'bg-amber-500 text-white'
+    case 'SOLD':
+    case 'RENTED':
+      return 'bg-rose-500 text-white'
+    case 'DRAFT':
+      return 'bg-slate-500 text-white'
+    default:
+      return 'bg-slate-500 text-white'
+  }
+}
+
 function PropertyCard({
   property,
   onViewDetails,
@@ -56,22 +72,6 @@ function PropertyCard({
     e.preventDefault()
     e.stopPropagation()
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)
-  }
-
-  const getStatusBadgeClass = (status: string) => {
-    switch (status) {
-      case 'AVAILABLE':
-        return 'bg-emerald-500 text-white'
-      case 'RESERVED':
-        return 'bg-amber-500 text-white'
-      case 'SOLD':
-      case 'RENTED':
-        return 'bg-rose-500 text-white'
-      case 'DRAFT':
-        return 'bg-slate-500 text-white'
-      default:
-        return 'bg-slate-500 text-white'
-    }
   }
 
   // Formater le prix pour l'affichage

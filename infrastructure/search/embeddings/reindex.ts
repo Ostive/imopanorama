@@ -96,22 +96,22 @@ export async function reindexPropertyEmbeddings(
     const texts = properties.map(p => buildEmbeddingText(p))
     const vectors = await generateEmbeddingsBatch(texts)
 
-    for (let i = 0; i < properties.length; i++) {
-      const property = properties[i]
+    const results = await Promise.all(properties.map(async (property, i) => {
       const vec = vectors[i]
-      if (vec) {
-        try {
-          await updatePropertyEmbedding(property.id, vec)
-          succeeded++
-        } catch (err) {
-          failed++
-          logger.warn(`Reindex ${property.id} failed`, { err: (err as Error).message })
-        }
-      } else {
-        failed++
+      if (!vec) return false
+
+      try {
+        await updatePropertyEmbedding(property.id, vec)
+        return true
+      } catch (err) {
+        logger.warn(`Reindex ${property.id} failed`, { err: (err as Error).message })
+        return false
       }
-      processed++
-    }
+    }))
+
+    succeeded += results.filter(Boolean).length
+    failed += results.filter(success => !success).length
+    processed += properties.length
 
     onProgress?.({ processed, succeeded, failed, total })
 

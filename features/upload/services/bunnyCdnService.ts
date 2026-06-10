@@ -186,17 +186,12 @@ class BunnyCdnService {
         const files = await this.listFiles(path);
         
         // 2. Supprimer récursivement tous les fichiers et sous-répertoires
-        for (const file of files) {
+        await Promise.all(files.map((file) => {
           const filePath = `${path}${file.ObjectName}`;
-          
-          if (file.IsDirectory) {
-            // Récursion pour les sous-répertoires
-            await this.deleteDirectory(filePath);
-          } else {
-            // Supprimer le fichier
-            await this.deleteFile(filePath);
-          }
-        }
+          return file.IsDirectory
+            ? this.deleteDirectory(filePath)
+            : this.deleteFile(filePath);
+        }))
       } catch (listError) {
         // Si le répertoire n'existe pas, considérer comme déjà supprimé
         return true;

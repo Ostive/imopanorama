@@ -29,7 +29,11 @@ import {
   HomeIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { AdminPageHeader, StatsCard, ErrorAlert, ConfirmDeleteModal, CheckboxDropdown } from '../components'
+import { AdminPageHeader } from '../components/AdminPageHeader'
+import { StatsCard } from '../components/StatsCard'
+import { ErrorAlert } from '../components/ErrorAlert'
+import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal'
+import { CheckboxDropdown } from '../components/CheckboxDropdown'
 import { PROPERTY_TYPE_LABELS, PROPERTY_STATUS_LABELS, TRANSACTION_TYPE_LABELS } from '@/features/properties/types'
 import { TableSkeleton } from '@/shared/components/loading'
 import {
@@ -125,7 +129,7 @@ function PropertyPagination({
       )}
 
       {totalPages > 7 && (
-        <form className="flex items-center gap-2" onSubmit={(e) => { e.preventDefault(); onGoToSubmit(goToInput) }}>
+        <div className="flex items-center gap-2">
           <span className="text-sm text-foreground">Aller à</span>
           <input
             type="number"
@@ -133,11 +137,14 @@ function PropertyPagination({
             max={totalPages}
             value={goToInput}
             onChange={(e) => onGoToChange(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') onGoToSubmit(goToInput)
+            }}
             placeholder={`1-${totalPages}`}
             aria-label="Aller à la page"
             className="w-20 h-9 text-sm text-center border border-border dark:bg-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           />
-        </form>
+        </div>
       )}
     </div>
   )
@@ -168,7 +175,9 @@ function AdminPropertiesPageContent() {
   const [statusFilter, setStatusFilter] = useState(() => searchParams.get('status') || '')
   const [propertyTypeFilter, setPropertyTypeFilter] = useState(() => searchParams.get('propertyType') || '')
   const [transactionTypeFilter, setTransactionTypeFilter] = useState(() => searchParams.get('transactionType') || '')
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(() =>
+    typeof window !== 'undefined' ? localStorage.getItem('property_success_message') : null
+  )
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [viewMode, setViewMode] = useState<'table' | 'grid'>(() => (searchParams.get('view') as 'table' | 'grid') || 'table')
   const [sortBy, setSortBy] = useState(() => searchParams.get('sort') || 'date_desc')
@@ -178,14 +187,12 @@ function AdminPropertiesPageContent() {
   const searchTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
-    const msg = typeof window !== 'undefined' ? localStorage.getItem('property_success_message') : null
-    if (msg) {
-      setSuccessMessage(msg)
+    if (successMessage) {
       localStorage.removeItem('property_success_message')
       const t = setTimeout(() => setSuccessMessage(null), 5000)
       return () => clearTimeout(t)
     }
-  }, [])
+  }, [successMessage])
 
   useEffect(() => {
     if (searchTimerRef.current) clearTimeout(searchTimerRef.current)

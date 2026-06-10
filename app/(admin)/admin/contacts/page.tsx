@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { m } from 'framer-motion';
 import {
   EnvelopeIcon,
@@ -21,7 +21,11 @@ import {
   ChevronRightIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { AdminPageHeader, StatsCard, ConfirmDeleteModal, AdminTablePagination, CheckboxDropdown } from '../components';
+import { AdminPageHeader } from '../components/AdminPageHeader';
+import { StatsCard } from '../components/StatsCard';
+import { ConfirmDeleteModal } from '../components/ConfirmDeleteModal';
+import { AdminTablePagination } from '../components/AdminTablePagination';
+import { CheckboxDropdown } from '../components/CheckboxDropdown';
 import { LEAD_PRIORITY_LABELS, LEAD_STATUS_LABELS, LeadPriority, LeadStatus } from '@/features/contacts/types/contacts.types';
 
 type Contact = {
@@ -55,13 +59,16 @@ type Contact = {
   } | null;
 };
 
+type ContactsQueryData = {
+  contacts?: Contact[];
+  total?: number;
+  totalPages?: number;
+};
+
 function ContactsPageContent() {
   const urlParams = useSearchParams();
+  const queryClient = useQueryClient();
 
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
-  const [totalContacts, setTotalContacts] = useState(0);
-  const [serverTotalPages, setServerTotalPages] = useState(1);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [searchTerm, setSearchTerm] = useState(() => urlParams.get('search') || '');
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>(() => {
@@ -86,8 +93,10 @@ function ContactsPageContent() {
     return () => window.removeEventListener('keydown', handleEscape);
   }, [isModalOpen]);
 
-  const { data: contactsData, isLoading } = useQuery({
-    queryKey: ['admin-contacts', currentPage, limit, selectedStatuses, searchTerm],
+  const contactsQueryKey = ['admin-contacts', currentPage, limit, selectedStatuses, searchTerm] as const;
+
+  const { data: contactsData, isLoading } = useQuery<ContactsQueryData>({
+    queryKey: contactsQueryKey,
     queryFn: async () => {
     const params = new URLSearchParams({
       page: String(currentPage),
@@ -103,15 +112,6 @@ function ContactsPageContent() {
     staleTime: 30_000,
   });
 
-  useEffect(() => {
-    const data = contactsData;
-    if (!data) return;
-    setContacts(data.contacts || []);
-    setFilteredContacts(data.contacts || []);
-    setTotalContacts(data.total || 0);
-    setServerTotalPages(data.totalPages || 1);
-  }, [contactsData]);
-
   // Sync state → URL
   useEffect(() => {
     const params = new URLSearchParams();
@@ -123,8 +123,20 @@ function ContactsPageContent() {
     window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname);
   }, [searchTerm, selectedStatuses, currentPage, limit]);
 
-  const totalPages = serverTotalPages;
-  const paginatedContacts = filteredContacts;
+  const contacts = contactsData?.contacts || [];
+  const totalContacts = contactsData?.total || 0;
+  const totalPages = contactsData?.totalPages || 1;
+  const paginatedContacts = contacts;
+
+  const updateContactsCache = (updater: (contacts: Contact[]) => Contact[]) => {
+    queryClient.setQueryData<ContactsQueryData>(contactsQueryKey, (current) => {
+      if (!current) return current;
+      return {
+        ...current,
+        contacts: updater(current.contacts || []),
+      };
+    });
+  };
 
   const markAsRead = async (contactId: string) => {
     if (markingAsRead.has(contactId)) return;
@@ -135,7 +147,7 @@ function ContactsPageContent() {
         headers: { 'Content-Type': 'application/json' },
       });
       if (res.ok) {
-        setContacts((prev) => prev.map((c) => (c.id === contactId ? { ...c, isRead: true } : c)));
+        updateContactsCache((prev) => prev.map((c) => (c.id === contactId ? { ...c, isRead: true } : c)));
         if (selectedContact?.id === contactId) {
           setSelectedContact((prev) => (prev ? { ...prev, isRead: true } : null));
         }
@@ -154,7 +166,7 @@ function ContactsPageContent() {
     try {
       const res = await fetch(`/api/contacts/${contactToDelete}`, { method: 'DELETE' });
       if (res.ok) {
-        setContacts((prev) => prev.filter((c) => c.id !== contactToDelete));
+        updateContactsCache((prev) => prev.filter((c) => c.id !== contactToDelete));
         if (selectedContact?.id === contactToDelete) {
           setSelectedContact(null);
           setIsModalOpen(false);
@@ -179,7 +191,7 @@ function ContactsPageContent() {
       });
       if (!res.ok) throw new Error('CRM update failed');
       const updated = await res.json();
-      setContacts((prev) => prev.map((contact) => (contact.id === updated.id ? { ...contact, ...updated } : contact)));
+      updateContactsCache((prev) => prev.map((contact) => (contact.id === updated.id ? { ...contact, ...updated } : contact)));
       setSelectedContact((prev) => (prev ? { ...prev, ...updated } : prev));
     } catch (error) {
       console.error('Error updating contact CRM:', error);
@@ -280,7 +292,7 @@ function ContactsPageContent() {
                 </div>
               ))}
             </div>
-          ) : filteredContacts.length === 0 ? (
+          ) : contacts.length === 0 ? (
             <div className="p-16 text-center">
               <div className="w-24 h-24 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-6">
                 <ChatBubbleLeftRightIcon className="w-12 h-12 text-gray-300 dark:text-gray-600" />

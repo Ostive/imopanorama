@@ -3,11 +3,10 @@
 import Link from 'next/link';
 import { useAuth } from '@/features/auth/context/AuthContext';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 export default function UnauthorizedPage() {
   const { user, isAuthenticated } = useAuth();
-  const router = useRouter();
   const [countdown, setCountdown] = useState(10);
 
   useEffect(() => {
@@ -15,10 +14,10 @@ export default function UnauthorizedPage() {
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown((current) => current - 1), 1000);
       return () => clearTimeout(timer);
-    } else {
-      router.push('/');
     }
-  }, [countdown, router]);
+  }, [countdown]);
+
+  if (countdown <= 0) redirect('/');
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">

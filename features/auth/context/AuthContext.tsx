@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, use, useReducer, useEffect } from 'react';
 import { useSession, signIn, signUp, signOut, authClient } from '@/infrastructure/auth/auth-client';
 import {
   User,
@@ -374,7 +374,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 // Hook personnalisé
 export function useAuth() {
-  const context = useContext(AuthContext);
+  const context = use(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }

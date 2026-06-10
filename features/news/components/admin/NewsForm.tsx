@@ -32,7 +32,7 @@ import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { MediaLibraryModal } from '@/features/upload/components/MediaLibraryModal';
-import { sanitizeHtml } from '@/shared/utils/sanitizeHtml';
+import { stripHtmlToText } from '@/shared/utils/sanitizeHtml';
 import toast from 'react-hot-toast';
 import './NewsForm.css';
 
@@ -71,7 +71,7 @@ export default function NewsForm({ initialData, isEditing = false }: NewsFormPro
   const [showPreviewModal, setShowPreviewModal] = useState(false); // Modal d'aperçu
   const [rawHtmlContent, setRawHtmlContent] = useState(''); // Contenu HTML brut
   const [copiedImage, setCopiedImage] = useState<string | null>(null); // Pour le feedback de copie
-  const [todayPreviewLabel, setTodayPreviewLabel] = useState('');
+  const [todayPreviewLabel] = useState(() => new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }));
   const contentTextareaRef = useRef<HTMLTextAreaElement>(null); // Référence pour le textarea HTML
   const [showMediaLibrary, setShowMediaLibrary] = useState(false);
   const [isDraggingImage, setIsDraggingImage] = useState(false);
@@ -106,10 +106,6 @@ export default function NewsForm({ initialData, isEditing = false }: NewsFormPro
   });
 
   // Initialiser le formulaire avec les données existantes si disponibles
-  useEffect(() => {
-    setTodayPreviewLabel(new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }));
-  }, []);
-
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
@@ -587,22 +583,24 @@ L'article doit être structuré avec des balises HTML sémantiques propres, prê
                 {formData.images.map((image, index) => (
                   <div
                     key={image}
-                    role="button"
-                    tabIndex={0}
                     draggable
                     onDragStart={(e) => handleImageDragStart(e, image)}
                     onDragEnd={handleImageDragEnd}
                     className="relative aspect-square bg-gray-100 rounded-xl overflow-hidden shadow-sm border border-gray-200 group cursor-grab active:cursor-grabbing"
-                    onClick={() => setFormData(prev => ({ ...prev, coverImage: image }))}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFormData(prev => ({ ...prev, coverImage: image })); } }}
                   >
-                    <Image
-                      src={image}
-                      alt={`Image ${index + 1}`}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 50vw, 25vw"
-                    />
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, coverImage: image }))}
+                      className="absolute inset-0"
+                    >
+                      <Image
+                        src={image}
+                        alt={`Image ${index + 1}`}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 640px) 50vw, 25vw"
+                      />
+                    </button>
 
                     {/* Badge Cover */}
                     {formData.coverImage === image && (
@@ -851,10 +849,9 @@ L'article doit être structuré avec des balises HTML sémantiques propres, prê
                 )}
 
                 {/* HTML Content — exactly as client renders it */}
-                <div
-                  className="article-content"
-                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(rawHtmlContent || formData.content) }}
-                />
+                <div className="article-content whitespace-pre-wrap">
+                  {stripHtmlToText(rawHtmlContent || formData.content)}
+                </div>
 
                 {/* Tags */}
                 {formData.tags.length > 0 && (

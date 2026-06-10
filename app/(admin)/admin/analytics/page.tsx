@@ -18,7 +18,8 @@ import {
   CheckCircleIcon,
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
-import { AdminPageHeader, StatsCard } from '../components';
+import { AdminPageHeader } from '../components/AdminPageHeader';
+import { StatsCard } from '../components/StatsCard';
 
 import type { Trend } from '../components/StatsCard';
 

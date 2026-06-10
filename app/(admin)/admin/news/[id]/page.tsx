@@ -14,7 +14,7 @@ import {
   EyeIcon,
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
-import { sanitizeHtml } from '@/shared/utils/sanitizeHtml';
+import { stripHtmlToText } from '@/shared/utils/sanitizeHtml';
 
 interface ViewNewsPageProps {
   params: Promise<{
@@ -163,10 +163,9 @@ export default function ViewNewsPage({ params }: ViewNewsPageProps) {
             )}
 
             {/* Content */}
-            <div
-              className="prose prose-lg max-w-none mb-6"
-              dangerouslySetInnerHTML={{ __html: sanitizeHtml(newsData.content) }}
-            />
+            <div className="prose prose-lg max-w-none mb-6 whitespace-pre-wrap">
+              {stripHtmlToText(newsData.content)}
+            </div>
 
             {/* Tags */}
             {newsData.tags && newsData.tags.length > 0 && (

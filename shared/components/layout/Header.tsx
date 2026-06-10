@@ -69,12 +69,6 @@ function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Close menus on route change
-  useEffect(() => {
-    setIsMenuOpen(false)
-    setIsUserMenuOpen(false)
-  }, [pathname])
-
   const handleLogout = async () => {
     try {
       await logout()
@@ -363,27 +357,27 @@ function Header() {
 
                         <div className="p-1.5 space-y-0.5">
                           {hasRole('admin') && (
-                            <a
+                            <Link
                               href="/admin"
-                              onClick={(e) => { e.preventDefault(); setIsUserMenuOpen(false); window.location.href = '/admin' }}
+                              onClick={() => setIsUserMenuOpen(false)}
                               className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-foreground hover:bg-primary-50 dark:hover:bg-gray-700 transition-colors"
                             >
                               <span className="w-7 h-7 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0">
                                 <Cog6ToothIcon className="h-4 w-4 text-primary-600 dark:text-primary-400" />
                               </span>
                               Administration
-                            </a>
+                            </Link>
                           )}
-                          <a
+                          <Link
                             href="/profile"
-                            onClick={(e) => { e.preventDefault(); setIsUserMenuOpen(false); window.location.href = '/profile' }}
+                            onClick={() => setIsUserMenuOpen(false)}
                             className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-foreground hover:bg-muted transition-colors"
                           >
                             <span className="w-7 h-7 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0">
                               <UserIcon className="h-4 w-4 text-primary-600 dark:text-primary-400" />
                             </span>
                             Mon profil
-                          </a>
+                          </Link>
                         </div>
 
                         <div className="p-1.5 border-t border-border">
@@ -443,25 +437,28 @@ function Header() {
                 const active = isActive(item.href)
                 const Icon = item.icon
                 return (
-                  <m.a
+                  <m.div
                     key={item.name}
-                    href={item.href}
                     initial={{ opacity: 0, x: -16 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); window.location.href = item.href }}
-                    className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-colors ${
-                      active
-                        ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
-                        : 'text-foreground hover:bg-muted'
-                    }`}
                   >
-                    <Icon className="h-5 w-5 shrink-0" />
-                    {item.name}
-                    {active && (
-                      <span className="ml-auto h-1.5 w-1.5 rounded-full bg-primary-500" />
-                    )}
-                  </m.a>
+                    <Link
+                      href={item.href}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-colors ${
+                        active
+                          ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
+                          : 'text-foreground hover:bg-muted'
+                      }`}
+                    >
+                      <Icon className="h-5 w-5 shrink-0" />
+                      {item.name}
+                      {active && (
+                        <span className="ml-auto h-1.5 w-1.5 rounded-full bg-primary-500" />
+                      )}
+                    </Link>
+                  </m.div>
                 )
               })}
 
@@ -525,23 +522,23 @@ function Header() {
                       </div>
                     </div>
                     {hasRole('admin') && (
-                      <a
+                      <Link
                         href="/admin"
-                        onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); window.location.href = '/admin' }}
+                        onClick={() => setIsMenuOpen(false)}
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-foreground hover:bg-muted transition-colors"
                       >
                         <Cog6ToothIcon className="h-5 w-5 text-primary-500" />
                         Administration
-                      </a>
+                      </Link>
                     )}
-                    <a
+                    <Link
                       href="/profile"
-                      onClick={(e) => { e.preventDefault(); setIsMenuOpen(false); window.location.href = '/profile' }}
+                      onClick={() => setIsMenuOpen(false)}
                       className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-foreground hover:bg-muted transition-colors"
                     >
                       <UserIcon className="h-5 w-5" />
                       Mon profil
-                    </a>
+                    </Link>
                     <button type="button"
                       onClick={handleLogout}
                       className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"

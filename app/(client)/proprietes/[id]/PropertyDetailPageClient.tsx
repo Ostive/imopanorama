@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -684,13 +684,7 @@ export default function PropertyDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const { addToFavorites, removeFromFavorites, isFavorite: checkIsFavorite } = useFavorites();
 
-  useEffect(() => {
-    if (propertyId) {
-      fetchProperty();
-    }
-  }, [propertyId]);
-
-  const fetchProperty = async () => {
+  const fetchProperty = useCallback(async () => {
     try {
       const response = await fetch(`/api/properties/${propertyId}`);
       const data = await response.json();
@@ -706,7 +700,13 @@ export default function PropertyDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [propertyId]);
+
+  useEffect(() => {
+    if (propertyId) {
+      fetchProperty();
+    }
+  }, [propertyId, fetchProperty]);
 
   const [isFavorite, setIsFavorite] = useState(false);
   const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);

@@ -292,8 +292,8 @@ export async function seedProperties(prisma: PrismaClient, users: any) {
     },
   ];
 
-  for (const property of properties) {
-    await prisma.property.create({
+  await Promise.all(properties.map((property) =>
+    prisma.property.create({
       data: {
         ...property,
         country: 'MG',
@@ -306,8 +306,8 @@ export async function seedProperties(prisma: PrismaClient, users: any) {
         documentStatus: PropertyDocumentStatus.VERIFIED,
         isVerified: true,
       },
-    });
-  }
+    })
+  ));
 
   console.log(`✅ ${properties.length} propriétés créées avec succès`);
 }

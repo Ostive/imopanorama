@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { m, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/features/auth/context/AuthContext';
@@ -403,7 +404,6 @@ function PasswordForm() {
 }
 
 function UserStats({ user }: { user: any }) {
-  const router = useRouter();
   const [stats, setStats] = useState({
     favorisCount: 0,
     lastLoginDate: user?.lastLoginAt || null,
@@ -460,12 +460,8 @@ function UserStats({ user }: { user: any }) {
           </span>
         </div>
 
-        <a
+        <Link
           href="/favoris"
-          onClick={(e) => {
-            e.preventDefault();
-            router.push('/favoris');
-          }}
           className="flex items-center justify-between p-4 bg-linear-to-r from-primary-50 to-primary-50 dark:from-primary-900/20 dark:to-primary-900/20 rounded-xl hover:from-primary-100 hover:to-primary-100 dark:hover:from-primary-900/30 dark:hover:to-primary-900/30 transition-all cursor-pointer group"
         >
           <div className="flex items-center gap-3">
@@ -477,7 +473,7 @@ function UserStats({ user }: { user: any }) {
           <span className="inline-flex items-center justify-center px-3 py-1 text-xs font-bold text-primary-600 dark:text-primary-400 bg-primary-100 dark:bg-primary-900/40 rounded-full">
             {stats.favorisCount}
           </span>
-        </a>
+        </Link>
       </div>
     </m.div>
   );
@@ -545,19 +541,18 @@ export default function ProfilePage() {
 
               <div className="flex flex-col sm:flex-row gap-3">
                 {(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'super_admin') && (
-                  <m.a
+                  <m.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    href="/admin"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      router.push('/admin');
-                    }}
-                    className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold shadow-lg transition-all"
                   >
-                    <ShieldCheckIcon className="-ml-1 mr-2 h-5 w-5" />
-                    Administration
-                  </m.a>
+                    <Link
+                      href="/admin"
+                      className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-linear-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-semibold shadow-lg transition-all"
+                    >
+                      <ShieldCheckIcon className="-ml-1 mr-2 h-5 w-5" />
+                      Administration
+                    </Link>
+                  </m.div>
                 )}
 
                 <m.button

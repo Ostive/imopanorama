@@ -488,12 +488,12 @@ const propertiesData = [
 async function main() {
   console.log('🌱 Starting property seeding...');
 
-  for (const propertyData of propertiesData) {
+  await Promise.all(propertiesData.map(async (propertyData) => {
     const property = await prisma.property.create({
       data: propertyData,
     });
     console.log(`✅ Created property: ${property.title} (${property.id})`);
-  }
+  }));
 
   console.log('🎉 Property seeding completed!');
   console.log(`📊 Total properties created: ${propertiesData.length}`);

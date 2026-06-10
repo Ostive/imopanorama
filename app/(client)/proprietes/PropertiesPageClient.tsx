@@ -269,13 +269,16 @@ function PropertiesPageContent() {
 
               <div className="flex gap-1">
                 {Array.from({ length: totalPages }, (_, i) => i + 1)
-                  .filter(pageNum => {
-                    return (
+                  .reduce<number[]>((pages, pageNum) => {
+                    if (
                       pageNum === 1 ||
                       pageNum === totalPages ||
                       (pageNum >= filters.page - 1 && pageNum <= filters.page + 1)
-                    )
-                  })
+                    ) {
+                      pages.push(pageNum)
+                    }
+                    return pages
+                  }, [])
                   .map((pageNum, index, array) => (
                     <React.Fragment key={`page-${pageNum}`}>
                       {index > 0 && array[index - 1] !== pageNum - 1 && (

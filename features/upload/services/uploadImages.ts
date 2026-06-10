@@ -9,9 +9,7 @@ export async function uploadImages(
 ): Promise<string[]> {
   if (files.length === 0) return [];
 
-  const urls: string[] = [];
-
-  for (const file of files) {
+  return Promise.all(files.map(async (file) => {
     const form = new FormData();
     form.append('file', file);
     form.append('folder', directory);
@@ -26,8 +24,6 @@ export async function uploadImages(
       throw new Error(json?.error || `Upload échoué pour "${file.name}"`);
     }
 
-    urls.push(json.data.url as string);
-  }
-
-  return urls;
+    return json.data.url as string;
+  }));
 }

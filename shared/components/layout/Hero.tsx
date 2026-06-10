@@ -16,6 +16,13 @@ import {
   SelectValue,
 } from "@/shared/components/ui/select"
 
+const PROPERTY_TYPES = [
+  { id: 'HOUSE', label: 'Maison' },
+  { id: 'APARTMENT', label: 'Appartement' },
+  { id: 'LAND', label: 'Terrain' },
+  { id: 'COMMERCIAL', label: 'Commerce' },
+]
+
 export default function Hero() {
   const router = useRouter()
   /* import { HomeIcon, BanknotesIcon } from '@heroicons/react/24/outline' - Make sure these are imported at the top */
@@ -52,13 +59,6 @@ export default function Hero() {
         : [...prev, type]
     )
   }
-
-  const PROPERTY_TYPES = [
-    { id: 'HOUSE', label: 'Maison' },
-    { id: 'APARTMENT', label: 'Appartement' },
-    { id: 'LAND', label: 'Terrain' },
-    { id: 'COMMERCIAL', label: 'Commerce' },
-  ]
 
   return (
     <section className="relative min-h-[calc(100vh-80px)] flex items-center bg-linear-to-br from-primary-50/40 via-white to-primary-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 lg:bg-none dark:lg:bg-linear-to-br dark:lg:from-gray-900 dark:lg:to-gray-800 transition-colors duration-200">
@@ -227,18 +227,16 @@ export default function Hero() {
                           >
                             <div className="flex flex-col gap-1">
                               {PROPERTY_TYPES.map((type) => (
-                                <div
+                                <button
+                                  type="button"
                                   key={type.id}
-                                  role="checkbox"
-                                  tabIndex={0}
-                                  aria-checked={propertyTypes.includes(type.id)}
+                                  aria-pressed={propertyTypes.includes(type.id)}
                                   className="flex items-center space-x-3 p-3 hover:bg-muted/50 rounded-xl cursor-pointer transition-colors"
                                   onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     togglePropertyType(type.id);
                                   }}
-                                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); togglePropertyType(type.id); } }}
                                 >
                                   {/* Custom Checkbox Visual */}
                                   <div className={`
@@ -255,7 +253,7 @@ export default function Hero() {
                                   <span className="text-sm font-medium text-foreground cursor-pointer flex-1">
                                     {type.label}
                                   </span>
-                                </div>
+                                </button>
                               ))}
                             </div>
                           </m.div>

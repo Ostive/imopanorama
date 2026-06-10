@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
   BellIcon,
@@ -10,7 +10,9 @@ import {
   TrashIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { AdminPageHeader, AdminTablePagination, StatsCard } from '../components';
+import { AdminPageHeader } from '../components/AdminPageHeader';
+import { AdminTablePagination } from '../components/AdminTablePagination';
+import { StatsCard } from '../components/StatsCard';
 import {
   NOTIFICATION_PRIORITY_LABELS,
   NOTIFICATION_TYPE_LABELS,
@@ -37,7 +39,7 @@ export default function AdminNotificationsPage() {
   const totalPages = Math.max(1, Math.ceil(total / limit));
   const read = useMemo(() => Math.max(0, total - unread), [total, unread]);
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     setIsLoading(true);
     try {
       const params = new URLSearchParams({
@@ -56,11 +58,11 @@ export default function AdminNotificationsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [limit, page, unreadOnly]);
 
   useEffect(() => {
     fetchNotifications();
-  }, [page, limit, unreadOnly]);
+  }, [fetchNotifications]);
 
   const markAsRead = async (id: string) => {
     const res = await fetch(`/api/notifications/${id}`, { method: 'PATCH' });

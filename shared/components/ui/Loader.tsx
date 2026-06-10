@@ -7,33 +7,30 @@ interface LoaderProps {
   fullScreen?: boolean;
 }
 
+const SIZE_CLASSES = {
+  sm: 'h-4 w-4',
+  md: 'h-8 w-8',
+  lg: 'h-12 w-12',
+};
+
+const COLOR_CLASSES = {
+  primary: 'border-primary-600 border-t-transparent',
+  secondary: 'border-gray-600 border-t-transparent',
+  white: 'border-white border-t-transparent',
+};
+
+const TEXT_SIZE_CLASSES = {
+  sm: 'text-xs',
+  md: 'text-sm',
+  lg: 'text-base',
+};
+
 const Loader: React.FC<LoaderProps> = ({
   size = 'md',
   color = 'primary',
   text,
   fullScreen = false,
 }) => {
-  // Tailles pour le spinner
-  const sizeClasses = {
-    sm: 'h-4 w-4',
-    md: 'h-8 w-8',
-    lg: 'h-12 w-12',
-  };
-
-  // Couleurs pour le spinner
-  const colorClasses = {
-    primary: 'border-primary-600 border-t-transparent',
-    secondary: 'border-gray-600 border-t-transparent',
-    white: 'border-white border-t-transparent',
-  };
-
-  // Tailles pour le texte
-  const textSizeClasses = {
-    sm: 'text-xs',
-    md: 'text-sm',
-    lg: 'text-base',
-  };
-
   const containerClasses = fullScreen
     ? 'fixed inset-0 flex items-center justify-center bg-white bg-opacity-80 z-50'
     : 'flex items-center justify-center';
@@ -41,13 +38,12 @@ const Loader: React.FC<LoaderProps> = ({
   return (
     <div className={containerClasses}>
       <div className="flex flex-col items-center">
-        <div
-          className={`${sizeClasses[size]} border-4 ${colorClasses[color]} rounded-full animate-spin`}
-          role="status"
+        <output
+          className={`${SIZE_CLASSES[size]} border-4 ${COLOR_CLASSES[color]} rounded-full animate-spin`}
           aria-label="Loading"
         />
         {text && (
-          <p className={`mt-2 ${textSizeClasses[size]} font-medium text-gray-700`}>
+          <p className={`mt-2 ${TEXT_SIZE_CLASSES[size]} font-medium text-gray-700`}>
             {text}
           </p>
         )}

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/features/auth/context/AuthContext';
 import { useContacts } from '@/features/contacts/context/ContactsContext';
-import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -44,18 +44,12 @@ interface Contact {
 export default function MesDemandesPage() {
   const { isAuthenticated, user, loading: authLoading } = useAuth();
   const { refreshContactsCount } = useContacts();
-  const router = useRouter();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [error, setError] = useState('');
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [contactToDelete, setContactToDelete] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push('/login');
-      return;
-    }
-  }, [isAuthenticated, authLoading, router]);
+  if (!authLoading && !isAuthenticated) redirect('/login');
 
   const { data: contactsData, isLoading: loading, error: contactsError } = useQuery({
     queryKey: ['user-contacts'],

@@ -39,7 +39,7 @@ async function seedAnalytics() {
   const eventsToCreate = 50;
 
   // Create sessions with page views
-  for (let i = 0; i < sessionsToCreate; i++) {
+  await Promise.all(Array.from({ length: sessionsToCreate }, async (_, i) => {
     const sessionId = uuidv4();
     const daysAgo = randomNumber(0, 7);
     const sessionDate = getRandomDate(daysAgo);
@@ -73,11 +73,11 @@ async function seedAnalytics() {
     });
 
     // Create page views for this session
-    for (let j = 0; j < pageViewCount; j++) {
+    await Promise.all(Array.from({ length: pageViewCount }, (_, j) => {
       const path = randomItem(paths);
       const pageDate = new Date(sessionDate.getTime() + j * 60000); // 1 minute apart
 
-      await prisma.pageView.create({
+      return prisma.pageView.create({
         data: {
           url: `http://localhost:3000${path}`,
           path,
@@ -94,12 +94,12 @@ async function seedAnalytics() {
           createdAt: pageDate,
         },
       });
-    }
+    }));
 
     if ((i + 1) % 10 === 0) {
       console.log(`  Created ${i + 1}/${sessionsToCreate} sessions...`);
     }
-  }
+  }));
 
   // Create custom events
   const eventTypes = [
@@ -111,7 +111,7 @@ async function seedAnalytics() {
     { name: 'user_login', category: 'engagement' },
   ];
 
-  for (let i = 0; i < eventsToCreate; i++) {
+  await Promise.all(Array.from({ length: eventsToCreate }, async (_, i) => {
     const eventType = randomItem(eventTypes);
     const daysAgo = randomNumber(0, 7);
     const eventDate = getRandomDate(daysAgo);
@@ -133,7 +133,7 @@ async function seedAnalytics() {
     if ((i + 1) % 10 === 0) {
       console.log(`  Created ${i + 1}/${eventsToCreate} events...`);
     }
-  }
+  }));
 
   console.log('✅ Analytics data seeded successfully!');
   console.log(`  - ${sessionsToCreate} sessions created`);

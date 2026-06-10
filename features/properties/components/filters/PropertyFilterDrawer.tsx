@@ -48,11 +48,7 @@ export default function PropertyFilterDrawer({
   onReset,
   total,
 }: Props) {
-  const [currentYear, setCurrentYear] = useState<number>()
-
-  useEffect(() => {
-    setCurrentYear(new Date().getFullYear())
-  }, [])
+  const [currentYear] = useState(() => new Date().getFullYear())
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''

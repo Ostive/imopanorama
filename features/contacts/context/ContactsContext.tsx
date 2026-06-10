@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, use, useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/features/auth/context/AuthContext';
 import { fetchWithTimeout } from '@/shared/utils/fetchWithTimeout';
 
@@ -56,7 +56,7 @@ export function ContactsProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useContacts() {
-  const context = useContext(ContactsContext);
+  const context = use(ContactsContext);
   if (context === undefined) {
     throw new Error('useContacts must be used within a ContactsProvider');
   }

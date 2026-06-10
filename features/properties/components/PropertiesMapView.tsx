@@ -11,6 +11,13 @@ import { useNetworkStatus } from '@/shared/hooks/useNetworkStatus'
 import MapErrorBoundary, { MapFallback } from '@/shared/components/map/MapErrorBoundary'
 import { getSafeImageSrc } from '@/shared/hooks/useImageFallback'
 
+const eurPriceFormatter = new Intl.NumberFormat('fr-FR', {
+  style: 'currency',
+  currency: 'EUR',
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+})
+
 const markerStyles = `
   /* IMPORTANT: don't set 'position' here — MapLibre adds .maplibregl-marker
      which sets position:absolute. Overriding it breaks marker positioning. */
@@ -117,7 +124,10 @@ function PropertiesMapViewInner({
 }: PropertiesMapViewProps) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<maplibregl.Map | null>(null)
-  const markers = useRef<Map<string, maplibregl.Marker>>(new Map())
+  const markers = useRef<Map<string, maplibregl.Marker> | null>(null)
+  if (markers.current === null) {
+    markers.current = new Map()
+  }
   const popup = useRef<maplibregl.Popup | null>(null)
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const [hoveredPropertyId, setHoveredPropertyId] = useState<string | null>(null)
@@ -128,8 +138,8 @@ function PropertiesMapViewInner({
 
   const initMap = useCallback(() => {
     if (popup.current) { popup.current.remove(); popup.current = null }
-    markers.current.forEach(marker => marker.remove())
-    markers.current.clear()
+    markers.current!.forEach(marker => marker.remove())
+    markers.current!.clear()
     if (map.current) { map.current.remove(); map.current = null }
     setMapError(null)
     setMapLoaded(false)
@@ -165,23 +175,24 @@ function PropertiesMapViewInner({
       )
       const center = bounds.getCenter()
 
-      map.current = new maplibregl.Map({
+      const mapInstance = new maplibregl.Map({
         container: mapContainer.current,
         style: 'https://tiles.openfreemap.org/styles/liberty',
         center: [center.lng, center.lat],
         zoom: 12,
         attributionControl: false,
       })
+      map.current = mapInstance
 
-      map.current.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-left')
-      map.current.addControl(new maplibregl.NavigationControl(), 'top-right')
+      mapInstance.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-left')
+      mapInstance.addControl(new maplibregl.NavigationControl(), 'top-right')
 
-      map.current.on('load', () => {
+      mapInstance.on('load', () => {
         setMapLoaded(true)
         setMapError(null)
 
         if (coordinates.length > 1) {
-          map.current?.fitBounds(bounds, { padding: 50, maxZoom: 15 })
+          mapInstance.fitBounds(bounds, { padding: 50, maxZoom: 15 })
         }
 
         validProperties.forEach((property) => {
@@ -211,10 +222,7 @@ function PropertiesMapViewInner({
             if (popup.current) popup.current.remove()
 
             const formattedPrice = property.price
-              ? new Intl.NumberFormat('fr-FR', {
-                  style: 'currency', currency: 'EUR',
-                  minimumFractionDigits: 0, maximumFractionDigits: 0,
-                }).format(property.price)
+              ? eurPriceFormatter.format(property.price)
               : 'Prix sur demande'
 
             const typeLabels: Record<string, string> = {
@@ -265,8 +273,8 @@ function PropertiesMapViewInner({
               </div>`
 
             // Determine popup anchor based on marker position in viewport
-            const mapCanvas = map.current?.getCanvas()
-            const markerPx = map.current?.project([coords.lng, coords.lat])
+            const mapCanvas = mapInstance.getCanvas()
+            const markerPx = mapInstance.project([coords.lng, coords.lat])
             const canvasHeight = mapCanvas?.clientHeight ?? 600
             const anchor = markerPx && markerPx.y < canvasHeight / 2 ? 'top' : 'bottom'
 
@@ -279,9 +287,9 @@ function PropertiesMapViewInner({
             })
               .setLngLat([coords.lng, coords.lat])
               .setHTML(popupHTML)
-              .addTo(map.current!)
+              .addTo(mapInstance)
 
-            map.current?.easeTo({
+            mapInstance.easeTo({
               center: [coords.lng, coords.lat],
               duration: 600
             })
@@ -289,41 +297,43 @@ function PropertiesMapViewInner({
 
           const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
             .setLngLat([coords.lng, coords.lat])
-            .addTo(map.current!)
+            .addTo(mapInstance)
 
-          markers.current.set(property.id, marker)
+          markers.current!.set(property.id, marker)
         })
       })
 
-      map.current.on('error', (e) => {
+      mapInstance.on('error', (e) => {
         const msg = e.error?.message || ''
         if (msg.includes('404') || msg.includes('tile')) return
-        if (!mapLoaded) setMapError('Erreur lors du chargement de la carte')
+        if (!mapInstance.loaded()) setMapError('Erreur lors du chargement de la carte')
       })
 
       const timeout = setTimeout(() => {
-        if (!map.current?.loaded()) setMapError('Le chargement de la carte est trop long')
+        if (!mapInstance.loaded()) setMapError('Le chargement de la carte est trop long')
       }, 15000)
 
-      return () => clearTimeout(timeout)
+      return () => {
+        clearTimeout(timeout)
+        markers.current!.forEach(marker => marker.remove())
+        markers.current!.clear()
+        popup.current?.remove()
+        popup.current = null
+        mapInstance.remove()
+        map.current = null
+      }
     } catch (err) {
       console.error('Erreur initialisation PropertiesMapView:', err)
       setMapError('Impossible d\'initialiser la carte')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [properties, retryCount])
+  }, [properties])
 
   useEffect(() => {
     const cleanup = initMap()
     return () => {
       cleanup?.()
-      if (popup.current) { popup.current.remove(); popup.current = null }
-      markers.current.forEach(marker => marker.remove())
-      markers.current.clear()
-      map.current?.remove()
-      map.current = null
     }
-  }, [initMap])
+  }, [initMap, retryCount])
 
   useEffect(() => {
     if (isOnline && mapError) setRetryCount(c => c + 1)
@@ -331,7 +341,7 @@ function PropertiesMapViewInner({
 
   // Fix z-index: update both the marker element AND MapLibre's wrapper parent
   useEffect(() => {
-    markers.current.forEach((marker, propertyId) => {
+    markers.current!.forEach((marker, propertyId) => {
       const el = marker.getElement()
       if (!el) return
       const inner = el.querySelector('.property-marker-inner')

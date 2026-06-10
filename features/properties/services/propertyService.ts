@@ -1,4 +1,4 @@
-import { Property, PropertyFilter, PropertySearchParams } from '../types';
+import { Property, PropertyFilter, PropertySearchParams } from '../types/properties.types';
 import { bunnyCdnService } from '@/features/upload/services/bunnyCdnService';
 
 class PropertyService {

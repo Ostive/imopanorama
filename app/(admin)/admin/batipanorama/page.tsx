@@ -9,14 +9,15 @@ import {
   Square3Stack3DIcon,
   EnvelopeIcon
 } from '@heroicons/react/24/outline';
-import { AdminPageHeader, StatsCard, QuickAction } from '../components';
+import { AdminPageHeader } from '../components/AdminPageHeader';
+import { StatsCard } from '../components/StatsCard';
+import { QuickAction } from '../components/QuickAction';
 
 export default function BatiPanoramaPage() {
   const { user } = useAuth();
   const [projectsCount, setProjectsCount] = useState(0);
   const [servicesCount, setServicesCount] = useState(0);
   const [processCount, setProcessCount] = useState(0);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchCounts();
@@ -41,8 +42,6 @@ export default function BatiPanoramaPage() {
       if (processData.success) setProcessCount(processData.steps.length);
     } catch (error) {
       console.error('Error fetching counts:', error);
-    } finally {
-      setLoading(false);
     }
   };
 

@@ -20,8 +20,9 @@ import {
   BuildingOffice2Icon,
   BellIcon,
 } from '@heroicons/react/24/outline'
-import { AdminLayoutSkeleton, Sidebar } from './components'
-import type { MenuItem } from './components'
+import { AdminLayoutSkeleton } from './components/AdminLayoutSkeleton'
+import { Sidebar } from './components/sidebar/Sidebar'
+import type { MenuItem } from './components/sidebar/Sidebar'
 
 const MENU_ITEMS: MenuItem[] = [
   { name: 'Dashboard',     href: '/admin',              icon: HomeIcon },
@@ -72,8 +73,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const t = setTimeout(() => setIsInitialLoad(false), 100)
     return () => clearTimeout(t)
   }, [])
-
-  useEffect(() => { setSidebarOpen(false) }, [pathname])
 
   const unreadCount = counts?.unreadCount || 0
   const unreadNotifications = counts?.unreadNotifications || 0

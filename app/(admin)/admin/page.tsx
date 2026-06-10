@@ -11,13 +11,11 @@ import {
   Cog6ToothIcon,
   SparklesIcon
 } from '@heroicons/react/24/outline';
-import {
-  StatsCard,
-  QuickAction,
-  RecentActivity,
-  AdminDashboardSkeleton,
-  AdminPageHeader,
-} from './components';
+import { StatsCard } from './components/StatsCard';
+import { QuickAction } from './components/QuickAction';
+import { RecentActivity } from './components/RecentActivity';
+import { AdminDashboardSkeleton } from './components/AdminDashboardSkeleton';
+import { AdminPageHeader } from './components/AdminPageHeader';
 
 export default function AdminDashboard() {
   const { user, loading } = useAuth();

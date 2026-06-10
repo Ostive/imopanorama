@@ -52,15 +52,16 @@ function PropertyMapInner({ property, height = '400px' }: PropertyMapProps) {
     }
 
     try {
-      map.current = new maplibregl.Map({
+      const mapInstance = new maplibregl.Map({
         container: mapContainer.current,
         style: 'https://tiles.openfreemap.org/styles/liberty',
         center: [coordinates.lng, coordinates.lat],
         zoom: 14
       })
+      map.current = mapInstance
 
-      map.current.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-left')
-      map.current.addControl(new maplibregl.NavigationControl(), 'top-right')
+      mapInstance.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-left')
+      mapInstance.addControl(new maplibregl.NavigationControl(), 'top-right')
 
       const el = document.createElement('div')
       el.className = 'custom-marker'
@@ -82,44 +83,45 @@ function PropertyMapInner({ property, height = '400px' }: PropertyMapProps) {
             </div>`
           )
         )
-        .addTo(map.current)
+        .addTo(mapInstance)
 
-      map.current.on('load', () => {
+      mapInstance.on('load', () => {
         setMapLoaded(true)
         setMapError(null)
       })
 
-      map.current.on('error', (e) => {
+      mapInstance.on('error', (e) => {
         const msg = e.error?.message || ''
         if (msg.includes('404') || msg.includes('tile')) return
         console.error('Erreur MapLibre PropertyMap:', e)
-        if (!mapLoaded) {
+        if (!mapInstance.loaded()) {
           setMapError('Erreur lors du chargement de la carte')
         }
       })
 
       const timeout = setTimeout(() => {
-        if (!map.current?.loaded()) {
+        if (!mapInstance.loaded()) {
           setMapError('Le chargement de la carte est trop long')
         }
       }, 15000)
 
-      return () => clearTimeout(timeout)
+      return () => {
+        clearTimeout(timeout)
+        mapInstance.remove()
+        map.current = null
+      }
     } catch (err) {
       console.error('Erreur initialisation PropertyMap:', err)
       setMapError('Impossible d\'initialiser la carte')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [property, retryCount])
+  }, [property])
 
   useEffect(() => {
     const cleanup = initMap()
     return () => {
       cleanup?.()
-      map.current?.remove()
-      map.current = null
     }
-  }, [initMap])
+  }, [initMap, retryCount])
 
   // Retry auto quand on revient en ligne
   useEffect(() => {

@@ -1,8 +1,7 @@
 'use client'
 
+import { redirect, usePathname } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { AdminPageSkeleton } from '@/shared/components/admin/AdminPageSkeleton';
 import NotFound from '@/app/not-found';
 
@@ -22,29 +21,16 @@ export default function ProtectedRoute({
   fallbackUrl = '/login'
 }: ProtectedRouteProps) {
   const { user, isAuthenticated, hasRole, hasPermission, loading } = useAuth();
-  const router = useRouter();
+  const pathname = usePathname();
 
-  useEffect(() => {
-    if (loading) return; // Attendre la vérification de l'auth
-
-    // Vérifier l'authentification
-    if (requireAuth && !isAuthenticated) {
-      const redirectUrl = `${fallbackUrl}?redirect=${encodeURIComponent(window.location.pathname)}`;
-      router.push(redirectUrl);
-    }
-  }, [isAuthenticated, loading, requireAuth, router, fallbackUrl]);
-
-  // Afficher un skeleton pendant la vérification
   if (loading) {
     return <AdminPageSkeleton />;
   }
 
-  // Vérifications finales
   if (requireAuth && !isAuthenticated) {
-    return null; // Redirect en cours
+    redirect(`${fallbackUrl}?redirect=${encodeURIComponent(pathname)}`);
   }
 
-  // Show 404 page if unauthorized (keeps URL intact)
   if ((requiredRole && !hasRole(requiredRole)) || (requiredPermission && !hasPermission(requiredPermission))) {
     return <NotFound />;
   }

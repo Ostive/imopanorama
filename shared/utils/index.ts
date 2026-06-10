@@ -1,13 +1,34 @@
 // Utilitaires partagés
 import { getCurrencyLocale } from '@/shared/config/markets';
 
+const currencyFormatters = new Map<string, Intl.NumberFormat>();
+const longDateFormatter = new Intl.DateTimeFormat('fr-FR', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+const shortDateFormatter = new Intl.DateTimeFormat('fr-FR', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+
 export const formatPrice = (price: number, currency = 'MGA', country?: string): string => {
-  return new Intl.NumberFormat(getCurrencyLocale(currency, country), {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(price);
+  const locale = getCurrencyLocale(currency, country);
+  const key = `${locale}:${currency}`;
+  let formatter = currencyFormatters.get(key);
+
+  if (!formatter) {
+    formatter = Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+    currencyFormatters.set(key, formatter);
+  }
+
+  return formatter.format(price);
 };
 
 export const formatDate = (date: Date | string | null): string => {
@@ -21,11 +42,7 @@ export const formatDate = (date: Date | string | null): string => {
       return 'Date invalide';
     }
     
-    return new Intl.DateTimeFormat('fr-FR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }).format(dateObject);
+    return longDateFormatter.format(dateObject);
   } catch (error) {
     console.error('Erreur de formatage de date:', error);
     return 'Date invalide';
@@ -43,11 +60,7 @@ export const formatDateShort = (date: Date | string | null): string => {
       return 'Date invalide';
     }
     
-    return new Intl.DateTimeFormat('fr-FR', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    }).format(dateObject);
+    return shortDateFormatter.format(dateObject);
   } catch (error) {
     console.error('Erreur de formatage de date:', error);
     return 'Date invalide';
@@ -79,4 +92,3 @@ export const validatePhone = (phone: string): boolean => {
   const phoneRegex = /^(\+261|261)?[0-9\s]{8,10}$/;
   return phoneRegex.test(phone.replace(/\s/g, ''));
 };
-

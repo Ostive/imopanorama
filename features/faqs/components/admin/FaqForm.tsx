@@ -71,17 +71,15 @@ export default function FaqForm({ initialData, onSubmit, isSubmitting, colorPale
   const [newCategory, setNewCategory] = useState('');
   const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  
-  // Fermer le dropdown quand on clique ailleurs
   const dropdownRef = useRef<HTMLDivElement>(null);
-  
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
       }
     }
-    
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -157,7 +155,6 @@ export default function FaqForm({ initialData, onSubmit, isSubmitting, colorPale
       setNewCategory('');
       setShowNewCategoryInput(false);
       // Fermer le dropdown si ouvert
-      setIsDropdownOpen(false);
     }
   };
   
@@ -263,9 +260,8 @@ export default function FaqForm({ initialData, onSubmit, isSubmitting, colorPale
           ) : (
             <div className="flex w-full">
               <div className="relative" style={{ minWidth: '200px', maxWidth: '300px' }} ref={dropdownRef}>
-                <div
-                  role="combobox"
-                  tabIndex={0}
+                <button
+                  type="button"
                   aria-expanded={isDropdownOpen}
                   aria-haspopup="listbox"
                   aria-controls="faq-category-listbox"
@@ -278,37 +274,30 @@ export default function FaqForm({ initialData, onSubmit, isSubmitting, colorPale
                   <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                   </svg>
-                </div>
+                </button>
                 {isDropdownOpen && (
-                  <div
+                  <menu
                     id="faq-category-listbox"
-                    role="listbox"
                     className={`absolute z-10 mt-1 w-full bg-${currentPalette.background} border border-${currentPalette.secondary}-300 rounded-md shadow-lg max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-${currentPalette.secondary}-300`}
                   >
-                    <div
-                      role="option"
-                      tabIndex={0}
-                      aria-selected={formData.category === 'general'}
+                    <button
+                      type="button"
                       className={`px-3 py-2 hover:bg-${currentPalette.primary}-50 cursor-pointer`}
                       onClick={() => { handleCategorySelect('general'); setIsDropdownOpen(false); }}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCategorySelect('general'); setIsDropdownOpen(false); } }}
                     >
                       Général
-                    </div>
-                    {categories.filter((cat: string) => cat !== 'general').map((category: string) => (
-                      <div
+                    </button>
+                    {categories.flatMap((category: string) => category !== 'general' ? [(
+                      <button
+                        type="button"
                         key={category}
-                        role="option"
-                        tabIndex={0}
-                        aria-selected={formData.category === category}
                         className={`px-3 py-2 hover:bg-${currentPalette.primary}-50 cursor-pointer`}
                         onClick={() => { handleCategorySelect(category); setIsDropdownOpen(false); }}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCategorySelect(category); setIsDropdownOpen(false); } }}
                       >
                         {category.charAt(0).toUpperCase() + category.slice(1)}
-                      </div>
-                    ))}
-                  </div>
+                      </button>
+                    )] : [])}
+                  </menu>
                 )}
               </div>
               <button
@@ -327,16 +316,14 @@ export default function FaqForm({ initialData, onSubmit, isSubmitting, colorPale
             <p className={`text-xs font-medium text-${currentPalette.text}-500 mb-1`}>Catégories disponibles:</p>
             <div className="flex flex-wrap gap-1">
               {categories.map((category) => (
-                <span
+                <button
+                  type="button"
                   key={category}
-                  role="button"
-                  tabIndex={0}
                   className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-${currentPalette.secondary}-100 text-${currentPalette.text}-800 cursor-pointer hover:bg-${currentPalette.primary}-100`}
                   onClick={() => setFormData(prev => ({ ...prev, category }))}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFormData(prev => ({ ...prev, category })); } }}
                 >
                   {category.charAt(0).toUpperCase() + category.slice(1)}
-                </span>
+                </button>
               ))}
             </div>
           </div>

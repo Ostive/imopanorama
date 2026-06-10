@@ -100,9 +100,8 @@ export function AdminTablePagination({
       )}
 
       {totalPages > 7 && (
-        <form
+        <div
           className="flex items-center gap-2"
-          onSubmit={(e) => { e.preventDefault(); handleGoTo(goToInput) }}
         >
           <span className="text-sm text-foreground">Aller à</span>
           <input
@@ -111,11 +110,14 @@ export function AdminTablePagination({
             max={totalPages}
             value={goToInput}
             onChange={(e) => setGoToInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleGoTo(goToInput)
+            }}
             placeholder={`1-${totalPages}`}
             aria-label="Aller à la page"
             className="w-20 h-9 text-sm text-center border border-border bg-card text-foreground rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           />
-        </form>
+        </div>
       )}
     </div>
   )

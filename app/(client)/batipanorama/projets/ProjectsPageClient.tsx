@@ -17,6 +17,33 @@ import {
 } from '@heroicons/react/24/outline';
 import { Project } from '@/features/batipanorama/types/batipanorama.types';
 
+const PROJECT_CATEGORIES = [
+  { id: 'all', label: 'Tous les projets' },
+  { id: 'residentiel', label: 'Residentiel' },
+  { id: 'commercial', label: 'Commercial' },
+  { id: 'industriel', label: 'Industriel' },
+  { id: 'infrastructure', label: 'Infrastructure' },
+  { id: 'renovation', label: 'Renovation' }
+];
+
+const getCategoryIcon = (category: string) => {
+  const cat = category.toLowerCase();
+  if (cat.includes('residentiel') || cat.includes('r?sidentiel')) return <HomeModernIcon className="w-4 h-4" />;
+  if (cat.includes('commercial')) return <BuildingOffice2Icon className="w-4 h-4" />;
+  if (cat.includes('renovation') || cat.includes('r?novation')) return <WrenchScrewdriverIcon className="w-4 h-4" />;
+  return <SparklesIcon className="w-4 h-4" />;
+};
+
+const getCategoryColor = (category: string) => {
+  const cat = category.toLowerCase();
+  if (cat.includes('residentiel') || cat.includes('r?sidentiel')) return 'from-green-500 to-emerald-500';
+  if (cat.includes('commercial')) return 'from-primary-500 to-cyan-500';
+  if (cat.includes('industriel')) return 'from-orange-500 to-red-500';
+  if (cat.includes('renovation') || cat.includes('r?novation')) return 'from-purple-500 to-pink-500';
+  return 'from-gray-500 to-gray-600';
+};
+
+
 
 export default function ProjectsPage() {
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -40,14 +67,6 @@ export default function ProjectsPage() {
     ? projects
     : projects.filter((p: Project) => p.category.toLowerCase() === activeCategory.toLowerCase());
 
-  const categories = [
-    { id: 'all', label: 'Tous les projets' },
-    { id: 'résidentiel', label: 'Résidentiel' },
-    { id: 'commercial', label: 'Commercial' },
-    { id: 'industriel', label: 'Industriel' },
-    { id: 'infrastructure', label: 'Infrastructure' },
-    { id: 'rénovation', label: 'Rénovation' }
-  ];
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20">
@@ -95,7 +114,7 @@ export default function ProjectsPage() {
             <h2 className="text-xl font-bold text-foreground">Filtrer par catégorie</h2>
           </div>
           <div className="flex flex-wrap gap-3">
-            {categories.map((category, index) => (
+            {PROJECT_CATEGORIES.map((category, index) => (
               <m.button
                 key={category.id}
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -172,23 +191,6 @@ export default function ProjectsPage() {
 }
 
 function ProjectCard({ project }: { project: Project }) {
-  const getCategoryIcon = (category: string) => {
-    const cat = category.toLowerCase();
-    if (cat.includes('résidentiel')) return <HomeModernIcon className="w-4 h-4" />;
-    if (cat.includes('commercial')) return <BuildingOffice2Icon className="w-4 h-4" />;
-    if (cat.includes('rénovation')) return <WrenchScrewdriverIcon className="w-4 h-4" />;
-    return <SparklesIcon className="w-4 h-4" />;
-  };
-
-  const getCategoryColor = (category: string) => {
-    const cat = category.toLowerCase();
-    if (cat.includes('résidentiel')) return 'from-green-500 to-emerald-500';
-    if (cat.includes('commercial')) return 'from-primary-500 to-cyan-500';
-    if (cat.includes('industriel')) return 'from-orange-500 to-red-500';
-    if (cat.includes('rénovation')) return 'from-purple-500 to-pink-500';
-    return 'from-gray-500 to-gray-600';
-  };
-
   return (
     <Link
       href={`/batipanorama/projet/${project.id}`}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useEffectEvent } from 'react';
 import { useFaqCategories } from '../hooks/useFaqs';
 import { FaqFilter as FaqFilterType } from '@/features/faqs/types/faqs.types';
 
@@ -9,20 +9,24 @@ interface FaqFilterProps {
   initialFilters?: FaqFilterType;
 }
 
-export default function FaqFilter({ onFilterChange, initialFilters = {} }: FaqFilterProps) {
+const EMPTY_FILTERS: FaqFilterType = {};
+
+export default function FaqFilter({ onFilterChange, initialFilters = EMPTY_FILTERS }: FaqFilterProps) {
   const { categories, loading } = useFaqCategories();
   const [filters, setFilters] = useState<FaqFilterType>(initialFilters);
   const [searchTerm, setSearchTerm] = useState(initialFilters.search || '');
-  const onFilterChangeRef = useCallback(() => onFilterChange, [onFilterChange]);
+  const emitFilterChange = useEffectEvent((nextFilters: FaqFilterType) => {
+    onFilterChange(nextFilters);
+  });
 
   // Appliquer les filtres lorsqu'ils changent (avec debounce)
   useEffect(() => {
     const timer = setTimeout(() => {
-      onFilterChangeRef()(filters);
+      emitFilterChange(filters);
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [filters, onFilterChangeRef]);
+  }, [filters]);
 
   // Gérer le changement de catégorie
   const handleCategoryChange = (e: React.MouseEvent, category: string) => {
@@ -35,10 +39,6 @@ export default function FaqFilter({ onFilterChange, initialFilters = {} }: FaqFi
   };
 
   // Gérer la navigation directe
-  const handleNavigation = (path: string) => {
-    window.location.href = path;
-  };
-
   // Gérer la soumission de la recherche
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();

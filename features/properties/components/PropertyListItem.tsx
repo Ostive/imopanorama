@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Property } from '../types'
+import { Property } from '../types/properties.types'
 import { m } from 'framer-motion'
 import {
   MapPinIcon,
@@ -14,7 +14,7 @@ import {
   SparklesIcon,
 } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
-import { PROPERTY_TYPE_LABELS, PROPERTY_STATUS_LABELS } from '../types'
+import { PROPERTY_TYPE_LABELS, PROPERTY_STATUS_LABELS } from '../types/properties.types'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
@@ -28,6 +28,16 @@ interface PropertyListItemProps {
   initialIsFavorite?: boolean
 }
 
+const getStatusBadgeClass = (status: string) => {
+  switch (status) {
+    case 'AVAILABLE': return 'bg-emerald-500 text-white'
+    case 'RESERVED': return 'bg-amber-500 text-white'
+    case 'SOLD':
+    case 'RENTED': return 'bg-rose-500 text-white'
+    default: return 'bg-slate-500 text-white'
+  }
+}
+
 export default function PropertyListItem({
   property,
   onFavoriteToggle,
@@ -37,16 +47,6 @@ export default function PropertyListItem({
   const { isAuthenticated } = useAuth()
   const router = useRouter()
   const { handleImageError, safeImages } = useImageFallback()
-
-  const getStatusBadgeClass = (status: string) => {
-    switch (status) {
-      case 'AVAILABLE': return 'bg-emerald-500 text-white'
-      case 'RESERVED': return 'bg-amber-500 text-white'
-      case 'SOLD':
-      case 'RENTED': return 'bg-rose-500 text-white'
-      default: return 'bg-slate-500 text-white'
-    }
-  }
 
   const formattedPrice = property.price ? formatPrice(property.price, property.currency, property.country) : 'Prix non renseigné'
   const images = safeImages(property.images || [])

@@ -20,20 +20,13 @@ async function main() {
     // Step 1: Seed Users
     const users = await seedUsers(prisma);
 
-    // Step 2: Seed FAQs
-    await seedFaqs(prisma);
-
-    // Step 3: Seed Contacts (requires users)
-    await seedContacts(prisma, {}, users);
-
-    // Step 4: Seed Properties (requires users)
-    await seedProperties(prisma, users);
-
-    // Step 5: Seed News (requires users)
-    await seedNews(prisma, users);
-
-    // Step 6: Seed BatiPanorama
-    await seedBatiPanorama(prisma);
+    await Promise.all([
+      seedFaqs(prisma),
+      seedContacts(prisma, {}, users),
+      seedProperties(prisma, users),
+      seedNews(prisma, users),
+      seedBatiPanorama(prisma),
+    ]);
 
     console.log('\n===============================');
     console.log('✅ SEEDING TERMINÉ AVEC SUCCÈS !');

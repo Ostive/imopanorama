@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Map from './Map';
 import { useNetworkStatus } from '@/shared/hooks/useNetworkStatus';
 
@@ -32,10 +32,13 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
   const [coordinates, setCoordinates] = useState<Coordinates>(
     initialCoordinates || { lat: -18.8792, lng: 47.5079 }
   );
-  const [address, setAddress] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [geocodeError, setGeocodeError] = useState<string | null>(null);
   const { isOnline } = useNetworkStatus();
+  const coordinatesRef = useRef(coordinates);
+  const geocodeErrorRef = useRef(geocodeError);
+
+  coordinatesRef.current = coordinates;
+  geocodeErrorRef.current = geocodeError;
 
 
 
@@ -45,25 +48,22 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
       if (Math.abs(initialCoordinates.lat - coordinates.lat) > 0.001 ||
         Math.abs(initialCoordinates.lng - coordinates.lng) > 0.001) {
         setCoordinates(initialCoordinates);
-        fetchAddressFromCoordinates(initialCoordinates);
       }
     }
-  }, [initialCoordinates]);
+  }, [initialCoordinates, coordinates]);
 
 
 
   // Récupérer l'adresse à partir des coordonnées (géocodage inverse)
-  const fetchAddressFromCoordinates = async (coords: Coordinates) => {
+  const fetchAddressFromCoordinates = useCallback(async (coords: Coordinates) => {
     setGeocodeError(null);
 
     if (!navigator.onLine) {
       setGeocodeError('Pas de connexion — l\'adresse sera récupérée automatiquement quand vous serez en ligne.');
-      setAddress('Adresse indisponible hors-ligne');
       return;
     }
 
     try {
-      setIsLoading(true);
       const response = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.lat}&lon=${coords.lng}&zoom=18&addressdetails=1`
       );
@@ -73,8 +73,6 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
       }
 
       const data = await response.json();
-      setAddress(data.display_name || 'Adresse non trouvée');
-
       // Extract location data from the response
       if (data.address && onLocationDataChange) {
         // 1. Construct detailed address
@@ -144,23 +142,23 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
       console.error('Erreur de géocodage inverse:', error);
       if (!navigator.onLine) {
         setGeocodeError('Connexion perdue — l\'adresse sera récupérée quand vous serez en ligne.');
-        setAddress('Adresse indisponible hors-ligne');
       } else {
         setGeocodeError('Impossible de récupérer l\'adresse. Réessayez plus tard.');
-        setAddress('Adresse non disponible');
       }
-    } finally {
-      setIsLoading(false);
     }
-  };
+  }, [onLocationDataChange]);
 
-  // Retry geocoding quand on revient en ligne
+  // Retry geocoding quand le navigateur signale le retour en ligne
   useEffect(() => {
-    if (isOnline && geocodeError) {
-      fetchAddressFromCoordinates(coordinates);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOnline]);
+    const handleOnline = () => {
+      if (geocodeErrorRef.current) {
+        fetchAddressFromCoordinates(coordinatesRef.current);
+      }
+    };
+
+    window.addEventListener('online', handleOnline);
+    return () => window.removeEventListener('online', handleOnline);
+  }, [fetchAddressFromCoordinates]);
 
   // Gérer le clic sur la carte
   const handleMapClick = (lngLat: { lng: number; lat: number }) => {

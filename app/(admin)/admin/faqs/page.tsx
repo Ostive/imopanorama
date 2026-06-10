@@ -26,12 +26,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu'
-import {
-  AdminPageHeader,
-  StatsCard,
-  AdminTablePagination,
-  CheckboxDropdown,
-} from '../components'
+import { AdminPageHeader } from '../components/AdminPageHeader'
+import { StatsCard } from '../components/StatsCard'
+import { AdminTablePagination } from '../components/AdminTablePagination'
+import { CheckboxDropdown } from '../components/CheckboxDropdown'
 
 
 const CATEGORY_OPTIONS = [

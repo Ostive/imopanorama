@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useEffectEvent } from 'react'
 
 interface NetworkStatus {
   isOnline: boolean
@@ -8,24 +8,24 @@ interface NetworkStatus {
 }
 
 export function useNetworkStatus(): NetworkStatus {
-  const [isOnline, setIsOnline] = useState(true)
+  const [isOnline, setIsOnline] = useState(() =>
+    typeof navigator === 'undefined' ? true : navigator.onLine
+  )
   const [wasOffline, setWasOffline] = useState(false)
 
-  const handleOnline = useCallback(() => {
+  const handleOnline = useEffectEvent(() => {
     setIsOnline(true)
     setWasOffline(true)
     // Reset wasOffline après 5s
     setTimeout(() => setWasOffline(false), 5000)
-  }, [])
+  })
 
-  const handleOffline = useCallback(() => {
+  const handleOffline = useEffectEvent(() => {
     setIsOnline(false)
-  }, [])
+  })
 
   useEffect(() => {
     // Initialiser avec le statut réel
-    setIsOnline(navigator.onLine)
-
     window.addEventListener('online', handleOnline)
     window.addEventListener('offline', handleOffline)
 
@@ -33,7 +33,7 @@ export function useNetworkStatus(): NetworkStatus {
       window.removeEventListener('online', handleOnline)
       window.removeEventListener('offline', handleOffline)
     }
-  }, [handleOnline, handleOffline])
+  }, [])
 
   return { isOnline, wasOffline }
 }

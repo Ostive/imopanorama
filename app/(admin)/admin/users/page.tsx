@@ -13,7 +13,11 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
-import { AdminPageHeader, StatsCard, ErrorAlert, AdminTablePagination, CheckboxDropdown } from '../components';
+import { AdminPageHeader } from '../components/AdminPageHeader';
+import { StatsCard } from '../components/StatsCard';
+import { ErrorAlert } from '../components/ErrorAlert';
+import { AdminTablePagination } from '../components/AdminTablePagination';
+import { CheckboxDropdown } from '../components/CheckboxDropdown';
 
 type User = {
   id: string;

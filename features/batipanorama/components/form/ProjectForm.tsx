@@ -458,22 +458,24 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
                         {formData.images.map((img, index) => (
                           <div
                             key={img}
-                            role="button"
-                            tabIndex={0}
-                            onClick={() => setFormData(prev => ({ ...prev, coverImage: img }))}
-                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFormData(prev => ({ ...prev, coverImage: img })); } }}
-                            className={`relative group cursor-pointer rounded-xl overflow-hidden border-2 transition-all ${
+                            className={`relative group rounded-xl overflow-hidden border-2 transition-all ${
                               formData.coverImage === img
                                 ? 'border-primary-500 ring-2 ring-primary-300'
                                 : 'border-transparent hover:border-gray-300 dark:hover:border-gray-600'
                             }`}
                           >
-                            <Image src={img} alt={`Image ${index + 1}`} width={200} height={128} className="w-full h-32 object-cover" />
-                            {formData.coverImage === img && (
-                              <div className="absolute top-2 left-2 px-2 py-0.5 bg-primary-600 text-white text-xs font-bold rounded-md">
-                                Couverture
-                              </div>
-                            )}
+                            <button
+                              type="button"
+                              onClick={() => setFormData(prev => ({ ...prev, coverImage: img }))}
+                              className="block w-full cursor-pointer text-left"
+                            >
+                              <Image src={img} alt={`Image ${index + 1}`} width={200} height={128} className="w-full h-32 object-cover" />
+                              {formData.coverImage === img && (
+                                <div className="absolute top-2 left-2 px-2 py-0.5 bg-primary-600 text-white text-xs font-bold rounded-md">
+                                  Couverture
+                                </div>
+                              )}
+                            </button>
                             <button
                               type="button"
                               onClick={(e) => { e.stopPropagation(); removeImage(index) }}
@@ -485,12 +487,10 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
                         ))}
                       </div>
                     ) : (
-                      <div
-                        role="button"
-                        tabIndex={0}
+                      <button
+                        type="button"
                         onClick={addImageUrl}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); addImageUrl(); } }}
-                        className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all ${
+                        className={`w-full border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all ${
                           fieldErrors.images
                             ? 'border-red-300 dark:border-red-700 bg-red-50/30 dark:bg-red-900/10'
                             : 'border-border hover:border-primary-300 dark:hover:border-primary-700 hover:bg-primary-50/30 dark:hover:bg-primary-900/10'
@@ -498,7 +498,7 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
                       >
                         <PhotoIcon className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
                         <p className="text-sm text-muted-foreground">Cliquez pour ajouter une image</p>
-                      </div>
+                      </button>
                     )}
                   </CardContent>
                 </Card>

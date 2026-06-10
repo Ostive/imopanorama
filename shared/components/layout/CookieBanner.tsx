@@ -1,31 +1,38 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 import Link from 'next/link'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import {
+  COOKIE_CONSENT_EVENT,
   persistCookieConsent,
   readCookieConsent,
   type CookieConsentValue,
 } from '@/shared/utils/cookieConsent'
 
 export default function CookieBanner() {
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    if (!readCookieConsent()) setVisible(true)
-  }, [])
+  const visible = useSyncExternalStore(
+    (onStoreChange) => {
+      window.addEventListener(COOKIE_CONSENT_EVENT, onStoreChange)
+      window.addEventListener('storage', onStoreChange)
+      return () => {
+        window.removeEventListener(COOKIE_CONSENT_EVENT, onStoreChange)
+        window.removeEventListener('storage', onStoreChange)
+      }
+    },
+    () => !readCookieConsent(),
+    () => false
+  )
 
   const persist = (value: CookieConsentValue) => {
     persistCookieConsent(value)
-    setVisible(false)
   }
 
   if (!visible) return null
 
   return (
-    <div
-      role="dialog"
+    <dialog
+      open
       aria-live="polite"
       aria-label="Préférences cookies"
       className="fixed inset-x-4 bottom-4 z-50 mx-auto max-w-3xl rounded-2xl border border-gray-200 bg-white p-5 shadow-2xl dark:border-border dark:bg-gray-900 sm:inset-x-auto sm:left-6 sm:right-6"
@@ -66,6 +73,6 @@ export default function CookieBanner() {
           <XMarkIcon className="h-5 w-5" />
         </button>
       </div>
-    </div>
+    </dialog>
   )
 }

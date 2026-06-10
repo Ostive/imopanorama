@@ -44,11 +44,12 @@ const markerStyles = {
     height: 56
   }
 };
+const EMPTY_MARKERS: NonNullable<MapProps['markers']> = [];
 
 const MapInner: React.FC<MapProps> = ({
   center = [47.5079, -18.8792], // Antananarivo, Madagascar par défaut
   zoom = 12,
-  markers = [],
+  markers = EMPTY_MARKERS,
   height = '400px',
   width = '100%',
   onMapClick,
@@ -58,10 +59,15 @@ const MapInner: React.FC<MapProps> = ({
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const markerRefs = useRef<Record<string, maplibregl.Marker>>({});
+  const onMapClickRef = useRef(onMapClick);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
   const { isOnline } = useNetworkStatus();
+
+  useEffect(() => {
+    onMapClickRef.current = onMapClick;
+  }, [onMapClick]);
 
   const initMap = useCallback(() => {
     if (map.current) {
@@ -91,11 +97,9 @@ const MapInner: React.FC<MapProps> = ({
 
       map.current = mapInstance;
 
-      if (onMapClick) {
-        mapInstance.on('click', (e) => {
-          onMapClick({ lng: e.lngLat.lng, lat: e.lngLat.lat });
-        });
-      }
+      mapInstance.on('click', (e) => {
+        onMapClickRef.current?.({ lng: e.lngLat.lng, lat: e.lngLat.lat });
+      });
 
       mapInstance.on('load', () => {
         setMapLoaded(true);
@@ -108,37 +112,36 @@ const MapInner: React.FC<MapProps> = ({
         // Ignorer les erreurs de tiles individuelles (la carte reste utilisable)
         if (msg.includes('404') || msg.includes('tile')) return;
         console.error('Erreur MapLibre:', e);
-        if (!mapLoaded) {
+        if (!map.current?.loaded()) {
           setMapError('Erreur lors du chargement de la carte');
         }
       });
 
       // Timeout si la carte ne charge pas en 15s
       const timeout = setTimeout(() => {
-        if (!mapLoaded && !map.current?.loaded()) {
+        if (!map.current?.loaded()) {
           setMapError('Le chargement de la carte est trop long. Vérifiez votre connexion internet.');
         }
       }, 15000);
 
-      return () => clearTimeout(timeout);
+      return () => {
+        clearTimeout(timeout);
+        mapInstance.remove();
+        map.current = null;
+      };
     } catch (err) {
       console.error('Erreur initialisation carte:', err);
       setMapError('Impossible d\'initialiser la carte');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [retryCount]);
+  }, [center, zoom, interactive]);
 
   // Initialisation de la carte
   useEffect(() => {
     const cleanup = initMap();
     return () => {
       cleanup?.();
-      if (map.current) {
-        map.current.remove();
-        map.current = null;
-      }
     };
-  }, [initMap]);
+  }, [initMap, retryCount]);
 
   // Retry automatique quand on revient en ligne
   useEffect(() => {
@@ -228,13 +231,15 @@ const MapInner: React.FC<MapProps> = ({
         el.className = `marker marker-${markerStyle}`;
         
         // Appliquer des styles inline pour garantir la visibilité
-        el.style.width = '30px';
-        el.style.height = '30px';
-        el.style.backgroundImage = `url('/images/markers/marker-${markerStyle}.svg')`;
-        el.style.backgroundSize = 'contain';
-        el.style.backgroundRepeat = 'no-repeat';
-        el.style.backgroundPosition = 'center';
-        el.style.cursor = 'grab';
+        el.style.cssText = [
+          'width: 30px',
+          'height: 30px',
+          `background-image: url('/images/markers/marker-${markerStyle}.svg')`,
+          'background-size: contain',
+          'background-repeat: no-repeat',
+          'background-position: center',
+          'cursor: grab',
+        ].join('; ');
         
         if (title) {
           el.setAttribute('title', title);
@@ -263,9 +268,7 @@ const MapInner: React.FC<MapProps> = ({
             console.log(`Marqueur déplacé à [${lngLat.lng}, ${lngLat.lat}]`);
             
             // Déclencher l'événement onClick avec les nouvelles coordonnées
-            if (onMapClick) {
-              onMapClick(lngLat);
-            }
+            onMapClickRef.current?.(lngLat);
           });
         }
 
@@ -282,7 +285,7 @@ const MapInner: React.FC<MapProps> = ({
       Object.values(markerRefs.current).forEach(marker => marker.remove());
       markerRefs.current = {};
     };
-  }, [markers, mapLoaded, defaultMarkerStyle, onMapClick]);
+  }, [markers, mapLoaded, defaultMarkerStyle]);
 
   const handleRetry = () => {
     setRetryCount(c => c + 1);

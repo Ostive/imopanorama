@@ -34,7 +34,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu';
-import { StatsCard, ErrorAlert, AdminTablePagination, CheckboxDropdown } from '../components';
+import { StatsCard } from '../components/StatsCard';
+import { ErrorAlert } from '../components/ErrorAlert';
+import { AdminTablePagination } from '../components/AdminTablePagination';
+import { CheckboxDropdown } from '../components/CheckboxDropdown';
 
 type NewsItem = {
   id: string;
@@ -329,12 +332,12 @@ function NewsAdminPageContent() {
               {loading ? (
                 <tbody aria-hidden="true" className="bg-card divide-y divide-gray-200 dark:divide-gray-700">
                   {[1, 2, 3, 4, 5].map(i => (
-                    <tr key={i} className="animate-pulse">
-                      <td className="px-6 py-4"><div className="h-4 bg-muted rounded w-48 mb-2"></div><div className="h-3 bg-muted rounded w-32"></div></td>
-                      <td className="px-6 py-4"><div className="h-6 bg-muted rounded-full w-24"></div></td>
-                      <td className="px-6 py-4"><div className="h-5 bg-muted rounded w-20"></div></td>
-                      <td className="px-6 py-4"><div className="h-3 bg-muted rounded w-28"></div></td>
-                      <td className="px-6 py-4"><div className="flex items-center space-x-2"><div className="h-8 w-8 bg-muted rounded"></div><div className="h-8 w-8 bg-muted rounded"></div><div className="h-8 w-8 bg-muted rounded"></div></div></td>
+                    <tr key={i} className="animate-pulse" aria-label="Chargement">
+                      <td className="px-6 py-4"><div className="h-4 bg-muted rounded w-48 mb-2" aria-label="Chargement"></div><div className="h-3 bg-muted rounded w-32" aria-label="Chargement"></div></td>
+                      <td className="px-6 py-4"><div className="h-6 bg-muted rounded-full w-24" aria-label="Chargement"></div></td>
+                      <td className="px-6 py-4"><div className="h-5 bg-muted rounded w-20" aria-label="Chargement"></div></td>
+                      <td className="px-6 py-4"><div className="h-3 bg-muted rounded w-28" aria-label="Chargement"></div></td>
+                      <td className="px-6 py-4"><div className="flex items-center space-x-2" aria-label="Chargement"><div className="h-8 w-8 bg-muted rounded" aria-label="Chargement"></div><div className="h-8 w-8 bg-muted rounded" aria-label="Chargement"></div><div className="h-8 w-8 bg-muted rounded" aria-label="Chargement"></div></div></td>
                     </tr>
                   ))}
                 </tbody>

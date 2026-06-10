@@ -117,17 +117,6 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
     }
   }, [initialFile, previewUrl, handleManualFileUpload]);
 
-  // Auto-trigger file selection if requested
-  useEffect(() => {
-    // Only if no preview exists yet
-    if (!previewUrl && fileInputRef.current && label.includes('ouvre')) {
-      // Slightly hacky: we can't reliably programmatically open file dialogs on mount 
-      // due to browser security policies (must be user gesture). 
-      // So we can't fully fix "click again" without user gesture.
-      // However, we can make the dropzone MORE obvious or change the UX flow to not hide it behind a button first.
-    }
-  }, []);
-
   return (
     <div className={`relative ${className}`}>
       <input
@@ -141,12 +130,10 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
         tabIndex={-1}
       />
 
-      <div
-        role="button"
-        tabIndex={0}
+      <button
+        type="button"
         onClick={handleClick}
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } }}
-        className="cursor-pointer border-2 border-dashed border-primary-300 bg-primary-50 rounded-xl p-8 flex flex-col items-center justify-center hover:border-primary-500 hover:bg-primary-100 transition-all duration-300 group"
+        className="w-full cursor-pointer border-2 border-dashed border-primary-300 bg-primary-50 rounded-xl p-8 flex flex-col items-center justify-center hover:border-primary-500 hover:bg-primary-100 transition-all duration-300 group"
         style={{ minHeight: '200px' }}
       >
         {isUploading ? (
@@ -167,15 +154,6 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
               <span className="text-white font-medium bg-black/50 px-4 py-2 rounded-full border border-white/20">Changer l&apos;image</span>
             </div>
 
-            {allowRemove && onImageRemoved && (
-              <button type="button"
-                onClick={handleRemove}
-                className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 shadow-lg transition-all transform hover:scale-110"
-                title="Supprimer l'image"
-              >
-                <XCircleIcon className="h-5 w-5" />
-              </button>
-            )}
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center text-center">
@@ -188,7 +166,17 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
             <p className="text-sm text-muted-foreground max-w-xs">{label.replace('Cliquez ou déposez votre image ici pour l\'uploader instantanément', 'Supporte JPG, PNG, WEBP')}</p>
           </div>
         )}
-      </div>
+      </button>
+
+      {previewUrl && allowRemove && onImageRemoved && (
+        <button type="button"
+          onClick={handleRemove}
+          className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 shadow-lg transition-all transform hover:scale-110"
+          title="Supprimer l'image"
+        >
+          <XCircleIcon className="h-5 w-5" />
+        </button>
+      )}
 
       {error && (
         <p className="text-red-500 text-sm mt-3 text-center bg-red-50 py-2 rounded-lg border border-red-100">{error}</p>

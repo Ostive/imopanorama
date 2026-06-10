@@ -221,7 +221,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [featureSearch, setFeatureSearch] = useState('')
   const [amenitySearch, setAmenitySearch] = useState('')
-  const [currentYear, setCurrentYear] = useState<number>()
+  const [currentYear] = useState(() => new Date().getFullYear())
 
   // ─── Derived flags ─────────────────────────────────────────────────────────
 
@@ -235,10 +235,6 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
   // ─── Effects ───────────────────────────────────────────────────────────────
 
   // Load existing property data (edit mode only)
-  useEffect(() => {
-    setCurrentYear(new Date().getFullYear())
-  }, [])
-
   useEffect(() => {
     const data = loadedProperty
     if (!data) return
@@ -975,15 +971,16 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                   <Input type="text" value={featureSearch} onChange={(e) => setFeatureSearch(e.target.value)} placeholder="Filtrer les caractéristiques..." className="pl-9 h-9 text-sm" />
                 </div>
                 <div className="flex flex-wrap gap-1.5 mb-4 max-h-48 overflow-y-auto pr-1">
-                  {FEATURES_LIST.filter(f => !featureSearch || f.toLowerCase().includes(featureSearch.toLowerCase())).map((feature) => {
+                  {FEATURES_LIST.flatMap((feature) => {
+                    if (featureSearch && !feature.toLowerCase().includes(featureSearch.toLowerCase())) return []
                     const isSelected = formData.features.includes(feature)
-                    return (
+                    return [(
                       <button key={feature} type="button" onClick={() => setFormData(prev => ({ ...prev, features: isSelected ? prev.features.filter(f => f !== feature) : [...prev.features, feature] }))}
                         className={`px-2.5 py-1 text-sm rounded-lg transition-all ${isSelected ? 'bg-primary-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-gray-700 text-foreground hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary-700'}`}>
                         {isSelected ? <CheckCircleIcon className="h-3.5 w-3.5 inline mr-1" /> : <PlusIcon className="h-3 w-3 inline mr-1" />}
                         {feature}
                       </button>
-                    )
+                    )]
                   })}
                 </div>
                 <div className="flex gap-2">
@@ -1020,15 +1017,16 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                   <Input type="text" value={amenitySearch} onChange={(e) => setAmenitySearch(e.target.value)} placeholder="Filtrer les commodités..." className="pl-9 h-9 text-sm" />
                 </div>
                 <div className="flex flex-wrap gap-1.5 mb-4 max-h-48 overflow-y-auto pr-1">
-                  {AMENITIES_LIST.filter(a => !amenitySearch || a.toLowerCase().includes(amenitySearch.toLowerCase())).map((amenity) => {
+                  {AMENITIES_LIST.flatMap((amenity) => {
+                    if (amenitySearch && !amenity.toLowerCase().includes(amenitySearch.toLowerCase())) return []
                     const isSelected = formData.amenities.includes(amenity)
-                    return (
+                    return [(
                       <button key={amenity} type="button" onClick={() => setFormData(prev => ({ ...prev, amenities: isSelected ? prev.amenities.filter(a => a !== amenity) : [...prev.amenities, amenity] }))}
                         className={`px-2.5 py-1 text-sm rounded-lg transition-all ${isSelected ? 'bg-primary-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-gray-700 text-foreground hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary-700'}`}>
                         {isSelected ? <CheckCircleIcon className="h-3.5 w-3.5 inline mr-1" /> : <PlusIcon className="h-3 w-3 inline mr-1" />}
                         {amenity}
                       </button>
-                    )
+                    )]
                   })}
                 </div>
                 <div className="flex gap-2">
