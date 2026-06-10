@@ -79,7 +79,10 @@ function ContactsPageContent() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const contactToDeleteRef = useRef<string | null>(null);
-  const markingAsReadRef = useRef<Set<string>>(new Set());
+  const markingAsReadRef = useRef<Set<string> | null>(null);
+  if (markingAsReadRef.current === null) {
+    markingAsReadRef.current = new Set();
+  }
   const [savingCrm, setSavingCrm] = useState(false);
 
   const leadStatusOptions = Object.entries(LEAD_STATUS_LABELS).map(([value, label]) => ({ value, label }));
@@ -145,8 +148,8 @@ function ContactsPageContent() {
   };
 
   const markAsRead = async (contactId: string) => {
-    if (markingAsReadRef.current.has(contactId)) return;
-    markingAsReadRef.current.add(contactId);
+    if (markingAsReadRef.current!.has(contactId)) return;
+    markingAsReadRef.current!.add(contactId);
     try {
       const res = await fetch(`/api/contacts/${contactId}/read`, {
         method: 'PATCH',
@@ -162,7 +165,7 @@ function ContactsPageContent() {
       console.error('Error marking contact as read:', error);
     } finally {
       setTimeout(() => {
-        markingAsReadRef.current.delete(contactId);
+        markingAsReadRef.current!.delete(contactId);
       }, 1000);
     }
   };

@@ -350,7 +350,7 @@ function PropertiesMapViewInner({
 
     window.addEventListener('online', handleOnline)
     return () => window.removeEventListener('online', handleOnline)
-  }, [])
+  }, [handleRetry])
 
   // Fix z-index: update both the marker element AND MapLibre's wrapper parent
   useEffect(() => {
