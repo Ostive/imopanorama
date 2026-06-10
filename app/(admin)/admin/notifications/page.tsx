@@ -28,19 +28,19 @@ const priorityClass: Record<NotificationPriority, string> = {
 };
 
 export default function AdminNotificationsPage() {
-  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [notifications, setNotifications] = useState<NotificationItem[] | null>(null);
   const [unreadOnly, setUnreadOnly] = useState(false);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
   const [total, setTotal] = useState(0);
   const [unread, setUnread] = useState(0);
 
+  const isLoading = notifications === null;
   const totalPages = Math.max(1, Math.ceil(total / limit));
   const read = useMemo(() => Math.max(0, total - unread), [total, unread]);
 
   const fetchNotifications = useCallback(async () => {
-    setIsLoading(true);
+    setNotifications(null);
     try {
       const params = new URLSearchParams({
         page: String(page),
@@ -55,8 +55,7 @@ export default function AdminNotificationsPage() {
       setUnread(data.unread || 0);
     } catch (error) {
       console.error('Error fetching notifications:', error);
-    } finally {
-      setIsLoading(false);
+      setNotifications([]);
     }
   }, [limit, page, unreadOnly]);
 
@@ -131,7 +130,7 @@ export default function AdminNotificationsPage() {
                 </div>
               ))}
             </div>
-          ) : notifications.length === 0 ? (
+          ) : (notifications?.length ?? 0) === 0 ? (
             <div className="p-16 text-center">
               <BellIcon className="mx-auto h-12 w-12 text-muted-foreground" />
               <h3 className="mt-4 text-lg font-bold text-foreground">Aucune notification</h3>
@@ -139,7 +138,7 @@ export default function AdminNotificationsPage() {
             </div>
           ) : (
             <div className="divide-y divide-border">
-              {notifications.map((notification) => (
+              {(notifications ?? []).map((notification) => (
                 <div
                   key={notification.id}
                   className={`p-5 transition ${notification.isRead ? 'bg-card' : 'bg-primary-50/50 dark:bg-primary-950/20'}`}

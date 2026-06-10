@@ -54,6 +54,12 @@ interface Project {
   createdAt: string;
 }
 
+const statusOptions = [
+  { value: 'COMPLETED', label: 'Terminé' },
+  { value: 'IN_PROGRESS', label: 'En cours' },
+  { value: 'PLANNED', label: 'Planifié' }
+];
+
 function BatiProjectsPageContent() {
   const urlParams = useSearchParams();
   const queryClient = useQueryClient();
@@ -67,13 +73,8 @@ function BatiProjectsPageContent() {
     return c ? [c] : [];
   });
   const [searchInput, setSearchInput] = useState(() => urlParams.get('search') || '');
-  const [searchParams, setSearchParams] = useState({
-    page: parseInt(urlParams.get('page') || '1'),
-    limit: parseInt(urlParams.get('limit') || '10'),
-    status: urlParams.get('status') || '',
-    category: urlParams.get('category') || '',
-    search: urlParams.get('search') || '',
-  });
+  const [page, setPage] = useState(() => parseInt(urlParams.get('page') || '1'));
+  const [limit, setLimit] = useState(() => parseInt(urlParams.get('limit') || '10'));
   const [goToInput, setGoToInput] = useState('');
   const [deleteModal, setDeleteModal] = useState<{ show: boolean, projectId: string | null, projectTitle: string }>({ show: false, projectId: null, projectTitle: '' });
   const [isDeleting, setIsDeleting] = useState(false);
@@ -84,22 +85,13 @@ function BatiProjectsPageContent() {
     setTimeout(() => setNotification(null), 3000);
   };
 
-  // Sync URL → searchParams (debounced for search)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setSearchParams(prev => ({ ...prev, search: searchInput, page: 1 }));
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchInput]);
-
-  useEffect(() => {
-    setSearchParams(prev => ({
-      ...prev,
-      status: selectedStatuses?.length >= 1 ? selectedStatuses[0] : '',
-      category: selectedCategories?.length >= 1 ? selectedCategories[0] : '',
-      page: 1,
-    }));
-  }, [selectedStatuses, selectedCategories]);
+  const searchParams = useMemo(() => ({
+    page,
+    limit,
+    status: selectedStatuses.length >= 1 ? selectedStatuses[0] : '',
+    category: selectedCategories.length >= 1 ? selectedCategories[0] : '',
+    search: searchInput,
+  }), [page, limit, selectedStatuses, selectedCategories, searchInput]);
 
   // Sync searchParams → URL
   useEffect(() => {
@@ -136,11 +128,12 @@ function BatiProjectsPageContent() {
 
   // Pagination handlers
   const handlePageChange = useCallback((page: number) => {
-    setSearchParams(prev => ({ ...prev, page }));
+    setPage(page);
   }, []);
 
   const handleLimitChange = useCallback((limit: number) => {
-    setSearchParams(prev => ({ ...prev, limit, page: 1 }));
+    setLimit(limit);
+    setPage(1);
   }, []);
 
   const handleGoToChange = useCallback((value: string) => {
@@ -233,12 +226,6 @@ function BatiProjectsPageContent() {
     });
   }, [projects, searchParams]);
 
-  // Status options for filter
-  const statusOptions = [
-    { value: 'COMPLETED', label: 'Terminé' },
-    { value: 'IN_PROGRESS', label: 'En cours' },
-    { value: 'PLANNED', label: 'Planifié' }
-  ];
 
   // Get unique categories for filter dropdown
   const uniqueCategories = useMemo(() => {
@@ -267,13 +254,8 @@ function BatiProjectsPageContent() {
     setSearchInput('');
     setSelectedStatuses([]);
     setSelectedCategories([]);
-    setSearchParams({
-      page: 1,
-      limit: 10,
-      status: '',
-      category: '',
-      search: '',
-    });
+    setPage(1);
+    setLimit(10);
   }, []);
 
   const hasActiveFilters = searchParams.search || searchParams.status || searchParams.category;
@@ -410,7 +392,7 @@ function BatiProjectsPageContent() {
               <input
                 type="text"
                 value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
+                onChange={(e) => { setSearchInput(e.target.value); setPage(1); }}
                 placeholder="Rechercher un projet..."
                 aria-label="Rechercher un projet"
                 className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
@@ -422,7 +404,7 @@ function BatiProjectsPageContent() {
               label="Statut"
               options={statusOptions}
               selected={selectedStatuses}
-              onChange={setSelectedStatuses}
+              onChange={(values) => { setSelectedStatuses(values); setPage(1); }}
             />
 
             {/* Category Filter */}
@@ -430,7 +412,7 @@ function BatiProjectsPageContent() {
               label="Catégorie"
               options={categoryOptions}
               selected={selectedCategories}
-              onChange={setSelectedCategories}
+              onChange={(values) => { setSelectedCategories(values); setPage(1); }}
             />
 
             {/* Clear Filters */}

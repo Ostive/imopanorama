@@ -67,6 +67,12 @@ import {
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import { Bed, Bath, DoorOpen, Trees } from 'lucide-react';
 
+const propertyStatusConfig = {
+  available: { label: 'Disponible', variant: 'default' as const },
+  sold: { label: 'Vendu', variant: 'destructive' as const },
+  reserved: { label: 'Réservé', variant: 'secondary' as const },
+};
+
 interface ImageGalleryProps {
   images: string[];
   title: string;
@@ -791,12 +797,7 @@ export default function PropertyDetailPage() {
     );
   }
 
-  const statusConfig = {
-    available: { label: 'Disponible', variant: 'default' as const },
-    sold: { label: 'Vendu', variant: 'destructive' as const },
-    reserved: { label: 'Réservé', variant: 'secondary' as const },
-  };
-  const status = statusConfig[property.status as keyof typeof statusConfig] || statusConfig.available;
+  const status = propertyStatusConfig[property.status as keyof typeof propertyStatusConfig] || propertyStatusConfig.available;
   const market = getMarketConfig(property.country);
   const locationParts = [property.location, property.city, property.region, market.label].filter(Boolean);
   const locationLabel = locationParts.length > 0 ? locationParts.join(', ') : 'Localisation non renseignée';

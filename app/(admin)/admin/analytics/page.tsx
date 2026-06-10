@@ -95,22 +95,28 @@ interface AnalyticsData {
   };
 }
 
+const progressBgColorMap: Record<string, string> = {
+  green: 'bg-green-500', blue: 'bg-primary-500', purple: 'bg-purple-500', orange: 'bg-orange-500',
+  red: 'bg-red-500', amber: 'bg-amber-500', cyan: 'bg-cyan-500', pink: 'bg-pink-500',
+};
+
 function ProgressBar({ label, value, color }: { label: string; value: number; color: string }) {
-  const colorMap: Record<string, string> = {
-    green: 'bg-green-500', blue: 'bg-primary-500', purple: 'bg-purple-500', orange: 'bg-orange-500',
-    red: 'bg-red-500', amber: 'bg-amber-500', cyan: 'bg-cyan-500', pink: 'bg-pink-500',
-  };
   return (
     <div className="flex items-center gap-3">
-      <div className={`w-3 h-3 rounded-full ${colorMap[color] || 'bg-gray-500'}`} />
+      <div className={`w-3 h-3 rounded-full ${progressBgColorMap[color] || 'bg-gray-500'}`} />
       <span className="text-sm text-gray-700 flex-1">{label}</span>
       <div className="w-32 bg-gray-100 rounded-full h-2">
-        <div className={`h-2 rounded-full ${colorMap[color] || 'bg-gray-500'}`} style={{ width: `${Math.min(value, 100)}%` }} />
+        <div className={`h-2 rounded-full ${progressBgColorMap[color] || 'bg-gray-500'}`} style={{ width: `${Math.min(value, 100)}%` }} />
       </div>
       <span className="text-sm font-semibold text-gray-900 w-10 text-right">{value}%</span>
     </div>
   );
 }
+
+const conversionTextColorMap: Record<string, string> = {
+  blue: 'text-primary-600', green: 'text-green-600', purple: 'text-purple-600',
+  orange: 'text-orange-600', red: 'text-red-600', pink: 'text-pink-600',
+};
 
 function ConversionCard({ title, current, previous, icon: Icon, color }: {
   title: string;
@@ -121,15 +127,11 @@ function ConversionCard({ title, current, previous, icon: Icon, color }: {
 }) {
   const diff = previous > 0 ? Math.round(((current - previous) / previous) * 100) : current > 0 ? 100 : 0;
   const isUp = diff > 0;
-  const colorMap: Record<string, string> = {
-    blue: 'text-primary-600', green: 'text-green-600', purple: 'text-purple-600',
-    orange: 'text-orange-600', red: 'text-red-600', pink: 'text-pink-600',
-  };
 
   return (
     <div className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
       <div className="w-10 h-10 rounded-lg bg-white shadow-sm flex items-center justify-center">
-        <Icon className={`w-5 h-5 ${colorMap[color] || 'text-gray-600'}`} />
+        <Icon className={`w-5 h-5 ${conversionTextColorMap[color] || 'text-gray-600'}`} />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm text-gray-600 truncate">{title}</p>
@@ -145,17 +147,31 @@ function ConversionCard({ title, current, previous, icon: Icon, color }: {
   );
 }
 
+const timeRanges = [
+  { value: '24h', label: '24h' },
+  { value: '7d', label: '7j' },
+  { value: '30d', label: '30j' },
+  { value: '90d', label: '3 mois' }
+];
+
+const analyticsTabs = [
+  { key: 'overview' as const, label: 'Vue d\'ensemble' },
+  { key: 'business' as const, label: 'Business' },
+  { key: 'audience' as const, label: 'Audience' },
+];
+
 export default function AnalyticsPage() {
   const [timeRange, setTimeRange] = useState('7d');
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'business' | 'audience'>('overview');
 
+  const loading = analytics === null && error === null;
+
   const fetchAnalytics = useCallback(async () => {
+    setAnalytics(null);
+    setError(null);
     try {
-      setLoading(true);
-      setError(null);
       const response = await fetch(`/api/analytics/data?timeRange=${timeRange}`);
       if (!response.ok) throw new Error('Failed to fetch analytics data');
       const data = await response.json();
@@ -163,27 +179,12 @@ export default function AnalyticsPage() {
     } catch (err) {
       console.error('Error fetching analytics:', err);
       setError('Erreur lors du chargement des données analytiques');
-    } finally {
-      setLoading(false);
     }
   }, [timeRange]);
 
   useEffect(() => {
     fetchAnalytics();
   }, [fetchAnalytics]);
-
-  const timeRanges = [
-    { value: '24h', label: '24h' },
-    { value: '7d', label: '7j' },
-    { value: '30d', label: '30j' },
-    { value: '90d', label: '3 mois' }
-  ];
-
-  const tabs = [
-    { key: 'overview' as const, label: 'Vue d\'ensemble' },
-    { key: 'business' as const, label: 'Business' },
-    { key: 'audience' as const, label: 'Audience' },
-  ];
 
   const umamiUrl = process.env.NEXT_PUBLIC_UMAMI_URL;
   const grafanaUrl = process.env.NEXT_PUBLIC_GRAFANA_URL || 'http://localhost:3200';
@@ -235,7 +236,7 @@ export default function AnalyticsPage() {
         {/* Tabs + External links */}
         <div className="flex items-center justify-between mb-6 mt-2">
           <div className="flex gap-1 bg-white rounded-xl p-1 shadow-sm border border-gray-100">
-            {tabs.map((tab) => (
+            {analyticsTabs.map((tab) => (
               <button type="button"
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}

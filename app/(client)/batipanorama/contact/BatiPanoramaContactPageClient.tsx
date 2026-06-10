@@ -32,6 +32,54 @@ import {
 import { ContactFormData } from '@/features/batipanorama/types/batipanorama.types';
 
 
+const projectTypes = [
+  { value: 'maison', label: 'Maison individuelle' },
+  { value: 'villa', label: 'Villa de luxe' },
+  { value: 'commercial', label: 'Bâtiment commercial' },
+  { value: 'renovation', label: 'Rénovation' },
+  { value: 'extension', label: 'Extension' },
+  { value: 'autre', label: 'Autre' }
+];
+
+const budgetRanges = [
+  { value: 'moins-50k', label: 'Moins de 50 000 €' },
+  { value: '50k-100k', label: '50 000 € - 100 000 €' },
+  { value: '100k-200k', label: '100 000 € - 200 000 €' },
+  { value: '200k-500k', label: '200 000 € - 500 000 €' },
+  { value: 'plus-500k', label: 'Plus de 500 000 €' }
+];
+
+const contactInfo = [
+  {
+    icon: PhoneIcon,
+    title: 'Téléphone',
+    content: '+261 20 22 123 45',
+    link: 'tel:+261202212345',
+    gradient: 'from-primary-500 to-cyan-500'
+  },
+  {
+    icon: EnvelopeIcon,
+    title: 'Email',
+    content: 'contact@batipanorama.mg',
+    link: 'mailto:contact@batipanorama.mg',
+    gradient: 'from-green-500 to-emerald-500'
+  },
+  {
+    icon: MapPinIcon,
+    title: 'Adresse',
+    content: 'Antananarivo, Madagascar',
+    link: null,
+    gradient: 'from-orange-500 to-red-500'
+  },
+  {
+    icon: ClockIcon,
+    title: 'Horaires',
+    content: 'Lun-Ven: 8h-17h',
+    link: null,
+    gradient: 'from-purple-500 to-pink-500'
+  }
+];
+
 export default function BatiPanoramaContactPage() {
   const router = useRouter();
   const { isAuthenticated, user, loading: authLoading } = useAuth();
@@ -63,23 +111,6 @@ export default function BatiPanoramaContactPage() {
       }));
     }
   }, [isAuthenticated, user]);
-
-  const projectTypes = [
-    { value: 'maison', label: 'Maison individuelle' },
-    { value: 'villa', label: 'Villa de luxe' },
-    { value: 'commercial', label: 'Bâtiment commercial' },
-    { value: 'renovation', label: 'Rénovation' },
-    { value: 'extension', label: 'Extension' },
-    { value: 'autre', label: 'Autre' }
-  ];
-
-  const budgetRanges = [
-    { value: 'moins-50k', label: 'Moins de 50 000 €' },
-    { value: '50k-100k', label: '50 000 € - 100 000 €' },
-    { value: '100k-200k', label: '100 000 € - 200 000 €' },
-    { value: '200k-500k', label: '200 000 € - 500 000 €' },
-    { value: 'plus-500k', label: 'Plus de 500 000 €' }
-  ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({
@@ -138,37 +169,6 @@ export default function BatiPanoramaContactPage() {
       setIsSubmitting(false);
     }
   };
-
-  const contactInfo = [
-    {
-      icon: PhoneIcon,
-      title: 'Téléphone',
-      content: '+261 20 22 123 45',
-      link: 'tel:+261202212345',
-      gradient: 'from-primary-500 to-cyan-500'
-    },
-    {
-      icon: EnvelopeIcon,
-      title: 'Email',
-      content: 'contact@batipanorama.mg',
-      link: 'mailto:contact@batipanorama.mg',
-      gradient: 'from-green-500 to-emerald-500'
-    },
-    {
-      icon: MapPinIcon,
-      title: 'Adresse',
-      content: 'Antananarivo, Madagascar',
-      link: null,
-      gradient: 'from-orange-500 to-red-500'
-    },
-    {
-      icon: ClockIcon,
-      title: 'Horaires',
-      content: 'Lun-Ven: 8h-17h',
-      link: null,
-      gradient: 'from-purple-500 to-pink-500'
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20">

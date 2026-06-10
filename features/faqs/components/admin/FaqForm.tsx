@@ -165,40 +165,7 @@ export default function FaqForm({ initialData, onSubmit, isSubmitting, colorPale
   
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Sélecteur de palette de couleurs */}
-      <div className="mb-6 p-4 border rounded-md bg-gray-50">
-        <h3 className="text-sm font-medium text-gray-700 mb-2">Palette de couleurs</h3>
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => handlePaletteChange('default')}
-            className={`px-3 py-1 rounded-md text-xs font-medium ${selectedPalette === 'default' ? 'bg-primary-100 text-primary-800 ring-2 ring-primary-500' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
-          >
-            Par défaut
-          </button>
-          <button
-            type="button"
-            onClick={() => handlePaletteChange('blue')}
-            className={`px-3 py-1 rounded-md text-xs font-medium ${selectedPalette === 'blue' ? 'bg-primary-100 text-primary-800 ring-2 ring-primary-500' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
-          >
-            Bleu
-          </button>
-          <button
-            type="button"
-            onClick={() => handlePaletteChange('green')}
-            className={`px-3 py-1 rounded-md text-xs font-medium ${selectedPalette === 'green' ? 'bg-emerald-100 text-emerald-800 ring-2 ring-emerald-500' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
-          >
-            Vert
-          </button>
-          <button
-            type="button"
-            onClick={() => handlePaletteChange('purple')}
-            className={`px-3 py-1 rounded-md text-xs font-medium ${selectedPalette === 'purple' ? 'bg-purple-100 text-purple-800 ring-2 ring-purple-500' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
-          >
-            Violet
-          </button>
-        </div>
-      </div>
+      <FaqColorPaletteSelector selectedPalette={selectedPalette} onPaletteChange={handlePaletteChange} />
       {/* Question */}
       <div>
         <label htmlFor="question" className={`block text-sm font-medium text-${currentPalette.text}-700`}>

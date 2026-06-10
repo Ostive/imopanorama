@@ -164,8 +164,9 @@ const getStatusColor = (status: string) => STATUS_COLORS[status.toUpperCase()] ?
 function AdminPropertiesPageContent() {
   const searchParams = useSearchParams()
 
-  const [properties, setProperties] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+  const [properties, setProperties] = useState<any[] | null>(null)
+
+  const loading = properties === null
   const [total, setTotal] = useState(0)
   const [statusCounts, setStatusCounts] = useState<Record<string, number> | null>(null)
   const [page, setPage] = useState(() => parseInt(searchParams.get('page') || '1'))
@@ -216,7 +217,7 @@ function AdminPropertiesPageContent() {
 
   const fetchProperties = useCallback(async () => {
     try {
-      setLoading(true)
+      setProperties(null)
       setErrorMessage(null)
       const params = new URLSearchParams({ page: page.toString(), limit: limit.toString(), view: 'full', sort: sortBy })
       if (debouncedSearch) params.set('search', debouncedSearch)
@@ -231,8 +232,7 @@ function AdminPropertiesPageContent() {
       if (data.statusCounts) setStatusCounts(data.statusCounts)
     } catch {
       setErrorMessage('Erreur lors du chargement des propriétés. Veuillez réessayer.')
-    } finally {
-      setLoading(false)
+      setProperties([])
     }
   }, [page, limit, debouncedSearch, statusFilter, propertyTypeFilter, transactionTypeFilter, sortBy])
 
@@ -489,7 +489,7 @@ function AdminPropertiesPageContent() {
                   <tbody className="bg-card divide-y divide-gray-200 dark:divide-gray-700">
                     {loading ? (
                       <tr><td colSpan={8} className="px-6 py-4"><TableSkeleton rows={5} columns={7} /></td></tr>
-                    ) : properties.length === 0 ? (
+                    ) : (properties ?? []).length === 0 ? (
                       <tr>
                         <td colSpan={8} className="px-6 py-20">
                           <div className="text-center">
@@ -507,7 +507,7 @@ function AdminPropertiesPageContent() {
                         </td>
                       </tr>
                     ) : (
-                      properties.map((property) => (
+                      (properties ?? []).map((property) => (
                         <tr key={property.id} className="hover:bg-muted/50 transition-colors">
                           <td className="px-6 py-4">
                             <div className="flex items-center">

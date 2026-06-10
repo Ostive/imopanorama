@@ -69,7 +69,6 @@ export default function NewsForm({ initialData, isEditing = false }: NewsFormPro
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [tagInput, setTagInput] = useState('');
   const [showPreviewModal, setShowPreviewModal] = useState(false); // Modal d'aperçu
-  const [rawHtmlContent, setRawHtmlContent] = useState(''); // Contenu HTML brut
   const [copiedImage, setCopiedImage] = useState<string | null>(null); // Pour le feedback de copie
   const [todayPreviewLabel] = useState(() => new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }));
   const contentTextareaRef = useRef<HTMLTextAreaElement>(null); // Référence pour le textarea HTML
@@ -109,7 +108,6 @@ export default function NewsForm({ initialData, isEditing = false }: NewsFormPro
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
-      setRawHtmlContent(initialData.content);
     }
   }, [initialData]);
 
@@ -142,10 +140,6 @@ export default function NewsForm({ initialData, isEditing = false }: NewsFormPro
 
   // Gérer les changements dans l'éditeur de texte riche
   const handleEditorChange = (content: string) => {
-    // Mettre à jour le contenu brut HTML
-    setRawHtmlContent(content);
-
-    // Mettre à jour le formData avec le contenu HTML
     setFormData(prev => ({ ...prev, content }));
   };
 
@@ -278,14 +272,14 @@ export default function NewsForm({ initialData, isEditing = false }: NewsFormPro
       const textarea = contentTextareaRef.current;
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
-      const text = rawHtmlContent || formData.content;
+      const text = formData.content;
 
       const newText = text.substring(0, start) + htmlCode + text.substring(end);
 
       handleEditorChange(newText);
       toast.success('Image insérée dans le contenu !');
     } else {
-      handleEditorChange((rawHtmlContent || formData.content) + '\n' + htmlCode);
+      handleEditorChange((formData.content) + '\n' + htmlCode);
       toast.success('Image ajoutée à la fin du contenu !');
     }
   };
@@ -311,7 +305,7 @@ export default function NewsForm({ initialData, isEditing = false }: NewsFormPro
     const htmlCode = `<img src="${imageUrl}" alt="" class="w-full h-auto rounded-lg shadow-md my-6" />`;
     const textarea = e.currentTarget;
     const dropPos = textarea.selectionStart;
-    const text = rawHtmlContent || formData.content;
+    const text = formData.content;
     const newText = text.substring(0, dropPos) + htmlCode + text.substring(dropPos);
     handleEditorChange(newText);
     toast.success('Image glissée dans le contenu !');
@@ -480,7 +474,7 @@ L'article doit être structuré avec des balises HTML sémantiques propres, prê
                 ref={contentTextareaRef}
                 id="html-editor"
                 aria-label="Éditeur HTML"
-                value={rawHtmlContent || formData.content}
+                value={formData.content}
                 onChange={(e) => handleEditorChange(e.target.value)}
                 onDrop={handleEditorDrop}
                 onDragOver={handleEditorDragOver}
@@ -850,7 +844,7 @@ L'article doit être structuré avec des balises HTML sémantiques propres, prê
 
                 {/* HTML Content — exactly as client renders it */}
                 <div className="article-content whitespace-pre-wrap">
-                  {stripHtmlToText(rawHtmlContent || formData.content)}
+                  {stripHtmlToText(formData.content)}
                 </div>
 
                 {/* Tags */}

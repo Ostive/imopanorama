@@ -19,6 +19,10 @@ import {
   CalendarIcon,
 } from '@heroicons/react/24/outline';
 
+const categoryLabel: Record<string, string> = {
+  IMMOBILIER: 'Immobilier', CONSTRUCTION: 'Construction', EVENEMENT: 'Événement', ENTREPRISE: 'Entreprise', GENERAL: 'Général',
+};
+
 export default function BatiPanoramaPage() {
   const { data: projects = [], isLoading: isProjectsLoading } = useQuery({
     queryKey: ['bati-projects'],
@@ -66,10 +70,6 @@ export default function BatiPanoramaPage() {
       }
     },
   });
-
-  const categoryLabel: Record<string, string> = {
-    IMMOBILIER: 'Immobilier', CONSTRUCTION: 'Construction', EVENEMENT: 'Événement', ENTREPRISE: 'Entreprise', GENERAL: 'Général',
-  };
 
   return (
     <div className="min-h-screen">

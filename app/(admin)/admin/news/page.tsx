@@ -71,36 +71,20 @@ function NewsAdminPageContent() {
     return s !== null ? [s] : [];
   });
   const [searchInput, setSearchInput] = useState(() => urlParams.get('search') || '');
-  const [searchParams, setSearchParams] = useState({
-    page: parseInt(urlParams.get('page') || '1'),
-    limit: parseInt(urlParams.get('limit') || '10'),
-    category: urlParams.get('category') || '',
-    isPublished: urlParams.get('isPublished') !== null
-      ? urlParams.get('isPublished') === 'true'
-      : undefined as boolean | undefined,
-    search: urlParams.get('search') || '',
-  });
+  const [page, setPage] = useState(() => parseInt(urlParams.get('page') || '1'));
+  const [limit, setLimit] = useState(() => parseInt(urlParams.get('limit') || '10'));
   const [sorting, setSorting] = useState<SortingState>([]);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
-  // Sync URL → searchParams (debounced for search)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setSearchParams(prev => ({ ...prev, search: searchInput, page: 1 }));
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchInput]);
-
-  useEffect(() => {
-    setSearchParams(prev => ({
-      ...prev,
-      category: selectedCategories.length >= 1 ? selectedCategories[0] : '',
-      isPublished: selectedStatuses.length === 1
-        ? selectedStatuses[0] === 'true'
-        : undefined,
-      page: 1,
-    }));
-  }, [selectedCategories, selectedStatuses]);
+  const searchParams = useMemo(() => ({
+    page,
+    limit,
+    category: selectedCategories.length >= 1 ? selectedCategories[0] : '',
+    isPublished: selectedStatuses.length === 1
+      ? selectedStatuses[0] === 'true'
+      : undefined as boolean | undefined,
+    search: searchInput,
+  }), [page, limit, selectedCategories, selectedStatuses, searchInput]);
 
   // Sync state → URL
   useEffect(() => {
@@ -274,7 +258,7 @@ function NewsAdminPageContent() {
               {hasActiveFilters && <span className="px-2 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-bold rounded-full">Actifs</span>}
             </div>
             {hasActiveFilters && (
-              <button type="button" onClick={() => { setSearchInput(''); setSelectedCategories([]); setSelectedStatuses([]); }}
+              <button type="button" onClick={() => { setSearchInput(''); setSelectedCategories([]); setSelectedStatuses([]); setPage(1); }}
                 className="text-sm text-primary-600 hover:text-primary-800 font-medium flex items-center gap-1">
                 <XMarkIcon className="h-4 w-4" />Réinitialiser
               </button>
@@ -283,10 +267,10 @@ function NewsAdminPageContent() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="relative">
               <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <input type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="Titre, slug..." aria-label="Rechercher une actualité"
+              <input type="text" value={searchInput} onChange={(e) => { setSearchInput(e.target.value); setPage(1); }} placeholder="Titre, slug..." aria-label="Rechercher une actualité"
                 className="w-full pl-10 pr-10 h-10 border border-border rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" />
               {searchInput && (
-                <button type="button" onClick={() => setSearchInput('')} aria-label="Effacer la recherche" className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300">
+                <button type="button" onClick={() => { setSearchInput(''); setPage(1); }} aria-label="Effacer la recherche" className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300">
                   <XMarkIcon className="h-5 w-5" />
                 </button>
               )}
@@ -294,7 +278,7 @@ function NewsAdminPageContent() {
             <CheckboxDropdown
               label="Catégorie"
               selected={selectedCategories}
-              onChange={setSelectedCategories}
+              onChange={(values) => { setSelectedCategories(values); setPage(1); }}
               options={[
                 { value: 'IMMOBILIER', label: 'Immobilier' },
                 { value: 'CONSTRUCTION', label: 'Construction' },
@@ -305,7 +289,7 @@ function NewsAdminPageContent() {
             <CheckboxDropdown
               label="Statut"
               selected={selectedStatuses}
-              onChange={setSelectedStatuses}
+              onChange={(values) => { setSelectedStatuses(values); setPage(1); }}
               options={[
                 { value: 'true', label: 'Publié' },
                 { value: 'false', label: 'Brouillon' },
@@ -365,8 +349,8 @@ function NewsAdminPageContent() {
             limit={searchParams.limit}
             total={total}
             totalPages={totalPages}
-            onPageChange={(page) => setSearchParams(prev => ({ ...prev, page }))}
-            onLimitChange={(limit) => setSearchParams(prev => ({ ...prev, limit, page: 1 }))}
+            onPageChange={setPage}
+            onLimitChange={(nextLimit) => { setLimit(nextLimit); setPage(1); }}
           />
         </m.div>
 

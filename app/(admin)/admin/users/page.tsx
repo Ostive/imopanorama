@@ -42,101 +42,11 @@ const ROLE_CONFIG: Record<string, { bg: string; text: string; label: string }> =
   CLIENT: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-800 dark:text-green-300', label: 'Client' },
 };
 
-function AdminUsersPageContent() {
-  const urlParams = useSearchParams();
-
-  const [selectedRoles, setSelectedRoles] = useState<string[]>(() => {
-    const r = urlParams.get('role'); return r ? [r] : [];
-  });
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>(() => {
-    const s = urlParams.get('isActive'); return s !== null ? [s] : [];
-  });
-  const [searchInput, setSearchInput] = useState(() => urlParams.get('search') || '');
-  const [searchParams, setSearchParams] = useState({
-    page: parseInt(urlParams.get('page') || '1'),
-    limit: parseInt(urlParams.get('limit') || '10'),
-    role: urlParams.get('role') || '',
-    isActive: urlParams.get('isActive') !== null ? urlParams.get('isActive') === 'true' : undefined as boolean | undefined,
-    search: urlParams.get('search') || '',
-  });
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
-
-  const { users: fetchedUsers, loading, isFetching, total, error, refetch } = useUsers(searchParams);
-
-  const users: User[] = fetchedUsers.map((user: any) => ({
-    ...user,
-    createdAt: new Date(user.createdAt),
-    updatedAt: new Date(user.updatedAt),
-    lastLoginAt: user.lastLoginAt ? new Date(user.lastLoginAt) : null,
-  }));
-
-  // Debounce search
-  useEffect(() => {
-    const t = setTimeout(() => setSearchParams(prev => ({ ...prev, search: searchInput, page: 1 })), 500);
-    return () => clearTimeout(t);
-  }, [searchInput]);
-
-  // Sync checkbox filters
-  useEffect(() => {
-    setSearchParams(prev => ({
-      ...prev,
-      role: selectedRoles.length >= 1 ? selectedRoles[0] : '',
-      isActive: selectedStatuses.length === 1 ? selectedStatuses[0] === 'true' : undefined,
-      page: 1,
-    }));
-  }, [selectedRoles, selectedStatuses]);
-
-  // Sync state → URL
-  useEffect(() => {
-    const params = new URLSearchParams();
-    if (searchParams.search) params.set('search', searchParams.search);
-    if (searchParams.role) params.set('role', searchParams.role);
-    if (searchParams.isActive !== undefined) params.set('isActive', String(searchParams.isActive));
-    if (searchParams.page > 1) params.set('page', String(searchParams.page));
-    if (searchParams.limit !== 10) params.set('limit', String(searchParams.limit));
-    const qs = params.toString();
-    window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname);
-  }, [searchParams]);
-
-  const handleToggleStatus = useCallback(async (userId: string, currentStatus: boolean) => {
-    setDeleteError(null);
-    try {
-      const response = await fetch('/api/admin/users', {
-        method: 'PUT', credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, isActive: !currentStatus }),
-      });
-      if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        throw new Error(data.error || data.message || `Erreur HTTP ${response.status}`);
-      }
-      await refetch();
-    } catch (err) {
-      setDeleteError(err instanceof Error ? err.message : 'Erreur lors de la modification du statut');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }, [refetch]);
-
-  const handleDelete = useCallback(async (id: string) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) return;
-    setDeleteError(null);
-    try {
-      const response = await fetch(`/api/admin/users?userId=${id}`, {
-        method: 'DELETE', credentials: 'include', headers: { 'Content-Type': 'application/json' },
-      });
-      if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        throw new Error(data.error || data.message || `Erreur HTTP ${response.status}`);
-      }
-      await refetch();
-    } catch (err) {
-      setDeleteError(err instanceof Error ? err.message : 'Erreur lors de la suppression');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }, [refetch]);
-
-  const columns = useMemo(() => [
+function createUserColumns(
+  handleToggleStatus: (userId: string, currentStatus: boolean) => Promise<void>,
+  handleDelete: (id: string) => Promise<void>
+) {
+  return [
     columnHelper.accessor(row => `${row.firstName} ${row.lastName}`, {
       id: 'name',
       header: 'Nom',
@@ -213,7 +123,94 @@ function AdminUsersPageContent() {
         </>
       ),
     }),
-  ], [handleDelete, handleToggleStatus]);
+  ];
+}
+
+function AdminUsersPageContent() {
+  const urlParams = useSearchParams();
+
+  const [selectedRoles, setSelectedRoles] = useState<string[]>(() => {
+    const r = urlParams.get('role'); return r ? [r] : [];
+  });
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>(() => {
+    const s = urlParams.get('isActive'); return s !== null ? [s] : [];
+  });
+  const [searchInput, setSearchInput] = useState(() => urlParams.get('search') || '');
+  const [page, setPage] = useState(() => parseInt(urlParams.get('page') || '1'));
+  const [limit, setLimit] = useState(() => parseInt(urlParams.get('limit') || '10'));
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const searchParams = useMemo(() => ({
+    page,
+    limit,
+    role: selectedRoles.length >= 1 ? selectedRoles[0] : '',
+    isActive: selectedStatuses.length === 1 ? selectedStatuses[0] === 'true' : undefined as boolean | undefined,
+    search: searchInput,
+  }), [page, limit, selectedRoles, selectedStatuses, searchInput]);
+
+  const { users: fetchedUsers, loading, isFetching, total, error, refetch } = useUsers(searchParams);
+
+  const users: User[] = fetchedUsers.map((user: any) => ({
+    ...user,
+    createdAt: new Date(user.createdAt),
+    updatedAt: new Date(user.updatedAt),
+    lastLoginAt: user.lastLoginAt ? new Date(user.lastLoginAt) : null,
+  }));
+
+  // Sync state → URL
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (searchParams.search) params.set('search', searchParams.search);
+    if (searchParams.role) params.set('role', searchParams.role);
+    if (searchParams.isActive !== undefined) params.set('isActive', String(searchParams.isActive));
+    if (searchParams.page > 1) params.set('page', String(searchParams.page));
+    if (searchParams.limit !== 10) params.set('limit', String(searchParams.limit));
+    const qs = params.toString();
+    window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname);
+  }, [searchParams]);
+
+  const handleToggleStatus = useCallback(async (userId: string, currentStatus: boolean) => {
+    setDeleteError(null);
+    try {
+      const response = await fetch('/api/admin/users', {
+        method: 'PUT', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, isActive: !currentStatus }),
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || data.message || `Erreur HTTP ${response.status}`);
+      }
+      await refetch();
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : 'Erreur lors de la modification du statut');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [refetch]);
+
+  const handleDelete = useCallback(async (id: string) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) return;
+    setDeleteError(null);
+    try {
+      const response = await fetch(`/api/admin/users?userId=${id}`, {
+        method: 'DELETE', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || data.message || `Erreur HTTP ${response.status}`);
+      }
+      await refetch();
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : 'Erreur lors de la suppression');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [refetch]);
+
+  const columns = useMemo(
+    () => createUserColumns(handleToggleStatus, handleDelete),
+    [handleDelete, handleToggleStatus]
+  );
 
   const table = useReactTable({
     data: users, columns, state: { sorting },
@@ -292,7 +289,7 @@ function AdminUsersPageContent() {
                 {hasActiveFilters && <span className="px-2 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-bold rounded-full">Actifs</span>}
               </div>
               {hasActiveFilters && (
-                <button type="button" onClick={() => { setSearchInput(''); setSelectedRoles([]); setSelectedStatuses([]); }}
+                <button type="button" onClick={() => { setSearchInput(''); setSelectedRoles([]); setSelectedStatuses([]); setPage(1); }}
                   className="text-sm text-primary-600 hover:text-primary-800 font-medium flex items-center gap-1">
                   <XMarkIcon className="h-4 w-4" />Réinitialiser
                 </button>
@@ -301,10 +298,10 @@ function AdminUsersPageContent() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="relative">
                 <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <input aria-label="Rechercher un utilisateur" type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="Nom, email, entreprise..."
+                <input aria-label="Rechercher un utilisateur" type="text" value={searchInput} onChange={(e) => { setSearchInput(e.target.value); setPage(1); }} placeholder="Nom, email, entreprise..."
                   className="w-full pl-10 pr-10 h-10 border border-border rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" />
                 {searchInput && (
-                  <button type="button" onClick={() => setSearchInput('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300">
+                  <button type="button" onClick={() => { setSearchInput(''); setPage(1); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300">
                     <XMarkIcon className="h-5 w-5" />
                   </button>
                 )}
@@ -312,7 +309,7 @@ function AdminUsersPageContent() {
               <CheckboxDropdown
                 label="Rôle"
                 selected={selectedRoles}
-                onChange={setSelectedRoles}
+                onChange={(values) => { setSelectedRoles(values); setPage(1); }}
                 options={[
                   { value: 'ADMIN', label: 'Admin' },
                   { value: 'SUPER_ADMIN', label: 'Super Admin' },
@@ -323,7 +320,7 @@ function AdminUsersPageContent() {
               <CheckboxDropdown
                 label="Statut"
                 selected={selectedStatuses}
-                onChange={setSelectedStatuses}
+                onChange={(values) => { setSelectedStatuses(values); setPage(1); }}
                 options={[
                   { value: 'true', label: 'Actif' },
                   { value: 'false', label: 'Inactif' },
@@ -369,8 +366,8 @@ function AdminUsersPageContent() {
               limit={searchParams.limit}
               total={total}
               totalPages={totalPages}
-              onPageChange={(page) => setSearchParams(prev => ({ ...prev, page }))}
-              onLimitChange={(limit) => setSearchParams(prev => ({ ...prev, limit, page: 1 }))}
+              onPageChange={setPage}
+              onLimitChange={(nextLimit) => { setLimit(nextLimit); setPage(1); }}
             />
           </m.div>
 

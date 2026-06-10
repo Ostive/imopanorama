@@ -479,6 +479,12 @@ function UserStats({ user }: { user: any }) {
   );
 }
 
+const profileTabs = [
+  { id: 'profile', name: 'Profil', icon: UserIcon },
+  { id: 'security', name: 'Sécurité', icon: KeyIcon },
+  { id: 'stats', name: 'Statistiques', icon: ChartBarIcon },
+];
+
 export default function ProfilePage() {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
@@ -492,12 +498,6 @@ export default function ProfilePage() {
       console.error('Erreur lors de la déconnexion:', error);
     }
   };
-
-  const tabs = [
-    { id: 'profile', name: 'Profil', icon: UserIcon },
-    { id: 'security', name: 'Sécurité', icon: KeyIcon },
-    { id: 'stats', name: 'Statistiques', icon: ChartBarIcon },
-  ];
 
   return (
     <ProtectedRoute requireAuth>
@@ -571,7 +571,7 @@ export default function ProfilePage() {
             <div className="mt-8">
               <div className="bg-gray-100 dark:bg-gray-700/50 rounded-2xl p-2">
                 <div className="flex gap-2">
-                  {tabs.map((tab) => {
+                  {profileTabs.map((tab) => {
                     const Icon = tab.icon;
                     return (
                       <m.button

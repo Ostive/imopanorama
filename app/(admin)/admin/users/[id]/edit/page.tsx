@@ -29,45 +29,29 @@ interface EditUserPageProps {
   }>;
 }
 
-export default function EditUserPage({ params }: EditUserPageProps) {
+interface UserData {
+  id?: string;
+  firstName?: string;
+  lastName?: string;
+  email: string;
+  phone?: string;
+  role?: string;
+  isActive?: boolean;
+}
+
+function UserEditForm({ userData, id }: { userData: UserData; id: string }) {
   const router = useRouter();
-  const [id, setId] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const fullName = `${userData.firstName || ''} ${userData.lastName || ''}`.trim();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    role: 'user',
-    isActive: true,
+    name: fullName || userData.email || '',
+    email: userData.email || '',
+    phone: userData.phone || '',
+    role: (userData.role || 'USER').toLowerCase(),
+    isActive: userData.isActive !== undefined ? userData.isActive : true,
   });
-
-  useEffect(() => {
-    params.then((p) => setId(p.id));
-  }, [params]);
-
-  const { data: userData, isLoading: loading, error: loadError } = useQuery({
-    queryKey: ['admin-user', id],
-    enabled: !!id,
-    queryFn: async () => {
-      const response = await fetch(`/api/admin/users/${id}`);
-      if (!response.ok) throw new Error('Utilisateur introuvable');
-      return response.json();
-    },
-  });
-
-  useEffect(() => {
-    if (!userData) return;
-    const fullName = `${userData.firstName || ''} ${userData.lastName || ''}`.trim();
-    setFormData({
-      name: fullName || userData.email || '',
-      email: userData.email || '',
-      phone: userData.phone || '',
-      role: (userData.role || 'USER').toLowerCase(),
-      isActive: userData.isActive !== undefined ? userData.isActive : true,
-    });
-  }, [userData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,37 +83,6 @@ export default function EditUserPage({ params }: EditUserPageProps) {
       setIsSubmitting(false);
     }
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <FormSkeleton fields={6} />
-        </div>
-      </div>
-    );
-  }
-
-  const pageError = error || (loadError instanceof Error ? loadError.message : null);
-
-  if (pageError && !formData.email) {
-    return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
-            Erreur: {pageError}
-          </div>
-          <Link
-            href="/admin/users"
-            className="mt-4 inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
-          >
-            <ArrowLeftIcon className="h-5 w-5 mr-2" />
-            Retour à la liste
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
@@ -284,4 +237,55 @@ export default function EditUserPage({ params }: EditUserPageProps) {
       </div>
     </div>
   );
+}
+
+export default function EditUserPage({ params }: EditUserPageProps) {
+  const [id, setId] = useState<string>('');
+
+  useEffect(() => {
+    params.then((p) => setId(p.id));
+  }, [params]);
+
+  const { data: userData, isLoading: loading, error: loadError } = useQuery({
+    queryKey: ['admin-user', id],
+    enabled: !!id,
+    queryFn: async () => {
+      const response = await fetch(`/api/admin/users/${id}`);
+      if (!response.ok) throw new Error('Utilisateur introuvable');
+      return response.json();
+    },
+  });
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FormSkeleton fields={6} />
+        </div>
+      </div>
+    );
+  }
+
+  const pageError = loadError instanceof Error ? loadError.message : null;
+
+  if (pageError || !userData) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+            Erreur: {pageError || 'Utilisateur introuvable'}
+          </div>
+          <Link
+            href="/admin/users"
+            className="mt-4 inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+          >
+            <ArrowLeftIcon className="h-5 w-5 mr-2" />
+            Retour à la liste
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return <UserEditForm key={id} userData={userData} id={id} />;
 }

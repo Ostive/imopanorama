@@ -12,6 +12,46 @@ import { useFavorites as useFavoritesContext } from '@/features/favorites/contex
 import { toast } from 'react-hot-toast';
 import Link from 'next/link';
 
+function FavorisLoadingSkeleton() {
+  return (
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-red-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-red-950/20 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-12 animate-pulse">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center">
+              <div className="w-16 h-16 bg-muted rounded-2xl mr-4"></div>
+              <div>
+                <div className="h-8 bg-muted rounded w-48 mb-2"></div>
+                <div className="h-4 bg-muted rounded w-64"></div>
+              </div>
+            </div>
+            <div className="h-10 bg-muted rounded w-32"></div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="bg-card rounded-2xl shadow-lg overflow-hidden animate-pulse">
+              <div className="h-64 bg-muted"></div>
+              <div className="p-6 space-y-4">
+                <div className="h-6 bg-muted rounded w-3/4"></div>
+                <div className="flex items-center space-x-2">
+                  <div className="h-4 bg-muted rounded w-20"></div>
+                  <div className="h-4 bg-muted rounded w-24"></div>
+                </div>
+                <div className="h-4 bg-muted rounded w-full"></div>
+                <div className="flex items-center justify-between pt-4">
+                  <div className="h-8 bg-muted rounded w-32"></div>
+                  <div className="h-10 bg-muted rounded-full w-10"></div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function FavorisPage() {
   const { isAuthenticated, user, loading: authLoading } = useAuth();
   const { refreshFavorites, removeFromFavorites } = useFavoritesContext();
@@ -66,46 +106,7 @@ export default function FavorisPage() {
   };
 
   if (authLoading || loading) {
-    return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-red-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-red-950/20 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header Skeleton */}
-          <div className="mb-12 animate-pulse">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center">
-                <div className="w-16 h-16 bg-muted rounded-2xl mr-4"></div>
-                <div>
-                  <div className="h-8 bg-muted rounded w-48 mb-2"></div>
-                  <div className="h-4 bg-muted rounded w-64"></div>
-                </div>
-              </div>
-              <div className="h-10 bg-muted rounded w-32"></div>
-            </div>
-          </div>
-
-          {/* Terrain Cards Skeleton */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-card rounded-2xl shadow-lg overflow-hidden animate-pulse">
-                <div className="h-64 bg-muted"></div>
-                <div className="p-6 space-y-4">
-                  <div className="h-6 bg-muted rounded w-3/4"></div>
-                  <div className="flex items-center space-x-2">
-                    <div className="h-4 bg-muted rounded w-20"></div>
-                    <div className="h-4 bg-muted rounded w-24"></div>
-                  </div>
-                  <div className="h-4 bg-muted rounded w-full"></div>
-                  <div className="flex items-center justify-between pt-4">
-                    <div className="h-8 bg-muted rounded w-32"></div>
-                    <div className="h-10 bg-muted rounded-full w-10"></div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+    return <FavorisLoadingSkeleton />;
   }
 
   if (!isAuthenticated) {

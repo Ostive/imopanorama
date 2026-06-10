@@ -58,6 +58,75 @@ const highlights = [
   { icon: ClipboardDocumentCheckIcon, title: 'Dossier plus clair', text: 'On identifie les infos et documents utiles avant de parler aux acheteurs.' },
 ]
 
+function SellHeroSection() {
+  return (
+    <section className="relative overflow-hidden bg-gray-950 text-white">
+      <div className="absolute inset-0">
+        <Image
+          src="https://images.unsplash.com/photo-1605146769289-440113cc3d00?q=80&w=1800&auto=format&fit=crop"
+          alt=""
+          fill
+          sizes="100vw"
+          priority
+          className="object-cover opacity-35"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/88 to-gray-950/35" />
+      </div>
+      <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <m.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col justify-center">
+          <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-semibold backdrop-blur">
+            <SparklesIcon className="h-4 w-4" />
+            Vendre avec ImoPanorama
+          </span>
+          <h1 className="mt-5 max-w-3xl text-4xl font-black leading-tight md:text-6xl">
+            Votre bien mérite une mise en marché sérieuse
+          </h1>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-gray-200">
+            Terrain, maison, villa, appartement ou local commercial : on vous aide à cadrer le prix, présenter le bien et suivre les demandes sans perdre les bons prospects.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a href="#formulaire-vendeur" className="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 font-bold text-white transition hover:bg-primary-700">
+              Proposer mon bien <ArrowRightIcon className="h-4 w-4" />
+            </a>
+            <Link href="/estimation" className="inline-flex items-center rounded-xl border border-white/25 px-6 py-3 font-bold text-white transition hover:bg-white/10">
+              Demander une estimation
+            </Link>
+          </div>
+        </m.div>
+      </div>
+    </section>
+  )
+}
+
+function SellMethodSection() {
+  return (
+    <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mb-10 max-w-2xl">
+        <span className="inline-flex rounded-full bg-primary-50 px-4 py-1.5 text-sm font-bold text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
+          Notre méthode
+        </span>
+        <h2 className="mt-4 text-3xl font-black text-foreground md:text-5xl">
+          Un accompagnement vendeur plus propre, plus clair
+        </h2>
+      </div>
+      <div className="grid gap-5 md:grid-cols-3">
+        {highlights.map((item) => {
+          const Icon = item.icon
+          return (
+            <div key={item.title} className="rounded-2xl border border-gray-100 bg-gray-50 p-6 dark:border-border dark:bg-gray-800">
+              <div className="mb-4 inline-flex rounded-xl bg-primary-50 p-3 text-primary-600 dark:bg-primary-900/30 dark:text-primary-400">
+                <Icon className="h-6 w-6" />
+              </div>
+              <h3 className="text-xl font-black text-foreground">{item.title}</h3>
+              <p className="mt-2 text-muted-foreground">{item.text}</p>
+            </div>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
+
 export default function SellPage() {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -176,67 +245,9 @@ export default function SellPage() {
 
   return (
     <main className="bg-card">
-      <section className="relative overflow-hidden bg-gray-950 text-white">
-        <div className="absolute inset-0">
-          <Image
-            src="https://images.unsplash.com/photo-1605146769289-440113cc3d00?q=80&w=1800&auto=format&fit=crop"
-            alt=""
-            fill
-            sizes="100vw"
-            priority
-            className="object-cover opacity-35"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/88 to-gray-950/35" />
-        </div>
+      <SellHeroSection />
 
-        <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <m.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col justify-center">
-            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-semibold backdrop-blur">
-              <SparklesIcon className="h-4 w-4" />
-              Vendre avec ImoPanorama
-            </span>
-            <h1 className="mt-5 max-w-3xl text-4xl font-black leading-tight md:text-6xl">
-              Votre bien mérite une mise en marché sérieuse
-            </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-gray-200">
-              Terrain, maison, villa, appartement ou local commercial : on vous aide à cadrer le prix, présenter le bien et suivre les demandes sans perdre les bons prospects.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#formulaire-vendeur" className="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 font-bold text-white transition hover:bg-primary-700">
-                Proposer mon bien <ArrowRightIcon className="h-4 w-4" />
-              </a>
-              <Link href="/estimation" className="inline-flex items-center rounded-xl border border-white/25 px-6 py-3 font-bold text-white transition hover:bg-white/10">
-                Demander une estimation
-              </Link>
-            </div>
-          </m.div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mb-10 max-w-2xl">
-          <span className="inline-flex rounded-full bg-primary-50 px-4 py-1.5 text-sm font-bold text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
-            Notre méthode
-          </span>
-          <h2 className="mt-4 text-3xl font-black text-foreground md:text-5xl">
-            Un accompagnement vendeur plus propre, plus clair
-          </h2>
-        </div>
-        <div className="grid gap-5 md:grid-cols-3">
-          {highlights.map((item) => {
-            const Icon = item.icon
-            return (
-              <div key={item.title} className="rounded-2xl border border-gray-100 bg-gray-50 p-6 dark:border-border dark:bg-gray-800">
-                <div className="mb-4 inline-flex rounded-xl bg-primary-50 p-3 text-primary-600 dark:bg-primary-900/30 dark:text-primary-400">
-                  <Icon className="h-6 w-6" />
-                </div>
-                <h3 className="text-xl font-black text-foreground">{item.title}</h3>
-                <p className="mt-2 text-muted-foreground">{item.text}</p>
-              </div>
-            )
-          })}
-        </div>
-      </section>
+      <SellMethodSection />
 
       <section id="formulaire-vendeur" className="bg-gray-50 py-16 dark:bg-gray-950">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.85fr_1.15fr] lg:px-8">
