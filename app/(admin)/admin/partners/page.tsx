@@ -37,6 +37,153 @@ type Partner = {
   updatedAt: string;
 };
 
+type PartnerFormData = {
+  name: string;
+  logo: string;
+  website: string;
+  description: string;
+  order: number;
+  isActive: boolean;
+};
+
+function PartnerFormModal({
+  editingPartner,
+  formData,
+  onFormDataChange,
+  onSubmit,
+  onClose,
+}: {
+  editingPartner: Partner | null;
+  formData: PartnerFormData;
+  onFormDataChange: (data: PartnerFormData) => void;
+  onSubmit: (e: React.FormEvent) => Promise<void>;
+  onClose: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <m.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+      >
+        <div className="p-6 border-b border-gray-200">
+          <h2 className="text-2xl font-bold text-gray-900">
+            {editingPartner ? 'Modifier le partenaire' : 'Ajouter un partenaire'}
+          </h2>
+        </div>
+
+        <form onSubmit={onSubmit} className="p-6 space-y-6">
+          <div>
+            <label htmlFor="partner-name" className="block text-sm font-medium text-gray-700 mb-2">
+              Nom du partenaire <span className="text-red-500">*</span>
+            </label>
+            <input
+              id="partner-name"
+              type="text"
+              value={formData.name}
+              onChange={(e) => onFormDataChange({ ...formData, name: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              required
+            />
+          </div>
+
+          <div>
+            <p className="block text-sm font-medium text-gray-700 mb-2">
+              Logo <span className="text-red-500">*</span>
+            </p>
+            <ImageUploader
+              onImageUploaded={(url) => onFormDataChange({ ...formData, logo: url })}
+              initialImage={formData.logo}
+              directory="/partners/"
+              label="Télécharger le logo"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="partner-website" className="block text-sm font-medium text-gray-700 mb-2">
+              Site web
+            </label>
+            <input
+              id="partner-website"
+              type="url"
+              value={formData.website}
+              onChange={(e) => onFormDataChange({ ...formData, website: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              placeholder="https://example.com"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="partner-description" className="block text-sm font-medium text-gray-700 mb-2">
+              Description
+            </label>
+            <textarea
+              id="partner-description"
+              value={formData.description}
+              onChange={(e) => onFormDataChange({ ...formData, description: e.target.value })}
+              rows={3}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              placeholder="Description courte du partenaire"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="partner-order" className="block text-sm font-medium text-gray-700 mb-2">
+                Ordre d&apos;affichage
+              </label>
+              <input
+                id="partner-order"
+                type="number"
+                value={formData.order}
+                onChange={(e) => onFormDataChange({ ...formData, order: parseInt(e.target.value) })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                min="0"
+              />
+            </div>
+
+            <div>
+              <p className="block text-sm font-medium text-gray-700 mb-2">
+                Statut
+              </p>
+              <Select
+                value={formData.isActive ? 'active' : 'inactive'}
+                onValueChange={(value) => onFormDataChange({ ...formData, isActive: value === 'active' })}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Statut" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="active">Actif</SelectItem>
+                    <SelectItem value="inactive">Inactif</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2 bg-linear-to-r from-primary-600 to-primary-600 text-white font-semibold rounded-lg hover:from-primary-700 hover:to-primary-700 transition-all shadow-lg"
+            >
+              {editingPartner ? 'Mettre à jour' : 'Ajouter'}
+            </button>
+          </div>
+        </form>
+      </m.div>
+    </div>
+  );
+}
+
 export default function PartnersAdminPage() {
   const [partners, setPartners] = useState<Partner[]>([]);
   const [isLoading, setIsLoading] = useState(true);

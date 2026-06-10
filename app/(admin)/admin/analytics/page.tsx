@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { m } from 'framer-motion';
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute';
 import { PageSkeleton } from '@/shared/components/loading';
@@ -147,6 +148,40 @@ function ConversionCard({ title, current, previous, icon: Icon, color }: {
   );
 }
 
+function AnalyticsOverviewTab({ analytics }: { analytics: AnalyticsData }) {
+  return (
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <StatsCard title="Visiteurs" value={analytics.overview.visitors.toLocaleString()} icon={<UserGroupIcon className="w-7 h-7" />} color="#3b82f6" trend={analytics.overview.trends.visitors} />
+        <StatsCard title="Pages vues" value={analytics.overview.pageViews.toLocaleString()} icon={<EyeIcon className="w-7 h-7" />} color="#10b981" trend={analytics.overview.trends.pageViews} />
+        <StatsCard title="Rebond" value={`${analytics.overview.bounceRate}%`} icon={<ExclamationCircleIcon className="w-7 h-7" />} color="#f59e0b" trend={analytics.overview.trends.bounceRate} />
+        <StatsCard title="Session moy." value={analytics.overview.avgSessionDuration} icon={<ClockIcon className="w-7 h-7" />} color="#8b5cf6" trend={analytics.overview.trends.avgSessionDuration} />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="bg-white rounded-2xl shadow-md p-6">
+          <h3 className="text-base font-bold text-gray-900 mb-4">Sources de trafic</h3>
+          <div className="space-y-4">
+            <ProgressBar label="Organique" value={analytics.traffic.organic} color="green" />
+            <ProgressBar label="Direct" value={analytics.traffic.direct} color="blue" />
+            <ProgressBar label="Social" value={analytics.traffic.social} color="purple" />
+            <ProgressBar label="Referral" value={analytics.traffic.referral} color="orange" />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-md p-6">
+          <h3 className="text-base font-bold text-gray-900 mb-4">Appareils</h3>
+          <div className="space-y-4">
+            <ProgressBar label="Mobile" value={analytics.devices.mobile} color="cyan" />
+            <ProgressBar label="Desktop" value={analytics.devices.desktop} color="blue" />
+            <ProgressBar label="Tablette" value={analytics.devices.tablet} color="pink" />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
 const timeRanges = [
   { value: '24h', label: '24h' },
   { value: '7d', label: '7j' },
@@ -162,29 +197,21 @@ const analyticsTabs = [
 
 export default function AnalyticsPage() {
   const [timeRange, setTimeRange] = useState('7d');
-  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'business' | 'audience'>('overview');
 
-  const loading = analytics === null && error === null;
-
-  const fetchAnalytics = useCallback(async () => {
-    setAnalytics(null);
-    setError(null);
-    try {
-      const response = await fetch(`/api/analytics/data?timeRange=${timeRange}`);
+  const {
+    data: analytics,
+    isLoading: loading,
+    error,
+    refetch,
+  } = useQuery<AnalyticsData>({
+    queryKey: ['admin-analytics', timeRange],
+    queryFn: async () => {
+      const response = await fetch('/api/analytics/data?timeRange=' + timeRange);
       if (!response.ok) throw new Error('Failed to fetch analytics data');
-      const data = await response.json();
-      setAnalytics(data);
-    } catch (err) {
-      console.error('Error fetching analytics:', err);
-      setError('Erreur lors du chargement des données analytiques');
-    }
-  }, [timeRange]);
-
-  useEffect(() => {
-    fetchAnalytics();
-  }, [fetchAnalytics]);
+      return response.json();
+    },
+  });
 
   const umamiUrl = process.env.NEXT_PUBLIC_UMAMI_URL;
   const grafanaUrl = process.env.NEXT_PUBLIC_GRAFANA_URL || 'http://localhost:3200';
@@ -197,8 +224,8 @@ export default function AnalyticsPage() {
     return (
       <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-600 mb-4">{error || 'Erreur de chargement'}</p>
-          <button type="button" onClick={fetchAnalytics} className="btn-primary">Réessayer</button>
+          <p className="text-red-600 mb-4">{error instanceof Error ? error.message : 'Erreur de chargement'}</p>
+          <button type="button" onClick={() => refetch()} className="btn-primary">Reessayer</button>
         </div>
       </div>
     );
@@ -292,101 +319,7 @@ export default function AnalyticsPage() {
           </m.div>
         )}
 
-        {/* =================== OVERVIEW TAB =================== */}
-        {activeTab === 'overview' && (
-          <>
-            {/* KPI Cards with real trends */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              <StatsCard
-                title="Visiteurs" value={analytics.overview.visitors}
-                icon={<UserGroupIcon className="w-7 h-7" />} color="blue"
-                trend={analytics.overview.trends.visitors} delay={0}
-              />
-              <StatsCard
-                title="Pages vues" value={analytics.overview.pageViews}
-                icon={<EyeIcon className="w-7 h-7" />} color="green"
-                trend={analytics.overview.trends.pageViews} delay={0.05}
-              />
-              <StatsCard
-                title="Taux de rebond" value={`${analytics.overview.bounceRate}%`}
-                icon={<ChartBarIcon className="w-7 h-7" />} color="amber"
-                trend={analytics.overview.trends.bounceRate} invertTrendColor delay={0.1}
-              />
-              <StatsCard
-                title="Durée moyenne" value={analytics.overview.avgSessionDuration}
-                icon={<ClockIcon className="w-7 h-7" />} color="purple"
-                trend={analytics.overview.trends.avgSessionDuration} delay={0.15}
-              />
-            </div>
-
-            {/* Business quick stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-              <StatsCard title="Propriétés" value={analytics.business.properties.total} icon={<HomeIcon className="w-7 h-7" />} color="blue" delay={0.05} />
-              <StatsCard title="Disponibles" value={analytics.business.properties.available} icon={<CheckCircleIcon className="w-7 h-7" />} color="green" delay={0.1} />
-              <StatsCard title="Réservées" value={analytics.business.properties.reserved} icon={<ExclamationCircleIcon className="w-7 h-7" />} color="orange" delay={0.15} />
-              <StatsCard title="Vendues" value={analytics.business.properties.sold} icon={<BuildingOfficeIcon className="w-7 h-7" />} color="red" delay={0.2} />
-              <StatsCard title="Utilisateurs" value={analytics.business.totals.totalUsers} icon={<UserGroupIcon className="w-7 h-7" />} color="purple" delay={0.25} />
-              <StatsCard title="Non lus" value={analytics.business.unread.total} icon={<EnvelopeIcon className="w-7 h-7" />} color="pink" delay={0.3} />
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              {/* Traffic Sources */}
-              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                className="bg-white rounded-2xl shadow-md p-6">
-                <h3 className="text-base font-bold text-gray-900 mb-4">Sources de trafic</h3>
-                <div className="space-y-3">
-                  <ProgressBar label="Recherche organique" value={analytics.traffic.organic} color="green" />
-                  <ProgressBar label="Accès direct" value={analytics.traffic.direct} color="blue" />
-                  <ProgressBar label="Réseaux sociaux" value={analytics.traffic.social} color="purple" />
-                  <ProgressBar label="Référents" value={analytics.traffic.referral} color="orange" />
-                </div>
-              </m.div>
-
-              {/* Top Pages */}
-              <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-                className="bg-white rounded-2xl shadow-md p-6">
-                <h3 className="text-base font-bold text-gray-900 mb-4">Pages les plus visitées</h3>
-                <div className="space-y-2">
-                  {analytics.topPages.map((page, i) => (
-                    <div key={page.page} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
-                      <span className="text-xs font-bold text-gray-400 w-5 text-center">{i + 1}</span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">{page.title}</p>
-                        <p className="text-xs text-gray-400 truncate">{page.page}</p>
-                      </div>
-                      <span className="text-sm font-bold text-gray-700">{page.views.toLocaleString('fr-FR')}</span>
-                    </div>
-                  ))}
-                  {analytics.topPages.length === 0 && (
-                    <p className="text-sm text-gray-400 text-center py-4">Aucune donnée</p>
-                  )}
-                </div>
-              </m.div>
-            </div>
-
-            {/* Recent Activity */}
-            <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-              className="bg-white rounded-2xl shadow-md">
-              <div className="px-6 py-4 border-b border-gray-100">
-                <h3 className="text-base font-bold text-gray-900">Activité récente</h3>
-              </div>
-              <div className="p-4">
-                <div className="space-y-2">
-                  {analytics.recentActivity.map((activity, index) => (
-                    <div key={`${activity.time}-${activity.action}-${activity.location}`} className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-                      <span className="text-xs font-mono text-gray-400 shrink-0">{activity.time}</span>
-                      <span className="text-sm text-gray-700 flex-1 truncate">{activity.action}</span>
-                      <span className="text-xs text-gray-400 shrink-0">{activity.location}</span>
-                    </div>
-                  ))}
-                  {analytics.recentActivity.length === 0 && (
-                    <p className="text-sm text-gray-400 text-center py-4">Aucune activité récente</p>
-                  )}
-                </div>
-              </div>
-            </m.div>
-          </>
-        )}
+        {activeTab === 'overview' && <AnalyticsOverviewTab analytics={analytics} />}
 
         {/* =================== BUSINESS TAB =================== */}
         {activeTab === 'business' && (

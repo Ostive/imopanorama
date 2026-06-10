@@ -133,8 +133,10 @@ function PropertiesMapViewInner({
   const [hoveredPropertyId, setHoveredPropertyId] = useState<string | null>(null)
   const [mapError, setMapError] = useState<string | null>(null)
   const [mapLoaded, setMapLoaded] = useState(false)
-  const [retryCount, setRetryCount] = useState(0)
   const { isOnline } = useNetworkStatus()
+  const mapErrorRef = useRef(mapError)
+  mapErrorRef.current = mapError
+  const cleanupRef = useRef<(() => void) | void>(undefined)
 
   const initMap = useCallback(() => {
     if (popup.current) { popup.current.remove(); popup.current = null }
@@ -329,15 +331,26 @@ function PropertiesMapViewInner({
   }, [properties])
 
   useEffect(() => {
-    const cleanup = initMap()
+    cleanupRef.current = initMap()
     return () => {
-      cleanup?.()
+      cleanupRef.current?.()
+      cleanupRef.current = undefined
     }
-  }, [initMap, retryCount])
+  }, [initMap])
+
+  const handleRetry = useCallback(() => {
+    cleanupRef.current?.()
+    cleanupRef.current = initMap()
+  }, [initMap])
 
   useEffect(() => {
-    if (isOnline && mapError) setRetryCount(c => c + 1)
-  }, [isOnline, mapError])
+    const handleOnline = () => {
+      if (mapErrorRef.current) handleRetry()
+    }
+
+    window.addEventListener('online', handleOnline)
+    return () => window.removeEventListener('online', handleOnline)
+  }, [])
 
   // Fix z-index: update both the marker element AND MapLibre's wrapper parent
   useEffect(() => {
@@ -375,10 +388,10 @@ function PropertiesMapViewInner({
     return <MapFallback height={height} message="Aucune propriété avec coordonnées GPS" subtitle={`${properties.length} propriété${properties.length !== 1 ? 's' : ''} disponible${properties.length !== 1 ? 's' : ''}, mais aucune n'a de coordonnées GPS.`} icon="location" />
   }
   if (!isOnline && !mapLoaded) {
-    return <MapFallback height={height} message="Pas de connexion internet" subtitle="La carte nécessite une connexion pour afficher les propriétés." onRetry={() => setRetryCount(c => c + 1)} icon="offline" />
+    return <MapFallback height={height} message="Pas de connexion internet" subtitle="La carte nécessite une connexion pour afficher les propriétés." onRetry={handleRetry} icon="offline" />
   }
   if (mapError && !mapLoaded) {
-    return <MapFallback height={height} message={mapError} subtitle="Vérifiez votre connexion internet et réessayez." onRetry={() => setRetryCount(c => c + 1)} icon="error" />
+    return <MapFallback height={height} message={mapError} subtitle="Vérifiez votre connexion internet et réessayez." onRetry={handleRetry} icon="error" />
   }
 
   return (

@@ -60,6 +60,35 @@ const statusOptions = [
   { value: 'PLANNED', label: 'Planifié' }
 ];
 
+
+const getStatusBadge = (status: Project['status']) => {
+  const badges = {
+    COMPLETED: { label: 'Termine', color: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300', icon: CheckCircleIcon },
+    IN_PROGRESS: { label: 'En cours', color: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300', icon: ClockIcon },
+    PLANNED: { label: 'Planifie', color: 'bg-muted text-gray-800 dark:text-gray-300', icon: ClockIcon },
+  };
+
+  const badge = badges[status];
+  const Icon = badge.icon;
+
+  return (
+    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${badge.color}`}>
+      <Icon className="w-3.5 h-3.5" />
+      {badge.label}
+    </span>
+  );
+};
+
+const getPublicationBadge = (isPublished: boolean) => {
+  return (
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+      isPublished ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 'bg-muted text-gray-800 dark:text-gray-300'
+    }`}>
+      {isPublished ? 'Publie' : 'Brouillon'}
+    </span>
+  );
+};
+
 function BatiProjectsPageContent() {
   const urlParams = useSearchParams();
   const queryClient = useQueryClient();
@@ -93,15 +122,15 @@ function BatiProjectsPageContent() {
     search: searchInput,
   }), [page, limit, selectedStatuses, selectedCategories, searchInput]);
 
-  // Sync searchParams → URL
-  useEffect(() => {
+  const replaceUrl = useCallback((next: Partial<typeof searchParams>) => {
+    const values = { ...searchParams, ...next };
     const params = new URLSearchParams();
-    if (searchParams.page > 1) params.set('page', searchParams.page.toString());
-    if (searchParams.limit !== 10) params.set('limit', searchParams.limit.toString());
-    if (searchParams.status) params.set('status', searchParams.status);
-    if (searchParams.category) params.set('category', searchParams.category);
-    if (searchParams.search) params.set('search', searchParams.search);
-    
+    if (values.page > 1) params.set('page', values.page.toString());
+    if (values.limit !== 10) params.set('limit', values.limit.toString());
+    if (values.status) params.set('status', values.status);
+    if (values.category) params.set('category', values.category);
+    if (values.search) params.set('search', values.search);
+
     const newUrl = params.toString() ? `?${params.toString()}` : '';
     if (newUrl !== window.location.search) {
       window.history.replaceState(null, '', `/admin/batipanorama/projects${newUrl}`);
@@ -129,12 +158,14 @@ function BatiProjectsPageContent() {
   // Pagination handlers
   const handlePageChange = useCallback((page: number) => {
     setPage(page);
-  }, []);
+    replaceUrl({ page });
+  }, [replaceUrl]);
 
   const handleLimitChange = useCallback((limit: number) => {
     setLimit(limit);
     setPage(1);
-  }, []);
+    replaceUrl({ limit, page: 1 });
+  }, [replaceUrl]);
 
   const handleGoToChange = useCallback((value: string) => {
     setGoToInput(value);
@@ -184,33 +215,6 @@ function BatiProjectsPageContent() {
     }
   };
 
-  const getStatusBadge = (status: Project['status']) => {
-    const badges = {
-      COMPLETED: { label: 'Terminé', color: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300', icon: CheckCircleIcon },
-      IN_PROGRESS: { label: 'En cours', color: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300', icon: ClockIcon },
-      PLANNED: { label: 'Planifié', color: 'bg-muted text-gray-800 dark:text-gray-300', icon: ClockIcon },
-    };
-    
-    const badge = badges[status];
-    const Icon = badge.icon;
-    
-    return (
-      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${badge.color}`}>
-        <Icon className="w-3.5 h-3.5" />
-        {badge.label}
-      </span>
-    );
-  };
-
-  const getPublicationBadge = (isPublished: boolean) => {
-    return (
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-        isPublished ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 'bg-muted text-gray-800 dark:text-gray-300'
-      }`}>
-        {isPublished ? 'Publié' : 'Brouillon'}
-      </span>
-    );
-  };
 
   // Filter data based on current filters
   const filteredProjects = useMemo(() => {
@@ -256,7 +260,8 @@ function BatiProjectsPageContent() {
     setSelectedCategories([]);
     setPage(1);
     setLimit(10);
-  }, []);
+    replaceUrl({ search: '', status: '', category: '', page: 1, limit: 10 });
+  }, [replaceUrl]);
 
   const hasActiveFilters = searchParams.search || searchParams.status || searchParams.category;
 
@@ -392,7 +397,7 @@ function BatiProjectsPageContent() {
               <input
                 type="text"
                 value={searchInput}
-                onChange={(e) => { setSearchInput(e.target.value); setPage(1); }}
+                onChange={(e) => { setSearchInput(e.target.value); setPage(1); replaceUrl({ search: e.target.value, page: 1 }); }}
                 placeholder="Rechercher un projet..."
                 aria-label="Rechercher un projet"
                 className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
@@ -404,7 +409,7 @@ function BatiProjectsPageContent() {
               label="Statut"
               options={statusOptions}
               selected={selectedStatuses}
-              onChange={(values) => { setSelectedStatuses(values); setPage(1); }}
+              onChange={(values) => { setSelectedStatuses(values); setPage(1); replaceUrl({ status: values[0] || '', page: 1 }); }}
             />
 
             {/* Category Filter */}
@@ -412,7 +417,7 @@ function BatiProjectsPageContent() {
               label="Catégorie"
               options={categoryOptions}
               selected={selectedCategories}
-              onChange={(values) => { setSelectedCategories(values); setPage(1); }}
+              onChange={(values) => { setSelectedCategories(values); setPage(1); replaceUrl({ category: values[0] || '', page: 1 }); }}
             />
 
             {/* Clear Filters */}

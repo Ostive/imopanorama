@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
 import { m } from 'framer-motion'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
@@ -62,6 +63,17 @@ const DEFAULT_FORM = {
   isActive: true,
 }
 
+type ProcessStepFormState = typeof DEFAULT_FORM
+
+const toProcessStepFormState = (step: any): ProcessStepFormState => ({
+  step:        step?.step?.toString() || '',
+  title:       step?.title || '',
+  description: step?.description || '',
+  icon:        step?.icon || DEFAULT_FORM.icon,
+  duration:    step?.duration || '',
+  isActive:    step?.isActive ?? true,
+})
+
 // ─── Helper erreur ────────────────────────────────────────────────────────────
 
 function FieldError({ name, errors }: { name: string; errors: Record<string, string> }) {
@@ -71,41 +83,45 @@ function FieldError({ name, errors }: { name: string; errors: Record<string, str
 
 // ─── Composant principal ──────────────────────────────────────────────────────
 
-export default function ProcessStepForm({ mode, stepId }: ProcessStepFormProps) {
+export default function ProcessStepForm(props: ProcessStepFormProps) {
+  const isEdit = props.mode === 'edit'
+  const { data: step, isLoading } = useQuery({
+    queryKey: ['bati-process-step-form', props.stepId],
+    enabled: isEdit && !!props.stepId,
+    queryFn: async () => {
+      const res = await fetch('/api/bati-process/' + props.stepId)
+      const data = await res.json()
+      if (!data.success) throw new Error('Erreur lors du chargement de l etape')
+      return data.step
+    },
+  })
+
+  if (isLoading) {
+    return (
+      <ProtectedRoute requiredRole={['admin', 'super_admin']}>
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
+        </div>
+      </ProtectedRoute>
+    )
+  }
+
+  return (
+    <ProcessStepFormContent
+      {...props}
+      initialForm={step ? toProcessStepFormState(step) : DEFAULT_FORM}
+    />
+  )
+}
+
+function ProcessStepFormContent({ mode, stepId, initialForm }: ProcessStepFormProps & { initialForm: ProcessStepFormState }) {
   const router = useRouter()
   const isEdit = mode === 'edit'
 
-  const [isLoading, setIsLoading]       = useState(isEdit)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [formData, setFormData]         = useState(DEFAULT_FORM)
+  const [formData, setFormData]         = useState(() => initialForm)
   const [fieldErrors, setFieldErrors]   = useState<Record<string, string>>({})
 
-  // ─── Chargement (mode edit) ───────────────────────────────────────────────
-
-  const fetchStep = useCallback(async () => {
-    if (!stepId) return
-    try {
-      const res = await fetch(`/api/bati-process/${stepId}`)
-      const data = await res.json()
-      if (data.success) {
-        const s = data.step
-        setFormData({
-          step:        s.step?.toString() || '',
-          title:       s.title || '',
-          description: s.description || '',
-          icon:        s.icon || '📋',
-          duration:    s.duration || '',
-          isActive:    s.isActive ?? true,
-        })
-      }
-    } catch {
-      toast.error('Erreur lors du chargement de l\'étape')
-    } finally {
-      setIsLoading(false)
-    }
-  }, [stepId])
-
-  useEffect(() => { fetchStep() }, [fetchStep])
 
   // ─── Progression automatique ──────────────────────────────────────────────
 
@@ -174,17 +190,6 @@ export default function ProcessStepForm({ mode, stepId }: ProcessStepFormProps) 
     if (fieldErrors[name]) setFieldErrors(prev => { const n = { ...prev }; delete n[name]; return n })
   }
 
-  // ─── Loading ──────────────────────────────────────────────────────────────
-
-  if (isLoading) {
-    return (
-      <ProtectedRoute requiredRole={['admin', 'super_admin']}>
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
-        </div>
-      </ProtectedRoute>
-    )
-  }
 
   // ─── Render ───────────────────────────────────────────────────────────────
 

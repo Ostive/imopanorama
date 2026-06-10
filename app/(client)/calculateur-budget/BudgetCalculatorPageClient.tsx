@@ -1,17 +1,39 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useReducer } from 'react'
 import Link from 'next/link'
 import { BanknotesIcon, CalculatorIcon, HomeIcon } from '@heroicons/react/24/outline'
 import { Input } from '@/shared/components/ui/input'
 import { formatPrice } from '@/shared/utils'
 
+type BudgetState = {
+  price: string
+  downPayment: string
+  rate: string
+  years: string
+  fees: string
+}
+
+type BudgetField = keyof BudgetState
+
+const budgetInitialState: BudgetState = {
+  price: '400000000',
+  downPayment: '80000000',
+  rate: '7',
+  years: '15',
+  fees: '8',
+}
+
+function budgetReducer(state: BudgetState, action: { field: BudgetField; value: string }): BudgetState {
+  return {
+    ...state,
+    [action.field]: action.value,
+  }
+}
+
 export default function BudgetCalculatorPage() {
-  const [price, setPrice] = useState('400000000')
-  const [downPayment, setDownPayment] = useState('80000000')
-  const [rate, setRate] = useState('7')
-  const [years, setYears] = useState('15')
-  const [fees, setFees] = useState('8')
+  const [state, dispatch] = useReducer(budgetReducer, budgetInitialState)
+  const { price, downPayment, rate, years, fees } = state
 
   const result = useMemo(() => {
     const propertyPrice = Number(price) || 0
@@ -57,19 +79,19 @@ export default function BudgetCalculatorPage() {
         <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xl dark:border-border dark:bg-gray-800">
           <div className="grid gap-4 md:grid-cols-2">
             <Field label="Prix du bien">
-              <Input type="number" value={price} onChange={(event) => setPrice(event.target.value)} className="h-12 rounded-xl" />
+              <Input type="number" value={price} onChange={(event) => dispatch({ field: 'price', value: event.target.value })} className="h-12 rounded-xl" />
             </Field>
             <Field label="Apport personnel">
-              <Input type="number" value={downPayment} onChange={(event) => setDownPayment(event.target.value)} className="h-12 rounded-xl" />
+              <Input type="number" value={downPayment} onChange={(event) => dispatch({ field: 'downPayment', value: event.target.value })} className="h-12 rounded-xl" />
             </Field>
             <Field label="Taux annuel (%)">
-              <Input type="number" value={rate} onChange={(event) => setRate(event.target.value)} className="h-12 rounded-xl" />
+              <Input type="number" value={rate} onChange={(event) => dispatch({ field: 'rate', value: event.target.value })} className="h-12 rounded-xl" />
             </Field>
             <Field label="Durée (années)">
-              <Input type="number" value={years} onChange={(event) => setYears(event.target.value)} className="h-12 rounded-xl" />
+              <Input type="number" value={years} onChange={(event) => dispatch({ field: 'years', value: event.target.value })} className="h-12 rounded-xl" />
             </Field>
             <Field label="Frais estimés (%)">
-              <Input type="number" value={fees} onChange={(event) => setFees(event.target.value)} className="h-12 rounded-xl" />
+              <Input type="number" value={fees} onChange={(event) => dispatch({ field: 'fees', value: event.target.value })} className="h-12 rounded-xl" />
             </Field>
           </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useReducer } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from '@/infrastructure/auth/auth-client';
 import { m } from 'framer-motion';
@@ -14,18 +14,74 @@ import {
   ArrowRightIcon,
 } from '@heroicons/react/24/outline';
 
+type LoginState = {
+  email: string;
+  password: string;
+  isLoading: boolean;
+  error: string;
+  showPassword: boolean;
+};
+
+type LoginAction =
+  | { type: 'field'; name: 'email' | 'password'; value: string }
+  | { type: 'loading'; value: boolean }
+  | { type: 'error'; value: string }
+  | { type: 'togglePassword' };
+
+const loginInitialState: LoginState = {
+  email: '',
+  password: '',
+  isLoading: false,
+  error: '',
+  showPassword: false,
+};
+
+function loginReducer(state: LoginState, action: LoginAction): LoginState {
+  switch (action.type) {
+    case 'field':
+      return { ...state, [action.name]: action.value };
+    case 'loading':
+      return { ...state, isLoading: action.value };
+    case 'error':
+      return { ...state, error: action.value };
+    case 'togglePassword':
+      return { ...state, showPassword: !state.showPassword };
+    default:
+      return state;
+  }
+}
+
+function LoginBrandingPanel() {
+  return (
+    <div className="hidden lg:flex w-1/2 relative z-10 items-center justify-center p-12 bg-primary-600 text-white overflow-hidden">
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:32px_32px]" />
+      <div className="relative max-w-md">
+        <Image
+          src="/images/brand/logo.png"
+          alt="ImoPanorama Madagascar"
+          width={320}
+          height={96}
+          className="h-24 w-auto object-contain brightness-0 invert mb-8"
+          priority
+        />
+        <h2 className="text-4xl font-bold mb-4">Espace ImoPanorama</h2>
+        <p className="text-lg text-white/85 leading-relaxed">
+          Connectez-vous pour gérer vos biens, suivre vos demandes et retrouver vos favoris.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function LoginNewPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [state, dispatch] = useReducer(loginReducer, loginInitialState);
+  const { email, password, isLoading, error, showPassword } = state;
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setIsLoading(true);
+    dispatch({ type: 'error', value: '' });
+    dispatch({ type: 'loading', value: true });
 
     try {
       const result = await signIn.email({
@@ -34,7 +90,7 @@ export default function LoginNewPage() {
       });
 
       if (result.error) {
-        setError(result.error.message || 'Erreur de connexion');
+        dispatch({ type: 'error', value: result.error.message || 'Erreur de connexion' });
       } else {
         // Check if there's a redirect parameter in URL
         const searchParams = new URLSearchParams(window.location.search);
@@ -53,9 +109,9 @@ export default function LoginNewPage() {
         }
       }
     } catch (err) {
-      setError('Une erreur est survenue lors de la connexion');
+      dispatch({ type: 'error', value: 'Une erreur est survenue lors de la connexion' });
     } finally {
-      setIsLoading(false);
+      dispatch({ type: 'loading', value: false });
     }
   };
 
@@ -70,7 +126,7 @@ export default function LoginNewPage() {
         callbackURL: redirectTo,
       });
     } catch (err) {
-      setError('Erreur lors de la connexion avec Google');
+      dispatch({ type: 'error', value: 'Erreur lors de la connexion avec Google' });
     }
   };
 
@@ -84,56 +140,7 @@ export default function LoginNewPage() {
         <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-15 animate-blob animation-delay-6000"></div>
       </div>
 
-      {/* Left Side - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden z-10">
-        {/* Beautiful gradient background */}
-        <div className="absolute inset-0 bg-linear-to-br from-primary-600 via-primary-700 to-primary-600"></div>
-        {/* Animated overlay pattern */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-primary-400/20 rounded-full filter blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary-300/10 rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 flex flex-col justify-center items-center w-full p-12">
-          <m.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            className="text-center"
-          >
-            {/* Logo Image */}
-            <div className="relative w-80 h-80 mb-8 mx-auto">
-              <Image
-                src="/images/auth/auth-illustration.png"
-                alt="ImoPanorama Logo"
-                fill
-                sizes="320px"
-                className="object-contain drop-shadow-2xl"
-              />
-            </div>
-            <p className="text-xl text-white/95 mb-10 max-w-md leading-relaxed">
-              Votre partenaire immobilier de confiance à Madagascar
-            </p>
-            <div className="flex items-center justify-center gap-12 text-white">
-              <div className="text-center">
-                <div className="text-4xl font-bold text-white mb-1">500+</div>
-                <div className="text-sm text-white/80 uppercase tracking-wider">Propriétés</div>
-              </div>
-              <div className="w-px h-16 bg-linear-to-b from-transparent via-white/40 to-transparent"></div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-white mb-1">1000+</div>
-                <div className="text-sm text-white/80 uppercase tracking-wider">Clients</div>
-              </div>
-              <div className="w-px h-16 bg-linear-to-b from-transparent via-white/40 to-transparent"></div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-white mb-1">10+</div>
-                <div className="text-sm text-white/80 uppercase tracking-wider">Années</div>
-              </div>
-            </div>
-          </m.div>
-        </div>
-      </div>
+      <LoginBrandingPanel />
 
       {/* Right Side - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-4 relative z-10">
@@ -200,7 +207,7 @@ export default function LoginNewPage() {
                     id="login-email"
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => dispatch({ type: 'field', name: 'email', value: e.target.value })}
                     required
                     className="w-full pl-12 pr-4 py-2.5 bg-muted border-2 border-border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white dark:focus:bg-gray-900 transition-all outline-none"
                     placeholder="votre@email.com"
@@ -218,14 +225,14 @@ export default function LoginNewPage() {
                     id="login-password"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => dispatch({ type: 'field', name: 'password', value: e.target.value })}
                     required
                     className="w-full pl-12 pr-12 py-3.5 bg-muted border-2 border-border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white dark:focus:bg-gray-900 transition-all outline-none"
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={() => dispatch({ type: 'togglePassword' })}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary-600 transition-colors"
                   >
                     {showPassword ? (
@@ -330,8 +337,8 @@ export default function LoginNewPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      setEmail('admin@imopanorama.mg');
-                      setPassword('Admin123!');
+                      dispatch({ type: 'field', name: 'email', value: 'admin@imopanorama.mg' });
+                      dispatch({ type: 'field', name: 'password', value: 'Admin123!' });
                     }}
                     className="px-3 py-2 bg-card hover:bg-linear-to-r hover:from-primary-600 hover:to-primary-600 hover:text-white border border-border hover:border-transparent rounded-lg text-xs font-semibold transition-all flex items-center gap-2 shadow-sm"
                   >
@@ -343,8 +350,8 @@ export default function LoginNewPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      setEmail('superadmin@imopanorama.mg');
-                      setPassword('SuperAdmin123!');
+                      dispatch({ type: 'field', name: 'email', value: 'superadmin@imopanorama.mg' });
+                      dispatch({ type: 'field', name: 'password', value: 'SuperAdmin123!' });
                     }}
                     className="px-3 py-2 bg-card hover:bg-linear-to-r hover:from-purple-600 hover:to-pink-600 hover:text-white border border-border hover:border-transparent rounded-lg text-xs font-semibold transition-all flex items-center gap-2 shadow-sm"
                   >
@@ -356,8 +363,8 @@ export default function LoginNewPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      setEmail('agent@imopanorama.mg');
-                      setPassword('Agent123!');
+                      dispatch({ type: 'field', name: 'email', value: 'agent@imopanorama.mg' });
+                      dispatch({ type: 'field', name: 'password', value: 'Agent123!' });
                     }}
                     className="px-3 py-2 bg-card hover:bg-linear-to-r hover:from-green-600 hover:to-teal-600 hover:text-white border border-border hover:border-transparent rounded-lg text-xs font-semibold transition-all flex items-center gap-2 shadow-sm"
                   >
@@ -369,8 +376,8 @@ export default function LoginNewPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      setEmail('client@imopanorama.mg');
-                      setPassword('Client123!');
+                      dispatch({ type: 'field', name: 'email', value: 'client@imopanorama.mg' });
+                      dispatch({ type: 'field', name: 'password', value: 'Client123!' });
                     }}
                     className="px-3 py-2 bg-card hover:bg-linear-to-r hover:from-orange-600 hover:to-red-600 hover:text-white border border-border hover:border-transparent rounded-lg text-xs font-semibold transition-all flex items-center gap-2 shadow-sm"
                   >
@@ -382,8 +389,8 @@ export default function LoginNewPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      setEmail('user@imopanorama.mg');
-                      setPassword('User123!');
+                      dispatch({ type: 'field', name: 'email', value: 'user@imopanorama.mg' });
+                      dispatch({ type: 'field', name: 'password', value: 'User123!' });
                     }}
                     className="px-3 py-2 bg-card hover:bg-linear-to-r hover:from-gray-600 hover:to-gray-700 hover:text-white border border-border hover:border-transparent rounded-lg text-xs font-semibold transition-all flex items-center gap-2 shadow-sm"
                   >

@@ -1,6 +1,7 @@
 'use client';
 
-import React, { createContext, use, useState, useEffect, useCallback } from 'react';
+import React, { createContext, use, useCallback, useMemo } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/features/auth/context/AuthContext';
 import { fetchWithTimeout } from '@/shared/utils/fetchWithTimeout';
 
@@ -11,42 +12,42 @@ interface ContactsContextType {
 }
 
 const ContactsContext = createContext<ContactsContextType | undefined>(undefined);
+const CONTACTS_COUNT_KEY = ['contacts-count'];
 
 export function ContactsProvider({ children }: { children: React.ReactNode }) {
-  const [contactsCount, setContactsCount] = useState(0);
   const { isAuthenticated, user } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { data: contactsCount = 0, refetch } = useQuery<number>({
+    queryKey: [...CONTACTS_COUNT_KEY, user?.id],
+    queryFn: async () => {
+      const response = await fetchWithTimeout('/api/contacts/count', {}, 5000);
+      if (!response.ok) return 0;
+      const data = await response.json();
+      return data.count || 0;
+    },
+    enabled: isAuthenticated,
+    initialData: 0,
+    retry: 1,
+  });
 
   const refreshContactsCount = useCallback(async () => {
     if (!isAuthenticated) {
-      setContactsCount(0);
+      queryClient.setQueryData([...CONTACTS_COUNT_KEY, user?.id], 0);
       return;
     }
-
-    try {
-      const response = await fetchWithTimeout('/api/contacts/count', {}, 5000);
-      if (response.ok) {
-        const data = await response.json();
-        setContactsCount(data.count || 0);
-      }
-    } catch {
-      // Silently fail (timeout or network error)
-    }
-  }, [isAuthenticated]);
+    await refetch();
+  }, [isAuthenticated, queryClient, refetch, user?.id]);
 
   const incrementContactsCount = useCallback(() => {
-    setContactsCount((prev) => prev + 1);
-  }, []);
+    queryClient.setQueryData<number>([...CONTACTS_COUNT_KEY, user?.id], (previous = 0) => previous + 1);
+  }, [queryClient, user?.id]);
 
-  // Fetch contacts count on mount and when auth state changes
-  useEffect(() => {
-    refreshContactsCount();
-  }, [refreshContactsCount, isAuthenticated, user]);
-
-  const value = {
+  const value = useMemo(() => ({
     contactsCount,
     refreshContactsCount,
     incrementContactsCount,
-  };
+  }), [contactsCount, refreshContactsCount, incrementContactsCount]);
 
   return (
     <ContactsContext.Provider value={value}>

@@ -34,9 +34,9 @@ export function SearchTab() {
   const [error, setError] = useState<string | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const fetchCoverage = useCallback(async () => {
+  const fetchCoverage = useCallback(async (signal?: AbortSignal) => {
     try {
-      const res = await fetch('/api/admin/search/embeddings/status');
+      const res = await fetch('/api/admin/search/embeddings/status', { signal });
       const data = (await res.json()) as CoverageResponse | { success: false; error: string };
       if (!res.ok || !('coverage' in data)) {
         setError('error' in data ? data.error : 'Erreur de chargement');
@@ -45,13 +45,14 @@ export function SearchTab() {
       setCoverage(data);
       setError(null);
     } catch (err) {
+      if ((err as Error).name === 'AbortError') return;
       setError((err as Error).message);
     }
   }, []);
 
-  const fetchJob = useCallback(async () => {
+  const fetchJob = useCallback(async (signal?: AbortSignal) => {
     try {
-      const res = await fetch('/api/admin/search/reindex');
+      const res = await fetch('/api/admin/search/reindex', { signal });
       const data = (await res.json()) as JobResponse;
       if (data.success) setJob(data.job);
     } catch {
@@ -61,8 +62,10 @@ export function SearchTab() {
 
   // Initial load + poll while a job is running
   useEffect(() => {
-    fetchCoverage();
-    fetchJob();
+    const controller = new AbortController();
+    fetchCoverage(controller.signal);
+    fetchJob(controller.signal);
+    return () => controller.abort();
   }, [fetchCoverage, fetchJob]);
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useReducer } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -23,14 +23,126 @@ const PROPERTY_TYPES = [
   { id: 'COMMERCIAL', label: 'Commerce' },
 ]
 
+type HeroSearchState = {
+  searchQuery: string
+  transactionType: 'SALE' | 'RENT' | ''
+  propertyTypes: string[]
+  isPropertyTypeOpen: boolean
+  budget: string
+}
+
+type HeroSearchAction =
+  | { type: 'search'; value: string }
+  | { type: 'transaction'; value: 'SALE' | 'RENT' | '' }
+  | { type: 'toggle-property-type'; value: string }
+  | { type: 'toggle-property-dropdown' }
+  | { type: 'budget'; value: string }
+
+const heroSearchInitialState: HeroSearchState = {
+  searchQuery: '',
+  transactionType: '',
+  propertyTypes: [],
+  isPropertyTypeOpen: false,
+  budget: '',
+}
+
+function heroSearchReducer(state: HeroSearchState, action: HeroSearchAction): HeroSearchState {
+  switch (action.type) {
+    case 'search':
+      return { ...state, searchQuery: action.value }
+    case 'transaction':
+      return { ...state, transactionType: action.value }
+    case 'toggle-property-type':
+      return {
+        ...state,
+        propertyTypes: state.propertyTypes.includes(action.value)
+          ? state.propertyTypes.filter(type => type !== action.value)
+          : [...state.propertyTypes, action.value],
+      }
+    case 'toggle-property-dropdown':
+      return { ...state, isPropertyTypeOpen: !state.isPropertyTypeOpen }
+    case 'budget':
+      return { ...state, budget: action.value }
+  }
+}
+
+function HeroDesktopImage() {
+  return (
+    <m.div
+      initial={{ opacity: 0, x: 30 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 1, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
+      className="hidden lg:block relative"
+    >
+      <div className="absolute inset-0 bg-linear-to-br from-primary-100/80 via-primary-50/60 to-secondary-100/80 rounded-4xl"></div>
+      <div className="absolute inset-0 rounded-4xl bg-[linear-gradient(rgba(255,255,255,0.34)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.26)_1px,transparent_1px)] bg-[size:36px_36px]"></div>
+
+      <div className="relative h-137.5 flex items-end justify-center overflow-hidden rounded-4xl">
+        <Image
+          src="/images/hero/home-agent.png"
+          alt="Agent immobilier professionnel"
+          width={480}
+          height={550}
+          className="object-contain object-bottom relative z-10 w-auto h-full max-w-full drop-shadow-2xl"
+          priority
+          sizes="(max-width: 768px) 100vw, 480px"
+        />
+      </div>
+
+      <m.div
+        initial={{ opacity: 0, x: -20, scale: 0.95 }}
+        animate={{ opacity: 1, x: 0, scale: 1 }}
+        transition={{ delay: 0.9, duration: 0.7, type: "spring", stiffness: 80, damping: 15 }}
+        className="absolute top-16 -left-6 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-white/60 dark:border-border/60 z-20"
+      >
+        <div className="flex items-center gap-3">
+          <div className="bg-linear-to-br from-green-400 to-green-600 p-3 rounded-xl">
+            <ShieldCheckIcon className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-foreground leading-tight">Conseil local</p>
+            <p className="text-xs text-muted-foreground font-medium leading-tight">À votre écoute</p>
+          </div>
+        </div>
+      </m.div>
+
+      <m.div
+        initial={{ opacity: 0, x: 20, scale: 0.95 }}
+        animate={{ opacity: 1, x: 0, scale: 1 }}
+        transition={{ delay: 1.1, duration: 0.7, type: "spring", stiffness: 80, damping: 15 }}
+        className="absolute top-1/3 -right-6 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-white/60 dark:border-border/60 z-20"
+      >
+        <div className="flex items-center gap-3">
+          <div className="bg-linear-to-br from-amber-400 to-amber-600 p-3 rounded-xl">
+            <SparklesIcon className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-foreground leading-tight">5.0/5</p>
+            <p className="text-xs text-muted-foreground font-medium leading-tight">Clients accompagnés</p>
+          </div>
+        </div>
+      </m.div>
+
+      <m.div
+        initial={{ opacity: 0, y: -15, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ delay: 1.35, duration: 0.7, type: "spring", stiffness: 80, damping: 15 }}
+        className="absolute -top-6 -right-6 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl p-5 rounded-2xl shadow-2xl border border-white/60 dark:border-border/60 z-20"
+      >
+        <div className="text-center">
+          <div className="text-3xl font-black bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">500+</div>
+          <p className="text-sm text-muted-foreground font-semibold mt-1">Biens à découvrir</p>
+        </div>
+      </m.div>
+    </m.div>
+  )
+}
+
 export default function Hero() {
   const router = useRouter()
   /* import { HomeIcon, BanknotesIcon } from '@heroicons/react/24/outline' - Make sure these are imported at the top */
-  const [searchQuery, setSearchQuery] = useState('')
-  const [transactionType, setTransactionType] = useState<'SALE' | 'RENT' | ''>('')
-  const [propertyTypes, setPropertyTypes] = useState<string[]>([])
-  const [isPropertyTypeOpen, setIsPropertyTypeOpen] = useState(false)
-  const [budget, setBudget] = useState('')
+  const [state, dispatch] = useReducer(heroSearchReducer, heroSearchInitialState)
+  const { searchQuery, transactionType, propertyTypes, isPropertyTypeOpen, budget } = state
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -53,11 +165,7 @@ export default function Hero() {
   }
 
   const togglePropertyType = (type: string) => {
-    setPropertyTypes(prev =>
-      prev.includes(type)
-        ? prev.filter(t => t !== type)
-        : [...prev, type]
-    )
+    dispatch({ type: 'toggle-property-type', value: type })
   }
 
   return (
@@ -151,7 +259,7 @@ export default function Hero() {
                 <div className="flex w-full lg:w-auto bg-white/95 dark:bg-gray-800/95 lg:bg-white/80 lg:dark:bg-gray-800/80 backdrop-blur-md rounded-t-4xl lg:rounded-t-3xl p-0 lg:p-1.5 lg:pb-2 border-b-0 border-white/50 dark:border-border/50 shadow-[0_-5px_15px_-5px_rgba(0,0,0,0.05)]">
                   <button
                     type="button"
-                    onClick={() => setTransactionType('SALE')}
+                    onClick={() => dispatch({ type: 'transaction', value: 'SALE' })}
                     className={`flex-1 lg:flex-none justify-center px-4 py-4 lg:px-8 lg:py-3 rounded-none first:rounded-tl-4xl last:rounded-tr-none lg:first:rounded-[1.2rem] font-bold text-base transition-all duration-300 flex items-center gap-2 ${transactionType === 'SALE' || transactionType === ''
                       ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/30'
                       : 'bg-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50'
@@ -162,7 +270,7 @@ export default function Hero() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setTransactionType('RENT')}
+                    onClick={() => dispatch({ type: 'transaction', value: 'RENT' })}
                     className={`flex-1 lg:flex-none justify-center px-4 py-4 lg:px-8 lg:py-3 rounded-none first:rounded-tr-none last:rounded-tr-4xl lg:last:rounded-[1.2rem] font-bold text-base transition-all duration-300 flex items-center gap-2 ${transactionType === 'RENT'
                       ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/30'
                       : 'bg-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50'
@@ -189,7 +297,7 @@ export default function Hero() {
                       <input
                         type="text"
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={(e) => dispatch({ type: 'search', value: e.target.value })}
                         placeholder="Où souhaitez-vous chercher ?"
                         aria-label="Où souhaitez-vous chercher ?"
                         className="block w-full pl-11 pr-4 py-4 h-full bg-card border border-border rounded-[1.2rem] text-foreground placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium"
@@ -205,7 +313,7 @@ export default function Hero() {
                       </div>
                       <button
                         type="button"
-                        onClick={() => setIsPropertyTypeOpen(!isPropertyTypeOpen)}
+                        onClick={() => dispatch({ type: 'toggle-property-dropdown' })}
                         className="w-full pl-11 pr-4 py-4 h-auto min-h-14.5 bg-card border border-border rounded-[1.2rem] text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium flex items-center justify-between group"
                       >
                         <span className={`truncate ${propertyTypes.length > 0 ? 'text-foreground' : 'text-muted-foreground'}`}>
@@ -271,7 +379,7 @@ export default function Hero() {
                       <input
                         type="number"
                         value={budget}
-                        onChange={(e) => setBudget(e.target.value)}
+                        onChange={(e) => dispatch({ type: 'budget', value: e.target.value })}
                         placeholder="Votre budget max"
                         aria-label="Budget maximum"
                         className="block w-full pl-11 pr-4 py-4 h-full bg-card border border-border rounded-[1.2rem] text-foreground placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium"

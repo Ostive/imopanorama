@@ -2,6 +2,7 @@
 
 import { Suspense, useState, useEffect, useCallback, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
 import { m, AnimatePresence } from 'framer-motion'
 import { formatPrice, formatDate } from '@/shared/utils'
@@ -164,11 +165,6 @@ const getStatusColor = (status: string) => STATUS_COLORS[status.toUpperCase()] ?
 function AdminPropertiesPageContent() {
   const searchParams = useSearchParams()
 
-  const [properties, setProperties] = useState<any[] | null>(null)
-
-  const loading = properties === null
-  const [total, setTotal] = useState(0)
-  const [statusCounts, setStatusCounts] = useState<Record<string, number> | null>(null)
   const [page, setPage] = useState(() => parseInt(searchParams.get('page') || '1'))
   const [limit, setLimit] = useState(() => parseInt(searchParams.get('limit') || '10'))
   const [searchQuery, setSearchQuery] = useState(() => searchParams.get('search') || '')
@@ -184,7 +180,7 @@ function AdminPropertiesPageContent() {
   const [sortBy, setSortBy] = useState(() => searchParams.get('sort') || 'date_desc')
   const [goToInput, setGoToInput] = useState('')
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
-  const [propertyToDelete, setPropertyToDelete] = useState<string | null>(null)
+  const propertyToDeleteRef = useRef<string | null>(null)
   const searchTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
@@ -195,67 +191,90 @@ function AdminPropertiesPageContent() {
     }
   }, [successMessage])
 
+  const replaceUrl = useCallback((next: {
+    search?: string
+    status?: string
+    propertyType?: string
+    transactionType?: string
+    page?: number
+    limit?: number
+    view?: 'table' | 'grid'
+    sort?: string
+  }) => {
+    const values = {
+      search: debouncedSearch,
+      status: statusFilter,
+      propertyType: propertyTypeFilter,
+      transactionType: transactionTypeFilter,
+      page,
+      limit,
+      view: viewMode,
+      sort: sortBy,
+      ...next,
+    }
+    const params = new URLSearchParams()
+    if (values.search) params.set('search', values.search)
+    if (values.status) params.set('status', values.status)
+    if (values.propertyType) params.set('propertyType', values.propertyType)
+    if (values.transactionType) params.set('transactionType', values.transactionType)
+    if (values.page > 1) params.set('page', values.page.toString())
+    if (values.limit !== 10) params.set('limit', values.limit.toString())
+    if (values.view !== 'table') params.set('view', values.view)
+    if (values.sort !== 'date_desc') params.set('sort', values.sort)
+    const qs = params.toString()
+    window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname)
+  }, [debouncedSearch, limit, page, propertyTypeFilter, sortBy, statusFilter, transactionTypeFilter, viewMode])
+
   useEffect(() => {
     if (searchTimerRef.current) clearTimeout(searchTimerRef.current)
-    searchTimerRef.current = setTimeout(() => { setDebouncedSearch(searchQuery); setPage(1) }, 400)
+    searchTimerRef.current = setTimeout(() => {
+      setDebouncedSearch(searchQuery)
+      setPage(1)
+    }, 400)
     return () => { if (searchTimerRef.current) clearTimeout(searchTimerRef.current) }
   }, [searchQuery])
 
-  useEffect(() => {
-    const params = new URLSearchParams()
-    if (debouncedSearch) params.set('search', debouncedSearch)
-    if (statusFilter) params.set('status', statusFilter)
-    if (propertyTypeFilter) params.set('propertyType', propertyTypeFilter)
-    if (transactionTypeFilter) params.set('transactionType', transactionTypeFilter)
-    if (page > 1) params.set('page', page.toString())
-    if (limit !== 10) params.set('limit', limit.toString())
-    if (viewMode !== 'table') params.set('view', viewMode)
-    if (sortBy !== 'date_desc') params.set('sort', sortBy)
-    const qs = params.toString()
-    window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname)
-  }, [debouncedSearch, statusFilter, propertyTypeFilter, transactionTypeFilter, page, limit, viewMode, sortBy])
-
-  const fetchProperties = useCallback(async () => {
-    try {
-      setProperties(null)
-      setErrorMessage(null)
+  const {
+    data: propertiesData,
+    isLoading: loading,
+    refetch: refetchProperties,
+  } = useQuery({
+    queryKey: ['admin-properties', page, limit, debouncedSearch, statusFilter, propertyTypeFilter, transactionTypeFilter, sortBy],
+    queryFn: async () => {
       const params = new URLSearchParams({ page: page.toString(), limit: limit.toString(), view: 'full', sort: sortBy })
       if (debouncedSearch) params.set('search', debouncedSearch)
       if (statusFilter) params.set('status', statusFilter)
       if (propertyTypeFilter) params.set('propertyType', propertyTypeFilter)
       if (transactionTypeFilter) params.set('transactionType', transactionTypeFilter)
-      const res = await fetch(`/api/properties?${params}`)
-      if (!res.ok) throw new Error('Failed to fetch properties')
-      const data = await res.json()
-      setProperties(data.data || [])
-      setTotal(data.total || 0)
-      if (data.statusCounts) setStatusCounts(data.statusCounts)
-    } catch {
-      setErrorMessage('Erreur lors du chargement des propriétés. Veuillez réessayer.')
-      setProperties([])
-    }
-  }, [page, limit, debouncedSearch, statusFilter, propertyTypeFilter, transactionTypeFilter, sortBy])
+      const res = await fetch('/api/properties?' + params.toString())
+      if (!res.ok) throw new Error('Erreur lors du chargement des proprietes')
+      return res.json()
+    },
+  })
 
-  useEffect(() => { fetchProperties() }, [fetchProperties])
+  const properties: any[] = propertiesData?.data || []
+  const total = propertiesData?.total || 0
+  const statusCounts = propertiesData?.statusCounts || null
 
   const confirmDelete = async () => {
+    const propertyToDelete = propertyToDeleteRef.current
     if (!propertyToDelete) return
     try {
       const res = await fetch(`/api/properties/${propertyToDelete}`, { method: 'DELETE' })
       if (!res.ok) throw new Error()
       setSuccessMessage('Propriété supprimée avec succès')
       setTimeout(() => setSuccessMessage(null), 5000)
-      fetchProperties()
+      refetchProperties()
     } catch {
       setErrorMessage('Erreur lors de la suppression de la propriété')
       setTimeout(() => setErrorMessage(null), 5000)
     } finally {
       setDeleteModalOpen(false)
-      setPropertyToDelete(null)
+      propertyToDeleteRef.current = null
     }
   }
 
-  const openDelete = (id: string) => { setPropertyToDelete(id); setDeleteModalOpen(true) }
+  const openDelete = (id: string) => { propertyToDeleteRef.current = id; setDeleteModalOpen(true) }
 
   const totalPages = Math.ceil(total / limit)
   const stats = {
@@ -268,8 +287,10 @@ function AdminPropertiesPageContent() {
 
   const toggleSort = (column: string) => {
     const asc = `${column}_asc`, desc = `${column}_desc`
-    setSortBy(sortBy === desc ? asc : sortBy === asc ? 'date_desc' : desc)
+    const nextSort = sortBy === desc ? asc : sortBy === asc ? 'date_desc' : desc
+    setSortBy(nextSort)
     setPage(1)
+    replaceUrl({ sort: nextSort, page: 1 })
   }
   const getSortIcon = (column: string) => {
     if (sortBy === `${column}_desc`) return <ChevronDownIcon className="h-4 w-4" />
@@ -279,12 +300,12 @@ function AdminPropertiesPageContent() {
 
   const paginationProps = {
     page, limit, total, totalPages, goToInput,
-    onPageChange: (p: number) => setPage(p),
-    onLimitChange: (l: number) => { setLimit(l); setPage(1) },
+    onPageChange: (p: number) => { setPage(p); replaceUrl({ page: p }) },
+    onLimitChange: (l: number) => { setLimit(l); setPage(1); replaceUrl({ limit: l, page: 1 }) },
     onGoToChange: setGoToInput,
     onGoToSubmit: (v: string) => {
       const t = parseInt(v)
-      if (t >= 1 && t <= totalPages) { setPage(t); setGoToInput('') }
+      if (t >= 1 && t <= totalPages) { setPage(t); setGoToInput(''); replaceUrl({ page: t }) }
     },
   }
 
@@ -315,7 +336,7 @@ function AdminPropertiesPageContent() {
               title="Erreur"
               message={errorMessage}
               onClose={() => setErrorMessage(null)}
-              onRetry={fetchProperties}
+              onRetry={refetchProperties}
               className="mb-6"
             />
           )}
@@ -328,10 +349,10 @@ function AdminPropertiesPageContent() {
             actions={
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
-                  <button type="button" onClick={() => setViewMode('table')} className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white text-primary-600 shadow-sm' : 'text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100'}`} title="Vue tableau">
+                  <button type="button" onClick={() => { setViewMode('table'); replaceUrl({ view: 'table' }) }} className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white text-primary-600 shadow-sm' : 'text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100'}`} title="Vue tableau">
                     <TableCellsIcon className="h-5 w-5" />
                   </button>
-                  <button type="button" onClick={() => setViewMode('grid')} className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white text-primary-600 shadow-sm' : 'text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100'}`} title="Vue grille">
+                  <button type="button" onClick={() => { setViewMode('grid'); replaceUrl({ view: 'grid' }) }} className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white text-primary-600 shadow-sm' : 'text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100'}`} title="Vue grille">
                     <Squares2X2Icon className="h-5 w-5" />
                   </button>
                 </div>
@@ -393,7 +414,7 @@ function AdminPropertiesPageContent() {
               </div>
               {hasActiveFilters && (
                 <button type="button"
-                  onClick={() => { setSearchQuery(''); setDebouncedSearch(''); setStatusFilter(''); setPropertyTypeFilter(''); setTransactionTypeFilter(''); setPage(1) }}
+                  onClick={() => { setSearchQuery(''); setDebouncedSearch(''); setStatusFilter(''); setPropertyTypeFilter(''); setTransactionTypeFilter(''); setPage(1); replaceUrl({ search: '', status: '', propertyType: '', transactionType: '', page: 1 }) }}
                   className="text-sm text-primary-600 hover:text-primary-800 font-medium flex items-center gap-1"
                 >
                   <XMarkIcon className="h-4 w-4" /> Réinitialiser
@@ -403,12 +424,12 @@ function AdminPropertiesPageContent() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="relative">
                 <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Rechercher..." aria-label="Rechercher une propriété" className="w-full pl-10 pr-4 h-10 border border-border rounded-lg bg-card text-foreground focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
+                <input type="text" value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); replaceUrl({ search: e.target.value, page: 1 }) }} placeholder="Rechercher..." aria-label="Rechercher une propriété" className="w-full pl-10 pr-4 h-10 border border-border rounded-lg bg-card text-foreground focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
               </div>
               <CheckboxDropdown
                 label="Statut"
                 selected={statusFilter ? statusFilter.split(',') : []}
-                onChange={(v) => { setStatusFilter(v.join(',')); setPage(1) }}
+                onChange={(v) => { const next = v.join(','); setStatusFilter(next); setPage(1); replaceUrl({ status: next, page: 1 }) }}
                 options={[
                   { value: 'AVAILABLE', label: 'Disponible' },
                   { value: 'RESERVED', label: 'Réservé' },
@@ -420,7 +441,7 @@ function AdminPropertiesPageContent() {
               <CheckboxDropdown
                 label="Transaction"
                 selected={transactionTypeFilter ? transactionTypeFilter.split(',') : []}
-                onChange={(v) => { setTransactionTypeFilter(v.join(',')); setPage(1) }}
+                onChange={(v) => { const next = v.join(','); setTransactionTypeFilter(next); setPage(1); replaceUrl({ transactionType: next, page: 1 }) }}
                 options={[
                   { value: 'SALE', label: 'Vente' },
                   { value: 'RENT', label: 'Location' },
@@ -430,7 +451,7 @@ function AdminPropertiesPageContent() {
               <CheckboxDropdown
                 label="Type de bien"
                 selected={propertyTypeFilter ? propertyTypeFilter.split(',') : []}
-                onChange={(v) => { setPropertyTypeFilter(v.join(',')); setPage(1) }}
+                onChange={(v) => { const next = v.join(','); setPropertyTypeFilter(next); setPage(1); replaceUrl({ propertyType: next, page: 1 }) }}
                 groups={[
                   { label: 'Terrains', options: [
                     { value: 'TERRAIN_RESIDENTIAL', label: 'Résidentiel' },
@@ -646,7 +667,7 @@ function AdminPropertiesPageContent() {
             title="Supprimer cette propriété ?"
             description="Cette action est irréversible. La propriété sera définitivement supprimée de la base de données."
             onConfirm={confirmDelete}
-            onCancel={() => { setDeleteModalOpen(false); setPropertyToDelete(null) }}
+            onCancel={() => { setDeleteModalOpen(false); propertyToDeleteRef.current = null }}
           />
         </div>
       </div>

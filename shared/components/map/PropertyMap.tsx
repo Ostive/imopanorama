@@ -17,8 +17,9 @@ function PropertyMapInner({ property, height = '400px' }: PropertyMapProps) {
   const map = useRef<maplibregl.Map | null>(null)
   const [mapError, setMapError] = useState<string | null>(null)
   const [mapLoaded, setMapLoaded] = useState(false)
-  const [retryCount, setRetryCount] = useState(0)
   const { isOnline } = useNetworkStatus()
+  const mapErrorRef = useRef(mapError)
+  mapErrorRef.current = mapError
 
   const initMap = useCallback(() => {
     if (map.current) {
@@ -116,21 +117,31 @@ function PropertyMapInner({ property, height = '400px' }: PropertyMapProps) {
     }
   }, [property])
 
+  const cleanupRef = useRef<(() => void) | void>(undefined)
   useEffect(() => {
-    const cleanup = initMap()
+    cleanupRef.current = initMap()
     return () => {
-      cleanup?.()
+      cleanupRef.current?.()
+      cleanupRef.current = undefined
     }
-  }, [initMap, retryCount])
+  }, [initMap])
+
+  const handleRetry = useCallback(() => {
+    cleanupRef.current?.()
+    cleanupRef.current = initMap()
+  }, [initMap])
 
   // Retry auto quand on revient en ligne
   useEffect(() => {
-    if (isOnline && mapError) {
-      setRetryCount(c => c + 1)
+    const handleOnline = () => {
+      if (mapErrorRef.current) {
+        handleRetry()
+      }
     }
-  }, [isOnline, mapError])
 
-  const handleRetry = () => setRetryCount(c => c + 1)
+    window.addEventListener('online', handleOnline)
+    return () => window.removeEventListener('online', handleOnline)
+  }, [handleRetry])
 
   if (!property.coordinates) {
     return (

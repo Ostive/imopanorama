@@ -690,9 +690,9 @@ export default function PropertyDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const { addToFavorites, removeFromFavorites, isFavorite: checkIsFavorite } = useFavorites();
 
-  const fetchProperty = useCallback(async () => {
+  const fetchProperty = useCallback(async (signal?: AbortSignal) => {
     try {
-      const response = await fetch(`/api/properties/${propertyId}`);
+      const response = await fetch(`/api/properties/${propertyId}`, { signal });
       const data = await response.json();
 
       if (data.success) {
@@ -701,6 +701,7 @@ export default function PropertyDetailPage() {
         setError('Property not found');
       }
     } catch (error) {
+      if ((error as Error).name === 'AbortError') return;
       logger.error('Error fetching property', error);
       setError('Failed to load property');
     } finally {
@@ -709,9 +710,10 @@ export default function PropertyDetailPage() {
   }, [propertyId]);
 
   useEffect(() => {
-    if (propertyId) {
-      fetchProperty();
-    }
+    if (!propertyId) return;
+    const controller = new AbortController();
+    fetchProperty(controller.signal);
+    return () => controller.abort();
   }, [propertyId, fetchProperty]);
 
   const [isFavorite, setIsFavorite] = useState(false);

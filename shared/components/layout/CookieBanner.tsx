@@ -10,6 +10,10 @@ import {
   type CookieConsentValue,
 } from '@/shared/utils/cookieConsent'
 
+const persist = (value: CookieConsentValue) => {
+  persistCookieConsent(value)
+}
+
 export default function CookieBanner() {
   const visible = useSyncExternalStore(
     (onStoreChange) => {
@@ -23,10 +27,6 @@ export default function CookieBanner() {
     () => !readCookieConsent(),
     () => false
   )
-
-  const persist = (value: CookieConsentValue) => {
-    persistCookieConsent(value)
-  }
 
   if (!visible) return null
 

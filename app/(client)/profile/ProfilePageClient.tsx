@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { m, AnimatePresence } from 'framer-motion';
@@ -201,49 +201,86 @@ function ProfileForm() {
   );
 }
 
-function PasswordForm() {
-  const { changePassword, loading } = useAuth();
-  const [formData, setFormData] = useState<ChangePasswordData>({
+type PasswordFormState = {
+  formData: ChangePasswordData;
+  success: boolean;
+  error: string;
+  showCurrentPassword: boolean;
+  showNewPassword: boolean;
+  showConfirmPassword: boolean;
+};
+
+type PasswordFormAction =
+  | { type: 'field'; name: keyof ChangePasswordData; value: string }
+  | { type: 'error'; value: string }
+  | { type: 'success'; value: boolean }
+  | { type: 'reset-form' }
+  | { type: 'toggle'; field: 'current' | 'new' | 'confirm' };
+
+const passwordFormInitialState: PasswordFormState = {
+  formData: {
     currentPassword: '',
     newPassword: '',
-    confirmPassword: ''
-  });
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    confirmPassword: '',
+  },
+  success: false,
+  error: '',
+  showCurrentPassword: false,
+  showNewPassword: false,
+  showConfirmPassword: false,
+};
+
+function passwordFormReducer(state: PasswordFormState, action: PasswordFormAction): PasswordFormState {
+  switch (action.type) {
+    case 'field':
+      return { ...state, formData: { ...state.formData, [action.name]: action.value } };
+    case 'error':
+      return { ...state, error: action.value };
+    case 'success':
+      return { ...state, success: action.value };
+    case 'reset-form':
+      return { ...state, formData: passwordFormInitialState.formData };
+    case 'toggle':
+      if (action.field === 'current') return { ...state, showCurrentPassword: !state.showCurrentPassword };
+      if (action.field === 'new') return { ...state, showNewPassword: !state.showNewPassword };
+      return { ...state, showConfirmPassword: !state.showConfirmPassword };
+  }
+}
+
+function PasswordForm() {
+  const { changePassword, loading } = useAuth();
+  const [state, dispatch] = useReducer(passwordFormReducer, passwordFormInitialState);
+  const { formData, success, error, showCurrentPassword, showNewPassword, showConfirmPassword } = state;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    dispatch({ type: 'error', value: '' });
 
     if (formData.newPassword !== formData.confirmPassword) {
-      setError('Les nouveaux mots de passe ne correspondent pas');
+      dispatch({ type: 'error', value: 'Les nouveaux mots de passe ne correspondent pas' });
       return;
     }
 
     try {
       await changePassword(formData);
-      setSuccess(true);
-      setFormData({ currentPassword: '', newPassword: '', confirmPassword: '' });
-      setTimeout(() => setSuccess(false), 3000);
+      dispatch({ type: 'success', value: true });
+      dispatch({ type: 'reset-form' });
+      setTimeout(() => dispatch({ type: 'success', value: false }), 3000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur lors du changement de mot de passe');
+      dispatch({ type: 'error', value: err instanceof Error ? err.message : 'Erreur lors du changement de mot de passe' });
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+    dispatch({
+      type: 'field',
+      name: e.target.name as keyof ChangePasswordData,
+      value: e.target.value,
+    });
   };
 
   const togglePasswordVisibility = (field: 'current' | 'new' | 'confirm') => {
-    if (field === 'current') setShowCurrentPassword(!showCurrentPassword);
-    if (field === 'new') setShowNewPassword(!showNewPassword);
-    if (field === 'confirm') setShowConfirmPassword(!showConfirmPassword);
+    dispatch({ type: 'toggle', field });
   };
 
   return (

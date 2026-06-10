@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/features/auth/context/AuthContext';
 import { useContacts } from '@/features/contacts/context/ContactsContext';
@@ -41,17 +41,27 @@ interface Contact {
   } | null;
 }
 
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
 export default function MesDemandesPage() {
   const { isAuthenticated, user, loading: authLoading } = useAuth();
   const { refreshContactsCount } = useContacts();
   const [contacts, setContacts] = useState<Contact[]>([]);
-  const [error, setError] = useState('');
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [contactToDelete, setContactToDelete] = useState<string | null>(null);
+  const contactToDeleteRef = useRef<string | null>(null);
 
   if (!authLoading && !isAuthenticated) redirect('/login');
 
-  const { data: contactsData, isLoading: loading, error: contactsError } = useQuery({
+  const { data: contactsData, isLoading: loading } = useQuery({
     queryKey: ['user-contacts'],
     enabled: isAuthenticated,
     queryFn: async () => {
@@ -63,20 +73,20 @@ export default function MesDemandesPage() {
 
   useEffect(() => {
     if (contactsData) setContacts(contactsData.contacts || []);
-    if (contactsError) setError('Erreur lors du chargement des demandes');
-  }, [contactsData, contactsError]);
+  }, [contactsData]);
 
   const openDeleteModal = (contactId: string) => {
-    setContactToDelete(contactId);
+    contactToDeleteRef.current = contactId;
     setDeleteModalOpen(true);
   };
 
   const closeDeleteModal = () => {
     setDeleteModalOpen(false);
-    setContactToDelete(null);
+    contactToDeleteRef.current = null;
   };
 
   const confirmDelete = async () => {
+    const contactToDelete = contactToDeleteRef.current;
     if (!contactToDelete) return;
 
     try {
@@ -98,17 +108,6 @@ export default function MesDemandesPage() {
     } finally {
       closeDeleteModal();
     }
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
   };
 
   if (authLoading || loading) {

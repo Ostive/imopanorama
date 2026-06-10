@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useReducer } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn, signUp } from '@/infrastructure/auth/auth-client';
 import { m } from 'framer-motion';
@@ -16,43 +16,92 @@ import {
   ArrowRightIcon,
 } from '@heroicons/react/24/outline';
 
-export default function RegisterNewPage() {
-  const router = useRouter();
-  const [formData, setFormData] = useState({
+type RegisterState = {
+  formData: {
+    email: string;
+    password: string;
+    confirmPassword: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+  };
+  showPassword: boolean;
+  showConfirmPassword: boolean;
+  isLoading: boolean;
+  error: string;
+};
+
+type RegisterAction =
+  | { type: 'field'; name: keyof RegisterState['formData']; value: string }
+  | { type: 'toggle-password' }
+  | { type: 'toggle-confirm-password' }
+  | { type: 'loading'; value: boolean }
+  | { type: 'error'; value: string };
+
+const registerInitialState: RegisterState = {
+  formData: {
     email: '',
     password: '',
     confirmPassword: '',
     firstName: '',
     lastName: '',
     phone: '',
-  });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  },
+  showPassword: false,
+  showConfirmPassword: false,
+  isLoading: false,
+  error: '',
+};
+
+function registerReducer(state: RegisterState, action: RegisterAction): RegisterState {
+  switch (action.type) {
+    case 'field':
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          [action.name]: action.value,
+        },
+      };
+    case 'toggle-password':
+      return { ...state, showPassword: !state.showPassword };
+    case 'toggle-confirm-password':
+      return { ...state, showConfirmPassword: !state.showConfirmPassword };
+    case 'loading':
+      return { ...state, isLoading: action.value };
+    case 'error':
+      return { ...state, error: action.value };
+  }
+}
+
+export default function RegisterNewPage() {
+  const router = useRouter();
+  const [state, dispatch] = useReducer(registerReducer, registerInitialState);
+  const { formData, showPassword, showConfirmPassword, isLoading, error } = state;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    dispatch({
+      type: 'field',
+      name: e.target.name as keyof RegisterState['formData'],
+      value: e.target.value,
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
+    dispatch({ type: 'loading', value: true });
+    dispatch({ type: 'error', value: '' });
 
     // Validation
     if (formData.password !== formData.confirmPassword) {
-      setError('Les mots de passe ne correspondent pas');
-      setIsLoading(false);
+      dispatch({ type: 'error', value: 'Les mots de passe ne correspondent pas' });
+      dispatch({ type: 'loading', value: false });
       return;
     }
 
     if (formData.password.length < 8) {
-      setError('Le mot de passe doit contenir au moins 8 caractères');
-      setIsLoading(false);
+      dispatch({ type: 'error', value: 'Le mot de passe doit contenir au moins 8 caractères' });
+      dispatch({ type: 'loading', value: false });
       return;
     }
 
@@ -67,8 +116,8 @@ export default function RegisterNewPage() {
       } as any);
 
       if (result.error) {
-        setError(result.error.message || 'Erreur lors de l\'inscription');
-        setIsLoading(false);
+        dispatch({ type: 'error', value: result.error.message || 'Erreur lors de l\'inscription' });
+        dispatch({ type: 'loading', value: false });
         return;
       }
 
@@ -76,9 +125,9 @@ export default function RegisterNewPage() {
       router.push('/');
     } catch (err: any) {
       console.error('Registration error:', err);
-      setError(err.message || 'Une erreur est survenue lors de l\'inscription');
+      dispatch({ type: 'error', value: err.message || 'Une erreur est survenue lors de l\'inscription' });
     } finally {
-      setIsLoading(false);
+      dispatch({ type: 'loading', value: false });
     }
   };
 
@@ -298,7 +347,7 @@ export default function RegisterNewPage() {
                     />
                     <button
                       type="button"
-                      onClick={() => setShowPassword(!showPassword)}
+                      onClick={() => dispatch({ type: 'toggle-password' })}
                       className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary-600 transition-colors"
                     >
                       {showPassword ? (
@@ -328,7 +377,7 @@ export default function RegisterNewPage() {
                     />
                     <button
                       type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      onClick={() => dispatch({ type: 'toggle-confirm-password' })}
                       className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary-600 transition-colors"
                     >
                       {showConfirmPassword ? (
@@ -381,7 +430,7 @@ export default function RegisterNewPage() {
                 try {
                   await signIn.social({ provider: 'google', callbackURL: '/' });
                 } catch {
-                  setError('Erreur lors de la connexion avec Google');
+                  dispatch({ type: 'error', value: 'Erreur lors de la connexion avec Google' });
                 }
               }}
               type="button"

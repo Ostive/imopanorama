@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
 import { m } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -98,6 +99,27 @@ const DEFAULT_FORM = {
   features: [] as string[],
 }
 
+type ProjectFormState = typeof DEFAULT_FORM
+
+const toProjectFormState = (project: any): ProjectFormState => ({
+  title:       project?.title || '',
+  description: project?.description || '',
+  location:    project?.location || '',
+  category:    project?.category || '',
+  surface:     project?.surface?.toString() || '',
+  duration:    project?.duration || '',
+  budget:      project?.budget || '',
+  coverImage:  project?.coverImage || '',
+  images:      project?.images || [],
+  status:      project?.status || 'COMPLETED',
+  isPublished: project?.isPublished ?? true,
+  order:       project?.order?.toString() || '0',
+  client:      project?.client || '',
+  year:        project?.year?.toString() || new Date().getFullYear().toString(),
+  tags:        project?.tags || [],
+  features:    project?.features || [],
+})
+
 // ─── Helper erreur ────────────────────────────────────────────────────────────
 
 function FieldError({ name, errors }: { name: string; errors: Record<string, string> }) {
@@ -107,53 +129,47 @@ function FieldError({ name, errors }: { name: string; errors: Record<string, str
 
 // ─── Composant principal ──────────────────────────────────────────────────────
 
-export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
+export default function ProjectForm(props: ProjectFormProps) {
+  const isEdit = props.mode === 'edit'
+  const { data: project, isLoading } = useQuery({
+    queryKey: ['bati-project-form', props.projectId],
+    enabled: isEdit && !!props.projectId,
+    queryFn: async () => {
+      const res = await fetch('/api/bati-projects/' + props.projectId)
+      const data = await res.json()
+      if (!data.success) throw new Error('Erreur lors du chargement du projet')
+      return data.project
+    },
+  })
+
+  if (isLoading) {
+    return (
+      <ProtectedRoute requiredRole={['admin', 'super_admin']}>
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
+        </div>
+      </ProtectedRoute>
+    )
+  }
+
+  return (
+    <ProjectFormContent
+      {...props}
+      initialForm={project ? toProjectFormState(project) : DEFAULT_FORM}
+    />
+  )
+}
+
+function ProjectFormContent({ mode, projectId, initialForm }: ProjectFormProps & { initialForm: ProjectFormState }) {
   const router = useRouter()
   const isEdit = mode === 'edit'
 
-  const [isLoading, setIsLoading]     = useState(isEdit)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [formData, setFormData]       = useState(DEFAULT_FORM)
+  const [formData, setFormData]       = useState(() => initialForm)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [newTag, setNewTag]           = useState('')
   const [newFeature, setNewFeature]   = useState('')
 
-  // ─── Chargement (mode edit) ───────────────────────────────────────────────
-
-  const fetchProject = useCallback(async () => {
-    if (!projectId) return
-    try {
-      const res = await fetch(`/api/bati-projects/${projectId}`)
-      const data = await res.json()
-      if (data.success) {
-        const p = data.project
-        setFormData({
-          title:       p.title || '',
-          description: p.description || '',
-          location:    p.location || '',
-          category:    p.category || '',
-          surface:     p.surface?.toString() || '',
-          duration:    p.duration || '',
-          budget:      p.budget || '',
-          coverImage:  p.coverImage || '',
-          images:      p.images || [],
-          status:      p.status || 'COMPLETED',
-          isPublished: p.isPublished ?? true,
-          order:       p.order?.toString() || '0',
-          client:      p.client || '',
-          year:        p.year?.toString() || new Date().getFullYear().toString(),
-          tags:        p.tags || [],
-          features:    p.features || [],
-        })
-      }
-    } catch {
-      toast.error('Erreur lors du chargement du projet')
-    } finally {
-      setIsLoading(false)
-    }
-  }, [projectId])
-
-  useEffect(() => { fetchProject() }, [fetchProject])
 
   // ─── Progression automatique ──────────────────────────────────────────────
 
@@ -254,19 +270,7 @@ export default function ProjectForm({ mode, projectId }: ProjectFormProps) {
     }
   }
 
-  // ─── Loading ──────────────────────────────────────────────────────────────
-
-  if (isLoading) {
-    return (
-      <ProtectedRoute requiredRole={['admin', 'super_admin']}>
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-50/20 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
-        </div>
-      </ProtectedRoute>
-    )
-  }
-
-  // ─── Render ───────────────────────────────────────────────────────────────
+  // Render ───────────────────────────────────────────────────────────────
 
   return (
     <ProtectedRoute requiredRole={['admin', 'super_admin']}>

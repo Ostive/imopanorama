@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense, useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { m } from 'framer-motion';
@@ -78,8 +78,8 @@ function ContactsPageContent() {
   const [currentPage, setCurrentPage] = useState(() => parseInt(urlParams.get('page') || '1'));
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [contactToDelete, setContactToDelete] = useState<string | null>(null);
-  const [markingAsRead, setMarkingAsRead] = useState<Set<string>>(new Set());
+  const contactToDeleteRef = useRef<string | null>(null);
+  const markingAsReadRef = useRef<Set<string>>(new Set());
   const [savingCrm, setSavingCrm] = useState(false);
 
   const leadStatusOptions = Object.entries(LEAD_STATUS_LABELS).map(([value, label]) => ({ value, label }));
@@ -112,16 +112,22 @@ function ContactsPageContent() {
     staleTime: 30_000,
   });
 
-  // Sync state → URL
-  useEffect(() => {
+  const replaceUrl = useCallback((next: { search?: string; status?: string; page?: number; limit?: number }) => {
+    const values = {
+      search: searchTerm,
+      status: selectedStatuses.length === 1 ? selectedStatuses[0] : '',
+      page: currentPage,
+      limit,
+      ...next,
+    };
     const params = new URLSearchParams();
-    if (searchTerm) params.set('search', searchTerm);
-    if (selectedStatuses.length === 1) params.set('status', selectedStatuses[0]);
-    if (currentPage > 1) params.set('page', String(currentPage));
-    if (limit !== 15) params.set('limit', String(limit));
+    if (values.search) params.set('search', values.search);
+    if (values.status) params.set('status', values.status);
+    if (values.page > 1) params.set('page', String(values.page));
+    if (values.limit !== 15) params.set('limit', String(values.limit));
     const qs = params.toString();
     window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname);
-  }, [searchTerm, selectedStatuses, currentPage, limit]);
+  }, [currentPage, limit, searchTerm, selectedStatuses]);
 
   const contacts = contactsData?.contacts || [];
   const totalContacts = contactsData?.total || 0;
@@ -139,8 +145,8 @@ function ContactsPageContent() {
   };
 
   const markAsRead = async (contactId: string) => {
-    if (markingAsRead.has(contactId)) return;
-    setMarkingAsRead((prev) => new Set(prev).add(contactId));
+    if (markingAsReadRef.current.has(contactId)) return;
+    markingAsReadRef.current.add(contactId);
     try {
       const res = await fetch(`/api/contacts/${contactId}/read`, {
         method: 'PATCH',
@@ -156,12 +162,13 @@ function ContactsPageContent() {
       console.error('Error marking contact as read:', error);
     } finally {
       setTimeout(() => {
-        setMarkingAsRead((prev) => { const n = new Set(prev); n.delete(contactId); return n; });
+        markingAsReadRef.current.delete(contactId);
       }, 1000);
     }
   };
 
   const handleDelete = async () => {
+    const contactToDelete = contactToDeleteRef.current;
     if (!contactToDelete) return;
     try {
       const res = await fetch(`/api/contacts/${contactToDelete}`, { method: 'DELETE' });
@@ -176,7 +183,7 @@ function ContactsPageContent() {
       console.error('Error deleting contact:', error);
     } finally {
       setDeleteModalOpen(false);
-      setContactToDelete(null);
+      contactToDeleteRef.current = null;
     }
   };
 
@@ -248,7 +255,7 @@ function ContactsPageContent() {
               {(searchTerm || selectedStatuses.length > 0) && <span className="px-2 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-bold rounded-full">Actifs</span>}
             </div>
             {(searchTerm || selectedStatuses.length > 0) && (
-              <button type="button" onClick={() => { setSearchTerm(''); setSelectedStatuses([]); setCurrentPage(1); }}
+              <button type="button" onClick={() => { setSearchTerm(''); setSelectedStatuses([]); setCurrentPage(1); replaceUrl({ search: '', status: '', page: 1 }); }}
                 className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 font-medium flex items-center gap-1">
                 <XMarkIcon className="h-4 w-4" />Réinitialiser
               </button>
@@ -257,10 +264,10 @@ function ContactsPageContent() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="relative">
               <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <input type="text" value={searchTerm} onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }} placeholder="Nom, email, terrain..." aria-label="Rechercher un contact"
+              <input type="text" value={searchTerm} onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); replaceUrl({ search: e.target.value, page: 1 }); }} placeholder="Nom, email, terrain..." aria-label="Rechercher un contact"
                 className="w-full pl-10 pr-10 h-10 border border-border rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" />
               {searchTerm && (
-                <button type="button" onClick={() => { setSearchTerm(''); setCurrentPage(1); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300">
+                <button type="button" onClick={() => { setSearchTerm(''); setCurrentPage(1); replaceUrl({ search: '', page: 1 }); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300">
                   <XMarkIcon className="h-5 w-5" />
                 </button>
               )}
@@ -268,7 +275,7 @@ function ContactsPageContent() {
             <CheckboxDropdown
               label="Statut"
               selected={selectedStatuses}
-              onChange={(values) => { setSelectedStatuses(values); setCurrentPage(1); }}
+              onChange={(values) => { setSelectedStatuses(values); setCurrentPage(1); replaceUrl({ status: values.length === 1 ? values[0] : '', page: 1 }); }}
               options={[
                 { value: 'unread', label: 'Non lus' },
                 { value: 'read', label: 'Lus' },
@@ -381,8 +388,8 @@ function ContactsPageContent() {
             limit={limit}
             total={totalContacts}
             totalPages={totalPages}
-            onPageChange={setCurrentPage}
-            onLimitChange={(l) => { setLimit(l); setCurrentPage(1); }}
+            onPageChange={(nextPage) => { setCurrentPage(nextPage); replaceUrl({ page: nextPage }); }}
+            onLimitChange={(nextLimit) => { setLimit(nextLimit); setCurrentPage(1); replaceUrl({ limit: nextLimit, page: 1 }); }}
           />
         </div>
 
@@ -593,7 +600,7 @@ function ContactsPageContent() {
                 <div className="border-t border-border px-6 py-5 bg-muted/50 flex-shrink-0">
                   <div className="flex flex-col sm:flex-row gap-3 justify-end">
                     <button type="button"
-                      onClick={() => { setContactToDelete(c.id); setDeleteModalOpen(true); }}
+                      onClick={() => { contactToDeleteRef.current = c.id; setDeleteModalOpen(true); }}
                       className="inline-flex items-center justify-center rounded-xl bg-card border border-red-200 dark:border-red-800 px-4 py-2.5 text-sm font-bold text-red-600 dark:text-red-400 shadow-sm hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-300 dark:hover:border-red-700 transition-all focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                     >
                       <TrashIcon className="w-4 h-4 mr-2" /> Supprimer
@@ -624,7 +631,7 @@ function ContactsPageContent() {
           title="Supprimer le message ?"
           description="Cette action est irréversible. Le message sera définitivement effacé de la base de données."
           onConfirm={handleDelete}
-          onCancel={() => { setDeleteModalOpen(false); setContactToDelete(null); }}
+          onCancel={() => { setDeleteModalOpen(false); contactToDeleteRef.current = null; }}
         />
       </div>
     </div>

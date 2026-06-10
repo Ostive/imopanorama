@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useState, useEffect } from 'react'
+import { Suspense, useState, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { m } from 'framer-motion'
 import { useFaqs } from '@/features/faqs/hooks/useFaqs'
@@ -56,25 +56,24 @@ function AdminFaqsPageContent() {
   })
   const [page, setPage] = useState(() => parseInt(urlParams.get('page') || '1'))
   const [limit, setLimit] = useState(() => parseInt(urlParams.get('limit') || '10'))
-  const [search, setSearch] = useState(() => urlParams.get('search') || '')
-
-  // Debounce search
-  useEffect(() => {
-    const t = setTimeout(() => { setSearch(searchInput); setPage(1) }, 500)
-    return () => clearTimeout(t)
-  }, [searchInput])
-
-  // Sync state → URL
-  useEffect(() => {
+  const replaceUrl = useCallback((next: { search?: string; category?: string; isActive?: string; page?: number; limit?: number }) => {
+    const values = {
+      search: searchInput,
+      category: selectedCategories.length === 1 ? selectedCategories[0] : '',
+      isActive: selectedStatuses.length === 1 ? selectedStatuses[0] : '',
+      page,
+      limit,
+      ...next,
+    }
     const params = new URLSearchParams()
-    if (search) params.set('search', search)
-    if (selectedCategories.length === 1) params.set('category', selectedCategories[0])
-    if (selectedStatuses.length === 1) params.set('isActive', selectedStatuses[0])
-    if (page > 1) params.set('page', String(page))
-    if (limit !== 10) params.set('limit', String(limit))
+    if (values.search) params.set('search', values.search)
+    if (values.category) params.set('category', values.category)
+    if (values.isActive) params.set('isActive', values.isActive)
+    if (values.page > 1) params.set('page', String(values.page))
+    if (values.limit !== 10) params.set('limit', String(values.limit))
     const qs = params.toString()
     window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname)
-  }, [search, selectedCategories, selectedStatuses, page, limit])
+  }, [limit, page, searchInput, selectedCategories, selectedStatuses])
 
   const category = selectedCategories.length === 1 ? selectedCategories[0] : undefined
   const isActive = selectedStatuses.length === 1 ? selectedStatuses[0] === 'true' : undefined
@@ -82,7 +81,7 @@ function AdminFaqsPageContent() {
   const { faqs, loading, error, totalCount, deleteFaq } = useFaqs({
     page,
     limit,
-    search: search || undefined,
+    search: searchInput || undefined,
     category,
     isActive,
   })
@@ -139,7 +138,7 @@ function AdminFaqsPageContent() {
             </div>
             {hasActiveFilters && (
               <button type="button"
-                onClick={() => { setSearchInput(''); setSelectedCategories([]); setSelectedStatuses([]) }}
+                onClick={() => { setSearchInput(''); setSelectedCategories([]); setSelectedStatuses([]); setPage(1); replaceUrl({ search: '', category: '', isActive: '', page: 1 }) }}
                 className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 font-medium flex items-center gap-1"
               >
                 <XMarkIcon className="h-4 w-4" />Réinitialiser
@@ -152,13 +151,13 @@ function AdminFaqsPageContent() {
               <input
                 type="text"
                 value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
+                onChange={(e) => { setSearchInput(e.target.value); setPage(1); replaceUrl({ search: e.target.value, page: 1 }) }}
                 placeholder="Rechercher une question..."
                 aria-label="Rechercher une question"
                 className="w-full pl-10 pr-10 h-10 border border-border rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
               />
               {searchInput && (
-                <button type="button" onClick={() => setSearchInput('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300">
+                <button type="button" onClick={() => { setSearchInput(''); setPage(1); replaceUrl({ search: '', page: 1 }) }} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-gray-600 dark:hover:text-gray-300">
                   <XMarkIcon className="h-5 w-5" />
                 </button>
               )}
@@ -166,13 +165,13 @@ function AdminFaqsPageContent() {
             <CheckboxDropdown
               label="Catégorie"
               selected={selectedCategories}
-              onChange={(v) => { setSelectedCategories(v); setPage(1) }}
+              onChange={(v) => { setSelectedCategories(v); setPage(1); replaceUrl({ category: v[0] || '', page: 1 }) }}
               options={CATEGORY_OPTIONS}
             />
             <CheckboxDropdown
               label="Statut"
               selected={selectedStatuses}
-              onChange={(v) => { setSelectedStatuses(v); setPage(1) }}
+              onChange={(v) => { setSelectedStatuses(v); setPage(1); replaceUrl({ isActive: v.length === 1 ? v[0] : '', page: 1 }) }}
               options={[
                 { value: 'true',  label: 'Actif' },
                 { value: 'false', label: 'Inactif' },
@@ -290,8 +289,8 @@ function AdminFaqsPageContent() {
             limit={limit}
             total={totalCount}
             totalPages={totalPages}
-            onPageChange={setPage}
-            onLimitChange={(l) => { setLimit(l); setPage(1) }}
+            onPageChange={(nextPage) => { setPage(nextPage); replaceUrl({ page: nextPage }) }}
+            onLimitChange={(nextLimit) => { setLimit(nextLimit); setPage(1); replaceUrl({ limit: nextLimit, page: 1 }) }}
           />
         </m.div>
 

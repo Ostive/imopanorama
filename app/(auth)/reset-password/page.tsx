@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useReducer } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { m } from 'framer-motion';
 import Link from 'next/link';
@@ -16,36 +16,74 @@ import {
 } from '@heroicons/react/24/outline';
 import { authClient } from '@/infrastructure/auth/auth-client';
 
+type ResetPasswordState = {
+  password: string;
+  confirmPassword: string;
+  showPassword: boolean;
+  isLoading: boolean;
+  error: string;
+  success: boolean;
+};
+
+type ResetPasswordAction =
+  | { type: 'field'; name: 'password' | 'confirmPassword'; value: string }
+  | { type: 'togglePassword' }
+  | { type: 'loading'; value: boolean }
+  | { type: 'error'; value: string }
+  | { type: 'success'; value: boolean };
+
+const resetPasswordInitialState: ResetPasswordState = {
+  password: '',
+  confirmPassword: '',
+  showPassword: false,
+  isLoading: false,
+  error: '',
+  success: false,
+};
+
+function resetPasswordReducer(state: ResetPasswordState, action: ResetPasswordAction): ResetPasswordState {
+  switch (action.type) {
+    case 'field':
+      return { ...state, [action.name]: action.value };
+    case 'togglePassword':
+      return { ...state, showPassword: !state.showPassword };
+    case 'loading':
+      return { ...state, isLoading: action.value };
+    case 'error':
+      return { ...state, error: action.value };
+    case 'success':
+      return { ...state, success: action.value };
+    default:
+      return state;
+  }
+}
+
 function ResetPasswordContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
 
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [state, dispatch] = useReducer(resetPasswordReducer, resetPasswordInitialState);
+  const { password, confirmPassword, showPassword, isLoading, error, success } = state;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    dispatch({ type: 'error', value: '' });
 
     if (!token) {
-      setError('Token manquant ou invalide.');
+      dispatch({ type: 'error', value: 'Token manquant ou invalide.' });
       return;
     }
     if (password.length < 8) {
-      setError('Le mot de passe doit contenir au moins 8 caractères.');
+      dispatch({ type: 'error', value: 'Le mot de passe doit contenir au moins 8 caractères.' });
       return;
     }
     if (password !== confirmPassword) {
-      setError('Les mots de passe ne correspondent pas.');
+      dispatch({ type: 'error', value: 'Les mots de passe ne correspondent pas.' });
       return;
     }
 
-    setIsLoading(true);
+    dispatch({ type: 'loading', value: true });
     try {
       const result = await authClient.resetPassword({
         newPassword: password,
@@ -53,15 +91,15 @@ function ResetPasswordContent() {
       });
 
       if (result.error) {
-        setError(result.error.message || 'Le lien est invalide ou a expiré.');
+        dispatch({ type: 'error', value: result.error.message || 'Le lien est invalide ou a expiré.' });
       } else {
-        setSuccess(true);
+        dispatch({ type: 'success', value: true });
         setTimeout(() => router.push('/login'), 2500);
       }
     } catch (err) {
-      setError('Une erreur est survenue. Veuillez réessayer.');
+      dispatch({ type: 'error', value: 'Une erreur est survenue. Veuillez réessayer.' });
     } finally {
-      setIsLoading(false);
+      dispatch({ type: 'loading', value: false });
     }
   };
 
@@ -139,7 +177,7 @@ function ResetPasswordContent() {
               id="reset-password"
               type={showPassword ? 'text' : 'password'}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => dispatch({ type: 'field', name: 'password', value: e.target.value })}
               required
               minLength={8}
               className="w-full pl-12 pr-12 py-3 bg-muted border-2 border-border text-foreground rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white dark:focus:bg-gray-900 transition-all outline-none"
@@ -147,7 +185,7 @@ function ResetPasswordContent() {
             />
             <button
               type="button"
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={() => dispatch({ type: 'togglePassword' })}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
             >
               {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
@@ -165,7 +203,7 @@ function ResetPasswordContent() {
               id="reset-confirm-password"
               type={showPassword ? 'text' : 'password'}
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e) => dispatch({ type: 'field', name: 'confirmPassword', value: e.target.value })}
               required
               minLength={8}
               className="w-full pl-12 pr-4 py-3 bg-muted border-2 border-border text-foreground rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white dark:focus:bg-gray-900 transition-all outline-none"

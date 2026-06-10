@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
 import { m } from 'framer-motion'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
@@ -61,6 +62,17 @@ const DEFAULT_FORM = {
   order: '0',
 }
 
+type ServiceFormState = typeof DEFAULT_FORM
+
+const toServiceFormState = (service: any): ServiceFormState => ({
+  title:       service?.title || '',
+  description: service?.description || '',
+  icon:        service?.icon || DEFAULT_FORM.icon,
+  features:    service?.features || [],
+  isActive:    service?.isActive ?? true,
+  order:       service?.order?.toString() || '0',
+})
+
 // ─── Helper erreur ────────────────────────────────────────────────────────────
 
 function FieldError({ name, errors }: { name: string; errors: Record<string, string> }) {
@@ -70,42 +82,37 @@ function FieldError({ name, errors }: { name: string; errors: Record<string, str
 
 // ─── Composant principal ──────────────────────────────────────────────────────
 
-export default function ServiceForm({ mode, serviceId }: ServiceFormProps) {
+export default function ServiceForm(props: ServiceFormProps) {
+  const isEdit = props.mode === 'edit'
+  const { data: service, isLoading } = useQuery({
+    queryKey: ['bati-service-form', props.serviceId],
+    enabled: isEdit && !!props.serviceId,
+    queryFn: async () => {
+      const res = await fetch('/api/bati-services/' + props.serviceId)
+      const data = await res.json()
+      if (!data.success) throw new Error('Erreur lors du chargement du service')
+      return data.service
+    },
+  })
+
+
+  return (
+    <ServiceFormContent
+      {...props}
+      initialForm={service ? toServiceFormState(service) : DEFAULT_FORM}
+    />
+  )
+}
+
+function ServiceFormContent({ mode, serviceId, initialForm }: ServiceFormProps & { initialForm: ServiceFormState }) {
   const router = useRouter()
   const isEdit = mode === 'edit'
 
-  const [isLoading, setIsLoading]       = useState(isEdit)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [formData, setFormData]         = useState(DEFAULT_FORM)
+  const [formData, setFormData]         = useState(() => initialForm)
   const [fieldErrors, setFieldErrors]   = useState<Record<string, string>>({})
   const [newFeature, setNewFeature]     = useState('')
 
-  // ─── Chargement (mode edit) ───────────────────────────────────────────────
-
-  const fetchService = useCallback(async () => {
-    if (!serviceId) return
-    try {
-      const res = await fetch(`/api/bati-services/${serviceId}`)
-      const data = await res.json()
-      if (data.success) {
-        const s = data.service
-        setFormData({
-          title:       s.title || '',
-          description: s.description || '',
-          icon:        s.icon || '🏗️',
-          features:    s.features || [],
-          isActive:    s.isActive ?? true,
-          order:       s.order?.toString() || '0',
-        })
-      }
-    } catch {
-      toast.error('Erreur lors du chargement du service')
-    } finally {
-      setIsLoading(false)
-    }
-  }, [serviceId])
-
-  useEffect(() => { fetchService() }, [fetchService])
 
   // ─── Progression automatique ──────────────────────────────────────────────
 
@@ -181,17 +188,6 @@ export default function ServiceForm({ mode, serviceId }: ServiceFormProps) {
     }
   }
 
-  // ─── Loading ──────────────────────────────────────────────────────────────
-
-  if (isLoading) {
-    return (
-      <ProtectedRoute requiredRole={['admin', 'super_admin']}>
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
-        </div>
-      </ProtectedRoute>
-    )
-  }
 
   // ─── Render ───────────────────────────────────────────────────────────────
 

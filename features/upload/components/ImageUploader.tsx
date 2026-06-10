@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { bunnyCdnService } from '../services/bunnyCdnService';
 import Image from 'next/image';
 import { ButtonLoader } from '@/shared/components/ui/Loader';
@@ -13,7 +13,6 @@ interface ImageUploaderProps {
   onImageRemoved?: () => void;
   label?: string;
   maxSizeMB?: number;
-  initialFile?: File;
 }
 
 export const ImageUploader: React.FC<ImageUploaderProps> = ({
@@ -24,8 +23,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   allowRemove = false,
   onImageRemoved,
   label = 'Cliquez pour sélectionner une image',
-  maxSizeMB = 5,
-  initialFile
+  maxSizeMB = 5
 }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(initialImage || null);
@@ -109,13 +107,6 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
       setIsUploading(false);
     }
   };
-
-  // Process initialFile if provided
-  useEffect(() => {
-    if (initialFile && !previewUrl) {
-      handleManualFileUpload(initialFile);
-    }
-  }, [initialFile, previewUrl, handleManualFileUpload]);
 
   return (
     <div className={`relative ${className}`}>

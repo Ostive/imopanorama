@@ -62,8 +62,9 @@ const MapInner: React.FC<MapProps> = ({
   const onMapClickRef = useRef(onMapClick);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
   const { isOnline } = useNetworkStatus();
+  const mapErrorRef = useRef(mapError);
+  mapErrorRef.current = mapError;
 
   useEffect(() => {
     onMapClickRef.current = onMapClick;
@@ -136,46 +137,34 @@ const MapInner: React.FC<MapProps> = ({
   }, [center, zoom, interactive]);
 
   // Initialisation de la carte
+  const cleanupRef = useRef<(() => void) | void>(undefined);
   useEffect(() => {
-    const cleanup = initMap();
+    cleanupRef.current = initMap();
     return () => {
-      cleanup?.();
+      cleanupRef.current?.();
+      cleanupRef.current = undefined;
     };
-  }, [initMap, retryCount]);
+  }, [initMap]);
+
+  const handleRetry = useCallback(() => {
+    cleanupRef.current?.();
+    cleanupRef.current = initMap();
+  }, [initMap]);
 
   // Retry automatique quand on revient en ligne
   useEffect(() => {
-    if (isOnline && mapError) {
-      setRetryCount(c => c + 1);
-    }
-  }, [isOnline, mapError]);
+    const handleOnline = () => {
+      if (mapErrorRef.current) {
+        handleRetry();
+      }
+    };
 
-  // Mise à jour du centre et du zoom uniquement lors de l'initialisation ou si les props changent significativement
-  const initialCenterRef = useRef(center);
-  const initialZoomRef = useRef(zoom);
-  
-  useEffect(() => {
-    if (!map.current || !mapLoaded) return;
-    
-    // Ne mettre à jour que si les valeurs ont changé significativement par rapport aux valeurs initiales
-    const centerSignificantlyChanged = 
-      Math.abs(initialCenterRef.current[0] - center[0]) > 0.01 || 
-      Math.abs(initialCenterRef.current[1] - center[1]) > 0.01;
-    
-    const zoomSignificantlyChanged = Math.abs(initialZoomRef.current - zoom) >= 1;
-    
-    if (centerSignificantlyChanged) {
-      console.log('Mise à jour du centre de la carte:', center);
-      map.current.setCenter(center);
-      initialCenterRef.current = center;
-    }
-    
-    if (zoomSignificantlyChanged) {
-      console.log('Mise à jour du zoom de la carte:', zoom);
-      map.current.setZoom(zoom);
-      initialZoomRef.current = zoom;
-    }
-  }, [center, zoom, mapLoaded]);
+    window.addEventListener('online', handleOnline);
+    return () => window.removeEventListener('online', handleOnline);
+  }, [handleRetry]);
+
+  // Pas de synchronisation séparée centre/zoom : initMap dépend de [center, zoom]
+  // et recrée la carte avec les nouvelles valeurs quand ces props changent.
 
   // Gestion des marqueurs avec optimisation pour éviter les réactualisations inutiles
   const previousMarkersRef = useRef<Array<{
@@ -286,10 +275,6 @@ const MapInner: React.FC<MapProps> = ({
       markerRefs.current = {};
     };
   }, [markers, mapLoaded, defaultMarkerStyle]);
-
-  const handleRetry = () => {
-    setRetryCount(c => c + 1);
-  };
 
   // Afficher le fallback offline
   if (!isOnline && !mapLoaded) {

@@ -61,6 +61,89 @@ const PURPLE_PALETTE: ColorPalette = {
   background: 'white'
 };
 
+function FaqColorPaletteSelector({
+  selectedPalette,
+  onPaletteChange,
+}: {
+  selectedPalette: string;
+  onPaletteChange: (palette: string) => void;
+}) {
+  return (
+    <div className="mb-6 p-4 border rounded-md bg-gray-50">
+      <h3 className="text-sm font-medium text-gray-700 mb-2">Palette de couleurs</h3>
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => onPaletteChange('default')}
+          className={`px-3 py-1 rounded-md text-xs font-medium ${selectedPalette === 'default' ? 'bg-primary-100 text-primary-800 ring-2 ring-primary-500' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
+        >
+          Par défaut
+        </button>
+        <button
+          type="button"
+          onClick={() => onPaletteChange('blue')}
+          className={`px-3 py-1 rounded-md text-xs font-medium ${selectedPalette === 'blue' ? 'bg-primary-100 text-primary-800 ring-2 ring-primary-500' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
+        >
+          Bleu
+        </button>
+        <button
+          type="button"
+          onClick={() => onPaletteChange('green')}
+          className={`px-3 py-1 rounded-md text-xs font-medium ${selectedPalette === 'green' ? 'bg-emerald-100 text-emerald-800 ring-2 ring-emerald-500' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
+        >
+          Vert
+        </button>
+        <button
+          type="button"
+          onClick={() => onPaletteChange('purple')}
+          className={`px-3 py-1 rounded-md text-xs font-medium ${selectedPalette === 'purple' ? 'bg-purple-100 text-purple-800 ring-2 ring-purple-500' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
+        >
+          Violet
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function FaqFormActions({
+  isSubmitting,
+  currentPalette,
+  onCancel,
+}: {
+  isSubmitting: boolean;
+  currentPalette: ColorPalette;
+  onCancel: () => void;
+}) {
+  return (
+    <div className="flex justify-end space-x-3">
+      <button
+        type="button"
+        onClick={onCancel}
+        className={`px-4 py-2 border border-${currentPalette.secondary}-300 rounded-md shadow-sm text-sm font-medium text-${currentPalette.text}-700 bg-${currentPalette.background} hover:bg-${currentPalette.secondary}-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-${currentPalette.primary}-500 transition-colors duration-200`}
+      >
+        Annuler
+      </button>
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-${currentPalette.primary}-600 hover:bg-${currentPalette.primary}-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-${currentPalette.primary}-500 disabled:bg-${currentPalette.primary}-300 disabled:cursor-not-allowed transition-colors duration-200`}
+      >
+        {isSubmitting ? (
+          <>
+            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Enregistrement...
+          </>
+        ) : (
+          'Enregistrer'
+        )}
+      </button>
+    </div>
+  );
+}
+
 export default function FaqForm({ initialData, onSubmit, isSubmitting, colorPalette = DEFAULT_PALETTE }: FaqFormProps) {
   const router = useRouter();
   const { categories: apiCategories } = useFaqCategories();
@@ -331,33 +414,7 @@ export default function FaqForm({ initialData, onSubmit, isSubmitting, colorPale
         </label>
       </div>
       
-      {/* Boutons */}
-      <div className="flex justify-end space-x-3">
-        <button
-          type="button"
-          onClick={() => router.push('/admin/faqs')}
-          className={`px-4 py-2 border border-${currentPalette.secondary}-300 rounded-md shadow-sm text-sm font-medium text-${currentPalette.text}-700 bg-${currentPalette.background} hover:bg-${currentPalette.secondary}-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-${currentPalette.primary}-500 transition-colors duration-200`}
-        >
-          Annuler
-        </button>
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-${currentPalette.primary}-600 hover:bg-${currentPalette.primary}-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-${currentPalette.primary}-500 disabled:bg-${currentPalette.primary}-300 disabled:cursor-not-allowed transition-colors duration-200`}
-        >
-          {isSubmitting ? (
-            <>
-              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Enregistrement...
-            </>
-          ) : (
-            'Enregistrer'
-          )}
-        </button>
-      </div>
+      <FaqFormActions isSubmitting={isSubmitting} currentPalette={currentPalette} onCancel={() => router.push('/admin/faqs')} />
     </form>
   );
 }

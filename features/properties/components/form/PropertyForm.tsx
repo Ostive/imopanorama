@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { m } from 'framer-motion'
@@ -187,33 +187,127 @@ const INITIAL_FORM_DATA = {
   isPublished: true,
 }
 
+const CURRENT_YEAR = new Date().getFullYear()
+const createPropertyReference = () => {
+  const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
+  return 'PROP-' + CURRENT_YEAR + '-' + random
+}
+
+const calculatePricePerM2 = (price: string, totalSize: string) => {
+  const priceNum = parseFloat(price)
+  const sizeNum = parseFloat(totalSize)
+  return !isNaN(priceNum) && !isNaN(sizeNum) && sizeNum > 0
+    ? (priceNum / sizeNum).toFixed(2)
+    : ''
+}
+
+type PropertyFormState = typeof INITIAL_FORM_DATA
+
+const toPropertyFormState = (data: any): PropertyFormState => ({
+  title: data.title || '',
+  description: data.description || '',
+  propertyType: data.propertyType || '',
+  transactionType: data.transactionType || 'SALE',
+  location: data.location || '',
+  city: data.city || '',
+  country: data.country || DEFAULT_MARKET,
+  region: data.region || '',
+  district: data.district || '',
+  commune: data.commune || '',
+  fokontany: data.fokontany || '',
+  address: data.address || '',
+  zipCode: data.zipCode || '',
+  coordinates: data.coordinates || { lat: -18.8792, lng: 47.5079 },
+  price: data.price?.toString() || '',
+  pricePerM2: data.pricePerM2?.toString() || calculatePricePerM2(data.price?.toString() || '', data.totalSize?.toString() || ''),
+  rentPrice: data.rentPrice?.toString() || '',
+  currency: data.currency || getMarketConfig(data.country || DEFAULT_MARKET).currency,
+  totalSize: data.totalSize?.toString() || '',
+  livingSize: data.livingSize?.toString() || '',
+  landSize: data.landSize?.toString() || '',
+  bedrooms: data.bedrooms?.toString() || '',
+  bathrooms: data.bathrooms?.toString() || '',
+  rooms: data.rooms?.toString() || '',
+  floors: data.floors?.toString() || '',
+  floor: data.floor?.toString() || '',
+  yearBuilt: data.yearBuilt?.toString() || '',
+  condition: data.condition || '',
+  features: data.features || [],
+  amenities: data.amenities || [],
+  images: data.images || [],
+  coverImage: data.coverImage || '',
+  virtualTour: data.virtualTour || '',
+  videoUrl: data.videoUrl || '',
+  reference: data.reference || '',
+  legalStatus: data.legalStatus || '',
+  documentStatus: data.documentStatus || 'UNKNOWN',
+  isVerified: data.isVerified || false,
+  energyClass: data.energyClass || '',
+  emissions: data.emissions || '',
+  status: data.status || 'AVAILABLE',
+  isFeatured: data.isFeatured || false,
+  isPublished: data.isPublished ?? true,
+})
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFormProps) {
-  const router = useRouter()
-  const isEdit = mode === 'edit'
-
-  const {
-    data: loadedProperty,
-    isLoading,
-    error: propertyLoadError,
-  } = useQuery({
-    queryKey: ['property-form', propertyId],
-    enabled: isEdit && !!propertyId,
+export function PropertyForm(props: PropertyFormProps) {
+  const isEdit = props.mode === 'edit'
+  const { data: loadedProperty, isLoading, error } = useQuery({
+    queryKey: ['property-form', props.propertyId],
+    enabled: isEdit && !!props.propertyId,
     queryFn: async () => {
-      const response = await fetch(`/api/properties/${propertyId}`)
+      const response = await fetch('/api/properties/' + props.propertyId)
       const result = await response.json()
       return result.data
     },
   })
+
+  if (isLoading) {
+    return (
+      <ProtectedRoute>
+        <div className="min-h-full bg-gradient-to-br from-gray-50 via-white to-primary-50/20 py-8">
+          <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+            <FormSkeleton fields={8} />
+          </div>
+        </div>
+      </ProtectedRoute>
+    )
+  }
+
+  if (error instanceof Error) {
+    return (
+      <ProtectedRoute>
+        <div className="min-h-full bg-gradient-to-br from-gray-50 via-white to-primary-50/20 py-8">
+          <div className="max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8 text-red-600">
+            {error.message || 'Impossible de charger la propriete'}
+          </div>
+        </div>
+      </ProtectedRoute>
+    )
+  }
+
+  return (
+    <PropertyFormContent
+      {...props}
+      initialForm={loadedProperty ? toPropertyFormState(loadedProperty) : {
+        ...INITIAL_FORM_DATA,
+        propertyType: props.initialType || '',
+        reference: isEdit ? '' : createPropertyReference(),
+      }}
+    />
+  )
+}
+
+function PropertyFormContent({ mode, propertyId, initialType = '', initialForm }: PropertyFormProps & { initialForm: PropertyFormState }) {
+  const router = useRouter()
+  const isEdit = mode === 'edit'
+
   const [isSubmitting, setIsSubmitting] = useState(false)
   const totalSteps = 7
   const imageUploaderRef = useRef<MultipleImageUploaderHandle>(null)
 
-  const [formData, setFormData] = useState({
-    ...INITIAL_FORM_DATA,
-    propertyType: initialType,
-  })
+  const [formData, setFormData] = useState(() => initialForm)
 
   const [newFeature, setNewFeature] = useState('')
   const [newAmenity, setNewAmenity] = useState('')
@@ -221,7 +315,6 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [featureSearch, setFeatureSearch] = useState('')
   const [amenitySearch, setAmenitySearch] = useState('')
-  const [currentYear] = useState(() => new Date().getFullYear())
 
   // ─── Derived flags ─────────────────────────────────────────────────────────
 
@@ -232,83 +325,6 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
   const currentMarket = getMarketConfig(formData.country)
   const currencyLabel = formData.currency || currentMarket.currency
 
-  // ─── Effects ───────────────────────────────────────────────────────────────
-
-  // Load existing property data (edit mode only)
-  useEffect(() => {
-    const data = loadedProperty
-    if (!data) return
-        setFormData({
-          title: data.title || '',
-          description: data.description || '',
-          propertyType: data.propertyType || '',
-          transactionType: data.transactionType || 'SALE',
-          location: data.location || '',
-          city: data.city || '',
-          country: data.country || DEFAULT_MARKET,
-          region: data.region || '',
-          district: data.district || '',
-          commune: data.commune || '',
-          fokontany: data.fokontany || '',
-          address: data.address || '',
-          zipCode: data.zipCode || '',
-          coordinates: data.coordinates || { lat: -18.8792, lng: 47.5079 },
-          price: data.price?.toString() || '',
-          pricePerM2: data.pricePerM2?.toString() || '',
-          rentPrice: data.rentPrice?.toString() || '',
-          currency: data.currency || getMarketConfig(data.country || DEFAULT_MARKET).currency,
-          totalSize: data.totalSize?.toString() || '',
-          livingSize: data.livingSize?.toString() || '',
-          landSize: data.landSize?.toString() || '',
-          bedrooms: data.bedrooms?.toString() || '',
-          bathrooms: data.bathrooms?.toString() || '',
-          rooms: data.rooms?.toString() || '',
-          floors: data.floors?.toString() || '',
-          floor: data.floor?.toString() || '',
-          yearBuilt: data.yearBuilt?.toString() || '',
-          condition: data.condition || '',
-          features: data.features || [],
-          amenities: data.amenities || [],
-          images: data.images || [],
-          coverImage: data.coverImage || '',
-          virtualTour: data.virtualTour || '',
-          videoUrl: data.videoUrl || '',
-          reference: data.reference || '',
-          legalStatus: data.legalStatus || '',
-          documentStatus: data.documentStatus || 'UNKNOWN',
-          isVerified: data.isVerified || false,
-          energyClass: data.energyClass || '',
-          emissions: data.emissions || '',
-          status: data.status || 'AVAILABLE',
-          isFeatured: data.isFeatured || false,
-          isPublished: data.isPublished ?? true,
-        })
-  }, [loadedProperty])
-
-  useEffect(() => {
-    if (propertyLoadError instanceof Error) {
-      toast.error(propertyLoadError.message || 'Impossible de charger la propriété')
-    }
-  }, [propertyLoadError])
-
-  // Auto-generate reference number on create
-  useEffect(() => {
-    if (isEdit || formData.reference) return
-      const year = currentYear || new Date().getFullYear()
-      const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
-      setFormData(prev => ({ ...prev, reference: `PROP-${year}-${random}` }))
-  }, [currentYear, formData.reference, isEdit])
-
-  // Auto-calculate price per m²
-  useEffect(() => {
-    if (formData.price && formData.totalSize) {
-      const priceNum = parseFloat(formData.price)
-      const sizeNum = parseFloat(formData.totalSize)
-      if (!isNaN(priceNum) && !isNaN(sizeNum) && sizeNum > 0) {
-        setFormData(prev => ({ ...prev, pricePerM2: (priceNum / sizeNum).toFixed(2) }))
-      }
-    }
-  }, [formData.price, formData.totalSize])
 
   // Step indicator derived directly from form completion — no state needed
   const currentStep = (() => {
@@ -330,7 +346,16 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
     if (type === 'checkbox') {
       setFormData(prev => ({ ...prev, [name]: (e.target as HTMLInputElement).checked }))
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }))
+      setFormData(prev => {
+        const next = { ...prev, [name]: value }
+        if (name === 'price' || name === 'totalSize') {
+          next.pricePerM2 = calculatePricePerM2(
+            name === 'price' ? value : prev.price,
+            name === 'totalSize' ? value : prev.totalSize
+          )
+        }
+        return next
+      })
     }
   }
 
@@ -434,21 +459,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
     }
   }
 
-  // ─── Loading state (edit only) ─────────────────────────────────────────────
-
-  if (isLoading) {
-    return (
-      <ProtectedRoute>
-        <div className="min-h-full bg-gradient-to-br from-gray-50 via-white to-primary-50/20 py-8">
-          <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-            <FormSkeleton fields={8} />
-          </div>
-        </div>
-      </ProtectedRoute>
-    )
-  }
-
-  // ─── Render ────────────────────────────────────────────────────────────────
+  // Render ────────────────────────────────────────────────────────────────
 
   return (
     <ProtectedRoute requiredRole={['admin', 'super_admin']}>
@@ -908,7 +919,7 @@ export function PropertyForm({ mode, propertyId, initialType = '' }: PropertyFor
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="yearBuilt">Année de construction</Label>
-                        <Input id="yearBuilt" type="number" name="yearBuilt" value={formData.yearBuilt} onChange={handleChange} min="1800" max={currentYear} />
+                        <Input id="yearBuilt" type="number" name="yearBuilt" value={formData.yearBuilt} onChange={handleChange} min="1800" max={CURRENT_YEAR} />
                       </div>
                       <div className="md:col-span-3 space-y-2">
                         <Label htmlFor="condition">État</Label>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { ImageGallery } from '@/features/upload/components/ImageGallery';
@@ -42,6 +42,14 @@ interface MediaLibraryProps {
     className?: string;
 }
 
+const formatBytes = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+};
+
 export const MediaLibrary: React.FC<MediaLibraryProps> = ({
     onSelect,
     selectionMode = false,
@@ -57,32 +65,18 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
     const [showNewFolderInput, setShowNewFolderInput] = useState<boolean>(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-    const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
-    const hiddenFileInputRef = useRef<HTMLInputElement>(null);
 
     const handleTriggerUpload = () => {
-        if (hiddenFileInputRef.current) {
-            hiddenFileInputRef.current.click();
-        }
-    };
-
-    const handleHiddenFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
-        if (files && files.length > 0) {
-            setFileToUpload(files[0]);
-            setShowUploader(true);
-            // Reset input so same file can be selected again if needed
-            e.target.value = '';
-        }
+        setShowUploader(true);
     };
 
     // Charger les fichiers du répertoire courant
-    const loadFiles = useCallback(async (path: string = currentPath) => {
+    const loadFiles = useCallback(async (path: string = currentPath, signal?: AbortSignal) => {
         try {
             setIsLoading(true);
             setError(null);
 
-            const response = await fetch(`/api/admin/images?path=${encodeURIComponent(path)}`);
+            const response = await fetch(`/api/admin/images?path=${encodeURIComponent(path)}`, { signal });
 
             if (!response.ok) {
                 const errorData = await response.json();
@@ -92,6 +86,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
             const data = await response.json();
             setFiles(data.files || []);
         } catch (err) {
+            if ((err as Error).name === 'AbortError') return;
             console.error('Erreur lors du chargement des fichiers:', err);
             setError('Impossible de charger les fichiers. Veuillez réessayer.');
         } finally {
@@ -101,7 +96,9 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
 
     // Charger les fichiers au chargement de la page et lorsque le chemin change
     useEffect(() => {
-        loadFiles();
+        const controller = new AbortController();
+        loadFiles(undefined, controller.signal);
+        return () => controller.abort();
     }, [loadFiles]);
 
     // Naviguer dans un dossier
@@ -242,14 +239,6 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
     };
 
     const totalSize = files.reduce((sum, file) => sum + (file.Length || 0), 0);
-    const formatBytes = (bytes: number) => {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-    };
-
     return (
         <div className={`flex flex-col h-full ${className}`}>
             {/* Header / Toolbar */}
@@ -313,16 +302,6 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                             >
                                 <FolderPlusIcon className="h-5 w-5" />
                             </button>
-
-                            <input
-                                type="file"
-                                ref={hiddenFileInputRef}
-                                onChange={handleHiddenFileChange}
-                                className="hidden"
-                                accept="image/*"
-                                aria-label="Uploader une image"
-                                tabIndex={-1}
-                            />
                             <button type="button"
                                 onClick={handleTriggerUpload}
                                 className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-600 hover:from-primary-700 hover:to-primary-700 text-white font-medium rounded-lg shadow-md transition-all transform hover:scale-[1.02]"
@@ -405,7 +384,6 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({
                                     onImageUploaded={handleImageUploaded}
                                     directory={currentPath}
                                     label="Cliquez ou déposez votre image ici pour l'uploader instantanément"
-                                    initialFile={fileToUpload}
                                 />
                             </div>
                         </div>

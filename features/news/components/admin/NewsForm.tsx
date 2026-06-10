@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, FormEvent, ChangeEvent } from 'react';
+import { useState, useRef, FormEvent, ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import {
@@ -64,13 +64,45 @@ const CATEGORIES = [
   { id: 'ENTREPRISE', name: 'Entreprise' },
 ];
 
+const DEFAULT_NEWS_FORM: NewsFormData = {
+  title: '',
+  slug: '',
+  content: '',
+  excerpt: '',
+  coverImage: '',
+  images: [],
+  category: 'GENERAL',
+  tags: [],
+  isPublished: false,
+  publishedAt: null,
+};
+
+const generateSlug = (title: string) => {
+  return title
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/--+/g, '-')
+    .trim();
+};
+
+const handleEditorDragOver = (e: React.DragEvent<HTMLTextAreaElement>) => {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+};
+
+const TODAY_PREVIEW_LABEL = new Date().toLocaleDateString('fr-FR', {
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric',
+});
+
 export default function NewsForm({ initialData, isEditing = false }: NewsFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [tagInput, setTagInput] = useState('');
   const [showPreviewModal, setShowPreviewModal] = useState(false); // Modal d'aperçu
   const [copiedImage, setCopiedImage] = useState<string | null>(null); // Pour le feedback de copie
-  const [todayPreviewLabel] = useState(() => new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }));
   const contentTextareaRef = useRef<HTMLTextAreaElement>(null); // Référence pour le textarea HTML
   const [showMediaLibrary, setShowMediaLibrary] = useState(false);
   const [isDraggingImage, setIsDraggingImage] = useState(false);
@@ -91,35 +123,8 @@ export default function NewsForm({ initialData, isEditing = false }: NewsFormPro
   };
 
   // État du formulaire
-  const [formData, setFormData] = useState<NewsFormData>({
-    title: '',
-    slug: '',
-    content: '',
-    excerpt: '',
-    coverImage: '',
-    images: [],
-    category: 'GENERAL',
-    tags: [],
-    isPublished: false,
-    publishedAt: null,
-  });
+  const [formData, setFormData] = useState<NewsFormData>(() => initialData ?? DEFAULT_NEWS_FORM);
 
-  // Initialiser le formulaire avec les données existantes si disponibles
-  useEffect(() => {
-    if (initialData) {
-      setFormData(initialData);
-    }
-  }, [initialData]);
-
-  // Générer un slug à partir du titre
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, '') // Supprimer les caractères spéciaux
-      .replace(/\s+/g, '-') // Remplacer les espaces par des tirets
-      .replace(/--+/g, '-') // Éviter les tirets multiples
-      .trim();
-  };
 
   // Gérer les changements dans les champs du formulaire
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -311,11 +316,6 @@ export default function NewsForm({ initialData, isEditing = false }: NewsFormPro
     toast.success('Image glissée dans le contenu !');
   };
 
-  // Drag & Drop: allow drop on textarea
-  const handleEditorDragOver = (e: React.DragEvent<HTMLTextAreaElement>) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'copy';
-  };
 
   // Gérer la soumission du formulaire
   const handleSubmit = async (e: FormEvent) => {
@@ -521,7 +521,6 @@ L'article doit être structuré avec des balises HTML sémantiques propres, prê
   </div>
 </div>`;
 
-                  setRawHtmlContent(exampleHtml);
                   setFormData(prev => ({ ...prev, content: exampleHtml }));
                 }}
                 className="inline-flex items-center px-3 py-1.5 border border-indigo-200 text-xs font-medium rounded-lg text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-colors"
@@ -820,7 +819,7 @@ L'article doit être structuré avec des balises HTML sémantiques propres, prê
                 <div className="flex flex-wrap items-center gap-3 md:gap-5 text-sm text-gray-600 mb-6 pb-4 border-b border-gray-200">
                   <div className="flex items-center">
                     <CalendarIcon className="h-5 w-5 mr-1 text-primary-600" />
-                    <span>{formData.publishedAt ? new Date(formData.publishedAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : todayPreviewLabel}</span>
+                    <span>{formData.publishedAt ? new Date(formData.publishedAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : TODAY_PREVIEW_LABEL}</span>
                   </div>
                   <div className="flex items-center">
                     <TagIcon className="h-5 w-5 mr-1 text-primary-600" />
@@ -880,6 +879,8 @@ L'article doit être structuré avec des balises HTML sémantiques propres, prê
           </div>
         </div>
       )}
+
+      <MediaLibraryModal isOpen={showMediaLibrary} onClose={() => setShowMediaLibrary(false)} onSelect={handleMediaLibrarySelect} />
     </form >
   );
 }

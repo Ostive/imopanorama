@@ -42,18 +42,6 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
 
 
 
-  // Mettre à jour les coordonnées lors de l'initialisation ou quand initialCoordinates change
-  useEffect(() => {
-    if (initialCoordinates) {
-      if (Math.abs(initialCoordinates.lat - coordinates.lat) > 0.001 ||
-        Math.abs(initialCoordinates.lng - coordinates.lng) > 0.001) {
-        setCoordinates(initialCoordinates);
-      }
-    }
-  }, [initialCoordinates, coordinates]);
-
-
-
   // Récupérer l'adresse à partir des coordonnées (géocodage inverse)
   const fetchAddressFromCoordinates = useCallback(async (coords: Coordinates) => {
     setGeocodeError(null);

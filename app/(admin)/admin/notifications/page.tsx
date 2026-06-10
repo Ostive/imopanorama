@@ -1,6 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import {
   BellIcon,
@@ -28,20 +29,13 @@ const priorityClass: Record<NotificationPriority, string> = {
 };
 
 export default function AdminNotificationsPage() {
-  const [notifications, setNotifications] = useState<NotificationItem[] | null>(null);
   const [unreadOnly, setUnreadOnly] = useState(false);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
-  const [total, setTotal] = useState(0);
-  const [unread, setUnread] = useState(0);
 
-  const isLoading = notifications === null;
-  const totalPages = Math.max(1, Math.ceil(total / limit));
-  const read = useMemo(() => Math.max(0, total - unread), [total, unread]);
-
-  const fetchNotifications = useCallback(async () => {
-    setNotifications(null);
-    try {
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['admin-notifications', page, limit, unreadOnly],
+    queryFn: async () => {
       const params = new URLSearchParams({
         page: String(page),
         limit: String(limit),
@@ -49,28 +43,24 @@ export default function AdminNotificationsPage() {
       if (unreadOnly) params.set('unreadOnly', 'true');
       const res = await fetch(`/api/notifications?${params.toString()}`);
       if (!res.ok) throw new Error('Failed to fetch notifications');
-      const data = await res.json();
-      setNotifications(data.notifications || []);
-      setTotal(data.total || 0);
-      setUnread(data.unread || 0);
-    } catch (error) {
-      console.error('Error fetching notifications:', error);
-      setNotifications([]);
-    }
-  }, [limit, page, unreadOnly]);
+      return res.json();
+    },
+  });
 
-  useEffect(() => {
-    fetchNotifications();
-  }, [fetchNotifications]);
+  const notifications = (data?.notifications || []) as NotificationItem[];
+  const total = data?.total || 0;
+  const unread = data?.unread || 0;
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+  const read = useMemo(() => Math.max(0, total - unread), [total, unread]);
 
   const markAsRead = async (id: string) => {
     const res = await fetch(`/api/notifications/${id}`, { method: 'PATCH' });
-    if (res.ok) fetchNotifications();
+    if (res.ok) refetch();
   };
 
   const deleteNotification = async (id: string) => {
     const res = await fetch(`/api/notifications/${id}`, { method: 'DELETE' });
-    if (res.ok) fetchNotifications();
+    if (res.ok) refetch();
   };
 
   const markAllAsRead = async () => {
@@ -79,7 +69,7 @@ export default function AdminNotificationsPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'mark-all-read' }),
     });
-    if (res.ok) fetchNotifications();
+    if (res.ok) refetch();
   };
 
   return (
