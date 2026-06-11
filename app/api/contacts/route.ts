@@ -37,6 +37,12 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
 
   const data = validation.data;
 
+  if (data.website || data.url) {
+    return NextResponse.json({ success: true }, { status: 201 });
+  }
+
+  data.email = data.email.toLowerCase();
+
   // Attach the caller's user ID when authenticated, but keep public forms usable.
   try {
     const authResult = await requireAuth(request);

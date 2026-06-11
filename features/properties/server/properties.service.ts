@@ -336,7 +336,7 @@ export const propertiesServerService = {
       where: { id },
       include: {
         owner: {
-          select: { id: true, name: true, email: true, phone: true },
+          select: { id: true, name: true },
         },
       },
     });

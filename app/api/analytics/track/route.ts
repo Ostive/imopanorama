@@ -22,6 +22,7 @@ import { DeviceType } from '@prisma/client';
 import { withErrorHandler } from '@/infrastructure/middleware/api-handler';
 import { rateLimit } from '@/infrastructure/middleware/rate-limit';
 import { COOKIE_CONSENT_NAME } from '@/shared/utils/cookieConsent';
+import { requireAuth } from '@/infrastructure/auth/auth-guard';
 
 // ---------------------------------------------------------------------------
 // User-Agent detection helpers
@@ -96,6 +97,16 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const device = detectDevice(userAgent);
   const browser = detectBrowser(userAgent);
   const os = detectOS(userAgent);
+  let verifiedUserId: string | undefined;
+
+  try {
+    const authResult = await requireAuth(request);
+    if (authResult.authorized && authResult.session) {
+      verifiedUserId = authResult.session.user.id;
+    }
+  } catch {
+    verifiedUserId = undefined;
+  }
 
   // Respond immediately — DB writes happen in the background so the client
   // is never blocked waiting for analytics to persist.
@@ -112,7 +123,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
           path: data.path,
           title: data.title,
           referrer: data.referrer,
-          userId: data.userId,
+          userId: verifiedUserId,
           sessionId: data.sessionId,
           ipAddress,
           userAgent,
@@ -126,7 +137,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
         }),
         AnalyticsService.createOrUpdateSession({
           sessionId: data.sessionId,
-          userId: data.userId,
+          userId: verifiedUserId,
           ipAddress,
           userAgent,
           country: data.country,
@@ -149,7 +160,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
         label: data.label,
         value: data.value,
         metadata: data.metadata,
-        userId: data.userId,
+        userId: verifiedUserId,
         sessionId: data.sessionId,
         path: data.path,
       }).catch(() => {/* silent */});

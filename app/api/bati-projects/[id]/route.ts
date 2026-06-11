@@ -26,6 +26,7 @@ export const GET = withErrorHandler(async (
   const project = await batiProjectRepository.findUnique(id);
 
   if (!project) return apiError('Projet introuvable', 404);
+  if (!project.isPublished) return apiError('Projet introuvable', 404);
 
   return NextResponse.json({ success: true, project });
 });

@@ -27,7 +27,7 @@ export default function BatiPanoramaPage() {
   const { data: projects = [], isLoading: isProjectsLoading } = useQuery({
     queryKey: ['bati-projects'],
     queryFn: async () => {
-      const response = await fetch('/api/bati-projects');
+      const response = await fetch('/api/bati-projects?published=true');
       const data = await response.json();
       if (data.success) return data.projects.filter((p: Project) => p.status === 'COMPLETED').slice(0, 3);
       return [];
@@ -105,7 +105,7 @@ export default function BatiPanoramaPage() {
                 </span>
               </h1>
               <p className="text-xl text-muted-foreground leading-relaxed mb-10 max-w-lg">
-                Villas, piscines, extensions ou projets professionnels : BatiPanorama vous accompagne avec méthode, écoute et exigence, du premier croquis à la livraison.
+                Villas, piscines, extensions ou projets professionnels a Sainte-Marie / Nosy Boraha : BatiPanorama vous accompagne avec methode, ecoute et exigence, du premier croquis a la livraison.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 mb-12">
@@ -350,7 +350,7 @@ export default function BatiPanoramaPage() {
                 <span className="text-primary-400">en tête ?</span>
               </h2>
               <p className="text-primary-200/70 text-lg leading-relaxed mb-10">
-                Expliquez-nous ce que vous imaginez. Nous vous aidons à poser les bonnes bases, avec un premier échange simple et sans engagement.
+                Expliquez-nous ce que vous imaginez a Sainte-Marie. Nous vous aidons a poser les bonnes bases, avec un premier echange simple et sans engagement.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <a href="tel:+261341234567" className="inline-flex items-center justify-center gap-2 px-7 py-4 font-semibold text-primary-950 bg-white rounded-xl hover:bg-primary-50 transition-all shadow-lg">

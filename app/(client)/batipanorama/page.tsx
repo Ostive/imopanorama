@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import BatiPanoramaPage from './BatiPanoramaPageClient'
 
 export const metadata: Metadata = {
-  title: 'BatiPanorama — Construction à Madagascar',
-  description: 'BatiPanorama, filiale d\'ImoPanorama, accompagne vos projets de construction, rénovation et aménagement à Madagascar. Découvrez nos réalisations.',
+  title: 'BatiPanorama - Construction a Sainte-Marie, Madagascar',
+  description: 'BatiPanorama accompagne vos projets de construction, renovation et amenagement a Sainte-Marie / Nosy Boraha avec un suivi local dedie.',
 }
 
 export { BatiPanoramaPage as default }

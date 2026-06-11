@@ -51,7 +51,7 @@ export default function ProjectsPage() {
   const { data: projects = [], isLoading } = useQuery({
     queryKey: ['bati-projects'],
     queryFn: async () => {
-      const response = await fetch('/api/bati-projects');
+      const response = await fetch('/api/bati-projects?published=true');
       const data = await response.json();
       if (data.success) {
         // Only show published and completed projects
@@ -94,8 +94,8 @@ export default function ProjectsPage() {
             </m.div>
             <h1 className="text-5xl md:text-6xl font-bold mb-6">Nos Réalisations</h1>
             <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto">
-              Découvrez nos projets réalisés à Madagascar et dans l&apos;Océan Indien,
-              témoignant de notre expertise et de notre engagement pour la qualité.
+              Découvrez nos projets réalisés à Sainte-Marie / Nosy Boraha,
+              témoignant de notre expertise locale et de notre engagement pour la qualité.
             </p>
           </m.div>
         </div>

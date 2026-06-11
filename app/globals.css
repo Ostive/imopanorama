@@ -414,6 +414,7 @@
 
 :root {
   --radius: 0.75rem;
+  --font-sans: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --background: oklch(0.99 0 0);
   --foreground: oklch(0.25 0.01 280);
   --card: oklch(1 0 0);

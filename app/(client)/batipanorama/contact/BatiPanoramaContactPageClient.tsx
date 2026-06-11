@@ -49,6 +49,8 @@ const budgetRanges = [
   { value: 'plus-500k', label: 'Plus de 500 000 €' }
 ];
 
+const BATIPANORAMA_LOCATION = 'Sainte-Marie';
+
 const contactInfo = [
   {
     icon: PhoneIcon,
@@ -67,7 +69,7 @@ const contactInfo = [
   {
     icon: MapPinIcon,
     title: 'Adresse',
-    content: 'Antananarivo, Madagascar',
+    content: 'Sainte-Marie, Madagascar',
     link: null,
     gradient: 'from-orange-500 to-red-500'
   },
@@ -92,7 +94,7 @@ export default function BatiPanoramaContactPage() {
     phone: '',
     projectType: '',
     budget: '',
-    location: '',
+    location: BATIPANORAMA_LOCATION,
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -159,7 +161,7 @@ export default function BatiPanoramaContactPage() {
         phone: user?.phone || '',
         projectType: '',
         budget: '',
-        location: '',
+        location: BATIPANORAMA_LOCATION,
         message: ''
       });
     } catch (error) {
@@ -257,7 +259,7 @@ export default function BatiPanoramaContactPage() {
               <h3 className="text-lg font-bold text-foreground mb-4">Pourquoi nous choisir ?</h3>
               <ul className="space-y-3">
                 {[
-                  '15+ ans d\'expérience',
+                  'Intervention dédiée à Sainte-Marie',
                   'Devis gratuit sous 48h',
                   'Matériaux de qualité',
                   'Garantie décennale',
@@ -497,12 +499,15 @@ export default function BatiPanoramaContactPage() {
                     id="bati-location"
                     type="text"
                     name="location"
-                    value={formData.location}
-                    onChange={handleChange}
+                    value={BATIPANORAMA_LOCATION}
+                    readOnly
                     required
-                    className="w-full p-3 border border-border bg-card text-foreground rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
-                    placeholder="Ville ou région à Madagascar"
+                    className="w-full p-3 border border-border bg-muted text-foreground rounded-xl"
+                    placeholder="Sainte-Marie"
                   />
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    BatiPanorama accepte uniquement les projets situés à Sainte-Marie / Nosy Boraha.
+                  </p>
                 </div>
 
                 {/* Message */}

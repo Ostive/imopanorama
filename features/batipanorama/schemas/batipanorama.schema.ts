@@ -1,5 +1,17 @@
 import { z } from 'zod';
 
+const SAINTE_MARIE_LOCATION = 'Sainte-Marie';
+const SAINTE_MARIE_PATTERN = /(sainte[\s-]?marie|nosy[\s-]?boraha)/i;
+
+const SainteMarieLocationSchema = z.string()
+    .trim()
+    .min(1, 'La localisation est requise')
+    .refine(
+        (value) => SAINTE_MARIE_PATTERN.test(value),
+        'BatiPanorama intervient uniquement a Sainte-Marie / Nosy Boraha',
+    )
+    .transform(() => SAINTE_MARIE_LOCATION);
+
 export const ProjectSchema = z.object({
     id: z.string(),
     title: z.string(),
@@ -21,7 +33,7 @@ export const ProjectSchema = z.object({
 export const BatiProjectFormDataSchema = z.object({
     title: z.string().min(3, 'Le titre doit contenir au moins 3 caractères'),
     description: z.string().min(10, 'La description doit contenir au moins 10 caractères'),
-    location: z.string().min(1, 'La localisation est requise'),
+    location: SainteMarieLocationSchema,
     category: z.string().min(1, 'La catégorie est requise'),
     surface: z.union([z.string(), z.number()]).optional().transform(val => val ? Number(val) : null),
     duration: z.string().optional(),
@@ -72,6 +84,6 @@ export const BatipanoramaContactFormDataSchema = z.object({
     phone: z.string().min(1, 'Le téléphone est requis'),
     projectType: z.string().min(1, 'Le type de projet est requis'),
     budget: z.string().min(1, 'Le budget est requis'),
-    location: z.string().min(1, 'La localisation est requise'),
+    location: SainteMarieLocationSchema,
     message: z.string().min(10, 'Le message doit contenir au moins 10 caractères'),
 });

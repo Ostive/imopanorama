@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { Poppins } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/features/auth/context/AuthContext'
 import { ThemeProvider } from '@/shared/theme/ThemeContext'
@@ -9,13 +8,6 @@ import { ReactQueryProvider } from '@/shared/providers/react-query'
 import { MotionProvider } from '@/shared/providers/motion'
 import CookieConsentScripts from '@/shared/components/layout/CookieConsentScripts'
 import { Toaster } from 'react-hot-toast'
-
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '800'],
-  variable: '--font-sans',
-  display: 'swap',
-})
 
 export const metadata: Metadata = {
   title: {
@@ -99,7 +91,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#2563eb" />
       </head>
-      <body className={poppins.variable}>
+      <body>
         <MotionProvider>
           <ReactQueryProvider>
             <AuthProvider>

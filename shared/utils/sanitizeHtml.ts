@@ -2,7 +2,7 @@ const DANGEROUS_TAGS = /<\/?(script|style|iframe|object|embed|link|meta|base|for
 const EVENT_ATTRIBUTES = /\s+on[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi;
 const DANGEROUS_URLS = /\s+(href|src)\s*=\s*(['"])\s*(javascript:|data:text\/html|vbscript:)[^'"]*\2/gi;
 
-function sanitizeHtml(html: string | null | undefined): string {
+export function sanitizeHtml(html: string | null | undefined): string {
   if (!html) return '';
 
   return html
