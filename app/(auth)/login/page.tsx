@@ -53,21 +53,49 @@ function loginReducer(state: LoginState, action: LoginAction): LoginState {
 
 function LoginBrandingPanel() {
   return (
-    <div className="hidden lg:flex w-1/2 relative z-10 items-center justify-center p-12 bg-primary-600 text-white overflow-hidden">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:32px_32px]" />
-      <div className="relative max-w-md">
-        <Image
-          src="/images/brand/logo.png"
-          alt="ImoPanorama Madagascar"
-          width={320}
-          height={96}
-          className="h-24 w-auto object-contain brightness-0 invert mb-8"
-          priority
-        />
-        <h2 className="text-4xl font-bold mb-4">Espace ImoPanorama</h2>
-        <p className="text-lg text-white/85 leading-relaxed">
-          Connectez-vous pour gérer vos biens, suivre vos demandes et retrouver vos favoris.
-        </p>
+    <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden z-10">
+      <div className="absolute inset-0 bg-linear-to-br from-primary-600 via-primary-700 to-primary-600" />
+      <div className="absolute inset-0">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary-400/20 rounded-full filter blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary-300/10 rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+      </div>
+      <div className="relative z-10 flex flex-col justify-center items-center w-full p-12">
+        <m.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+          className="text-center"
+        >
+          <div className="relative w-80 h-80 mb-8 mx-auto">
+            <Image
+              src="/images/auth/auth-illustration.png"
+              alt="ImoPanorama"
+              fill
+              sizes="320px"
+              className="object-contain drop-shadow-2xl"
+              priority
+            />
+          </div>
+          <p className="text-xl text-white/95 mb-10 max-w-md leading-relaxed">
+            Votre partenaire immobilier de confiance à Madagascar
+          </p>
+          <div className="flex items-center justify-center gap-12 text-white">
+            <div className="text-center">
+              <div className="text-4xl font-bold mb-1">500+</div>
+              <div className="text-sm text-white/80 uppercase tracking-wider">Propriétés</div>
+            </div>
+            <div className="w-px h-16 bg-linear-to-b from-transparent via-white/40 to-transparent" />
+            <div className="text-center">
+              <div className="text-4xl font-bold mb-1">1000+</div>
+              <div className="text-sm text-white/80 uppercase tracking-wider">Clients</div>
+            </div>
+            <div className="w-px h-16 bg-linear-to-b from-transparent via-white/40 to-transparent" />
+            <div className="text-center">
+              <div className="text-4xl font-bold mb-1">10+</div>
+              <div className="text-sm text-white/80 uppercase tracking-wider">Années</div>
+            </div>
+          </div>
+        </m.div>
       </div>
     </div>
   );
