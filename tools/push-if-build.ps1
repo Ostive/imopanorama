@@ -35,11 +35,13 @@ git push origin $sourceBranch
 
 # 4. Merge dans production + push (Coolify)
 Write-Host "`n=== MERGE production ===" -ForegroundColor Cyan
+git stash
 git checkout production
 git merge $sourceBranch --no-edit
 git push origin production
 
 # 5. Retour sur la branche de dev
 git checkout $sourceBranch
+git stash pop 2>$null
 
 Write-Host "`n[OK] Build OK, production mise a jour. Coolify va redeploy." -ForegroundColor Green

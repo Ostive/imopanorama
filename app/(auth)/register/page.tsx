@@ -159,6 +159,14 @@ export default function RegisterNewPage() {
             transition={{ duration: 0.6 }}
             className="text-center"
           >
+            <Image
+              src="/images/brand/logo.png"
+              alt="ImoPanorama"
+              width={200}
+              height={60}
+              className="h-14 w-auto object-contain brightness-0 invert mx-auto mb-6"
+              priority
+            />
             {/* Logo Image */}
             <div className="relative w-80 h-80 mb-8 mx-auto">
               <Image
