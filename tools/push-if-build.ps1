@@ -1,31 +1,45 @@
 # tools/push-if-build.ps1
-# Build Next.js — si le build passe, commit tout et push.
+# Build Next.js sur la branche courante.
+# Si le build passe : merge dans `production` + push → Coolify redéploie.
 # Usage: .\tools\push-if-build.ps1 [-Message "commit message"]
 
 param(
-    [string]$Message = "chore: build-verified push"
+    [string]$Message = ""
 )
 
 $ErrorActionPreference = "Stop"
+$sourceBranch = git rev-parse --abbrev-ref HEAD
 
+# 1. Commit les changements en cours si nécessaire
+$staged = git status --porcelain
+if ($staged) {
+    if ($Message -eq "") {
+        $Message = Read-Host "Message de commit"
+    }
+    Write-Host "`n=== COMMIT ($sourceBranch) ===" -ForegroundColor Cyan
+    git add .
+    git commit -m $Message
+}
+
+# 2. Build
 Write-Host "`n=== BUILD ===" -ForegroundColor Cyan
 npm run build
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "`n[ABORT] Build failed — nothing pushed." -ForegroundColor Red
+    Write-Host "`n[ABORT] Build failed — rien n'a ete pousse." -ForegroundColor Red
     exit 1
 }
 
-Write-Host "`n=== GIT ===" -ForegroundColor Cyan
-git add .
-git status --short
+# 3. Push la branche de dev
+Write-Host "`n=== PUSH $sourceBranch ===" -ForegroundColor Cyan
+git push origin $sourceBranch
 
-$staged = git diff --cached --name-only
-if (-not $staged) {
-    Write-Host "`n[SKIP] Nothing to commit." -ForegroundColor Yellow
-    exit 0
-}
+# 4. Merge dans production + push (Coolify)
+Write-Host "`n=== MERGE → production ===" -ForegroundColor Cyan
+git checkout production
+git merge $sourceBranch --no-edit
+git push origin production
 
-git commit -m $Message
-git push
+# 5. Retour sur la branche de dev
+git checkout $sourceBranch
 
-Write-Host "`n[OK] Build passed and pushed." -ForegroundColor Green
+Write-Host "`n[OK] Build passe, production mise a jour. Coolify va redeploy." -ForegroundColor Green
