@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { m } from 'framer-motion'
-import { CalendarIcon, ClockIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
+import { CalendarIcon, ClockIcon, ArrowRightIcon, NewspaperIcon } from '@heroicons/react/24/outline'
 import { fetchWithTimeout } from '@/shared/utils/fetchWithTimeout'
+import SectionState from '@/shared/components/ui/SectionState'
 
 interface Article {
   id: string
@@ -21,6 +22,7 @@ interface Article {
 function NewsSection() {
   const [articles, setArticles] = useState<Article[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -48,7 +50,7 @@ function NewsSection() {
           )
         }
       } catch {
-        // Silently fail
+        setError(true)
       } finally {
         setIsLoading(false)
       }
@@ -101,12 +103,24 @@ function NewsSection() {
           </div>
         )}
 
+        {/* Error state */}
+        {!isLoading && error && (
+          <SectionState
+            variant="error"
+            title="Les articles ne sont pas disponibles pour le moment"
+            description="Cela peut venir de votre connexion ou d'un problème temporaire de notre côté. Rechargez la page pour réessayer."
+            action={{ label: 'Recharger la page', onClick: () => window.location.reload() }}
+          />
+        )}
+
         {/* Empty state */}
-        {!isLoading && articles.length === 0 && (
-          <div className="text-center py-20">
-            <p className="font-semibold text-foreground mb-1">Aucun contenu pour le moment</p>
-            <p className="text-sm text-muted-foreground">De nouveaux contenus arrivent bientôt.</p>
-          </div>
+        {!isLoading && !error && articles.length === 0 && (
+          <SectionState
+            variant="empty"
+            title="Aucun article pour le moment"
+            description="De nouveaux articles arrivent bientôt."
+            icon={<NewspaperIcon className="w-7 h-7 text-primary-500" />}
+          />
         )}
 
         {/* Articles — editorial grid: first article featured (spans 2 cols on lg) */}

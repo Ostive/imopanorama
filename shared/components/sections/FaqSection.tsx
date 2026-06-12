@@ -8,6 +8,7 @@ import {
   ChatBubbleLeftRightIcon,
   ArrowRightIcon,
 } from '@heroicons/react/24/outline'
+import SectionState from '@/shared/components/ui/SectionState'
 import Link from 'next/link'
 import { useFaqs } from '@/features/faqs/hooks/useFaqs'
 
@@ -61,26 +62,22 @@ export default function FaqSection() {
 
             {/* Error */}
             {error && (
-              <div className="bg-primary-50/60 dark:bg-primary-900/20 rounded-2xl px-6 py-5 text-sm text-muted-foreground">
-                Les questions ne sont pas disponibles pour le moment. Réessayez dans un instant.
-              </div>
+              <SectionState
+                variant="error"
+                title="Les questions ne sont pas disponibles pour le moment"
+                description="Cela peut venir de votre connexion ou d'un problème temporaire. Rechargez la page pour réessayer."
+                action={{ label: 'Recharger la page', onClick: () => window.location.reload() }}
+              />
             )}
 
             {/* Empty state */}
             {!loading && !error && faqItems.length === 0 && (
-              <m.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-center py-16"
-              >
-                <div className="w-14 h-14 bg-primary-50 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <QuestionMarkCircleIcon className="w-7 h-7 text-primary-500" />
-                </div>
-                <p className="font-semibold text-foreground mb-1">Les questions arrivent bientôt</p>
-                <p className="text-sm text-muted-foreground">
-                  En attendant, écrivez-nous et nous vous répondrons directement.
-                </p>
-              </m.div>
+              <SectionState
+                variant="empty"
+                title="Les questions arrivent bientôt"
+                description="En attendant, écrivez-nous et nous vous répondrons directement."
+                icon={<QuestionMarkCircleIcon className="w-7 h-7 text-primary-500" />}
+              />
             )}
 
             {/* FAQ items — clean divider accordion */}

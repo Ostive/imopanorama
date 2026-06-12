@@ -74,7 +74,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma/client/runtime ./node_modules/@prisma/client/runtime
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma/client/package.json ./node_modules/@prisma/client/package.json
-
 USER nextjs
 EXPOSE 3000
 

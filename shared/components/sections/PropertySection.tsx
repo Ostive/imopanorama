@@ -3,9 +3,10 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { m } from 'framer-motion'
-import { ArrowRightIcon, WifiIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
+import { ArrowRightIcon, HomeIcon } from '@heroicons/react/24/outline'
 import { useProperties } from '@/features/properties/hooks/useProperties'
 import PropertyCard from '@/features/properties/components/PropertyCard'
+import SectionState from '@/shared/components/ui/SectionState'
 
 export default function PropertySection() {
   const { properties, loading, error } = useProperties({
@@ -75,32 +76,22 @@ export default function PropertySection() {
               </m.div>
             ))
           ) : error ? (
-            <div className="col-span-3 flex justify-center py-10">
-              <div className="bg-primary-50/60 dark:bg-primary-900/20 rounded-2xl px-10 py-10 max-w-md w-full text-center space-y-5">
-                <div className="flex items-center justify-center w-14 h-14 rounded-full bg-primary-100 dark:bg-primary-900/40 mx-auto">
-                  <WifiIcon className="w-7 h-7 text-primary-500" />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-base font-semibold text-foreground">
-                    Les biens ne sont pas disponibles pour le moment
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Cela peut venir de votre connexion ou d'un problème temporaire de notre côté. Rechargez la page pour réessayer.
-                  </p>
-                </div>
-                <button type="button"
-                  onClick={() => window.location.reload()}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-colors"
-                >
-                  <ArrowPathIcon className="w-4 h-4" />
-                  Recharger la page
-                </button>
-              </div>
+            <div className="col-span-3">
+              <SectionState
+                variant="error"
+                title="Les biens ne sont pas disponibles pour le moment"
+                description="Cela peut venir de votre connexion ou d'un problème temporaire de notre côté. Rechargez la page pour réessayer."
+                action={{ label: 'Recharger la page', onClick: () => window.location.reload() }}
+              />
             </div>
           ) : properties.length === 0 ? (
-            <div className="col-span-3 text-center py-20">
-              <p className="font-semibold text-foreground mb-1">Aucun contenu pour le moment</p>
-              <p className="text-sm text-muted-foreground">De nouveaux contenus arrivent bientôt.</p>
+            <div className="col-span-3">
+              <SectionState
+                variant="empty"
+                title="Aucun bien disponible pour le moment"
+                description="De nouveaux biens arrivent bientôt."
+                icon={<HomeIcon className="w-7 h-7 text-primary-500" />}
+              />
             </div>
           ) : (
             properties.map((property, index) => (

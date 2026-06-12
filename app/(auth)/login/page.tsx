@@ -144,17 +144,12 @@ export default function LoginNewPage() {
 
       {/* Right Side - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-4 relative z-10">
-        {/* Back to Home Button */}
+        {/* Back button — desktop only (absolute) */}
         <Link
           href="/"
-          className="absolute top-8 left-8 p-3 bg-white/80 dark:bg-gray-900/80 hover:bg-white dark:hover:bg-gray-900 border-2 border-border hover:border-primary-500 rounded-xl shadow-lg hover:shadow-xl transition-all group"
+          className="hidden lg:flex absolute top-8 left-8 p-3 bg-white/80 dark:bg-gray-900/80 hover:bg-white dark:hover:bg-gray-900 border-2 border-border hover:border-primary-500 rounded-xl shadow-lg hover:shadow-xl transition-all group"
         >
-          <svg
-            className="w-5 h-5 text-muted-foreground group-hover:text-primary-600 transition-colors"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg className="w-5 h-5 text-muted-foreground group-hover:text-primary-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
         </Link>
@@ -166,21 +161,20 @@ export default function LoginNewPage() {
           className="w-full max-w-md"
         >
           <div className="p-6">
-            {/* Mobile Logo */}
-            <div className="lg:hidden flex justify-center mb-6">
+            {/* Mobile logo */}
+            <div className="lg:hidden flex justify-center mb-8">
               <Image
                 src="/images/brand/logo.png"
                 alt="ImoPanorama Madagascar"
-                width={140}
-                height={44}
-                className="h-11 w-auto object-contain"
+                width={320}
+                height={100}
+                className="h-28 w-auto object-contain"
                 priority
               />
             </div>
 
             {/* Header */}
             <div className="mb-6 text-center">
-              <h1 className="text-4xl font-bold text-primary-600 mb-2">Connexion</h1>
               <p className="text-foreground">Bienvenue ! Connectez-vous pour continuer</p>
             </div>
 

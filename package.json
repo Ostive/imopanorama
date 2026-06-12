@@ -28,6 +28,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "db:seed": "npx ts-node prisma/seed.ts",
+    "db:seed:prod": "npx ts-node prisma/seed-prod.ts",
     "db:seed:properties": "npx ts-node prisma/seed-properties.ts",
     "db:status": "prisma migrate status",
     "db:deploy": "prisma migrate deploy",
