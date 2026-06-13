@@ -534,18 +534,7 @@ function PropertyFormContent({ mode, propertyId, initialType = '', initialForm }
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="currency">Devise *</Label>
-                        <Select value={formData.currency} onValueChange={(value) => setFormData(prev => ({ ...prev, currency: value as typeof prev.currency }))}>
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {SUPPORTED_CURRENCIES.map(currency => (
-                              <SelectItem key={currency} value={currency}>{currency}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="md:col-span-2 space-y-2">
                         <TooltipLabel htmlFor="title" label="Titre" required tooltip="Un titre accrocheur et descriptif augmente le taux de clics. Incluez le type de bien et un point fort." />
                         <Input id="title" name="title" value={formData.title} onChange={handleChange} required placeholder="Ex: Villa moderne avec piscine" className={fieldErrors.title ? 'border-red-500' : ''} />
@@ -832,9 +821,20 @@ function PropertyFormContent({ mode, propertyId, initialType = '', initialForm }
                       {formData.transactionType === 'SALE' && (
                         <>
                           <div className="space-y-2">
-                            <Label htmlFor="price">Prix de vente ({currencyLabel}) *</Label>
-                            <Input id="price" name="price" type="number" value={formData.price} onChange={handleChange} required min="0" step="0.01" className={fieldErrors.price ? 'border-red-500' : ''} />
-                            <p className="text-xs text-muted-foreground">Devise: {currencyLabel}</p>
+                            <Label htmlFor="price">Prix de vente *</Label>
+                            <div className="flex">
+                              <Select value={formData.currency} onValueChange={(value) => setFormData(prev => ({ ...prev, currency: value as typeof prev.currency }))}>
+                                <SelectTrigger className="w-24 rounded-r-none border-r-0 shrink-0 focus:z-10">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {SUPPORTED_CURRENCIES.map(c => (
+                                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <Input id="price" name="price" type="number" value={formData.price} onChange={handleChange} required min="0" step="0.01" className={`rounded-l-none ${fieldErrors.price ? 'border-red-500' : ''}`} />
+                            </div>
                             <FieldError errors={fieldErrors} name="price" />
                           </div>
                           <div className="space-y-2">
@@ -847,9 +847,21 @@ function PropertyFormContent({ mode, propertyId, initialType = '', initialForm }
                       {(formData.transactionType === 'RENT' || formData.transactionType === 'SEASONAL_RENT') && (
                         <div className="space-y-2">
                           <Label htmlFor="rentPrice">
-                            {formData.transactionType === 'SEASONAL_RENT' ? `Prix de location saisonniere (${currencyLabel}/nuit) *` : `Prix de location (${currencyLabel}/mois) *`}
+                            {formData.transactionType === 'SEASONAL_RENT' ? 'Prix de location saisonnière /nuit *' : 'Prix de location /mois *'}
                           </Label>
-                          <Input id="rentPrice" name="rentPrice" type="number" value={formData.rentPrice} onChange={handleChange} required min="0" step="0.01" />
+                          <div className="flex">
+                            <Select value={formData.currency} onValueChange={(value) => setFormData(prev => ({ ...prev, currency: value as typeof prev.currency }))}>
+                              <SelectTrigger className="w-24 rounded-r-none border-r-0 shrink-0 focus:z-10">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {SUPPORTED_CURRENCIES.map(c => (
+                                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <Input id="rentPrice" name="rentPrice" type="number" value={formData.rentPrice} onChange={handleChange} required min="0" step="0.01" className="rounded-l-none" />
+                          </div>
                         </div>
                       )}
                     </div>
