@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect, useCallback, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import Image from 'next/image'
 import { m, AnimatePresence } from 'framer-motion'
 import { formatPrice, formatDate } from '@/shared/utils'
@@ -182,6 +182,7 @@ function AdminPropertiesPageContent() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const propertyToDeleteRef = useRef<string | null>(null)
   const searchTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (successMessage) {
@@ -259,6 +260,23 @@ function AdminPropertiesPageContent() {
   const confirmDelete = async () => {
     const propertyToDelete = propertyToDeleteRef.current
     if (!propertyToDelete) return
+
+    // Fermer la modal et retirer la propriété immédiatement (optimistic update)
+    setDeleteModalOpen(false)
+    propertyToDeleteRef.current = null
+
+    const queryKey = ['admin-properties', page, limit, debouncedSearch, statusFilter, propertyTypeFilter, transactionTypeFilter, sortBy]
+    const previousData = queryClient.getQueryData(queryKey)
+
+    queryClient.setQueryData(queryKey, (old: any) => {
+      if (!old) return old
+      return {
+        ...old,
+        data: old.data.filter((p: any) => p.id !== propertyToDelete),
+        total: Math.max(0, old.total - 1),
+      }
+    })
+
     try {
       const res = await fetch(`/api/properties/${propertyToDelete}`, { method: 'DELETE' })
       if (!res.ok) throw new Error()
@@ -266,11 +284,10 @@ function AdminPropertiesPageContent() {
       setTimeout(() => setSuccessMessage(null), 5000)
       refetchProperties()
     } catch {
+      // Rétablir les données si l'API échoue
+      queryClient.setQueryData(queryKey, previousData)
       setErrorMessage('Erreur lors de la suppression de la propriété')
       setTimeout(() => setErrorMessage(null), 5000)
-    } finally {
-      setDeleteModalOpen(false)
-      propertyToDeleteRef.current = null
     }
   }
 
@@ -552,8 +569,8 @@ function AdminPropertiesPageContent() {
                             <div className="text-sm text-muted-foreground">{property.location}</div>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="text-sm font-medium text-foreground">{formatPrice(property.price)}</div>
-                            {property.pricePerM2 && <div className="text-xs text-muted-foreground">{formatPrice(property.pricePerM2)}/m²</div>}
+                            <div className="text-sm font-medium text-foreground">{formatPrice(property.price, property.currency || 'MGA')}</div>
+                            {property.pricePerM2 && <div className="text-xs text-muted-foreground">{formatPrice(property.pricePerM2, property.currency || 'MGA')}/m²</div>}
                           </td>
                           <td className="px-6 py-4">
                             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(property.status)}`}>
@@ -643,7 +660,7 @@ function AdminPropertiesPageContent() {
                           <span className="truncate">{property.city}{property.location ? `, ${property.location}` : ''}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <p className="text-base font-bold text-primary-600 dark:text-primary-400">{formatPrice(property.price)}</p>
+                          <p className="text-base font-bold text-primary-600 dark:text-primary-400">{formatPrice(property.price, property.currency || 'MGA')}</p>
                           <span className="text-xs text-muted-foreground">{property.totalSize} m²</span>
                         </div>
                         <div className="flex items-center gap-2 mt-2 pt-2 border-t border-border">
