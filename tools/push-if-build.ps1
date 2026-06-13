@@ -1,6 +1,7 @@
 # tools/push-if-build.ps1
-# Build Next.js sur la branche courante.
-# Si le build passe : merge dans production + push -> Coolify redeploy.
+# Flow: development -> main -> production
+# Build Next.js sur la branche courante (dev).
+# Si le build passe : push dev, merge dans main, merge dans production -> Coolify redeploy.
 # Usage: .\tools\push-if-build.ps1 [-Message "commit message"]
 
 param(
@@ -33,15 +34,19 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host "`n=== PUSH $sourceBranch ===" -ForegroundColor Cyan
 git push origin $sourceBranch
 
-# 4. Merge dans production + push (Coolify)
-Write-Host "`n=== MERGE production ===" -ForegroundColor Cyan
-git stash
-git checkout production
+# 4. Merge dans main + push
+Write-Host "`n=== MERGE main ===" -ForegroundColor Cyan
+git checkout main
 git merge $sourceBranch --no-edit
+git push origin main
+
+# 5. Merge dans production + push (Coolify redeploy)
+Write-Host "`n=== MERGE production ===" -ForegroundColor Cyan
+git checkout production
+git merge main --no-edit
 git push origin production
 
-# 5. Retour sur la branche de dev
+# 6. Retour sur la branche de dev
 git checkout $sourceBranch
-git stash pop 2>$null
 
-Write-Host "`n[OK] Build OK, production mise a jour. Coolify va redeploy." -ForegroundColor Green
+Write-Host "`n[OK] Build OK - $sourceBranch -> main -> production. Coolify va redeploy." -ForegroundColor Green
