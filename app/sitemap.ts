@@ -2,138 +2,57 @@ import { MetadataRoute } from 'next'
 import { prisma } from '@/infrastructure/database/prisma'
 import { MADAGASCAR_CITY_SEO } from '@/shared/data/madagascarSeo'
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://imopanorama.mg'
+const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://imopanorama.mg').replace(/\/$/, '')
 
+const now = new Date()
+
+function page(
+  path: string,
+  changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'],
+  priority: number,
+  lastModified: Date = now,
+): MetadataRoute.Sitemap[number] {
+  return {
+    url: `${baseUrl}${path}`,
+    lastModified,
+    changeFrequency,
+    priority,
+  }
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/proprietes`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/batipanorama`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/vendre`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/estimation`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/services`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/calculateur-budget`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/guide-achat`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.65,
-    },
-    {
-      url: `${baseUrl}/guide-location`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.65,
-    },
-    {
-      url: `${baseUrl}/investir-a-madagascar`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.75,
-    },
-    {
-      url: `${baseUrl}/terrains-a-vendre`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/maisons-a-vendre`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/appartements-a-louer`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/temoignages`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/actualites`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/qui-sommes-nous`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/mentions-legales`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/politique-confidentialite`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/cgu`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
+    page('', 'daily', 1),
+    page('/proprietes', 'daily', 0.95),
+    page('/maisons-a-vendre', 'weekly', 0.86),
+    page('/terrains-a-vendre', 'weekly', 0.86),
+    page('/appartements-a-louer', 'weekly', 0.86),
+    page('/vendre', 'monthly', 0.84),
+    page('/estimation', 'monthly', 0.84),
+    page('/investir-a-madagascar', 'monthly', 0.82),
+    page('/guide-achat', 'monthly', 0.76),
+    page('/guide-location', 'monthly', 0.76),
+    page('/calculateur-budget', 'monthly', 0.72),
+    page('/services', 'monthly', 0.7),
+    page('/batipanorama', 'weekly', 0.82),
+    page('/batipanorama/projets', 'weekly', 0.76),
+    page('/batipanorama/contact', 'monthly', 0.72),
+    page('/actualites', 'daily', 0.82),
+    page('/faq', 'monthly', 0.62),
+    page('/temoignages', 'monthly', 0.6),
+    page('/contact', 'monthly', 0.7),
+    page('/qui-sommes-nous', 'monthly', 0.6),
+    page('/mentions-legales', 'yearly', 0.3),
+    page('/politique-confidentialite', 'yearly', 0.3),
+    page('/cgu', 'yearly', 0.3),
   ]
 
   const citySeoPages: MetadataRoute.Sitemap = MADAGASCAR_CITY_SEO.map((city) => ({
     url: `${baseUrl}/immobilier/${city.slug}`,
-    lastModified: new Date(),
+    lastModified: now,
     changeFrequency: 'monthly' as const,
-    priority: 0.75,
+    priority: city.slug === 'antananarivo' ? 0.82 : 0.78,
   }))
 
   try {
@@ -146,6 +65,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       select: {
         id: true,
         updatedAt: true,
+        isFeatured: true,
       },
       orderBy: {
         updatedAt: 'desc',
@@ -157,7 +77,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}/proprietes/${property.id}`,
       lastModified: property.updatedAt,
       changeFrequency: 'weekly' as const,
-      priority: 0.7,
+      priority: property.isFeatured ? 0.74 : 0.68,
     }))
 
     // Dynamic news pages (only published ones)
@@ -168,21 +88,42 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       select: {
         slug: true,
         updatedAt: true,
+        publishedAt: true,
       },
       orderBy: {
-        updatedAt: 'desc',
+        publishedAt: 'desc',
       },
       take: 500, // Limit for performance
     })
 
     const newsPages: MetadataRoute.Sitemap = news.map((article) => ({
       url: `${baseUrl}/actualites/${article.slug}`,
-      lastModified: article.updatedAt,
+      lastModified: article.updatedAt ?? article.publishedAt ?? now,
       changeFrequency: 'monthly' as const,
-      priority: 0.6,
+      priority: 0.66,
     }))
 
-    return [...staticPages, ...citySeoPages, ...propertyPages, ...newsPages]
+    const batiProjects = await prisma.batiProject.findMany({
+      where: {
+        isPublished: true,
+      },
+      select: {
+        id: true,
+        updatedAt: true,
+        status: true,
+      },
+      orderBy: [{ order: 'asc' }, { updatedAt: 'desc' }],
+      take: 300,
+    })
+
+    const batiProjectPages: MetadataRoute.Sitemap = batiProjects.map((project) => ({
+      url: `${baseUrl}/batipanorama/projet/${project.id}`,
+      lastModified: project.updatedAt,
+      changeFrequency: project.status === 'IN_PROGRESS' ? 'weekly' as const : 'monthly' as const,
+      priority: project.status === 'IN_PROGRESS' ? 0.72 : 0.64,
+    }))
+
+    return [...staticPages, ...citySeoPages, ...propertyPages, ...newsPages, ...batiProjectPages]
   } catch (error) {
     const message = error instanceof Error ? error.message : 'unknown error'
     console.warn(`Sitemap generated without dynamic DB pages: ${message}`)

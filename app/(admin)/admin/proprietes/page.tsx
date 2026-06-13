@@ -235,6 +235,17 @@ function AdminPropertiesPageContent() {
     return () => { if (searchTimerRef.current) clearTimeout(searchTimerRef.current) }
   }, [searchQuery])
 
+  const { data: settingsData } = useQuery({
+    queryKey: ['admin-settings-currency'],
+    queryFn: async () => {
+      const res = await fetch('/api/settings?category=general')
+      if (!res.ok) return null
+      return res.json()
+    },
+    staleTime: 60_000,
+  })
+  const displayCurrency: string = settingsData?.settings?.general?.currency || 'EUR'
+
   const {
     data: propertiesData,
     isLoading: loading,
@@ -569,8 +580,8 @@ function AdminPropertiesPageContent() {
                             <div className="text-sm text-muted-foreground">{property.location}</div>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="text-sm font-medium text-foreground">{formatPrice(property.price, property.currency || 'MGA')}</div>
-                            {property.pricePerM2 && <div className="text-xs text-muted-foreground">{formatPrice(property.pricePerM2, property.currency || 'MGA')}/m²</div>}
+                            <div className="text-sm font-medium text-foreground">{formatPrice(property.price, displayCurrency)}</div>
+                            {property.pricePerM2 && <div className="text-xs text-muted-foreground">{formatPrice(property.pricePerM2, displayCurrency)}/m²</div>}
                           </td>
                           <td className="px-6 py-4">
                             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(property.status)}`}>
@@ -660,7 +671,7 @@ function AdminPropertiesPageContent() {
                           <span className="truncate">{property.city}{property.location ? `, ${property.location}` : ''}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <p className="text-base font-bold text-primary-600 dark:text-primary-400">{formatPrice(property.price, property.currency || 'MGA')}</p>
+                          <p className="text-base font-bold text-primary-600 dark:text-primary-400">{formatPrice(property.price, displayCurrency)}</p>
                           <span className="text-xs text-muted-foreground">{property.totalSize} m²</span>
                         </div>
                         <div className="flex items-center gap-2 mt-2 pt-2 border-t border-border">

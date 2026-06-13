@@ -93,6 +93,22 @@ export const MADAGASCAR_CITY_SEO: MadagascarCitySeo[] = [
     searchHref: '/proprietes?country=MG&city=Nosy%20Be',
   },
   {
+    slug: 'sainte-marie',
+    city: 'Sainte-Marie',
+    region: 'Analanjirofo',
+    headline: 'Immobilier a Sainte-Marie / Nosy Boraha',
+    description: 'Villas, terrains et projets touristiques sur une ile preservee de la cote est de Madagascar, connue pour ses plages, son lagon et la saison des baleines.',
+    image: 'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=1600&auto=format&fit=crop',
+    districts: ['Ambodifotatra', 'Ile aux Nattes', 'Ravoraha', 'Vohilava', 'Coco Bay', 'Ilot Madame'],
+    opportunities: [
+      'Destination touristique reconnue pour les baleines, les plages et le patrimoine pirate',
+      'Potentiel pour villas, ecolodges, maisons d hotes et location saisonniere',
+      'Marche insulaire ou l acces, l eau, l electricite et les autorisations doivent etre verifies',
+    ],
+    checklist: ['Statut foncier et limites du terrain', 'Acces route, bateau ou piste', 'Gestion eau et assainissement', 'Contraintes littorales et environnementales'],
+    searchHref: '/proprietes?country=MG&city=Sainte-Marie',
+  },
+  {
     slug: 'diego-suarez',
     city: 'Antsiranana',
     region: 'Diana',
