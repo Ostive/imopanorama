@@ -21,6 +21,7 @@ const image = {
   cityAntananarivo: '/images/seo/cities/antananarivo.jpg',
   cityNosyBe: '/images/seo/cities/nosy-be.jpg',
   cityTamatave: '/images/seo/cities/tamatave.jpg',
+  citySainteMarie: 'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=1600&auto=format&fit=crop',
   property: '/images/properties/featured/property-1.jpg',
   project: '/images/batipanorama/projects/project-1.jpg',
 };
@@ -29,6 +30,14 @@ const cta = (href: string, label: string) => `
   <p class="my-8">
     <a href="${href}" class="inline-flex rounded-lg bg-primary-600 px-5 py-3 text-sm font-semibold text-white hover:bg-primary-700">${label}</a>
   </p>`;
+
+const sources = (items: Array<{ label: string; href: string }>) => `
+  <aside class="mt-10 rounded-lg border border-border bg-muted/40 p-5">
+    <h2>Sources utilisees</h2>
+    <ul>
+      ${items.map((item) => `<li><a href="${item.href}" rel="nofollow noopener" target="_blank">${item.label}</a></li>`).join('\n      ')}
+    </ul>
+  </aside>`;
 
 const article = (
   intro: string,
@@ -123,6 +132,98 @@ const articles: BlogSeedArticle[] = [
       '/investir-a-madagascar',
       'Explorer les opportunites d investissement',
     ),
+  },
+  {
+    title: 'Sainte-Marie: l eco-tourisme haut de gamme relance l interet pour Nosy Boraha',
+    slug: 'sainte-marie-eco-tourisme-haut-de-gamme-nosy-boraha',
+    excerpt: 'Une actualite 2025 met en avant l arrivee d une offre eco-luxe a Sainte-Marie, un signal interessant pour l immobilier touristique et la construction responsable.',
+    coverImage: image.citySainteMarie,
+    category: NewsCategory.IMMOBILIER,
+    tags: ['sainte-marie', 'nosy boraha', 'eco-tourisme', 'investissement', 'actualite'],
+    publishedDaysAgo: 2,
+    content: `${article(
+      'Sainte-Marie, aussi appelee Nosy Boraha, attire de nouveau l attention grace a un positionnement eco-touristique: nature preservee, plages, foret, lagon et hebergements plus qualitatifs.',
+      [
+        { title: 'Ce qui change pour l immobilier local', body: 'Quand une destination gagne en visibilite touristique, les recherches augmentent autour des terrains bien places, des villas, des maisons d hotes et des projets d hebergement responsables.' },
+        { title: 'Un signal, pas une promesse de rendement', body: 'Cette dynamique ne suffit pas a garantir un rendement. Avant d acheter, il faut verifier le statut foncier, l acces, l eau, l energie, l assainissement et les contraintes environnementales.' },
+        { title: 'Pourquoi c est SEO important', body: 'Les requetes Sainte-Marie immobilier, Nosy Boraha investissement, terrain Sainte-Marie Madagascar et construction ecolodge Madagascar peuvent capter des profils tres qualifies.' },
+      ],
+      '/immobilier/sainte-marie',
+      'Decouvrir l immobilier a Sainte-Marie',
+    )}
+${sources([
+      { label: 'Financial Times - reportage 2025 sur Madagascar et Voaara a Sainte-Marie', href: 'https://www.ft.com/content/2cf9f904-5435-4789-a897-cad95de8fe7e' },
+      { label: 'Nosy Boraha / Sainte-Marie - informations geographiques et touristiques', href: 'https://en.wikipedia.org/wiki/Nosy_Boraha' },
+    ])}`,
+  },
+  {
+    title: 'Saison des baleines a Sainte-Marie: un moteur pour la location saisonniere',
+    slug: 'saison-baleines-sainte-marie-location-saisonniere',
+    excerpt: 'Chaque hiver austral, les baleines a bosse renforcent l attractivite touristique de Sainte-Marie et soutiennent les projets de location saisonniere bien prepares.',
+    coverImage: image.citySainteMarie,
+    category: NewsCategory.IMMOBILIER,
+    tags: ['sainte-marie', 'baleines', 'location saisonniere', 'tourisme', 'nosy boraha'],
+    publishedDaysAgo: 4,
+    content: `${article(
+      'Le canal de Sainte-Marie est connu pour l observation des baleines a bosse pendant l hiver austral. Cette saisonnalite peut soutenir la demande en hebergements courts sejours.',
+      [
+        { title: 'Un actif touristique naturel', body: 'Les visiteurs ne viennent pas seulement pour une plage: ils recherchent une experience, entre baleines, lagon, histoire pirate, plongee et Ile aux Nattes.' },
+        { title: 'Ce que cela implique pour un bien', body: 'Une villa ou une maison d hote doit etre pensee pour l exploitation: acces, confort, maintenance, eau, electricite, gestion a distance et qualite des photos.' },
+        { title: 'La prudence reste indispensable', body: 'Un projet saisonnier doit etre chiffre avec les periodes creuses, les frais d entretien en milieu marin et les autorisations necessaires.' },
+      ],
+      '/proprietes?country=MG&city=Sainte-Marie',
+      'Voir les opportunites a Sainte-Marie',
+    )}
+${sources([
+      { label: 'Nosy Boraha - whale watching et tourisme', href: 'https://en.wikipedia.org/wiki/Nosy_Boraha' },
+      { label: 'Ile Sainte-Marie - destination baleines et patrimoine', href: 'https://fr.wikipedia.org/wiki/%C3%8Ele_Sainte-Marie' },
+    ])}`,
+  },
+  {
+    title: 'Ile aux Nattes: pourquoi ce micro-marche interesse les projets touristiques',
+    slug: 'ile-aux-nattes-micro-marche-projets-touristiques',
+    excerpt: 'L Ile aux Nattes, au sud de Sainte-Marie, attire par son image preservee. Un contexte interessant, mais a analyser avec methode avant tout projet.',
+    coverImage: image.citySainteMarie,
+    category: NewsCategory.IMMOBILIER,
+    tags: ['ile aux nattes', 'sainte-marie', 'terrain', 'tourisme', 'ecolodge'],
+    publishedDaysAgo: 6,
+    content: `${article(
+      'L Ile aux Nattes, aussi appelee Nosy Nato, se situe au sud de Sainte-Marie. Son image de petite ile preservee peut attirer des projets touristiques tres cibles.',
+      [
+        { title: 'Un positionnement different de la grande ile', body: 'L absence ou la limitation des infrastructures classiques peut devenir un argument de charme, mais aussi une contrainte operationnelle forte pour construire et exploiter.' },
+        { title: 'Les points a verifier', body: 'Avant toute decision, il faut regarder l acces, la logistique chantier, les limites foncieres, l approvisionnement, l assainissement et les impacts environnementaux.' },
+        { title: 'Le bon format de projet', body: 'Les petites structures bien integrees, les maisons d hotes sobres et les concepts eco-touristiques ont souvent plus de coherence qu un projet trop lourd pour le site.' },
+      ],
+      '/batipanorama/contact',
+      'Etudier un projet de construction touristique',
+    )}
+${sources([
+      { label: 'Ile aux Nattes - situation et caracteristiques', href: 'https://en.wikipedia.org/wiki/%C3%8Ele_aux_Nattes' },
+      { label: 'Ile Sainte-Marie - contexte touristique et geographique', href: 'https://fr.wikipedia.org/wiki/%C3%8Ele_Sainte-Marie' },
+    ])}`,
+  },
+  {
+    title: 'Construire a Sainte-Marie: les contraintes a anticiper avant un chantier',
+    slug: 'construire-sainte-marie-contraintes-chantier',
+    excerpt: 'Sur une ile comme Sainte-Marie, le chantier doit anticiper logistique, humidite, air marin, acces, energie et entretien.',
+    coverImage: image.build,
+    category: NewsCategory.CONSTRUCTION,
+    tags: ['sainte-marie', 'construction', 'chantier', 'batipanorama', 'nosy boraha'],
+    publishedDaysAgo: 8,
+    content: `${article(
+      'Construire a Sainte-Marie peut creer un bien tres attractif, mais le contexte insulaire impose une preparation plus stricte qu un chantier urbain classique.',
+      [
+        { title: 'Logistique et delais', body: 'Materiaux, main d oeuvre, transport maritime et stockage doivent etre organises avant le lancement. Un retard logistique peut vite bloquer plusieurs corps de metier.' },
+        { title: 'Choix techniques', body: 'Air marin, humidite, vents, toiture, ventilation, evacuation des eaux et corrosion doivent guider les materiaux et les finitions.' },
+        { title: 'Exploitation apres livraison', body: 'Une maison destinee a la location saisonniere doit etre simple a entretenir, securisee et equipee pour limiter les interventions d urgence.' },
+      ],
+      '/batipanorama/contact',
+      'Demander un accompagnement BatiPanorama',
+    )}
+${sources([
+      { label: 'Nosy Boraha - transport, port, aeroport et geographie', href: 'https://en.wikipedia.org/wiki/Nosy_Boraha' },
+      { label: 'Financial Times - exemple 2025 de projet eco-touristique a Sainte-Marie', href: 'https://www.ft.com/content/2cf9f904-5435-4789-a897-cad95de8fe7e' },
+    ])}`,
   },
   {
     title: 'Construire a Madagascar: les decisions qui evitent les surcouts',
