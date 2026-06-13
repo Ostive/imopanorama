@@ -96,6 +96,7 @@ export interface Property {
     status: PropertyStatus;
     isFeatured: boolean;
     isPublished: boolean;
+    allowVisitScheduling: boolean;
     views: number;
 
     // References & Metadata

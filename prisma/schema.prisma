@@ -152,10 +152,11 @@ model Property {
   embedding Unsupported("vector(1536)")?
 
   // Status & Visibility
-  status      PropertyStatus @default(AVAILABLE)
-  isFeatured  Boolean        @default(false)
-  isPublished Boolean        @default(true)
-  views       Int            @default(0)
+  status               PropertyStatus @default(AVAILABLE)
+  isFeatured           Boolean        @default(false)
+  isPublished          Boolean        @default(true)
+  allowVisitScheduling Boolean        @default(false)
+  views                Int            @default(0)
 
   // References & Metadata
   reference   String? @unique // Référence unique du bien
