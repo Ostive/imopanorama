@@ -33,7 +33,7 @@ interface SidebarProps {
   onLogout: () => void
 }
 
-function NavItem({ item, pathname, depth = 0 }: { item: MenuItem; pathname: string; depth?: number }) {
+function NavItem({ item, pathname, depth = 0, onClose }: { item: MenuItem; pathname: string; depth?: number; onClose?: () => void }) {
   const isActive = item.href === '/admin'
     ? pathname === '/admin'
     : pathname === item.href || (depth === 0 && !item.submenu && pathname.startsWith(item.href))
@@ -65,7 +65,7 @@ function NavItem({ item, pathname, depth = 0 }: { item: MenuItem; pathname: stri
         {open && (
           <div className="mt-1 ml-4 pl-3 border-l border-border space-y-0.5">
             {item.submenu.map((sub) => (
-              <NavItem key={sub.href} item={sub} pathname={pathname} depth={depth + 1} />
+              <NavItem key={sub.href} item={sub} pathname={pathname} depth={depth + 1} onClose={onClose} />
             ))}
           </div>
         )}
@@ -76,6 +76,7 @@ function NavItem({ item, pathname, depth = 0 }: { item: MenuItem; pathname: stri
   return (
     <Link
       href={item.href}
+      onClick={onClose}
       className={`flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
         isActive
           ? 'bg-primary-100 dark:bg-primary-900/40 text-primary-900 dark:text-primary-200 border-r-2 border-primary-600'
@@ -205,7 +206,7 @@ export function Sidebar({ user, menuItems, open, onClose, onLogout }: SidebarPro
       {/* Nav */}
       <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 dark:[&::-webkit-scrollbar-thumb]:bg-gray-700 [&::-webkit-scrollbar-thumb]:rounded-full">
         {menuItems.map((item) => (
-          <NavItem key={item.href} item={item} pathname={pathname} />
+          <NavItem key={item.href} item={item} pathname={pathname} onClose={onClose} />
         ))}
       </nav>
 

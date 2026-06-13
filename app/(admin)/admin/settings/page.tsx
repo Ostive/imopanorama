@@ -268,47 +268,69 @@ export default function SettingsPage() {
           className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-4"
         >
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-linear-to-br from-primary-600 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 bg-linear-to-br from-primary-600 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shrink-0">
               <Cog6ToothIcon className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">Paramètres</h1>
-              <p className="text-muted-foreground font-medium mt-1">Configurez les paramètres de votre site</p>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">Paramètres</h1>
+              <p className="text-muted-foreground font-medium mt-1 text-sm">Configurez les paramètres de votre site</p>
             </div>
           </div>
           <Link
             href="/admin"
-            className="inline-flex items-center px-4 py-2 text-foreground bg-card hover:bg-gray-50 dark:hover:bg-gray-800 font-semibold rounded-xl transition-all border border-border shadow-sm"
+            className="inline-flex items-center px-4 py-2 text-foreground bg-card hover:bg-gray-50 dark:hover:bg-gray-800 font-semibold rounded-xl transition-all border border-border shadow-sm shrink-0"
           >
             <ArrowLeftIcon className="h-5 w-5 mr-2" /> Retour
           </Link>
         </m.div>
 
+        {/* Mobile: horizontal scrollable tabs */}
+        <div className="lg:hidden mb-6 -mx-4 px-4 overflow-x-auto">
+          <div className="flex gap-2 pb-2 min-w-max">
+            {TABS.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
+                    activeTab === tab.id
+                      ? 'bg-primary-600 text-white shadow-md'
+                      : 'bg-card text-muted-foreground border border-border hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {tab.name}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="flex gap-8">
-          {/* Sidebar */}
+          {/* Desktop sidebar */}
           <m.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="w-64 shrink-0"
+            className="hidden lg:block w-56 shrink-0"
           >
             <div className="bg-card rounded-2xl shadow-lg border border-border p-4 sticky top-8">
               <nav className="space-y-1">
                 {TABS.map((tab) => {
                   const Icon = tab.icon;
                   return (
-                    <m.button
+                    <button
                       key={tab.id}
-                      whileHover={{ x: 4 }}
                       onClick={() => setActiveTab(tab.id)}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                         activeTab === tab.id
-                          ? 'bg-linear-to-r from-primary-600 to-primary-600 text-white shadow-md'
+                          ? 'bg-primary-600 text-white shadow-md'
                           : 'text-muted-foreground hover:bg-gray-50 dark:hover:bg-gray-800/50'
                       }`}
                     >
                       <Icon className="h-5 w-5" />
                       {tab.name}
-                    </m.button>
+                    </button>
                   );
                 })}
               </nav>
@@ -320,10 +342,10 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="flex-1"
+            className="flex-1 min-w-0"
           >
             <div className="bg-card rounded-2xl shadow-lg border border-border">
-              <div className="p-8">
+              <div className="p-4 sm:p-8">
                 <ActiveSettingsTab
                   activeTab={activeTab}
                   settings={settings}

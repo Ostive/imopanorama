@@ -36,7 +36,7 @@ export function AdminPageHeader({
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-linear-to-r from-primary-600 to-primary-600 bg-clip-text text-transparent">
                 {title}
               </h1>
               {loading && (

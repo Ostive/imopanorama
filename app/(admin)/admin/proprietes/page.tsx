@@ -377,7 +377,7 @@ function AdminPropertiesPageContent() {
             subtitle={`${total} propriété${total > 1 ? 's' : ''} au total`}
             showBackButton
             actions={
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
                   <button type="button" onClick={() => { setViewMode('table'); replaceUrl({ view: 'table' }) }} className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white text-primary-600 shadow-sm' : 'text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100'}`} title="Vue tableau">
                     <TableCellsIcon className="h-5 w-5" />
@@ -389,10 +389,10 @@ function AdminPropertiesPageContent() {
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button type="button" className="inline-flex items-center px-6 py-3 bg-linear-to-r from-primary-600 to-primary-600 text-white rounded-xl hover:from-primary-700 hover:to-primary-700 transition-all shadow-lg hover:shadow-xl font-semibold">
-                      <PlusIcon className="h-5 w-5 mr-2" />
-                      Créer
-                      <ChevronDownIcon className="h-4 w-4 ml-2 opacity-80" />
+                    <button type="button" className="inline-flex items-center px-3 sm:px-6 py-2.5 sm:py-3 bg-linear-to-r from-primary-600 to-primary-600 text-white rounded-xl hover:from-primary-700 hover:to-primary-700 transition-all shadow-lg hover:shadow-xl font-semibold">
+                      <PlusIcon className="h-5 w-5 sm:mr-2" />
+                      <span className="hidden sm:inline">Créer</span>
+                      <ChevronDownIcon className="h-4 w-4 sm:ml-2 opacity-80" />
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56 p-2">
@@ -649,7 +649,7 @@ function AdminPropertiesPageContent() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {properties.map((property) => (
                     <m.div key={property.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -4 }} className="bg-card rounded-2xl shadow-lg overflow-hidden border border-border hover:shadow-xl transition-shadow group">
-                      <div className="relative h-48 bg-muted">
+                      <div className="relative h-48 bg-muted overflow-hidden">
                         {property.coverImage || property.images?.[0] ? (
                           <Image src={property.coverImage || property.images[0]} alt={property.title} fill sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover" />
                         ) : (
@@ -660,10 +660,17 @@ function AdminPropertiesPageContent() {
                             {PROPERTY_STATUS_LABELS[property.status as keyof typeof PROPERTY_STATUS_LABELS]}
                           </span>
                         </div>
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        {/* Desktop hover overlay */}
+                        <div className="absolute inset-0 bg-black/40 opacity-0 sm:group-hover:opacity-100 transition-opacity hidden sm:flex items-center justify-center gap-2">
                           <Link href={`/proprietes/${property.id}`} className="p-2.5 bg-card rounded-xl text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors shadow-lg" title="Voir"><EyeIcon className="h-5 w-5" /></Link>
                           <Link href={`/admin/proprietes/edit/${property.id}`} className="p-2.5 bg-card rounded-xl text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors shadow-lg" title="Modifier"><PencilSquareIcon className="h-5 w-5" /></Link>
                           <button type="button" onClick={() => openDelete(property.id)} className="p-2.5 bg-card rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors shadow-lg" title="Supprimer"><TrashIcon className="h-5 w-5" /></button>
+                        </div>
+                        {/* Mobile persistent actions */}
+                        <div className="absolute bottom-2 right-2 sm:hidden flex gap-1.5">
+                          <Link href={`/proprietes/${property.id}`} className="p-2 bg-white/90 rounded-lg text-primary-600 shadow" title="Voir"><EyeIcon className="h-4 w-4" /></Link>
+                          <Link href={`/admin/proprietes/edit/${property.id}`} className="p-2 bg-white/90 rounded-lg text-primary-600 shadow" title="Modifier"><PencilSquareIcon className="h-4 w-4" /></Link>
+                          <button type="button" onClick={() => openDelete(property.id)} className="p-2 bg-white/90 rounded-lg text-red-600 shadow" title="Supprimer"><TrashIcon className="h-4 w-4" /></button>
                         </div>
                       </div>
                       <div className="p-4">

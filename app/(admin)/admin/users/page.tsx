@@ -331,7 +331,59 @@ function AdminUsersPageContent() {
 
           {/* Table */}
           <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-2xl shadow-lg overflow-hidden">
-            <div className="overflow-x-auto">
+
+            {/* Mobile cards */}
+            <div className="md:hidden divide-y divide-border">
+              {table.getRowModel().rows.length === 0 ? (
+                <p className="px-4 py-12 text-center text-muted-foreground text-sm">Aucun utilisateur trouvé</p>
+              ) : table.getRowModel().rows.map(row => {
+                const u = row.original;
+                const cfg = ROLE_CONFIG[u.role] || { bg: 'bg-muted', text: 'text-foreground', label: u.role };
+                return (
+                  <div key={u.id} className="flex items-center gap-3 px-4 py-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-sm font-semibold text-foreground truncate">{u.firstName} {u.lastName}</span>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${cfg.bg} ${cfg.text}`}>{cfg.label}</span>
+                        <span className={`w-2 h-2 rounded-full ${u.isActive ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
+                      </div>
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">{u.email}</p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button type="button"
+                        onClick={() => handleToggleStatus(u.id, u.isActive)}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${u.isActive ? 'bg-green-600' : 'bg-gray-300 dark:bg-gray-600'}`}
+                      >
+                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${u.isActive ? 'translate-x-6' : 'translate-x-1'}`} />
+                      </button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="p-2 text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100 hover:bg-muted rounded-lg transition-colors">
+                          <EllipsisVerticalIcon className="h-5 w-5" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem asChild>
+                            <Link href={`/admin/users/${u.id}`} className="flex items-center gap-2 text-primary-600 dark:text-primary-400">
+                              <EyeIcon className="h-4 w-4" />Voir
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link href={`/admin/users/${u.id}/edit`} className="flex items-center gap-2 text-primary-600 dark:text-primary-400">
+                              <PencilIcon className="h-4 w-4" />Modifier
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDelete(u.id)} className="flex items-center gap-2 text-red-600 dark:text-red-400">
+                            <TrashIcon className="h-4 w-4" />Supprimer
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop table */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-muted/50">
                   {table.getHeaderGroups().map(headerGroup => (
@@ -351,7 +403,7 @@ function AdminUsersPageContent() {
                     table.getRowModel().rows.map(row => (
                       <tr key={row.id} className="hover:bg-muted/50">
                         {row.getVisibleCells().map(cell => (
-                          <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
+                          <td key={cell.id} className="px-6 py-4">
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                           </td>
                         ))}
@@ -361,6 +413,7 @@ function AdminUsersPageContent() {
                 </tbody>
               </table>
             </div>
+
             <AdminTablePagination
               page={searchParams.page}
               limit={searchParams.limit}
