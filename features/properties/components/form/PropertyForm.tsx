@@ -797,7 +797,7 @@ function PropertyFormContent({ mode, propertyId, initialType = '', initialForm }
                     <div className="space-y-2">
                       <Label>Emplacement sur la carte *</Label>
                       <p className="text-sm text-muted-foreground">Cliquez sur la carte pour placer le marqueur à l'emplacement exact de la propriété</p>
-                      <div className="mt-3 rounded-lg overflow-hidden border">
+                      <div className="mt-3">
                         <LocationPicker
                           initialCoordinates={formData.coordinates}
                           onCoordinatesChange={handleCoordinatesChange}

@@ -109,6 +109,24 @@ const MapInner: React.FC<MapProps> = ({
       mapInstance.on('load', () => {
         setMapLoaded(true);
         setMapError(null);
+
+        // MapLibre calcule les positions pixel via getBoundingClientRect().
+        // Si un parent Framer Motion est en cours d'animation (translateY),
+        // ce rect est faux → pins mal positionnés et zoom incorrect.
+        // On force deux resize : immédiat + après fin des animations (~600ms).
+        requestAnimationFrame(() => {
+          try { mapInstance.resize(); } catch { /* map démontée */ }
+        });
+        setTimeout(() => {
+          try {
+            mapInstance.resize();
+            // Corrige le zoom si l'animation l'a perturbé
+            const expected = initialZoom.current;
+            if (Math.abs(mapInstance.getZoom() - expected) > 0.5) {
+              mapInstance.jumpTo({ zoom: expected });
+            }
+          } catch { /* map démontée */ }
+        }, 650);
       });
 
       mapInstance.on('error', (e) => {

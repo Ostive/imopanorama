@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "ship": "powershell -ExecutionPolicy Bypass -File ship.ps1",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -29,7 +28,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "db:seed": "npx ts-node prisma/seed.ts",
-    "db:seed:prod": "npx ts-node prisma/seed-prod.ts",
+    "db:seed:blog:prod": "npx ts-node prisma/seed-blog-prod.ts",
     "db:seed:properties": "npx ts-node prisma/seed-properties.ts",
     "db:status": "prisma migrate status",
     "db:deploy": "prisma migrate deploy",
