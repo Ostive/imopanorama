@@ -34,9 +34,6 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./postgres/init:/docker-entrypoint-initdb.d:ro
-    networks:
-      - default
-      - imo-shared
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d db_imo"]
       interval: 10s
@@ -57,9 +54,6 @@ services:
     command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru --appendonly yes
     volumes:
       - redis_data:/data
-    networks:
-      - default
-      - imo-shared
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -194,10 +188,6 @@ volumes:
   uptime_kuma_data:
     driver: local
 
-# Réseau partagé externe : permet au projet "app" (Dockerfile, déployé
-# séparément) de joindre `postgres` et `redis` par leur nom de service.
-# À créer une seule fois sur le serveur AVANT le premier déploiement :
+# Note production Coolify : ajouter le réseau externe imo-shared aux services
+# postgres et redis, et recréer cette section pour connecter l'app au stack infra.
 #   docker network create imo-shared
-networks:
-  imo-shared:
-    external: true
