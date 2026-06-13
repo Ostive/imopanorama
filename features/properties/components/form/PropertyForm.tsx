@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { m } from 'framer-motion'
@@ -384,6 +384,20 @@ function PropertyFormContent({ mode, propertyId, initialType = '', initialForm }
   const handleImagesChange = (imageUrls: string[]) => {
     setFormData(prev => ({ ...prev, images: imageUrls }))
   }
+
+  const handleCoordinatesChange = useCallback((coords: { lat: number; lng: number }) => {
+    setFormData(prev => ({ ...prev, coordinates: coords }))
+  }, [])
+
+  const handleLocationDataChange = useCallback((locationData: { address?: string; city?: string; suburb?: string; postcode?: string }) => {
+    setFormData(prev => ({
+      ...prev,
+      address: locationData.address || prev.address,
+      city: locationData.city || prev.city,
+      location: locationData.suburb || prev.location,
+      zipCode: locationData.postcode || prev.zipCode,
+    }))
+  }, [])
 
   const handleMediaLibrarySelect = (url: string) => {
     if (!formData.images.includes(url)) {
@@ -786,16 +800,8 @@ function PropertyFormContent({ mode, propertyId, initialType = '', initialForm }
                       <div className="mt-3 rounded-lg overflow-hidden border">
                         <LocationPicker
                           initialCoordinates={formData.coordinates}
-                          onCoordinatesChange={(coords) => setFormData(prev => ({ ...prev, coordinates: coords }))}
-                          onLocationDataChange={(locationData) => {
-                            setFormData(prev => ({
-                              ...prev,
-                              address: locationData.address || prev.address,
-                              city: locationData.city || prev.city,
-                              location: locationData.suburb || prev.location,
-                              zipCode: locationData.postcode || prev.zipCode,
-                            }))
-                          }}
+                          onCoordinatesChange={handleCoordinatesChange}
+                          onLocationDataChange={handleLocationDataChange}
                           height="400px"
                         />
                       </div>

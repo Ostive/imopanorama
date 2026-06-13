@@ -345,7 +345,7 @@ const propertiesData = [
   },
   {
     title: "Maison avec jardin - Tamatave Centre",
-    description: "Maison familiale proche des axes commercants de Toamasina. Jardin, garage, acces facile et documents fonciers disponibles pour verification.",
+    description: "Maison familiale proche des axes commerçants de Toamasina. Jardin, garage, accès facile et documents fonciers disponibles pour vérification.",
     propertyType: PropertyType.HOUSE,
     transactionType: TransactionType.SALE,
     ...mgDefaults,
@@ -381,8 +381,8 @@ const propertiesData = [
     legalStatus: PropertyLegalStatus.TITLED,
   },
   {
-    title: "Terrain residentiel - Amborovy Majunga",
-    description: "Terrain proche des zones touristiques d'Amborovy, adapte pour une villa ou un projet locatif saisonnier. Bornage a confirmer sur place avec les documents originaux.",
+    title: "Terrain résidentiel - Amborovy Majunga",
+    description: "Terrain proche des zones touristiques d'Amborovy, adapté pour une villa ou un projet locatif saisonnier. Bornage à confirmer sur place avec les documents originaux.",
     propertyType: PropertyType.TERRAIN_RESIDENTIAL,
     transactionType: TransactionType.SALE,
     ...mgDefaults,
@@ -413,7 +413,7 @@ const propertiesData = [
   },
   {
     title: "Villa touristique - Nosy Be Andilana",
-    description: "Villa avec fort potentiel saisonnier dans le secteur d'Andilana. Ideale pour residence secondaire ou exploitation locative avec accompagnement documentaire renforce.",
+    description: "Villa avec fort potentiel saisonnier dans le secteur d'Andilana. Idéale pour résidence secondaire ou exploitation locative avec accompagnement documentaire renforcé.",
     propertyType: PropertyType.VILLA,
     transactionType: TransactionType.SALE,
     ...mgDefaults,
@@ -449,7 +449,7 @@ const propertiesData = [
   },
   {
     title: "Maison de ville - Fianarantsoa Ville Haute",
-    description: "Maison de ville avec charme, proche des services et des ecoles. Bien adapte pour une famille ou un investissement locatif longue duree.",
+    description: "Maison de ville avec charme, proche des services et des écoles. Bien adapté pour une famille ou un investissement locatif longue durée.",
     propertyType: PropertyType.HOUSE,
     transactionType: TransactionType.SALE,
     ...mgDefaults,

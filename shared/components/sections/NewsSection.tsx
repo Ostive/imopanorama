@@ -58,7 +58,7 @@ function NewsSection() {
 
   return (
     <section className="py-16 sm:py-20 md:py-28 bg-card">
-      <div className="container mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12">
 
         {/* Header */}
         <m.div
@@ -109,9 +109,9 @@ function NewsSection() {
           </div>
         )}
 
-        {/* Articles — editorial grid: first article featured (spans 2 cols on lg) */}
+        {/* Articles — grille uniforme */}
         {!isLoading && articles.length > 0 && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {articles.map((article, index) => (
               <m.article
                 key={article.id}
@@ -119,13 +119,12 @@ function NewsSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
-                className={index === 0 ? 'sm:col-span-2 lg:col-span-2' : ''}
               >
                 <Link href={`/actualites/${article.slug}`} className="group block h-full">
                   <div className="h-full flex flex-col bg-background rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
 
                     {/* Image */}
-                    <div className={`relative overflow-hidden shrink-0 ${index === 0 ? 'h-64 sm:h-72' : 'h-52'}`}>
+                    <div className="relative overflow-hidden shrink-0 h-52">
                       <Image
                         src={article.image}
                         alt={article.title}
@@ -141,7 +140,7 @@ function NewsSection() {
 
                     {/* Content */}
                     <div className="flex flex-col flex-1 p-6">
-                      <h3 className={`font-bold text-foreground leading-snug line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-2 ${index === 0 ? 'text-lg' : 'text-base'}`}>
+                      <h3 className="font-bold text-foreground text-base leading-snug line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-2">
                         {article.title}
                       </h3>
                       <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed flex-1">

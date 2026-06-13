@@ -84,252 +84,156 @@ function PropertyCard({
 
   return (
     <m.div
-      className="group relative w-full h-full rounded-3xl bg-card shadow-xl hover:shadow-2xl transition-all duration-300 border border-border"
-      whileHover={{ y: -6, scale: 1.02 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="group relative w-full overflow-hidden rounded-2xl bg-card shadow-md hover:shadow-xl transition-shadow duration-300"
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
     >
-      <Link href={`/proprietes/${property.id}`} className="block h-full">
-        <div className="flex flex-col h-full">
-          {/* Image Section - Top Half */}
-          <div className="relative w-full h-64 p-4">
-            <div className="relative w-full h-full rounded-2xl overflow-hidden">
-              <m.div
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.4 }}
-                className="w-full h-full"
-              >
-                <Image
-                  src={images[currentImageIndex]}
-                  alt={property.title || 'Photo de la propriété'}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  onError={handleImageError}
-                />
-              </m.div>
+      <Link href={`/proprietes/${property.id}`} className="block">
 
-              {/* Gradient overlay for better contrast */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
+        {/* ── IMAGE plein bord ── */}
+        <div className="relative w-full aspect-[4/3]">
+          <Image
+            src={images[currentImageIndex]}
+            alt={property.title || 'Photo de la propriété'}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
+            onError={handleImageError}
+          />
 
-              {/* Slider controls - only show if multiple images */}
-              {images.length > 1 && (
-                <>
-                  <m.button
-                    onClick={previousImage}
-                    whileHover={{ scale: 1.1, x: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 z-20 bg-white/95 hover:bg-white rounded-full p-2.5 shadow-xl transition-all opacity-0 group-hover:opacity-100"
-                    aria-label="Image précédente"
-                  >
-                    <ChevronLeftIcon className="w-5 h-5 text-gray-800" />
-                  </m.button>
-                  <m.button
-                    onClick={nextImage}
-                    whileHover={{ scale: 1.1, x: 2 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 z-20 bg-white/95 hover:bg-white rounded-full p-2.5 shadow-xl transition-all opacity-0 group-hover:opacity-100"
-                    aria-label="Image suivante"
-                  >
-                    <ChevronRightIcon className="w-5 h-5 text-gray-800" />
-                  </m.button>
+          {/* Gradient haut + bas */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20 pointer-events-none" />
 
-                  {/* Image count indicator */}
-                  <div className="absolute bottom-4 right-4 z-20 bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-full shadow-lg">
-                    <span className="text-white text-xs font-semibold">
-                      {currentImageIndex + 1}/{images.length}
-                    </span>
-                  </div>
-                </>
-              )}
+          {/* Badge type (haut-gauche) + bouton favori (haut-droite) */}
+          <div className="absolute top-2 inset-x-2 z-10 flex items-start justify-between gap-1">
+            {/* Un seul badge type, tronqué */}
+            <span className="bg-black/50 backdrop-blur-sm text-white px-2 py-0.5 rounded-full text-[10px] font-semibold shadow max-w-[55%] truncate">
+              {PROPERTY_TYPE_LABELS[property.propertyType] || 'Bien'}
+            </span>
 
-              {/* Badges */}
-              <div className="absolute top-4 left-4 z-10 flex flex-wrap gap-2">
-                <m.span
-                  whileHover={{ scale: 1.05 }}
-                  className="bg-sky-500 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm"
-                >
-                  {PROPERTY_TYPE_LABELS[property.propertyType] || 'Bien immobilier'}
-                </m.span>
-                <m.span
-                  whileHover={{ scale: 1.05 }}
-                  className={`px-4 py-2 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm ${getStatusBadgeClass(property.status)}`}
-                >
-                  {PROPERTY_STATUS_LABELS[property.status] || 'Disponible'}
-                </m.span>
-                {property.isVerified && (
-                  <m.span
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-emerald-600 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm"
-                  >
-                    Vérifié
-                  </m.span>
-                )}
-              </div>
-
-              {/* Favorite + Compare buttons */}
-              <div className="absolute top-4 right-4 z-20 flex flex-row gap-2">
-                <m.button
-                  onClick={async (e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-
-                    if (!isAuthenticated) {
-                      toast.error('Connectez-vous pour garder ce bien dans vos favoris')
-                      router.push('/login')
-                      return
-                    }
-
-                    try {
-                      const success = await toggleFavorite(property)
-                      if (success) {
-                        const newFavoriteState = !isFavorite
-                        toast.success(
-                          newFavoriteState
-                            ? 'Ajouté à vos favoris'
-                            : 'Retiré de vos favoris'
-                        )
-                        onFavoriteToggle?.(property.id, newFavoriteState)
-                      }
-                    } catch (error) {
-                      logger.error('Error toggling favorite', error)
-                      toast.error("Nous n'avons pas pu mettre à jour vos favoris")
-                    }
-                  }}
-                  whileHover={{ scale: 1.15, rotate: 5 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="bg-white/95 hover:bg-white rounded-full p-2.5 shadow-xl transition-all"
-                  aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-                >
-                  {isFavorite ? (
-                    <HeartSolidIcon className="w-6 h-6 text-red-500" />
-                  ) : (
-                    <HeartIcon className="w-6 h-6 text-gray-700" />
-                  )}
-                </m.button>
-
-                {/* Compare button */}
-                <m.button
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    if (inCompare) {
-                      removeFromCompare(property.id)
-                    } else if (canAdd) {
-                      addToCompare(property)
-                    } else {
-                      toast.error('Maximum 4 propriétés comparables')
-                    }
-                  }}
-                  whileHover={{ scale: 1.15 }}
-                  whileTap={{ scale: 0.9 }}
-                  className={`rounded-full p-2.5 shadow-xl transition-all ${
-                    inCompare
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-white/95 hover:bg-white text-gray-700'
-                  }`}
-                  aria-label={inCompare ? 'Retirer de la comparaison' : 'Ajouter à la comparaison'}
-                  title={inCompare ? 'Retirer de la comparaison' : 'Comparer'}
-                >
-                  <ArrowsRightLeftIcon className="w-5 h-5" />
-                </m.button>
-              </div>
-            </div>
+            {/* Bouton favori seulement (compare retiré du header) */}
+            <m.button
+              onClick={async (e) => {
+                e.preventDefault(); e.stopPropagation()
+                if (!isAuthenticated) { toast.error('Connectez-vous pour garder ce bien dans vos favoris'); router.push('/login'); return }
+                try {
+                  const success = await toggleFavorite(property)
+                  if (success) {
+                    const newState = !isFavorite
+                    toast.success(newState ? 'Ajouté à vos favoris' : 'Retiré de vos favoris')
+                    onFavoriteToggle?.(property.id, newState)
+                  }
+                } catch (error) { logger.error('Error toggling favorite', error); toast.error("Nous n'avons pas pu mettre à jour vos favoris") }
+              }}
+              whileTap={{ scale: 0.85 }}
+              className="bg-white/90 backdrop-blur-sm rounded-full p-1.5 sm:p-2 shadow-md transition-all shrink-0"
+              aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+            >
+              {isFavorite
+                ? <HeartSolidIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-500" />
+                : <HeartIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-600" />}
+            </m.button>
           </div>
 
-          {/* Info Section - Bottom Half */}
-          <div className="flex-1 p-6 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-b-3xl">
-            {/* Location */}
-            <div className="flex items-start gap-3 mb-4">
-              <div className="mt-0.5 p-2 bg-primary-50 dark:bg-primary-900/30 rounded-lg">
-                <MapPinIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+          {/* Slider */}
+          {images.length > 1 && (
+            <>
+              <m.button onClick={previousImage} whileTap={{ scale: 0.88 }}
+                className="absolute left-1.5 top-1/2 -translate-y-1/2 z-20 bg-white/80 backdrop-blur-sm rounded-full p-1 shadow transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                aria-label="Image précédente">
+                <ChevronLeftIcon className="w-3.5 h-3.5 text-gray-800" />
+              </m.button>
+              <m.button onClick={nextImage} whileTap={{ scale: 0.88 }}
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 bg-white/80 backdrop-blur-sm rounded-full p-1 shadow transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                aria-label="Image suivante">
+                <ChevronRightIcon className="w-3.5 h-3.5 text-gray-800" />
+              </m.button>
+              <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex gap-1">
+                {images.slice(0, 5).map((_, i) => (
+                  <span key={i} className={`block rounded-full transition-all ${i === currentImageIndex ? 'w-3 h-1 bg-white' : 'w-1 h-1 bg-white/50'}`} />
+                ))}
               </div>
-              <div className="flex-1">
-                <p className="text-foreground text-sm font-semibold leading-tight">
-                  {property.title || 'Bien à découvrir'}
-                </p>
-                <p className="text-muted-foreground text-xs mt-0.5">
-                  {property.city || 'Localisation à confirmer'}
-                </p>
-              </div>
-            </div>
+            </>
+          )}
 
-            {/* Size & Bedrooms */}
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-primary-50 dark:bg-primary-900/30 rounded-lg">
-                <ArrowsPointingOutIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
-              </div>
+          {/* Prix + stats en overlay bas */}
+          <div className="absolute bottom-0 inset-x-0 z-10 px-2.5 pb-2.5 pt-4">
+            <div className="flex items-end justify-between gap-1">
               <div>
-                <p className="text-foreground text-sm font-semibold">
-                  {property.totalSize ? property.totalSize.toLocaleString() : '—'} m²
-                </p>
-                <p className="text-muted-foreground text-xs">
-                  Surface totale
-                </p>
-              </div>
-
-              {/* Bedrooms if applicable */}
-              {property.bedrooms && (
-                <>
-                  <div className="p-2 bg-primary-50 dark:bg-primary-900/30 rounded-lg ml-2">
-                    <HomeIcon className="w-4 h-4 text-primary-600 dark:text-primary-400" />
-                  </div>
-                  <div>
-                    <p className="text-foreground text-sm font-semibold">
-                      {property.bedrooms} ch.
-                    </p>
-                    <p className="text-muted-foreground text-xs">
-                      Chambres
-                    </p>
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* Price */}
-            <div className="mb-4 p-3 bg-gradient-to-r from-primary-50 to-primary-50 dark:from-primary-900/20 dark:to-primary-900/20 rounded-xl border border-primary-100 dark:border-primary-800">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-foreground text-2xl font-bold">
-                    {formattedPrice}
-                  </span>
-                  {property.transactionType === 'RENT' && (
-                    <span className="text-muted-foreground text-sm font-medium">
-                      /mois
+                <div className="flex items-baseline gap-1">
+                  <span className="text-white font-extrabold text-sm leading-none drop-shadow">{formattedPrice}</span>
+                  {property.transactionType === 'RENT' && <span className="text-white/70 text-[10px]">/mois</span>}
+                </div>
+                <div className="flex items-center gap-2 mt-0.5 text-white/75 text-[10px]">
+                  {property.totalSize && (
+                    <span className="flex items-center gap-0.5">
+                      <ArrowsPointingOutIcon className="w-2.5 h-2.5" />{property.totalSize.toLocaleString()} m²
+                    </span>
+                  )}
+                  {property.bedrooms && (
+                    <span className="flex items-center gap-0.5">
+                      <HomeIcon className="w-2.5 h-2.5" />{property.bedrooms} ch.
                     </span>
                   )}
                 </div>
-                {property.transactionType === 'SALE' && property.pricePerM2 && (
-                  <span className="text-muted-foreground text-xs">
-                    {formatPrice(Math.round(property.pricePerM2), property.currency, property.country)}/m²
-                  </span>
-                )}
               </div>
+              {property.transactionType === 'SALE' && property.pricePerM2 && (
+                <span className="text-white/50 text-[9px] self-end">
+                  {formatPrice(Math.round(property.pricePerM2), property.currency, property.country)}/m²
+                </span>
+              )}
             </div>
-
-            {/* Features/Amenities */}
-            {displayFeatures && displayFeatures.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {displayFeatures.slice(0, 3).map((feature, index) => (
-                  <m.span
-                    key={feature}
-                    whileHover={{ scale: 1.05 }}
-                    className="text-xs font-semibold text-foreground bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-lg border border-border"
-                  >
-                    {feature}
-                  </m.span>
-                ))}
-                {displayFeatures.length > 3 && (
-                  <m.span
-                    whileHover={{ scale: 1.05 }}
-                    className="text-xs font-semibold text-primary-700 dark:text-primary-300 bg-primary-100 dark:bg-primary-900/40 px-3 py-1.5 rounded-lg border border-primary-200 dark:border-primary-800"
-                  >
-                    +{displayFeatures.length - 3} autres
-                  </m.span>
-                )}
-              </div>
-            )}
           </div>
         </div>
+
+        {/* ── INFO compacte ── */}
+        <div className="px-2.5 pt-2 pb-2.5 bg-card">
+          {/* Titre */}
+          <p className="text-foreground text-xs font-semibold truncate leading-snug">
+            {property.title || 'Bien à découvrir'}
+          </p>
+
+          {/* Ville + statut */}
+          <div className="flex items-center justify-between mt-1 gap-1">
+            <div className="flex items-center gap-0.5 text-muted-foreground text-[10px] min-w-0">
+              <MapPinIcon className="w-2.5 h-2.5 shrink-0" />
+              <span className="truncate">{property.city || '—'}</span>
+            </div>
+            <span className={`shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-full ${getStatusBadgeClass(property.status)}`}>
+              {PROPERTY_STATUS_LABELS[property.status] || 'Disponible'}
+            </span>
+          </div>
+
+          {/* Features + compare */}
+          <div className="flex items-center justify-between mt-1.5 gap-1">
+            <div className="flex gap-1 min-w-0 overflow-hidden">
+              {displayFeatures.slice(0, 2).map(f => (
+                <span key={f} className="text-[9px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded font-medium truncate max-w-[50px]">
+                  {f}
+                </span>
+              ))}
+              {displayFeatures.length > 2 && (
+                <span className="text-[9px] bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 px-1.5 py-0.5 rounded font-medium shrink-0">
+                  +{displayFeatures.length - 2}
+                </span>
+              )}
+            </div>
+            <m.button
+              onClick={(e) => {
+                e.preventDefault(); e.stopPropagation()
+                if (inCompare) { removeFromCompare(property.id) }
+                else if (canAdd) { addToCompare(property) }
+                else { toast.error('Maximum 4 propriétés comparables') }
+              }}
+              whileTap={{ scale: 0.85 }}
+              className={`shrink-0 rounded-full p-1 sm:p-1.5 shadow-sm border transition-all ${inCompare ? 'bg-primary-500 border-primary-500 text-white' : 'bg-card border-border text-muted-foreground'}`}
+              aria-label={inCompare ? 'Retirer de la comparaison' : 'Comparer'}
+            >
+              <ArrowsRightLeftIcon className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" />
+            </m.button>
+          </div>
+        </div>
+
       </Link>
     </m.div>
   )

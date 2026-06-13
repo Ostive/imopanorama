@@ -48,7 +48,7 @@ const EMPTY_MARKERS: NonNullable<MapProps['markers']> = [];
 
 const MapInner: React.FC<MapProps> = ({
   center = [47.5079, -18.8792], // Antananarivo, Madagascar par défaut
-  zoom = 12,
+  zoom = 14,
   markers = EMPTY_MARKERS,
   height = '400px',
   width = '100%',
@@ -66,9 +66,14 @@ const MapInner: React.FC<MapProps> = ({
   const mapErrorRef = useRef(mapError);
   mapErrorRef.current = mapError;
 
+  // Toujours garder la référence à jour sans déclencher de re-init
   useEffect(() => {
     onMapClickRef.current = onMapClick;
   }, [onMapClick]);
+
+  // Valeurs initiales capturées une seule fois pour l'init de la carte
+  const initialCenter = useRef(center);
+  const initialZoom = useRef(zoom);
 
   const initMap = useCallback(() => {
     if (map.current) {
@@ -84,13 +89,12 @@ const MapInner: React.FC<MapProps> = ({
       const mapInstance = new maplibregl.Map({
         container: mapContainer.current,
         style: 'https://tiles.openfreemap.org/styles/liberty',
-        center: center,
-        zoom: zoom,
+        center: initialCenter.current,
+        zoom: initialZoom.current,
         interactive: interactive !== false,
         attributionControl: false
       } as maplibregl.MapOptions);
 
-      // Ajouter les contrôles
       mapInstance.addControl(new maplibregl.NavigationControl(), 'top-right');
       mapInstance.addControl(new maplibregl.FullscreenControl(), 'top-right');
       mapInstance.addControl(new maplibregl.ScaleControl(), 'bottom-right');
@@ -107,10 +111,8 @@ const MapInner: React.FC<MapProps> = ({
         setMapError(null);
       });
 
-      // Gestion des erreurs de chargement (tiles, style, etc.)
       mapInstance.on('error', (e) => {
         const msg = e.error?.message || '';
-        // Ignorer les erreurs de tiles individuelles (la carte reste utilisable)
         if (msg.includes('404') || msg.includes('tile')) return;
         console.error('Erreur MapLibre:', e);
         if (!map.current?.loaded()) {
@@ -118,7 +120,6 @@ const MapInner: React.FC<MapProps> = ({
         }
       });
 
-      // Timeout si la carte ne charge pas en 15s
       const timeout = setTimeout(() => {
         if (!map.current?.loaded()) {
           setMapError('Le chargement de la carte est trop long. Vérifiez votre connexion internet.');
@@ -134,9 +135,10 @@ const MapInner: React.FC<MapProps> = ({
       console.error('Erreur initialisation carte:', err);
       setMapError('Impossible d\'initialiser la carte');
     }
-  }, [center, zoom, interactive]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [interactive]); // center/zoom exclus intentionnellement — mis à jour via flyTo
 
-  // Initialisation de la carte
+  // Initialisation unique de la carte
   const cleanupRef = useRef<(() => void) | void>(undefined);
   useEffect(() => {
     cleanupRef.current = initMap();
@@ -163,10 +165,7 @@ const MapInner: React.FC<MapProps> = ({
     return () => window.removeEventListener('online', handleOnline);
   }, [handleRetry]);
 
-  // Pas de synchronisation séparée centre/zoom : initMap dépend de [center, zoom]
-  // et recrée la carte avec les nouvelles valeurs quand ces props changent.
-
-  // Gestion des marqueurs avec optimisation pour éviter les réactualisations inutiles
+  // Gestion des marqueurs — s'exécute uniquement quand les valeurs changent vraiment
   const previousMarkersRef = useRef<Array<{
     id: string;
     longitude: number;
@@ -175,11 +174,10 @@ const MapInner: React.FC<MapProps> = ({
     onClick?: () => void;
     markerStyle?: MarkerStyle;
   }>>([]);
-  
+
   useEffect(() => {
     if (!map.current || !mapLoaded) return;
 
-    // Vérifier si les marqueurs ont réellement changé
     const markersChanged = markers.length !== previousMarkersRef.current.length ||
       markers.some((marker, index) => {
         const prevMarker = previousMarkersRef.current[index];
@@ -189,37 +187,25 @@ const MapInner: React.FC<MapProps> = ({
           prevMarker.latitude !== marker.latitude;
       });
 
-    // Ne mettre à jour les marqueurs que s'ils ont changé
-    if (!markersChanged) {
-      return;
-    }
+    if (!markersChanged) return;
 
-    console.log(`Ajout/mise à jour de ${markers.length} marqueurs sur la carte`);
     previousMarkersRef.current = [...markers];
 
-    // D'abord, supprimer tous les marqueurs existants
-    Object.values(markerRefs.current).forEach(marker => marker.remove());
+    // Supprimer les marqueurs existants avant de re-ajouter
+    Object.values(markerRefs.current).forEach(m => m.remove());
     markerRefs.current = {};
 
-    // Store map instance for use in forEach callback
     const mapInstance = map.current;
 
-    // Ajouter les nouveaux marqueurs
     markers.forEach((marker) => {
       const { id, longitude, latitude, title, onClick } = marker;
       const markerStyle = marker.markerStyle || defaultMarkerStyle;
-      
-      if (!longitude || !latitude) {
-        console.error(`Marqueur ${id} avec coordonnées invalides: [${longitude}, ${latitude}]`);
-        return;
-      }
-      
+
+      if (!longitude || !latitude) return;
+
       try {
-        // Créer un élément DOM pour le marqueur
         const el = document.createElement('div');
         el.className = `marker marker-${markerStyle}`;
-        
-        // Appliquer des styles inline pour garantir la visibilité
         el.style.cssText = [
           'width: 30px',
           'height: 30px',
@@ -229,52 +215,42 @@ const MapInner: React.FC<MapProps> = ({
           'background-position: center',
           'cursor: grab',
         ].join('; ');
-        
-        if (title) {
-          el.setAttribute('title', title);
-        }
-        
-        if (onClick) {
-          el.addEventListener('click', onClick);
-        }
-        
-        // Vérifier si nous sommes dans la page d'édition (LocationPicker)
+
+        if (title) el.setAttribute('title', title);
+        if (onClick) el.addEventListener('click', onClick);
+
         const isLocationPicker = id === 'terrain-location';
-        
-        // Créer le marqueur MapLibre
+
         const newMarker = new maplibregl.Marker({
           element: el,
           anchor: 'bottom',
-          // Rendre le marqueur déplaçable uniquement dans LocationPicker
           draggable: isLocationPicker
-        })
-        .setLngLat([longitude, latitude]);
-        
-        // Si c'est un marqueur déplaçable, ajouter l'événement de fin de glisser-déposer
+        }).setLngLat([longitude, latitude]);
+
         if (isLocationPicker) {
           newMarker.on('dragend', () => {
             const lngLat = newMarker.getLngLat();
-            console.log(`Marqueur déplacé à [${lngLat.lng}, ${lngLat.lat}]`);
-            
-            // Déclencher l'événement onClick avec les nouvelles coordonnées
             onMapClickRef.current?.(lngLat);
           });
         }
 
         newMarker.addTo(mapInstance);
         markerRefs.current[id] = newMarker;
-        
-        console.log(`Marqueur ${id} ajouté à la position [${longitude}, ${latitude}]`);
       } catch (error) {
-        console.error(`Erreur lors de la création du marqueur ${id}:`, error);
+        console.error(`Erreur marqueur ${id}:`, error);
       }
     });
+    // Pas de cleanup ici — le prochain passage au-dessus gère la suppression
+    // Le cleanup complet est géré par l'effet d'unmount ci-dessous
+  }, [markers, mapLoaded, defaultMarkerStyle]);
 
+  // Cleanup uniquement au démontage du composant
+  useEffect(() => {
     return () => {
-      Object.values(markerRefs.current).forEach(marker => marker.remove());
+      Object.values(markerRefs.current).forEach(m => m.remove());
       markerRefs.current = {};
     };
-  }, [markers, mapLoaded, defaultMarkerStyle]);
+  }, []);
 
   // Afficher le fallback offline
   if (!isOnline && !mapLoaded) {

@@ -16,7 +16,7 @@ export default function StatisticsSection() {
       {/* Glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_100%,rgb(14_165_233/0.18)_0%,transparent_65%)] pointer-events-none" />
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
         <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-y lg:divide-y-0 divide-white/10">
           {statistics.map((stat, index) => (
             <m.div

@@ -32,7 +32,7 @@ export default function PropertySection() {
       {/* Subtle dot grid */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgb(14_165_233/0.07)_1px,transparent_0)] bg-size-[28px_28px] pointer-events-none" />
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
         {showTitle && (
           <m.div
             initial={{ opacity: 0, y: 24 }}
@@ -57,7 +57,7 @@ export default function PropertySection() {
           </m.div>
         )}
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-3 lg:gap-4 mb-12">
           {loading ? (
             Array.from({ length: 3 }).map((_, index) => (
               <m.div
