@@ -58,7 +58,7 @@ export default function PropertySection() {
           </m.div>
         )}
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 lg:gap-6 mb-12">
           {loading ? (
             Array.from({ length: 3 }).map((_, index) => (
               <m.div

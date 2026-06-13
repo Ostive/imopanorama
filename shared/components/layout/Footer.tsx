@@ -150,13 +150,15 @@ function Footer() {
           {/* Company Info */}
           <m.div variants={itemVariants} className="space-y-6">
             <div>
-              <Image
-                src="/images/brand/logo.png"
-                alt="ImoPanorama Madagascar"
-                width={320}
-                height={96}
-                className="h-24 w-auto object-contain brightness-0 invert"
-              />
+              <Link href="/">
+                <Image
+                  src="/images/brand/logo.png"
+                  alt="ImoPanorama Madagascar"
+                  width={320}
+                  height={96}
+                  className="h-24 w-auto object-contain brightness-0 invert"
+                />
+              </Link>
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
               Des biens à découvrir, des conseils honnêtes et un accompagnement humain pour acheter, louer ou construire à Madagascar.
