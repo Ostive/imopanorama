@@ -22,13 +22,20 @@ const markerStyles = `
   /* IMPORTANT: don't set 'position' here — MapLibre adds .maplibregl-marker
      which sets position:absolute. Overriding it breaks marker positioning. */
   .property-marker-container {
-    width: 48px;
-    height: 56px;
+    width: 32px;
+    height: 38px;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1;
+  }
+
+  @media (min-width: 768px) {
+    .property-marker-container {
+      width: 48px;
+      height: 56px;
+    }
   }
 
   .property-marker-container:hover {
@@ -50,10 +57,17 @@ const markerStyles = `
   }
 
   .property-marker-inner img {
-    width: 48px;
-    height: 56px;
+    width: 32px;
+    height: 38px;
     display: block;
     pointer-events: none;
+  }
+
+  @media (min-width: 768px) {
+    .property-marker-inner img {
+      width: 48px;
+      height: 56px;
+    }
   }
 
   .property-marker-container:hover .property-marker-inner {

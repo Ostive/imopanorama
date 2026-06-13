@@ -120,12 +120,12 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
   return (
     <>
       {/* Mobile: Carousel view */}
-      <div className="block lg:hidden space-y-4">
-        {/* Image principale */}
+      <div className="block lg:hidden">
+        {/* Image principale — plein bord */}
         <m.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative aspect-video rounded-3xl overflow-hidden bg-gray-900 shadow-2xl group"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="relative w-full aspect-[4/3] overflow-hidden bg-gray-900 group"
         >
           <Image
             src={images[currentImageIndex]}
@@ -202,7 +202,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
 
         {/* Miniatures */}
         {images.length > 1 && (
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-4 gap-2 px-3 pt-2 pb-1">
             {images.map((image, index) => (
               <m.button
                 key={image}
@@ -234,7 +234,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
       </div>
 
       {/* Desktop: Fixed-height layouts adapted to image count */}
-      <div className="hidden lg:block">
+      <div className="hidden lg:block relative">
 
         {/* === 1 image : pleine largeur, hauteur fixe 480px === */}
         {images.length === 1 && (
@@ -254,15 +254,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
               priority
               onError={handleImageError}
             />
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center">
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-lg">
-                  <svg className="w-8 h-8 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                  </svg>
-                </div>
-              </div>
-            </div>
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
           </m.div>
         )}
 
@@ -290,15 +282,7 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                   priority
                   onError={handleImageError}
                 />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center">
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                      <svg className="w-6 h-6 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
               </m.div>
             ))}
           </div>
@@ -325,9 +309,6 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                 onError={handleImageError}
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
-              <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-sm font-medium">
-                {images.length} photos
-              </div>
             </m.div>
 
             {/* 2 images empilées à droite */}
@@ -381,9 +362,6 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                 onError={handleImageError}
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
-              <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-sm font-medium">
-                {images.length} photos
-              </div>
             </m.div>
 
             {/* 3 images à droite : 1 en haut pleine largeur + 2 en bas */}
@@ -458,9 +436,6 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
                 onError={handleImageError}
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
-              <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-sm font-medium">
-                {images.length} photos
-              </div>
             </m.div>
 
             {/* Grille 2x2 à droite */}
@@ -509,6 +484,17 @@ function ImageGallery({ images: rawImages, title }: ImageGalleryProps) {
             </div>
           </div>
         )}
+
+        {/* Bouton style Airbnb : nombre de photos + plein écran */}
+        <button
+          onClick={() => setIsFullscreen(true)}
+          className="absolute bottom-4 right-4 z-10 flex items-center gap-2 bg-white border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-900 hover:bg-gray-50 shadow-md transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+          Afficher les {images.length} photos
+        </button>
       </div>
 
       {/* Fullscreen modal */}
@@ -766,7 +752,7 @@ export default function PropertyDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8f7f5] dark:bg-gray-950 py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-pulse space-y-6">
           <div className="h-10 bg-gray-200 dark:bg-gray-800 rounded-xl w-1/3" />
           <div className="aspect-video bg-gray-200 dark:bg-gray-800 rounded-2xl" />
@@ -784,7 +770,7 @@ export default function PropertyDetailPage() {
 
   if (error || !property) {
     return (
-      <div className="min-h-screen bg-[#f8f7f5] dark:bg-gray-950 flex items-center justify-center py-8 px-4">
+      <div className="min-h-screen bg-background flex items-center justify-center py-8 px-4">
         <div className="text-center max-w-sm">
           <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
             <ExclamationCircleIcon className="w-10 h-10 text-red-500" />
@@ -859,7 +845,7 @@ export default function PropertyDetailPage() {
   const hasDetails = detailItems.length > 0;
 
   return (
-    <div className="min-h-screen bg-[#f8f7f5] dark:bg-gray-950 pb-28 lg:pb-12">
+    <div className="min-h-screen bg-background pb-28 lg:pb-12">
       {/* Visit modal */}
       {showVisitModal && property && (
         <ScheduleVisitModal
@@ -870,61 +856,59 @@ export default function PropertyDetailPage() {
         />
       )}
 
-      {/* Sticky transparent breadcrumb nav */}
+      {/* Sticky breadcrumb nav */}
       <m.nav
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         className="sticky top-0 z-40 bg-white/85 dark:bg-gray-900/85 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center gap-1.5 text-sm">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-11 flex items-center gap-1.5 text-sm">
           <Link href="/" className="text-gray-400 hover:text-primary transition-colors shrink-0 font-medium">Accueil</Link>
-          <ChevronRightIcon className="w-3.5 h-3.5 text-gray-300 shrink-0" />
+          <ChevronRightIcon className="w-3 h-3 text-gray-300 shrink-0" />
           <Link href="/proprietes" className="text-gray-400 hover:text-primary transition-colors shrink-0 font-medium">Propriétés</Link>
-          <ChevronRightIcon className="w-3.5 h-3.5 text-gray-300 shrink-0" />
-          <span className="text-gray-800 dark:text-gray-100 font-semibold truncate">{property.title}</span>
+          <ChevronRightIcon className="w-3 h-3 text-gray-300 shrink-0" />
+          <span className="text-gray-800 dark:text-gray-100 font-semibold truncate text-xs sm:text-sm">{property.title}</span>
         </div>
       </m.nav>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      {/* ── GALLERY : plein bord sur mobile ── */}
+      <m.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4 }}
+        className="relative w-full sm:max-w-7xl sm:mx-auto sm:px-4 lg:px-8 sm:pt-4"
+      >
+        <ImageGallery images={property.images || []} title={property.title} />
 
-        {/* Gallery with floating badge overlay */}
-        <m.div
-          initial={{ opacity: 0, scale: 0.995 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.4 }}
-          className="relative"
-        >
-          <ImageGallery images={property.images || []} title={property.title} />
+        {/* Badges desktop bas-gauche */}
+        <div className="hidden lg:flex absolute bottom-5 left-9 flex-wrap gap-2 z-10 pointer-events-none">
+          <span className="bg-black/60 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+            {PROPERTY_TYPE_LABELS[property.propertyType] || property.propertyType}
+          </span>
+          <span className={`${statusBadgeClass} backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full`}>
+            {PROPERTY_STATUS_LABELS[property.status] || status.label}
+          </span>
+          {property.isVerified && (
+            <span className="bg-blue-500/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1">
+              <ShieldCheckIcon className="w-3.5 h-3.5" />Vérifié
+            </span>
+          )}
+          {property.views && property.views > 0 && (
+            <span className="bg-black/50 backdrop-blur-sm text-white/80 text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5">
+              <EyeIcon className="w-3.5 h-3.5" />{property.views.toLocaleString()} vues
+            </span>
+          )}
+        </div>
+      </m.div>
 
-          {/* Status / type badges — desktop, bottom-left of gallery */}
-          <div className="hidden lg:flex absolute bottom-5 left-5 flex-wrap gap-2 z-10 pointer-events-none">
-            <span className="bg-black/60 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full">
-              {PROPERTY_TYPE_LABELS[property.propertyType] || property.propertyType}
-            </span>
-            <span className={`${statusBadgeClass} backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full`}>
-              {PROPERTY_STATUS_LABELS[property.status] || status.label}
-            </span>
-            {property.isVerified && (
-              <span className="bg-blue-500/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1">
-                <ShieldCheckIcon className="w-3.5 h-3.5" />
-                Vérifié
-              </span>
-            )}
-            {property.views && property.views > 0 && (
-              <span className="bg-black/50 backdrop-blur-sm text-white/80 text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5">
-                <EyeIcon className="w-3.5 h-3.5" />
-                {property.views.toLocaleString()} vues
-              </span>
-            )}
-          </div>
-        </m.div>
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pt-0 sm:pt-2">
 
         {/* ── Hero info strip ── */}
         <m.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-gray-900 rounded-b-2xl shadow-[0_8px_32px_rgba(0,0,0,0.07)] px-5 sm:px-7 py-5 mb-8"
+          className="bg-card rounded-b-none sm:rounded-b-2xl shadow-[0_8px_32px_rgba(0,0,0,0.07)] px-3 sm:px-7 py-4 sm:py-5 mb-4 sm:mb-8"
         >
           {/* Title + price */}
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-5">

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -28,7 +28,7 @@ function FavorisLoadingSkeleton() {
             <div className="h-10 bg-muted rounded w-32"></div>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i} className="bg-card rounded-2xl shadow-lg overflow-hidden animate-pulse">
               <div className="h-64 bg-muted"></div>
@@ -78,7 +78,7 @@ export default function FavorisPage() {
     try {
       await removeFromFavorites(propertyId);
       setFavorites(prev => prev.filter(fav => fav.propertyId !== propertyId));
-      toast.success('Retiré des favoris');
+      toast.success('RetirÃ© des favoris');
     } catch (error) {
       console.error('Error removing favorite:', error);
       toast.error('Erreur lors de la suppression');
@@ -95,7 +95,7 @@ export default function FavorisPage() {
       if (response.ok) {
         setFavorites([]);
         await refreshFavorites(); // Update navbar count
-        toast.success('Tous les favoris ont été supprimés');
+        toast.success('Tous les favoris ont Ã©tÃ© supprimÃ©s');
       } else {
         throw new Error('Failed to clear favorites');
       }
@@ -116,7 +116,7 @@ export default function FavorisPage() {
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-red-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-red-950/20 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* En-tête amélioré */}
+        {/* En-tÃªte amÃ©liorÃ© */}
         <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -136,7 +136,7 @@ export default function FavorisPage() {
                   Mes Favoris
                 </h1>
                 <p className="text-muted-foreground mt-1">
-                  Vos terrains préférés en un seul endroit
+                  Vos terrains prÃ©fÃ©rÃ©s en un seul endroit
                 </p>
               </div>
             </div>
@@ -172,12 +172,12 @@ export default function FavorisPage() {
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-foreground mb-1">
-                  Bonjour {user?.firstName} ! 👋
+                  Bonjour {user?.firstName} ! ðŸ‘‹
                 </h2>
                 <p className="text-foreground text-lg">
                   {favorites.length === 0
-                    ? "Commencez à ajouter vos propriétés préférées"
-                    : `Vous avez ${favorites.length} propriété${favorites.length !== 1 ? 's' : ''} sauvegardée${favorites.length !== 1 ? 's' : ''}`
+                    ? "Commencez Ã  ajouter vos propriÃ©tÃ©s prÃ©fÃ©rÃ©es"
+                    : `Vous avez ${favorites.length} propriÃ©tÃ©${favorites.length !== 1 ? 's' : ''} sauvegardÃ©e${favorites.length !== 1 ? 's' : ''}`
                   }
                 </p>
               </div>
@@ -189,7 +189,7 @@ export default function FavorisPage() {
                 className="hidden md:flex items-center gap-2 px-6 py-3 bg-card hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors font-semibold text-foreground shadow-md"
               >
                 <SparklesIcon className="w-5 h-5" />
-                Découvrir plus
+                DÃ©couvrir plus
               </Link>
             )}
           </div>
@@ -206,13 +206,13 @@ export default function FavorisPage() {
             >
               <div>
                 <h2 className="text-2xl font-bold text-foreground">Vos Terrains Favoris</h2>
-                <p className="text-muted-foreground mt-1">{favorites.length} terrain{favorites.length !== 1 ? 's' : ''} sauvegardé{favorites.length !== 1 ? 's' : ''}</p>
+                <p className="text-muted-foreground mt-1">{favorites.length} terrain{favorites.length !== 1 ? 's' : ''} sauvegardÃ©{favorites.length !== 1 ? 's' : ''}</p>
               </div>
               <m.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => {
-                  if (confirm('Êtes-vous sûr de vouloir vider tous vos favoris ?')) {
+                  if (confirm('ÃŠtes-vous sÃ»r de vouloir vider tous vos favoris ?')) {
                     clearFavorites();
                   }
                 }}
@@ -224,7 +224,7 @@ export default function FavorisPage() {
               </m.button>
             </m.div>
 
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 lg:gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
               {favorites.map((favorite: any, index: number) => (
                 <m.div
                   key={favorite.id}
@@ -270,8 +270,8 @@ export default function FavorisPage() {
               Aucun favori pour le moment
             </h3>
             <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
-              Vous n'avez pas encore ajouté de propriétés à vos favoris.
-              Parcourez notre sélection et cliquez sur le cœur pour sauvegarder vos propriétés préférées !
+              Vous n'avez pas encore ajoutÃ© de propriÃ©tÃ©s Ã  vos favoris.
+              Parcourez notre sÃ©lection et cliquez sur le cÅ“ur pour sauvegarder vos propriÃ©tÃ©s prÃ©fÃ©rÃ©es !
             </p>
 
             <Link
@@ -279,7 +279,7 @@ export default function FavorisPage() {
               className="inline-flex items-center gap-2 px-8 py-4 bg-linear-to-r from-red-600 to-pink-600 text-white font-semibold rounded-xl hover:shadow-xl hover:scale-105 transition-all duration-300"
             >
               <SparklesIcon className="w-6 h-6" />
-              Découvrir nos propriétés
+              DÃ©couvrir nos propriÃ©tÃ©s
             </Link>
 
             <div className="bg-linear-to-r from-primary-50 to-indigo-50 dark:from-primary-900/20 dark:to-indigo-900/20 border-2 border-primary-200 dark:border-primary-800 rounded-2xl p-6 text-left mt-12 max-w-2xl mx-auto">
@@ -290,8 +290,8 @@ export default function FavorisPage() {
                 <div>
                   <p className="font-bold text-primary-900 dark:text-primary-200 mb-2 text-lg">Comment ajouter des favoris ?</p>
                   <p className="text-primary-700 dark:text-primary-300">
-                    Sur chaque fiche propriété, cliquez sur l'icône <HeartSolidIcon className="inline h-5 w-5 text-red-500" /> pour l'ajouter à vos favoris.
-                    Vous pourrez ensuite les retrouver ici à tout moment.
+                    Sur chaque fiche propriÃ©tÃ©, cliquez sur l'icÃ´ne <HeartSolidIcon className="inline h-5 w-5 text-red-500" /> pour l'ajouter Ã  vos favoris.
+                    Vous pourrez ensuite les retrouver ici Ã  tout moment.
                   </p>
                 </div>
               </div>
@@ -312,7 +312,7 @@ export default function FavorisPage() {
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-card border-2 border-border shadow-lg text-base font-semibold rounded-xl text-foreground hover:bg-gray-50 dark:hover:bg-gray-800 hover:shadow-xl transition-all"
             >
               <SparklesIcon className="h-5 w-5" />
-              Découvrir nos propriétés
+              DÃ©couvrir nos propriÃ©tÃ©s
             </Link>
           </m.div>
         )}

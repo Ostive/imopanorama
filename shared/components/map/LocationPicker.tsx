@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import Map from './Map';
 import { useNetworkStatus } from '@/shared/hooks/useNetworkStatus';
 
@@ -156,6 +156,15 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
     fetchAddressFromCoordinates(newCoordinates);
   };
 
+  // Stabilise la référence pour éviter que le marker effect se déclenche sur chaque re-render
+  const mapMarkers = useMemo(() => [{
+    id: 'terrain-location',
+    longitude: coordinates.lng,
+    latitude: coordinates.lat,
+    markerStyle: 'estate' as const,
+    title: 'Position du terrain'
+  }], [coordinates.lng, coordinates.lat]);
+
   return (
     <div className="location-picker">
 
@@ -188,19 +197,10 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
       {/* Carte interactive */}
       <Map
         center={[coordinates.lng, coordinates.lat]}
-        zoom={14}
+        zoom={10}
         height={height}
         onMapClick={handleMapClick}
-        markers={[
-          {
-            id: 'terrain-location',
-            longitude: coordinates.lng,
-            latitude: coordinates.lat,
-            markerStyle: 'estate',
-            title: 'Position du terrain'
-          }
-        ]}
-        key="location-picker-map"
+        markers={mapMarkers}
       />
     </div>
   );

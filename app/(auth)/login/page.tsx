@@ -66,16 +66,6 @@ function LoginBrandingPanel() {
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <Link href="/">
-            <Image
-              src="/images/brand/logo.png"
-              alt="ImoPanorama"
-              width={200}
-              height={60}
-              className="h-14 w-auto object-contain brightness-0 invert mx-auto mb-6"
-              priority
-            />
-          </Link>
           <div className="relative w-80 h-80 mb-8 mx-auto">
             <Image
               src="/images/auth/auth-illustration.png"
@@ -91,18 +81,13 @@ function LoginBrandingPanel() {
           </p>
           <div className="flex items-center justify-center gap-12 text-white">
             <div className="text-center">
-              <div className="text-4xl font-bold mb-1">500+</div>
+              <div className="text-4xl font-bold text-white mb-1">500+</div>
               <div className="text-sm text-white/80 uppercase tracking-wider">Propriétés</div>
             </div>
             <div className="w-px h-16 bg-linear-to-b from-transparent via-white/40 to-transparent" />
             <div className="text-center">
-              <div className="text-4xl font-bold mb-1">1000+</div>
+              <div className="text-4xl font-bold text-white mb-1">1000+</div>
               <div className="text-sm text-white/80 uppercase tracking-wider">Clients</div>
-            </div>
-            <div className="w-px h-16 bg-linear-to-b from-transparent via-white/40 to-transparent" />
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-1">10+</div>
-              <div className="text-sm text-white/80 uppercase tracking-wider">Années</div>
             </div>
           </div>
         </m.div>
@@ -182,12 +167,17 @@ export default function LoginNewPage() {
 
       {/* Right Side - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-4 relative z-10">
-        {/* Back button — desktop only (absolute) */}
+        {/* Back to Home Button */}
         <Link
           href="/"
-          className="hidden lg:flex absolute top-8 left-8 p-3 bg-white/80 dark:bg-gray-900/80 hover:bg-white dark:hover:bg-gray-900 border-2 border-border hover:border-primary-500 rounded-xl shadow-lg hover:shadow-xl transition-all group"
+          className="absolute top-8 left-8 p-3 bg-white/80 dark:bg-gray-900/80 hover:bg-white dark:hover:bg-gray-900 border-2 border-border hover:border-primary-500 rounded-xl shadow-lg hover:shadow-xl transition-all group"
         >
-          <svg className="w-5 h-5 text-muted-foreground group-hover:text-primary-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-5 h-5 text-muted-foreground group-hover:text-primary-600 transition-colors"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
         </Link>
@@ -199,22 +189,21 @@ export default function LoginNewPage() {
           className="w-full max-w-md"
         >
           <div className="p-6">
-            {/* Mobile logo */}
-            <div className="lg:hidden flex justify-center mb-8">
-              <Link href="/">
-                <Image
-                  src="/images/brand/logo.png"
-                  alt="ImoPanorama Madagascar"
-                  width={320}
-                  height={100}
-                  className="h-28 w-auto object-contain"
-                  priority
-                />
-              </Link>
+            {/* Mobile Logo */}
+            <div className="lg:hidden flex justify-center mb-6">
+              <Image
+                src="/images/brand/logo.png"
+                alt="ImoPanorama Madagascar"
+                width={140}
+                height={44}
+                className="h-11 w-auto object-contain"
+                priority
+              />
             </div>
 
             {/* Header */}
             <div className="mb-6 text-center">
+              <h1 className="text-4xl font-bold text-primary-600 mb-2">Connexion</h1>
               <p className="text-foreground">Bienvenue ! Connectez-vous pour continuer</p>
             </div>
 

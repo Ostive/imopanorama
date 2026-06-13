@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React, { Suspense } from 'react'
 import { useQuery } from '@tanstack/react-query'
@@ -35,7 +35,7 @@ const PropertiesMapViewDynamic = dynamicImport(
       <div className="w-full h-[calc(100vh-300px)] bg-muted rounded-2xl flex items-center justify-center">
         <div className="text-center text-muted-foreground">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-border border-t-primary-600 mx-auto mb-4"></div>
-          <p>La carte se prépare...</p>
+          <p>La carte se prÃ©pare...</p>
         </div>
       </div>
     ),
@@ -50,7 +50,7 @@ export default function PropertiesPage() {
         <div className="min-h-screen bg-background flex items-center justify-center">
           <div className="animate-pulse space-y-4 w-full max-w-7xl mx-auto px-4">
             <div className="h-10 bg-muted rounded-xl w-1/3" />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="h-72 bg-muted rounded-2xl" />
               ))}
@@ -148,7 +148,7 @@ function PropertiesPageContent() {
                   </SelectContent>
                 </Select>
 
-                {/* View Mode Toggle — desktop only */}
+                {/* View Mode Toggle â€” desktop only */}
                 <div className="hidden sm:flex gap-0.5 bg-gray-100 dark:bg-gray-700 p-1 rounded-xl">
                   {[
                     { mode: 'grid' as const, Icon: Squares2X2Icon, title: 'Grille' },
@@ -176,7 +176,7 @@ function PropertiesPageContent() {
 
           {/* Properties Grid/List/Map */}
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 lg:gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
               {[...Array(6)].map((_, i) => (
                 <div
                   key={i}
@@ -217,13 +217,13 @@ function PropertiesPageContent() {
                   Aucun bien ne correspond encore
                 </h3>
                 <p className="text-muted-foreground mb-8">
-                  Essayez d'élargir un peu vos critères. Le bon bien se cache parfois à un filtre près.
+                  Essayez d'Ã©largir un peu vos critÃ¨res. Le bon bien se cache parfois Ã  un filtre prÃ¨s.
                 </p>
                 <button type="button"
                   onClick={resetFilters}
                   className="px-8 py-3 bg-primary-600 text-white rounded-xl hover:bg-primary-700 font-semibold transition-all shadow-lg hover:shadow-xl"
                 >
-                  Repartir de zéro
+                  Repartir de zÃ©ro
                 </button>
               </div>
             </m.div>
@@ -241,9 +241,9 @@ function PropertiesPageContent() {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 lg:gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
               {properties.map(property => (
-                <div key={property.id}>
+                <div key={property.id} className="min-h-[400px]">
                   <PropertyCard property={property} />
                 </div>
               ))}
@@ -264,7 +264,7 @@ function PropertiesPageContent() {
                 disabled={filters.page === 1}
                 className="px-5 py-2.5 rounded-xl bg-card border-2 border-border text-foreground font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-muted transition-all shadow-sm hover:shadow-md disabled:hover:bg-white dark:disabled:hover:bg-gray-800"
               >
-                Page précédente
+                Page prÃ©cÃ©dente
               </m.button>
 
               <div className="flex gap-1">
@@ -315,7 +315,7 @@ function PropertiesPageContent() {
           )}
         </div>
 
-        {/* Bottom View Bar — mobile only */}
+        {/* Bottom View Bar â€” mobile only */}
         <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border shadow-lg">
           <div className="flex items-center justify-around px-4 py-2 safe-area-bottom">
             {[

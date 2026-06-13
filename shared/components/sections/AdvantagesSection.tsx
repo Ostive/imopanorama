@@ -47,7 +47,7 @@ const features = [
 export default function AdvantagesSection() {
   return (
     <section className="py-16 sm:py-20 md:py-28 bg-card relative overflow-hidden">
-      <div className="container mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12">
         <div className="grid lg:grid-cols-[1fr_1.3fr] gap-20 items-start">
 
           {/* Left — sticky editorial header */}

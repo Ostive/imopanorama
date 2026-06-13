@@ -35,16 +35,15 @@ const services = [
 
 export default function BatiPanoramaSection() {
   return (
-    <section id="batipanorama" className="py-16 sm:py-20 md:py-28 bg-background relative overflow-hidden">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(15,23,42,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(15,23,42,0.03)_1px,transparent_1px)] bg-size-[40px_40px] dark:opacity-20 pointer-events-none" />
+    <section id="batipanorama" className="py-10 sm:py-20 md:py-28 bg-background relative overflow-hidden">
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
         {/* Label */}
         <m.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex items-center gap-3 mb-14"
+          className="flex items-center gap-3 mb-6 sm:mb-14"
         >
           <div className="h-px w-12 bg-primary-500" />
           <span className="text-primary-600 dark:text-primary-400 text-xs font-bold tracking-widest uppercase">
@@ -55,7 +54,7 @@ export default function BatiPanoramaSection() {
           </span>
         </m.div>
 
-        <div className="grid lg:grid-cols-2 gap-14 items-center">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-14 items-center">
           {/* Left — image */}
           <m.div
             initial={{ opacity: 0, x: -30 }}
@@ -64,7 +63,7 @@ export default function BatiPanoramaSection() {
             transition={{ duration: 0.6 }}
             className="relative"
           >
-            <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl">
+            <div className="relative h-[200px] sm:h-[380px] lg:h-[500px] rounded-2xl lg:rounded-3xl overflow-hidden shadow-2xl">
               <Image
                 src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop"
                 alt="Construction BatiPanorama"
@@ -75,8 +74,8 @@ export default function BatiPanoramaSection() {
               <div className="absolute inset-0 bg-linear-to-t from-gray-900/80 via-gray-900/20 to-transparent" />
             </div>
 
-            {/* Floating stat chips */}
-            <div className="absolute bottom-6 left-6 right-6 flex gap-3">
+            {/* Floating stat chips — masqués sur mobile */}
+            <div className="hidden sm:flex absolute bottom-6 left-6 right-6 gap-3">
               <div className="flex-1 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm rounded-2xl px-5 py-4 shadow-xl">
                 <div className="text-2xl font-black text-foreground">15 ans</div>
                 <div className="text-xs text-muted-foreground mt-0.5">sur le terrain</div>
@@ -95,19 +94,19 @@ export default function BatiPanoramaSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.15 }}
           >
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-foreground leading-[1.05] mb-5 wrap-break-word">
+            <h2 className="text-2xl sm:text-5xl md:text-6xl font-black text-foreground leading-[1.05] mb-3 sm:mb-5 wrap-break-word">
               Construire avec un{' '}
               <span className="bg-linear-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
                 vrai suivi
               </span>
             </h2>
-            <p className="text-muted-foreground text-base sm:text-lg leading-relaxed mb-6 sm:mb-10">
+            <p className="text-muted-foreground text-sm sm:text-lg leading-relaxed mb-4 sm:mb-10">
               ImoPanorama et BatiPanorama vous accompagnent du choix du terrain à la construction, avec des échanges clairs et un suivi régulier.
             </p>
 
-            {/* Service list — no borders, clean icon rows */}
-            <ul className="grid sm:grid-cols-2 gap-y-6 gap-x-8 mb-12">
-              {services.map((service, index) => {
+            {/* Service list — 2 items sur mobile, 4 sur desktop */}
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 sm:gap-y-6 gap-x-8 mb-5 sm:mb-12">
+              {services.slice(0, 4).map((service, index) => {
                 const Icon = service.icon
                 return (
                   <m.li
@@ -116,14 +115,14 @@ export default function BatiPanoramaSection() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.2 + index * 0.07 }}
-                    className="flex items-start gap-3"
+                    className={`flex items-start gap-3 ${index >= 2 ? 'hidden sm:flex' : ''}`}
                   >
-                    <div className="shrink-0 w-9 h-9 rounded-xl bg-primary-600 flex items-center justify-center mt-0.5">
-                      <Icon className="w-4 h-4 text-white" />
+                    <div className="shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-primary-600 flex items-center justify-center mt-0.5">
+                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                     </div>
                     <div>
                       <p className="font-bold text-foreground text-sm">{service.title}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+                      <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed hidden sm:block">
                         {service.description}
                       </p>
                     </div>
@@ -133,19 +132,19 @@ export default function BatiPanoramaSection() {
             </ul>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-row sm:flex-row gap-2 sm:gap-3">
               <Link
                 href="/batipanorama"
-                className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-all hover:shadow-lg hover:shadow-primary-500/30 w-full sm:w-auto"
+                className="group inline-flex items-center justify-center gap-2 px-4 sm:px-7 py-2.5 sm:py-3.5 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-all hover:shadow-lg hover:shadow-primary-500/30 flex-1 sm:flex-none"
               >
-                Découvrir l'accompagnement
+                Découvrir
                 <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center px-7 py-3.5 text-sm font-semibold text-primary-700 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 rounded-xl hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-all w-full sm:w-auto"
+                className="inline-flex items-center justify-center px-4 sm:px-7 py-2.5 sm:py-3.5 text-sm font-semibold text-primary-700 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 rounded-xl hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-all flex-1 sm:flex-none"
               >
-                Parler de mon projet
+                Mon projet
               </Link>
             </div>
           </m.div>

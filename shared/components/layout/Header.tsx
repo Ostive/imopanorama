@@ -396,6 +396,8 @@ function Header() {
   const searchParams = useSearchParams()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false)
+  const [mobileSearchQuery, setMobileSearchQuery] = useState('')
   const { isAuthenticated } = useAuth()
   const { favoritesCount } = useFavorites()
   const { contactsCount } = useContacts()
@@ -552,7 +554,7 @@ function Header() {
             <m.button
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.92 }}
-              onClick={() => router.push('/proprietes')}
+              onClick={() => { setIsMobileSearchOpen(v => !v); setIsMenuOpen(false) }}
               className="lg:hidden p-2 rounded-xl text-muted-foreground hover:bg-muted transition-colors"
             >
               <MagnifyingGlassIcon className="h-5 w-5" />
@@ -611,6 +613,51 @@ function Header() {
 
       {/* Mobile Menu */}
       <MobileMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} isActive={isActive} />
+
+      {/* Mobile Search Bar */}
+      <AnimatePresence>
+        {isMobileSearchOpen && (
+          <m.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.22, ease: 'easeInOut' }}
+            className="lg:hidden absolute top-full inset-x-0 overflow-hidden border-t border-border shadow-xl bg-card z-40"
+          >
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                if (mobileSearchQuery.trim()) {
+                  router.push(`/proprietes?search=${encodeURIComponent(mobileSearchQuery)}`)
+                } else {
+                  router.push('/proprietes')
+                }
+                setIsMobileSearchOpen(false)
+                setMobileSearchQuery('')
+              }}
+              className="flex items-center gap-2 px-4 py-3"
+            >
+              <div className="relative flex-1">
+                <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  autoFocus
+                  type="text"
+                  value={mobileSearchQuery}
+                  onChange={(e) => setMobileSearchQuery(e.target.value)}
+                  placeholder="Ville, quartier, type de bien…"
+                  className="w-full pl-9 pr-4 py-2.5 bg-muted border border-border rounded-xl text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
+                />
+              </div>
+              <button
+                type="submit"
+                className="px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-xl transition-colors"
+              >
+                Chercher
+              </button>
+            </form>
+          </m.div>
+        )}
+      </AnimatePresence>
     </m.header>
   )
 }
