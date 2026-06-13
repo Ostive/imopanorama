@@ -56,6 +56,7 @@ export const PropertySchema = z.object({
     status: z.enum(['AVAILABLE', 'RESERVED', 'SOLD', 'RENTED', 'DRAFT', 'ARCHIVED'], { message: 'Le statut est requis' }),
     isFeatured: z.boolean(),
     isPublished: z.boolean(),
+    allowVisitScheduling: z.boolean(),
     views: z.number(),
 
     // References & Metadata
@@ -90,6 +91,7 @@ export const PropertyFormDataSchema = PropertySchema.omit({
     status: z.enum(['AVAILABLE', 'RESERVED', 'SOLD', 'RENTED', 'DRAFT', 'ARCHIVED'], { message: 'Le statut est requis' }).optional().default('AVAILABLE'),
     isFeatured: z.boolean().optional().default(false),
     isPublished: z.boolean().optional().default(true),
+    allowVisitScheduling: z.boolean().optional().default(false),
     // Allow numbers to be passed as strings (form data) and transformed
     // Reject empty strings for required fields
     price: z.union([z.number(), z.string()])

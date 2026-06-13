@@ -185,6 +185,7 @@ const INITIAL_FORM_DATA = {
   status: 'AVAILABLE',
   isFeatured: false,
   isPublished: true,
+  allowVisitScheduling: false,
 }
 
 const CURRENT_YEAR = new Date().getFullYear()
@@ -247,6 +248,7 @@ const toPropertyFormState = (data: any): PropertyFormState => ({
   status: data.status || 'AVAILABLE',
   isFeatured: data.isFeatured || false,
   isPublished: data.isPublished ?? true,
+  allowVisitScheduling: data.allowVisitScheduling ?? false,
 })
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -621,7 +623,7 @@ function PropertyFormContent({ mode, propertyId, initialType = '', initialForm }
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="status">Statut</Label>
                         <Select value={formData.status} onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}>
@@ -648,6 +650,13 @@ function PropertyFormContent({ mode, propertyId, initialType = '', initialForm }
                           <p className="text-xs text-muted-foreground mt-0.5">Afficher en page d'accueil</p>
                         </div>
                         <Switch id="isFeatured" checked={formData.isFeatured} onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isFeatured: checked }))} />
+                      </div>
+                      <div className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
+                        <div>
+                          <Label htmlFor="allowVisitScheduling" className="font-medium cursor-pointer">Prise de RDV</Label>
+                          <p className="text-xs text-muted-foreground mt-0.5">Bouton "Programmer une visite"</p>
+                        </div>
+                        <Switch id="allowVisitScheduling" checked={formData.allowVisitScheduling} onCheckedChange={(checked) => setFormData(prev => ({ ...prev, allowVisitScheduling: checked }))} />
                       </div>
                     </div>
                   </CardContent>

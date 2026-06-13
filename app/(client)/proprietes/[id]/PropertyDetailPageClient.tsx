@@ -1298,7 +1298,7 @@ export default function PropertyDetailPage() {
               <AgencyActionButtons
                 propertyTitle={property.title}
                 propertyId={property.id}
-                onScheduleVisit={handleScheduleVisit}
+                onScheduleVisit={property.allowVisitScheduling ? handleScheduleVisit : undefined}
               />
             </m.div>
 

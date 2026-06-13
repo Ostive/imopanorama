@@ -80,7 +80,7 @@ export const DELETE = withErrorHandler(async (
   request: NextRequest,
   context?: { params: Promise<{ id: string }> },
 ) => {
-  const { authorized, errorResponse } = await requireAdmin(request);
+  const { authorized, errorResponse } = await requireStaff(request);
   if (!authorized) return errorResponse!;
 
   const id = await extractParam(context, 'id');

@@ -290,14 +290,16 @@ function AdminPropertiesPageContent() {
 
     try {
       const res = await fetch(`/api/properties/${propertyToDelete}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error()
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body?.error || `Erreur ${res.status}`)
+      }
       setSuccessMessage('Propriété supprimée avec succès')
       setTimeout(() => setSuccessMessage(null), 5000)
       refetchProperties()
-    } catch {
-      // Rétablir les données si l'API échoue
+    } catch (err: any) {
       queryClient.setQueryData(queryKey, previousData)
-      setErrorMessage('Erreur lors de la suppression de la propriété')
+      setErrorMessage(err?.message || 'Erreur lors de la suppression de la propriété')
       setTimeout(() => setErrorMessage(null), 5000)
     }
   }
