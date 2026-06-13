@@ -245,7 +245,7 @@ function ComparerInner() {
                             </div>
                             <div className="absolute bottom-0 left-0 right-0 p-3">
                               <p className="text-sm font-bold text-white line-clamp-1">{property.title}</p>
-                              <p className="text-base font-black text-primary-300">{formatPrice(property.price)}</p>
+                              <p className="text-base font-black text-primary-300">{formatPrice(property.price, property.currency || 'MGA')}</p>
                             </div>
                           </div>
                         </Link>
