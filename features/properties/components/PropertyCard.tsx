@@ -91,7 +91,7 @@ function PropertyCard({
       <Link href={`/proprietes/${property.id}`} className="block">
 
         {/* ── IMAGE plein bord ── */}
-        <div className="relative w-full aspect-[4/3]">
+        <div className="relative w-full aspect-[4/3] overflow-hidden">
           <Image
             src={images[currentImageIndex]}
             alt={property.title || 'Photo de la propriété'}
@@ -101,17 +101,12 @@ function PropertyCard({
             onError={handleImageError}
           />
 
-          {/* Gradient haut + bas */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20 pointer-events-none" />
-
           {/* Badge type (haut-gauche) + bouton favori (haut-droite) */}
           <div className="absolute top-2 inset-x-2 z-10 flex items-start justify-between gap-1">
-            {/* Un seul badge type, tronqué */}
             <span className="bg-black/50 backdrop-blur-sm text-white px-2 py-0.5 rounded-full text-[10px] font-semibold shadow max-w-[55%] truncate">
               {PROPERTY_TYPE_LABELS[property.propertyType] || 'Bien'}
             </span>
 
-            {/* Bouton favori seulement (compare retiré du header) */}
             <m.button
               onClick={async (e) => {
                 e.preventDefault(); e.stopPropagation()
@@ -148,46 +143,37 @@ function PropertyCard({
                 aria-label="Image suivante">
                 <ChevronRightIcon className="w-3.5 h-3.5 text-gray-800" />
               </m.button>
-              <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex gap-1">
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 flex gap-1">
                 {images.slice(0, 5).map((_, i) => (
                   <span key={i} className={`block rounded-full transition-all ${i === currentImageIndex ? 'w-3 h-1 bg-white' : 'w-1 h-1 bg-white/50'}`} />
                 ))}
               </div>
             </>
           )}
-
-          {/* Prix + stats en overlay bas */}
-          <div className="absolute bottom-0 inset-x-0 z-10 px-2.5 pb-2.5 pt-4">
-            <div className="flex items-end justify-between gap-1">
-              <div>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-white font-extrabold text-sm leading-none drop-shadow">{formattedPrice}</span>
-                  {property.transactionType === 'RENT' && <span className="text-white/70 text-[10px]">/mois</span>}
-                </div>
-                <div className="flex items-center gap-2 mt-0.5 text-white/75 text-[10px]">
-                  {property.totalSize && (
-                    <span className="flex items-center gap-0.5">
-                      <ArrowsPointingOutIcon className="w-2.5 h-2.5" />{property.totalSize.toLocaleString()} m²
-                    </span>
-                  )}
-                  {property.bedrooms && (
-                    <span className="flex items-center gap-0.5">
-                      <HomeIcon className="w-2.5 h-2.5" />{property.bedrooms} ch.
-                    </span>
-                  )}
-                </div>
-              </div>
-              {property.transactionType === 'SALE' && property.pricePerM2 && (
-                <span className="text-white/50 text-[9px] self-end">
-                  {formatPrice(Math.round(property.pricePerM2), property.currency, property.country)}/m²
-                </span>
-              )}
-            </div>
-          </div>
         </div>
 
         {/* ── INFO compacte ── */}
         <div className="px-2.5 pt-2 pb-2.5 bg-card">
+          {/* Prix */}
+          <div className="flex items-baseline justify-between gap-1 mb-1">
+            <div className="flex items-baseline gap-1">
+              <span className="text-foreground font-extrabold text-sm leading-none">{formattedPrice}</span>
+              {property.transactionType === 'RENT' && <span className="text-muted-foreground text-[10px]">/mois</span>}
+            </div>
+            <div className="flex items-center gap-2 text-muted-foreground text-[10px]">
+              {property.totalSize && (
+                <span className="flex items-center gap-0.5">
+                  <ArrowsPointingOutIcon className="w-2.5 h-2.5" />{property.totalSize.toLocaleString()} m²
+                </span>
+              )}
+              {property.bedrooms && (
+                <span className="flex items-center gap-0.5">
+                  <HomeIcon className="w-2.5 h-2.5" />{property.bedrooms} ch.
+                </span>
+              )}
+            </div>
+          </div>
+
           {/* Titre */}
           <p className="text-foreground text-xs font-semibold truncate leading-snug">
             {property.title || 'Bien à découvrir'}
