@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -8,7 +8,12 @@ import Link from 'next/link';
 import {
     CalendarIcon,
     ArrowRightIcon,
-    FunnelIcon
+    FunnelIcon,
+    HomeIcon,
+    WrenchScrewdriverIcon,
+    BriefcaseIcon,
+    NewspaperIcon,
+    SparklesIcon,
 } from '@heroicons/react/24/outline';
 import { NewsItem } from '@/features/news/types/news.types';
 
@@ -40,13 +45,13 @@ const getCategoryBadgeClass = (category: string) => {
     }
 };
 
-const getCategoryEmoji = (category: string) => {
+const getCategoryIcon = (category: string) => {
     switch (category) {
-        case 'IMMOBILIER': return 'ðŸ ';
-        case 'CONSTRUCTION': return 'ðŸ­';
-        case 'EVENEMENT': return 'ðŸ“…';
-        case 'ENTREPRISE': return 'ðŸ’¼';
-        default: return 'ðŸ“°';
+        case 'IMMOBILIER': return <HomeIcon className="w-3 h-3" />;
+        case 'CONSTRUCTION': return <WrenchScrewdriverIcon className="w-3 h-3" />;
+        case 'EVENEMENT': return <CalendarIcon className="w-3 h-3" />;
+        case 'ENTREPRISE': return <BriefcaseIcon className="w-3 h-3" />;
+        default: return <NewspaperIcon className="w-3 h-3" />;
     }
 };
 
@@ -135,7 +140,7 @@ export default function NewsClient() {
                     >
                         <div className="max-w-md mx-auto">
                             <div className="w-24 h-24 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <span className="text-5xl">⚠️</span>
+                                <SparklesIcon className="w-12 h-12 text-red-400" />
                             </div>
                             <h3 className="text-2xl font-bold text-foreground mb-3">Impossible de charger les articles</h3>
                             <p className="text-muted-foreground mb-6 text-lg">Une erreur est survenue lors du chargement. Veuillez réessayer dans quelques instants.</p>
@@ -149,7 +154,7 @@ export default function NewsClient() {
                     >
                         <div className="max-w-md mx-auto">
                             <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <span className="text-5xl">🔍</span>
+                                <FunnelIcon className="w-12 h-12 text-gray-400" />
                             </div>
                             <h3 className="text-2xl font-bold text-foreground mb-3">Aucun article dans cette catégorie</h3>
                             <p className="text-muted-foreground mb-6 text-lg">
@@ -184,7 +189,7 @@ export default function NewsClient() {
                                                 />
                                             ) : (
                                                 <div className="absolute inset-0 bg-linear-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
-                                                    <span className="text-gray-400 text-lg">📰</span>
+                                                    <NewspaperIcon className="w-10 h-10 text-gray-400" />
                                                 </div>
                                             )}
                                             <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent"></div>
@@ -192,7 +197,7 @@ export default function NewsClient() {
                                             {/* Category Badge */}
                                             <div className="absolute top-4 left-4">
                                                 <span className={`inline-flex items-center gap-1 rounded-xl px-3 py-2 text-xs font-semibold shadow-lg ${getCategoryBadgeClass(item.category)}`}>
-                                                    {getCategoryEmoji(item.category)}
+                                                    {getCategoryIcon(item.category)}
                                                     {item.category === 'GENERAL' ? 'Général' :
                                                         item.category === 'IMMOBILIER' ? 'Immobilier' :
                                                             item.category === 'CONSTRUCTION' ? 'Construction' :
