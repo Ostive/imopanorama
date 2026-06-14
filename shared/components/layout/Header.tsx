@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { m, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -98,6 +98,18 @@ function DesktopSearch() {
 function DesktopAuth() {
   const { user, isAuthenticated, logout, hasRole } = useAuth()
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!isUserMenuOpen) return
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setIsUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [isUserMenuOpen])
 
   const handleLogout = async () => {
     try {
@@ -111,11 +123,12 @@ function DesktopAuth() {
   return (
     <div className="hidden lg:flex items-center gap-2 ml-1">
       {isAuthenticated ? (
-        <div className="relative">
+        <div className="relative" ref={menuRef}>
           <m.button
+            type="button"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+            onClick={() => setIsUserMenuOpen((o) => !o)}
             className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-muted transition-colors"
           >
             <div className="h-8 w-8 rounded-full bg-linear-to-br from-primary-500 to-primary-500 flex items-center justify-center text-white text-sm font-bold shadow">
@@ -143,7 +156,7 @@ function DesktopAuth() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: -8 }}
                 transition={{ duration: 0.15, ease: 'easeOut' }}
-                className="absolute right-0 mt-2 w-60 bg-card rounded-2xl shadow-xl border border-border overflow-hidden z-50"
+                className="absolute top-full right-0 mt-2 w-60 bg-card rounded-2xl shadow-xl border border-border overflow-hidden z-50"
               >
                 <div className="px-4 py-3 bg-linear-to-r from-primary-50 to-primary-50 dark:from-gray-700/60 dark:to-gray-700/60">
                   <p className="text-sm font-bold text-foreground">
