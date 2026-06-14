@@ -164,7 +164,7 @@ export default function MentionsLegalesPage() {
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground italic mt-4">
-                  Nos équipes sont disponibles du lundi au vendredi, de 8h à 17h.
+                  Nos équipes sont disponibles du lundi au vendredi, de 8h à 18h.
                 </p>
               </div>
             </div>

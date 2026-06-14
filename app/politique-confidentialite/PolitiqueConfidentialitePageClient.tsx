@@ -62,7 +62,7 @@ export default function PolitiqueConfidentialitePage() {
           <div className="mb-12 p-6 bg-primary-50/50 dark:bg-primary-900/20 rounded-2xl border border-primary-100/50 dark:border-primary-900/30 text-center">
             <ShieldCheckIcon className="w-12 h-12 text-primary-600 dark:text-primary-400 mx-auto mb-4" />
             <p className="text-muted-foreground leading-relaxed max-w-3xl mx-auto">
-              ImoPanorama Madagascar s'engage à protéger la vie privée de ses utilisateurs.
+              Imopanorama Madagascar s'engage à protéger la vie privée de ses utilisateurs.
               En utilisant notre site, vous acceptez les pratiques décrites dans cette politique.
             </p>
           </div>
@@ -146,7 +146,7 @@ export default function PolitiqueConfidentialitePage() {
                 <RightCard title="Portabilité" desc="Récupérer vos données structurées." />
               </div>
               <p className="mt-6 text-sm text-muted-foreground">
-                Pour exercer ces droits : <a href="mailto:contact@imopanorama.mg" className="text-primary-600 font-medium hover:underline">contact@imopanorama.mg</a>
+                Pour exercer ces droits : <a href="mailto:imopanorama@gmail.com" className="text-primary-600 font-medium hover:underline">imopanorama@gmail.com</a>
               </p>
             </Section>
 
