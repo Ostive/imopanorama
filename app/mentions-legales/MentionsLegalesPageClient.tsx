@@ -44,7 +44,7 @@ export default function MentionsLegalesPage() {
             Mentions <span className="text-primary-600">Légales</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Transparence et confiance sont au cœur de nos engagements. Retrouvez ici toutes les informations légales concernant ImoPanorama.
+            Transparence et confiance sont au cœur de nos engagements. Retrouvez ici toutes les informations légales concernant Imopanorama.
           </p>
         </m.div>
 
@@ -73,13 +73,13 @@ export default function MentionsLegalesPage() {
               </div>
               <div className="space-y-4 pt-2">
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <InfoItem label="Raison sociale" value="ImoPanorama Madagascar" />
+                  <InfoItem label="Raison sociale" value="Imopanorama Madagascar" />
                   <InfoItem label="Forme juridique" value="SARL" />
-                  <InfoItem label="Capital social" value="10 000 000 MGA" />
-                  <InfoItem label="Siège social" value="Antananarivo, Madagascar" />
-                  <InfoItem label="NIF" value="[À compléter]" />
-                  <InfoItem label="STAT" value="[À compléter]" />
-                  <InfoItem label="RCS" value="[À compléter]" />
+                  <InfoItem label="Capital social" value="2 000 000 MGA" />
+                  <InfoItem label="Siège social" value="Vohila Sainte Marie, Madagascar" />
+                  <InfoItem label="NIF" value="4001857078" />
+                  <InfoItem label="STAT" value="41001 32 2015 0 00008" />
+                  <InfoItem label="RCS" value="RCS FEN.A 2022 A 00008" />
                 </div>
               </div>
             </div>
@@ -99,9 +99,9 @@ export default function MentionsLegalesPage() {
               </div>
               <div className="space-y-4 pt-2">
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <InfoItem label="Directeur de publication" value="[Nom du Gérant]" />
-                  <InfoItem label="Fonction" value="Gérant" />
-                  <InfoItem label="Contact éditorial" value="contact@imopanorama.mg" />
+                  <InfoItem label="Directrice de publication" value="Apicella Arisonia" />
+                  <InfoItem label="Fonction" value="Gérante" />
+                  <InfoItem label="Contact éditorial" value="imopananorama@gmail.com" />
                 </div>
               </div>
             </div>
@@ -149,7 +149,7 @@ export default function MentionsLegalesPage() {
                     </div>
                     <div className="flex flex-col">
                       <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Email</span>
-                      <a href="mailto:contact@imopanorama.mg" className="text-foreground font-medium hover:text-primary-600 transition-colors">contact@imopanorama.mg</a>
+                      <a href="mailto:imopanorama@gmail.com" className="text-foreground font-medium hover:text-primary-600 transition-colors">imopanorama@gmail.com</a>
                     </div>
                   </div>
                   <div className="w-px h-10 bg-muted hidden sm:block" />
@@ -159,7 +159,7 @@ export default function MentionsLegalesPage() {
                     </div>
                     <div className="flex flex-col">
                       <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Téléphone</span>
-                      <span className="text-foreground font-medium">+261 34 XX XX XX XX</span>
+                      <span className="text-foreground font-medium">+261 32 21 93 995</span>
                     </div>
                   </div>
                 </div>
