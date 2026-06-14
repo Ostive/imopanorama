@@ -145,7 +145,6 @@ function DesktopAuth() {
                 transition={{ duration: 0.15, ease: 'easeOut' }}
                 className="absolute right-0 mt-2 w-60 bg-card rounded-2xl shadow-xl border border-border overflow-hidden z-50"
               >
-                {/* User info header */}
                 <div className="px-4 py-3 bg-linear-to-r from-primary-50 to-primary-50 dark:from-gray-700/60 dark:to-gray-700/60">
                   <p className="text-sm font-bold text-foreground">
                     {user?.firstName} {user?.lastName}
