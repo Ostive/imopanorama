@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ArrowLeftIcon, DocumentCheckIcon, ExclamationTriangleIcon, ScaleIcon, ShieldCheckIcon, UserIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
 import { m } from 'framer-motion';
 
-const LAST_UPDATED_LABEL = '9 juin 2026';
+const LAST_UPDATED_LABEL = '14 juin 2026';
 
 export default function CGUPage() {
   return (
@@ -44,7 +44,7 @@ export default function CGUPage() {
             Conditions <span className="text-primary-600">Générales</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Règles d'utilisation du site ImoPanorama. Veuillez les lire attentivement.
+            Règles d'utilisation du site Imopanorama. Veuillez les lire attentivement.
           </p>
         </m.div>
 
@@ -66,7 +66,7 @@ export default function CGUPage() {
             </h2>
             <p className="text-muted-foreground leading-relaxed">
               Les présentes Conditions Générales d'Utilisation (CGU) régissent l'utilisation du
-              site web ImoPanorama Madagascar accessible à l'adresse imopanorama.mg. En accédant
+              site web Imopanorama Madagascar accessible à l'adresse imopanorama.com. En accédant
               et en utilisant ce site, vous acceptez sans réserve les présentes CGU.
             </p>
           </div>
@@ -75,9 +75,9 @@ export default function CGUPage() {
 
             <Section title="2. Définitions" icon={<ScaleIcon className="w-6 h-6" />}>
               <ul className="grid sm:grid-cols-2 gap-4">
-                <DefinitionTerm term="Site" definition="Le site web ImoPanorama accessible à imopanorama.mg" />
+                <DefinitionTerm term="Site" definition="Le site web Imopanorama accessible à imopanorama.com" />
                 <DefinitionTerm term="Utilisateur" definition="Toute personne qui accède et utilise le Site" />
-                <DefinitionTerm term="Éditeur" definition="ImoPanorama Madagascar" />
+                <DefinitionTerm term="Éditeur" definition="Imopanorama Madagascar" />
                 <DefinitionTerm term="Services" definition="Fonctionnalités et contenus proposés" />
               </ul>
             </Section>
@@ -127,7 +127,7 @@ export default function CGUPage() {
 
             <Section title="6. Propriété Intellectuelle" icon={<ShieldCheckIcon className="w-6 h-6" />}>
               <p>
-                Tout le contenu (textes, images, code) est la propriété exclusive d'ImoPanorama.
+                Tout le contenu (textes, images, code) est la propriété exclusive d'Imopanorama.
                 Toute reproduction sans autorisation est une contrefaçon sanctionnée par la loi.
               </p>
             </Section>
