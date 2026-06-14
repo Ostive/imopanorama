@@ -1,7 +1,7 @@
 'use client'
 
 import { m } from 'framer-motion';
-import { HomeModernIcon, UserGroupIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
+import { HomeModernIcon, UserGroupIcon, ChatBubbleLeftRightIcon, BellIcon } from '@heroicons/react/24/outline';
 
 interface RecentActivityData {
   properties: { id: string; title: string; createdAt: string; status: string }[];
@@ -66,10 +66,10 @@ export function RecentActivity({ data, loading }: Props) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
-      className="bg-card rounded-2xl shadow-lg p-6 border border-border"
+      className="bg-card rounded-2xl shadow-lg p-4 sm:p-6 border border-border"
     >
-      <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-        <span className="text-2xl">🔔</span>
+      <h3 className="text-base sm:text-xl font-bold text-foreground mb-4 sm:mb-6 flex items-center gap-2">
+        <BellIcon className="w-5 h-5 text-purple-500" />
         Activité récente
       </h3>
 

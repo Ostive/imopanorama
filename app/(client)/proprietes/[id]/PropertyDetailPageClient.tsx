@@ -45,7 +45,6 @@ import {
   PhoneIcon,
   EnvelopeIcon,
   CheckCircleIcon,
-  ChevronRightIcon,
   StarIcon,
   HomeModernIcon,
   HomeIcon,
@@ -676,21 +675,31 @@ export default function PropertyDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const { addToFavorites, removeFromFavorites, isFavorite: checkIsFavorite } = useFavorites();
 
-  const fetchProperty = useCallback(async (signal?: AbortSignal) => {
+  const fetchProperty = useCallback(async (signal?: AbortSignal, attempt = 0) => {
     try {
       const response = await fetch(`/api/properties/${propertyId}`, { signal });
       const data = await response.json();
 
-      if (data.success) {
+      if (data.success && data.data) {
         setProperty(data.data);
+        setLoading(false);
+      } else if (attempt === 0) {
+        // Retry once after 800ms (handles cold DB connections)
+        await new Promise(resolve => setTimeout(resolve, 800));
+        if (!signal?.aborted) fetchProperty(signal, 1);
       } else {
         setError('Property not found');
+        setLoading(false);
       }
     } catch (error) {
       if ((error as Error).name === 'AbortError') return;
+      if (attempt === 0) {
+        await new Promise(resolve => setTimeout(resolve, 800));
+        if (!signal?.aborted) fetchProperty(signal, 1);
+        return;
+      }
       logger.error('Error fetching property', error);
       setError('Failed to load property');
-    } finally {
       setLoading(false);
     }
   }, [propertyId]);
@@ -855,21 +864,6 @@ export default function PropertyDetailPage() {
           propertyTitle={property.title}
         />
       )}
-
-      {/* Sticky breadcrumb nav */}
-      <m.nav
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="sticky top-0 z-40 bg-white/85 dark:bg-gray-900/85 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50"
-      >
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-11 flex items-center gap-1.5 text-sm">
-          <Link href="/" className="text-gray-400 hover:text-primary transition-colors shrink-0 font-medium">Accueil</Link>
-          <ChevronRightIcon className="w-3 h-3 text-gray-300 shrink-0" />
-          <Link href="/proprietes" className="text-gray-400 hover:text-primary transition-colors shrink-0 font-medium">Propriétés</Link>
-          <ChevronRightIcon className="w-3 h-3 text-gray-300 shrink-0" />
-          <span className="text-gray-800 dark:text-gray-100 font-semibold truncate text-xs sm:text-sm">{property.title}</span>
-        </div>
-      </m.nav>
 
       {/* ── GALLERY : plein bord sur mobile ── */}
       <m.div

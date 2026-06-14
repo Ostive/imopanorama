@@ -9,7 +9,8 @@ import {
   ChatBubbleLeftRightIcon,
   PlusCircleIcon,
   Cog6ToothIcon,
-  SparklesIcon
+  SparklesIcon,
+  BoltIcon,
 } from '@heroicons/react/24/outline';
 import { StatsCard } from './components/StatsCard';
 import { QuickAction } from './components/QuickAction';
@@ -47,7 +48,7 @@ export default function AdminDashboard() {
   const s = data?.stats;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-primary-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-primary-950/20 py-4 sm:py-8">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <AdminPageHeader
           icon={<SparklesIcon className="w-6 h-6 text-white" />}
@@ -56,7 +57,7 @@ export default function AdminDashboard() {
         />
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 mb-6 sm:mb-8">
           <StatsCard
             title="Propriétés"
             value={statsLoading ? '…' : String(s?.properties.total ?? 0)}
@@ -89,11 +90,11 @@ export default function AdminDashboard() {
           transition={{ delay: 0.2 }}
           className="mb-8"
         >
-          <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-            <span className="text-2xl">⚡</span>
+          <h2 className="text-base sm:text-xl font-bold text-foreground mb-4 sm:mb-6 flex items-center gap-2">
+            <BoltIcon className="w-5 h-5 text-amber-500" />
             Actions rapides
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             <QuickAction
               title="Ajouter propriété"
               description="Créer une nouvelle annonce"

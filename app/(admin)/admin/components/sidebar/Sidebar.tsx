@@ -210,8 +210,8 @@ export function Sidebar({ user, menuItems, open, onClose, onLogout }: SidebarPro
         ))}
       </nav>
 
-      {/* User dropdown */}
-      <div className="px-3 py-3 border-t border-border shrink-0">
+      {/* User dropdown — desktop only, mobile has logout in topbar */}
+      <div className="hidden lg:block px-3 py-3 border-t border-border shrink-0">
         <UserDropdown user={user} onLogout={onLogout} />
       </div>
     </div>

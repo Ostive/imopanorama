@@ -47,12 +47,12 @@ export function StatsCard({ title, value, subtitle, icon, color, delay = 0, tren
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay }}
       whileHover={{ y: -4 }}
-      className={`bg-card rounded-2xl shadow-lg hover:shadow-xl p-6 border-l-4 ${c.border} transition-shadow`}
+      className={`bg-card rounded-2xl shadow-lg hover:shadow-xl p-3 sm:p-6 border-l-4 ${c.border} transition-shadow`}
     >
       <div className="flex items-center justify-between">
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">{title}</p>
-          <p className={`text-3xl font-bold mt-2 ${c.text}`}>
+          <p className="text-xs sm:text-sm font-semibold text-muted-foreground uppercase tracking-wide">{title}</p>
+          <p className={`text-xl sm:text-3xl font-bold mt-1 sm:mt-2 ${c.text}`}>
             {typeof value === 'number' ? value.toLocaleString('fr-FR') : value}
           </p>
           <div className="h-5 mt-1">
@@ -74,7 +74,7 @@ export function StatsCard({ title, value, subtitle, icon, color, delay = 0, tren
             ) : null}
           </div>
         </div>
-        <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${c.bg} shrink-0 ml-3`}>
+        <div className={`w-9 h-9 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center ${c.bg} shrink-0 ml-2 sm:ml-3`}>
           <div className={c.text}>{icon}</div>
         </div>
       </div>

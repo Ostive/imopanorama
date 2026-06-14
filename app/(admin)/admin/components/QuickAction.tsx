@@ -18,17 +18,17 @@ export function QuickAction({ title, description, icon, href, color }: QuickActi
       <m.div
         whileHover={{ scale: 1.02, y: -2 }}
         whileTap={{ scale: 0.98 }}
-        className="group block p-6 bg-card rounded-2xl shadow-lg hover:shadow-xl transition-all cursor-pointer border border-border"
+        className="group block p-3 sm:p-6 bg-card rounded-2xl shadow-lg hover:shadow-xl transition-all cursor-pointer border border-border"
       >
-        <div className="flex items-start space-x-4">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${color}20` }}>
+        <div className="flex items-start space-x-2 sm:space-x-4">
+          <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${color}20` }}>
             <div style={{ color }}>{icon}</div>
           </div>
-          <div className="flex-1">
-            <h3 className="font-bold text-foreground mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{title}</h3>
-            <p className="text-sm text-muted-foreground">{description}</p>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm sm:text-base font-bold text-foreground mb-0.5 sm:mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors leading-tight">{title}</h3>
+            <p className="hidden sm:block text-sm text-muted-foreground">{description}</p>
           </div>
-          <ArrowRightIcon className="w-5 h-5 text-muted-foreground group-hover:text-primary-600 dark:group-hover:text-primary-400 group-hover:translate-x-1 transition-all" />
+          <ArrowRightIcon className="hidden sm:block w-5 h-5 text-muted-foreground group-hover:text-primary-600 dark:group-hover:text-primary-400 group-hover:translate-x-1 transition-all shrink-0" />
         </div>
       </m.div>
     </Link>

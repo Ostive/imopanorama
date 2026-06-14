@@ -1,11 +1,18 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import ProtectedRoute from '@/features/auth/components/ProtectedRoute'
-import { Bars3Icon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
+import Link from 'next/link'
+import {
+  Bars3Icon,
+  ArrowLeftOnRectangleIcon,
+  UserCircleIcon,
+  ArrowTopRightOnSquareIcon,
+} from '@heroicons/react/24/outline'
 import {
   HomeIcon,
   BuildingOfficeIcon,
@@ -50,9 +57,22 @@ const MENU_ITEMS: MenuItem[] = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
   const { user, logout } = useAuth()
   const pathname = usePathname()
+  const mobileMenuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const handler = (e: MouseEvent) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target as Node)) {
+        setMobileMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [mobileMenuOpen])
 
   const { data: counts } = useQuery({
     queryKey: ['admin-layout-counts'],
@@ -123,14 +143,72 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
           {/* Mobile topbar */}
-          <header className="lg:hidden flex items-center h-14 px-4 bg-card border-b border-border shrink-0">
+          <header className="lg:hidden relative flex items-center justify-between h-14 px-3 bg-card border-b border-border shrink-0">
+            {/* Left: hamburger */}
             <button type="button"
               onClick={() => setSidebarOpen(true)}
-              className="p-1.5 rounded-lg text-muted-foreground hover:text-gray-700 dark:hover:text-gray-200 hover:bg-muted transition-colors"
+              className="p-2 rounded-lg text-muted-foreground hover:text-gray-700 dark:hover:text-gray-200 hover:bg-muted transition-colors shrink-0"
             >
               <Bars3Icon className="h-5 w-5" />
             </button>
-            <span className="ml-3 text-sm font-semibold text-foreground capitalize">{pageTitle}</span>
+
+            {/* Center: logo */}
+            <div className="absolute left-1/2 -translate-x-1/2 pointer-events-none">
+              <Image
+                src="/images/brand/logo.png"
+                alt="ImoPanorama"
+                width={110}
+                height={36}
+                className="h-6 w-auto object-contain"
+                priority
+              />
+            </div>
+
+            {/* Right: avatar dropdown */}
+            <div className="relative shrink-0" ref={mobileMenuRef}>
+              <button type="button"
+                onClick={() => setMobileMenuOpen((o) => !o)}
+                className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/40 text-primary-800 dark:text-primary-200 flex items-center justify-center font-semibold text-xs select-none hover:ring-2 hover:ring-primary-400 transition-all"
+              >
+                {[user?.firstName?.charAt(0), user?.lastName?.charAt(0)].filter(Boolean).join('') || '?'}
+              </button>
+
+              {mobileMenuOpen && (
+                <div className="absolute top-full right-0 mt-1.5 w-56 bg-card border border-border rounded-xl shadow-xl py-1 z-50">
+                  <div className="px-3 py-2.5 border-b border-border">
+                    <p className="text-sm font-semibold text-foreground truncate">{user?.firstName} {user?.lastName}</p>
+                    <p className="text-xs text-muted-foreground truncate mt-0.5">{user?.email}</p>
+                  </div>
+                  <div className="py-1">
+                    <Link
+                      href="/admin/profile"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2 text-sm text-foreground hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    >
+                      <UserCircleIcon className="h-4 w-4 text-muted-foreground" />
+                      Mon profil
+                    </Link>
+                    <Link
+                      href="/"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2 text-sm text-foreground hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    >
+                      <ArrowTopRightOnSquareIcon className="h-4 w-4 text-muted-foreground" />
+                      Voir le site
+                    </Link>
+                  </div>
+                  <div className="border-t border-border py-1">
+                    <button type="button"
+                      onClick={() => { setMobileMenuOpen(false); handleLogout() }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    >
+                      <ArrowLeftOnRectangleIcon className="h-4 w-4" />
+                      Se déconnecter
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </header>
 
           <main className="flex-1 overflow-y-auto">

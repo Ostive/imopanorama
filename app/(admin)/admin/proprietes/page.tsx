@@ -428,7 +428,7 @@ function AdminPropertiesPageContent() {
           />
 
           {/* Stats */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
             <StatsCard title="Total" value={stats.total} icon={<BuildingOfficeIcon className="w-7 h-7" />} color="blue" />
             <StatsCard title="Disponibles" value={stats.available} icon={<CheckCircleIcon className="w-7 h-7" />} color="green" delay={0.05} />
             <StatsCard title="Réservées" value={stats.reserved} icon={<ClockIcon className="w-7 h-7" />} color="amber" delay={0.1} />
