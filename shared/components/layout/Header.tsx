@@ -410,10 +410,28 @@ function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false)
   const [mobileSearchQuery, setMobileSearchQuery] = useState('')
-  const { isAuthenticated } = useAuth()
+  const [isMobileUserOpen, setIsMobileUserOpen] = useState(false)
+  const mobileUserRef = useRef<HTMLDivElement>(null)
+  const { user, isAuthenticated, logout, hasRole } = useAuth()
   const { favoritesCount } = useFavorites()
   const { contactsCount } = useContacts()
   const { themeMode, toggleThemeMode } = useTheme()
+
+  useEffect(() => {
+    if (!isMobileUserOpen) return
+    const handler = (e: MouseEvent) => {
+      if (mobileUserRef.current && !mobileUserRef.current.contains(e.target as Node)) {
+        setIsMobileUserOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [isMobileUserOpen])
+
+  const handleMobileLogout = async () => {
+    try { await logout() } catch {}
+    setIsMobileUserOpen(false)
+  }
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -607,15 +625,85 @@ function Header() {
               </m.div>
             )}
 
-            {/* Mobile: User icon */}
-            <m.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} className="lg:hidden">
-              <Link
-                href={isAuthenticated ? '/profile' : '/login'}
-                className="p-2 rounded-xl text-muted-foreground hover:bg-muted transition-colors inline-flex"
-              >
-                <UserIcon className="h-5 w-5" />
-              </Link>
-            </m.div>
+            {/* Mobile: User icon with dropdown */}
+            <div className="lg:hidden relative" ref={mobileUserRef}>
+              {isAuthenticated ? (
+                <>
+                  <m.button
+                    type="button"
+                    whileHover={{ scale: 1.08 }}
+                    whileTap={{ scale: 0.92 }}
+                    onClick={() => setIsMobileUserOpen((o) => !o)}
+                    className="p-1.5 rounded-xl hover:bg-muted transition-colors inline-flex"
+                  >
+                    <div className="h-7 w-7 rounded-full bg-linear-to-br from-primary-500 to-primary-500 flex items-center justify-center text-white text-xs font-bold">
+                      {user?.firstName?.[0]?.toUpperCase() ?? <UserIcon className="h-4 w-4" />}
+                    </div>
+                  </m.button>
+
+                  <AnimatePresence>
+                    {isMobileUserOpen && (
+                      <m.div
+                        initial={{ opacity: 0, scale: 0.95, y: -8 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: -8 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute top-full right-0 mt-2 w-56 bg-card rounded-2xl shadow-xl border border-border overflow-hidden z-50"
+                      >
+                        <div className="px-4 py-3 bg-linear-to-r from-primary-50 to-primary-50 dark:from-gray-700/60 dark:to-gray-700/60 border-b border-border">
+                          <p className="text-sm font-bold text-foreground truncate">{user?.firstName} {user?.lastName}</p>
+                          <p className="text-xs text-muted-foreground truncate mt-0.5">{user?.email}</p>
+                        </div>
+                        <div className="p-1.5 space-y-0.5">
+                          {hasRole('admin') && (
+                            <Link
+                              href="/admin"
+                              onClick={() => setIsMobileUserOpen(false)}
+                              className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium text-foreground hover:bg-primary-50 dark:hover:bg-gray-700 transition-colors"
+                            >
+                              <span className="w-6 h-6 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0">
+                                <Cog6ToothIcon className="h-3.5 w-3.5 text-primary-600 dark:text-primary-400" />
+                              </span>
+                              Administration
+                            </Link>
+                          )}
+                          <Link
+                            href="/profile"
+                            onClick={() => setIsMobileUserOpen(false)}
+                            className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium text-foreground hover:bg-muted transition-colors"
+                          >
+                            <span className="w-6 h-6 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0">
+                              <UserIcon className="h-3.5 w-3.5 text-primary-600 dark:text-primary-400" />
+                            </span>
+                            Mon profil
+                          </Link>
+                        </div>
+                        <div className="p-1.5 border-t border-border">
+                          <button type="button"
+                            onClick={handleMobileLogout}
+                            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                          >
+                            <span className="w-6 h-6 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0">
+                              <ArrowRightStartOnRectangleIcon className="h-3.5 w-3.5 text-red-600 dark:text-red-400" />
+                            </span>
+                            Se déconnecter
+                          </button>
+                        </div>
+                      </m.div>
+                    )}
+                  </AnimatePresence>
+                </>
+              ) : (
+                <m.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}>
+                  <Link
+                    href="/login"
+                    className="p-2 rounded-xl text-muted-foreground hover:bg-muted transition-colors inline-flex"
+                  >
+                    <UserIcon className="h-5 w-5" />
+                  </Link>
+                </m.div>
+              )}
+            </div>
 
             {/* Desktop Auth */}
             <DesktopAuth />
